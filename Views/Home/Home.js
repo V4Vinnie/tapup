@@ -14,43 +14,67 @@ import { DashboardProgress } from '../../Components/DashBoardProgress';
 import { ArrowSmall } from '../../Components/SVG/ArrowSmall';
 import { TopicRectApp } from '../../Components/TopicRectApp';
 import { Colors } from '../../Constants/Colors';
-import { Topics } from '../../Constants/Topics';
 import { sectionTitle } from '../../style';
 import { width } from '../../utils/UseDimensoins';
 
 import BGBleu from '../../assets/logo/bleuBG.png';
-import BGWhite from '../../assets/logo/whiteBG.png';
+import BGDark from '../../assets/logo/darkBG.png';
 import { Pill } from '../../Components/Pill';
 import { ProfielSearch } from '../../Components/ProfileSearch';
 import { Back } from '../../Components/Back';
+import { useTapsState } from '../../States/Taps';
+import { useUserState } from '../../States/User';
+import { auth } from '../../firebaseConfig';
+import { fetchUserAllWatched } from '../../utils/fetch';
 
-export const Home = ({ navigation, user, setTopicDetail }) => {
-	console.log(user);
+export const Home = ({
+	navigation,
+	setTopicDetail,
+	setTabDetail,
+	setLoggedIn,
+}) => {
+	const taps = useTapsState().get();
+
+	const user = useUserState().get();
+
+	
+
 	const [featureTopics, setFeatureTopics] = useState([]);
-	const [filteredTopics, setFilteredTopics] = useState(Topics);
+	const [filteredTopics, setFilteredTopics] = useState([]);
 
 	const [search, setSearch] = useState(false);
 	const [paddingHeight, setPaddingHeight] = useState(110);
+
+	const [bleuHeight, setBleuHeight] = useState(310);
 
 	const [searchValue, setSearchValeu] = useState('');
 
 	useEffect(() => {
 		let features = [];
-		Topics.map((topic) => {
-			if (topic.isFeature) {
-				features.push(topic);
+		taps.map(async (tap) => {
+			if (tap.isFeature) {
+				features.push(tap);
 			}
 		});
 		setFeatureTopics(features);
+		if (user.selectedTopics.length === 1) {
+			setBleuHeight(310);
+		} else if (user.selectedTopics.length === 2) {
+			setBleuHeight(350);
+		} else {
+			setBleuHeight(390);
+		}
+
+		searchTopics();
 	}, []);
 
-	useEffect(() => {
-		if (searchValue === '') {
-			setFilteredTopics(Topics);
-		} else {
-			let _filteredTopics = [];
-			Topics.map((topic) => {
-				if (
+	const searchTopics = () => {
+		let _filteredTopics = [];
+		taps.map((tap) => {
+			tap.topics.map((topic) => {
+				if (searchValue === '') {
+					_filteredTopics.push(topic);
+				} else if (
 					topic.title
 						.toLocaleLowerCase()
 						.includes(searchValue.toLocaleLowerCase())
@@ -58,8 +82,13 @@ export const Home = ({ navigation, user, setTopicDetail }) => {
 					_filteredTopics.push(topic);
 				}
 			});
-			setFilteredTopics(_filteredTopics);
-		}
+		});
+
+		setFilteredTopics(_filteredTopics);
+	};
+
+	useEffect(() => {
+		searchTopics();
 	}, [searchValue]);
 
 	const TopicWidth = width / 3;
@@ -78,13 +107,20 @@ export const Home = ({ navigation, user, setTopicDetail }) => {
 				setSearchValue={setSearchValeu}
 				userImg={user.profilePic}
 				paddingHeight={paddingHeight}
+				setLoggedIn={setLoggedIn}
 				setPaddingHeight={setPaddingHeight}
+				navigation={navigation}
 			/>
 			<ScrollView
-				style={{ backgroundColor: Colors.primary.bleuBottom }}
+				nestedScrollEnabled
 				contentInsetAdjustmentBehavior='automatic'
 				showsVerticalScrollIndicator={false}
 				showsHorizontalScrollIndicator={false}
+				style={
+					search
+						? { backgroundColor: Colors.primary.bleuBottom }
+						: { backgroundColor: Colors.primary.white }
+				}
 			>
 				{search ? (
 					<SafeAreaView>
@@ -94,7 +130,7 @@ export const Home = ({ navigation, user, setTopicDetail }) => {
 						<View style={{ alignItems: 'center' }}>
 							<FlatList
 								contentContainerStyle={{
-									width: width - 15,
+									width: width,
 									alignItems: 'flex-start',
 								}}
 								showsVerticalScrollIndicator={false}
@@ -116,66 +152,71 @@ export const Home = ({ navigation, user, setTopicDetail }) => {
 					</SafeAreaView>
 				) : (
 					<ImageBackground
-						resizeMode='cover'
+						resizeMode='strech'
 						imageStyle={{
-							height: 430,
-							marginTop: 120,
+							height: bleuHeight,
+							top: 120,
 						}}
 						source={BGBleu}
 					>
-						<SafeAreaView style={styles.container}>
-							<View style={styles.section}>
-								<Text style={sectionTitle}>Feature Taps</Text>
-								<FlatList
-									showsVerticalScrollIndicator={false}
-									showsHorizontalScrollIndicator={false}
-									horizontal
-									data={featureTopics}
-									renderItem={({ item }) => (
-										<TopicRectApp
-											width={TopicWidth - 10}
-											height={200}
-											topic={item}
-											setTopicDetail={setTopicDetail}
-											navigation={navigation}
-										/>
-									)}
-									keyExtractor={(topic) => topic.id}
-								/>
-							</View>
-							<View style={styles.section}>
-								<Pressable style={styles.dashboardPress}>
-									<Text style={styles.dashboardTitle}>Dashboard</Text>
-									<View style={{ height: 14, marginLeft: 10 }}>
-										<ArrowSmall />
-									</View>
-								</Pressable>
-								<View style={styles.dashboardStats}>
-									{user.selectedTopics.length > 3
-										? user.selectedTopics.slice(0, 3).map((topicId) => {
-												return (
-													<DashboardProgress key={topicId} topicId={topicId} />
-												);
-										  })
-										: user.selectedTopics.map((topicId) => {
-												return (
-													<DashboardProgress key={topicId} topicId={topicId} />
-												);
-										  })}
+						<ImageBackground
+							resizeMode='cover'
+							imageStyle={{
+								width: width,
+								height: 226.5,
+								top: -50,
+							}}
+							source={BGDark}
+						>
+							<SafeAreaView style={styles.container}>
+								<View style={styles.section}>
+									<Text style={sectionTitle}>Feature Taps</Text>
+									<FlatList
+										showsVerticalScrollIndicator={false}
+										showsHorizontalScrollIndicator={false}
+										numColumns={3}
+										data={featureTopics}
+										renderItem={({ item }) => (
+											<TopicRectApp
+												width={TopicWidth - 11}
+												height={200}
+												topic={item}
+												setTabDetail={setTabDetail}
+												navigation={navigation}
+											/>
+										)}
+										keyExtractor={(topic) => topic.id}
+									/>
 								</View>
-							</View>
-							<ImageBackground
-								resizeMode='cover'
-								imageStyle={{
-									width: width,
-									height: 1000,
-									marginTop: 60,
-									left: -10,
-								}}
-								source={BGWhite}
-							>
+								<View style={styles.section}>
+									<Pressable style={styles.dashboardPress}>
+										<Text style={styles.dashboardTitle}>Dashboard</Text>
+										<View style={{ height: 14, marginLeft: 10 }}>
+											<ArrowSmall />
+										</View>
+									</Pressable>
+									<View style={styles.dashboardStats}>
+										{user.selectedTopics.length > 3
+											? user.selectedTopics.slice(0, 3).map((topicId) => {
+													return (
+														<DashboardProgress
+															key={topicId}
+															topicId={topicId}
+														/>
+													);
+											  })
+											: user.selectedTopics.map((topicId) => {
+													return (
+														<DashboardProgress
+															key={topicId}
+															topicId={topicId}
+														/>
+													);
+											  })}
+									</View>
+								</View>
 								<View style={styles.topicsPillSection}>
-									{Topics.map((topic) => {
+									{taps.map((topic) => {
 										return (
 											<Pill
 												key={topic.id}
@@ -201,50 +242,32 @@ export const Home = ({ navigation, user, setTopicDetail }) => {
 										textColor={Colors.primary.lightBleu}
 									/>
 								</View>
-								<View style={styles.section}>
-									<Text style={{ ...sectionTitle, color: '#3A3A3A' }}>
-										Feature AI Taps
-									</Text>
-									<FlatList
-										showsVerticalScrollIndicator={false}
-										showsHorizontalScrollIndicator={false}
-										horizontal
-										data={featureTopics}
-										renderItem={({ item }) => (
-											<TopicRectApp
-												width={TopicWidth - 10}
-												height={200}
-												topic={item}
-												setTopicDetail={setTopicDetail}
-												navigation={navigation}
-											/>
-										)}
-										keyExtractor={(topic) => topic.id}
-									/>
-								</View>
-								<View style={styles.section}>
-									<Text style={{ ...sectionTitle, color: '#3A3A3A' }}>
-										Feature Entrepreneurship Taps
-									</Text>
-									<FlatList
-										showsVerticalScrollIndicator={false}
-										showsHorizontalScrollIndicator={false}
-										horizontal
-										data={featureTopics}
-										renderItem={({ item }) => (
-											<TopicRectApp
-												width={TopicWidth - 10}
-												height={200}
-												topic={item}
-												setTopicDetail={setTopicDetail}
-												navigation={navigation}
-											/>
-										)}
-										keyExtractor={(topic) => topic.id}
-									/>
-								</View>
-							</ImageBackground>
-						</SafeAreaView>
+
+								{taps.map((tab) => (
+									<View style={styles.section}>
+										<Text style={{ ...sectionTitle, color: '#3A3A3A' }}>
+											{tab.title}
+										</Text>
+										<FlatList
+											showsVerticalScrollIndicator={false}
+											showsHorizontalScrollIndicator={false}
+											horizontal
+											data={tab.topics}
+											renderItem={({ item }) => (
+												<TopicRectApp
+													width={TopicWidth - 10}
+													height={200}
+													topic={item}
+													setTopicDetail={setTopicDetail}
+													navigation={navigation}
+												/>
+											)}
+											keyExtractor={(topic) => topic.id}
+										/>
+									</View>
+								))}
+							</SafeAreaView>
+						</ImageBackground>
 					</ImageBackground>
 				)}
 			</ScrollView>

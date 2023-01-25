@@ -1,13 +1,18 @@
-import { ImageBackground, Pressable, Text, View } from 'react-native';
+import {
+	ImageBackground,
+	Pressable,
+	StyleSheet,
+	Text,
+	View,
+} from 'react-native';
 import { Colors } from '../Constants/Colors';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Shadow } from 'react-native-shadow-2';
 import { useEffect, useState } from 'react';
 
-export const TopicRectApp = ({
+export const BigTopicRect = ({
 	navigation,
 	topic,
-	width,
 	height,
 	setTopicDetail,
 	setFrames,
@@ -24,12 +29,12 @@ export const TopicRectApp = ({
 			setFrames(topic);
 		}
 	};
-
 	const [image, setImage] = useState(null);
 
 	useEffect(() => {
 		if (topic.content) {
 			setImage(topic.content);
+			console.log(image);
 		} else {
 			setImage(topic.img);
 		}
@@ -37,18 +42,13 @@ export const TopicRectApp = ({
 
 	return (
 		<Shadow
-			distance={5}
-			offset={[1, 1]}
-			style={{ width: width, borderRadius: 5 }}
-			containerStyle={{ margin: 5, borderRadius: 5 }}
+			style={{ width: '100%' }}
+			containerStyle={{ width: '48%', marginBottom: 20 }}
 		>
-			<Pressable
-				style={{ borderRadius: 5, overflow: 'hidden' }}
-				onPress={() => clickedOnTopic()}
-			>
+			<Pressable style={styles.pressable} onPress={() => clickedOnTopic()}>
 				<ImageBackground
 					style={{
-						width: width,
+						width: '100%',
 						height: height,
 						backgroundColor: Colors.primary.pink,
 						justifyContent: 'flex-end',
@@ -67,7 +67,27 @@ export const TopicRectApp = ({
 						<Text style={{ fontSize: 11 }}>{topic.creator}</Text>
 					</LinearGradient>
 				</ImageBackground>
+				<Text numberOfLines={3} style={styles.descriptionText}>
+					{topic.description}
+				</Text>
 			</Pressable>
 		</Shadow>
 	);
 };
+
+const styles = StyleSheet.create({
+	pressable: {
+		borderRadius: 5,
+		overflow: 'hidden',
+		padding: 5,
+		backgroundColor: Colors.primary.white,
+		width: '100%',
+	},
+
+	descriptionText: {
+		fontSize: 12,
+		opacity: 0.3,
+		color: Colors.primary.black,
+		height: 45,
+	},
+});

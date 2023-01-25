@@ -2,23 +2,43 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Bar } from 'react-native-progress';
 import { Colors } from '../Constants/Colors';
-import { Topics } from '../Constants/Topics';
+import { useTapsState } from '../States/Taps';
+import { useUserState } from '../States/User';
+import { fetchFrames, getWatchedFramesByTopicId } from '../utils/fetch';
 import { findTopicById } from '../utils/FindTopic';
+import { Loading } from './Loading';
 
 export const DashboardProgress = ({ topicId }) => {
+	const taps = useTapsState().get();
+	const user = useUserState().get();
 	const [doneFrames, setDoneFrames] = useState(0);
+	const [allFramesLength, setAllFramesLength] = useState(0);
 	const [topic, setTopic] = useState(null);
 
 	useEffect(() => {
-		const _topic = findTopicById(topicId);
-		setTopic(_topic);
-		let done = 0;
-		_topic.frames.map((frame) => {
-			if (frame.isDone) {
-				done++;
+		const fetchTopic = async () => {
+			const { fetchedTopic, index } = await findTopicById(taps, topicId);
+			let _topic = fetchedTopic;
+			const _watchedFrames = await getWatchedFramesByTopicId(topicId, user.id);
+
+			const allFrames = await fetchFrames(taps[index].id, _topic.id);
+
+			let done = 0;
+
+			if (_watchedFrames) {
+				_watchedFrames.map((frame) => {
+					if (frame.isDone) {
+						done++;
+					}
+				});
 			}
-		});
-		setDoneFrames(done);
+
+			setAllFramesLength(allFrames.length);
+			setDoneFrames(done);
+			setTopic(_topic);
+		};
+
+		fetchTopic();
 	}, []);
 
 	if (topic !== null) {
@@ -27,11 +47,11 @@ export const DashboardProgress = ({ topicId }) => {
 				<View style={styles.textContainer}>
 					<Text style={styles.progressText}>{topic.title}</Text>
 					<Text style={styles.progressText}>
-						{doneFrames}/{topic.frames.length}
+						{doneFrames}/{allFramesLength}
 					</Text>
 				</View>
 				<Bar
-					progress={doneFrames / topic.frames.length}
+					progress={doneFrames / allFramesLength}
 					width={null}
 					borderWidth={0}
 					unfilledColor='#EAEAEA'
@@ -42,7 +62,7 @@ export const DashboardProgress = ({ topicId }) => {
 		);
 	}
 
-	return <Text>Loading</Text>;
+	return <Text>Loading...</Text>;
 };
 
 const styles = StyleSheet.create({

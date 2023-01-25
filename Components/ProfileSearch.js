@@ -10,6 +10,10 @@ import { height, width } from '../utils/UseDimensoins';
 import { ProfielPic } from './ProfilePic';
 import { Shadow } from 'react-native-shadow-2';
 import { Ionicons } from '@expo/vector-icons';
+import { async } from '@firebase/util';
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebaseConfig';
+import { useUserState } from '../States/User';
 
 export const ProfielSearch = ({
 	userImg,
@@ -19,7 +23,18 @@ export const ProfielSearch = ({
 	setSearchValue,
 	paddingHeight,
 	setPaddingHeight,
+	setLoggedIn,
+	navigation,
 }) => {
+	const userState = useUserState();
+
+	const logOut = async () => {
+		signOut(auth).then(() => {
+			setLoggedIn(false);
+			navigation.navigate('start');
+		});
+	};
+
 	return (
 		<KeyboardAvoidingView
 			keyboardVerticalOffset={-width}
@@ -42,7 +57,9 @@ export const ProfielSearch = ({
 							<Ionicons name='search' size={24} color='#A7A7A7' />
 						)}
 					</Pressable>
-					<ProfielPic img={userImg} size={74} />
+					<Pressable onPress={() => logOut()}>
+						<ProfielPic img={userImg} size={74} />
+					</Pressable>
 				</Shadow>
 			</View>
 		</KeyboardAvoidingView>

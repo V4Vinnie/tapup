@@ -1,9 +1,10 @@
+import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Logo } from '../Components/SVG/Logo';
 import { Colors } from '../Constants/Colors';
 import { bodyText, buttonStyle, titleStyle } from '../style';
 
-export const StartScreen = ({ navigation, logginPress }) => {
+export const StartScreen = ({ navigation, logginPress, isLogginIn }) => {
 	return (
 		<View style={styles.container}>
 			<View>
@@ -15,21 +16,20 @@ export const StartScreen = ({ navigation, logginPress }) => {
 			</View>
 			<View>
 				<Pressable
-					onPress={() =>
-						logginPress(
-							'ciel@storything.be',
-							'Ciel',
-							'http://c.files.bbci.co.uk/C870/production/_112921315_gettyimages-876284806.jpg',
-							navigation
-						)
+					onPress={() => logginPress(navigation, true)}
+					style={
+						isLogginIn ? { opacity: 0.3, ...styles.button } : styles.button
 					}
-					style={styles.button}
+					disabled={isLogginIn}
 				>
 					<Text style={styles.text}>Log in</Text>
 				</Pressable>
 				<View style={styles.signUpContainer}>
 					<Text style={styles.subTitle}>New user? </Text>
-					<Pressable onPress={() => navigation.navigate('sign-up')}>
+					<Pressable
+						disabled={isLogginIn}
+						onPress={() => navigation.navigate('sign-up')}
+					>
 						<Text style={styles.text}>Sign up</Text>
 					</Pressable>
 				</View>

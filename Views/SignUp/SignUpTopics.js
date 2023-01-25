@@ -15,15 +15,25 @@ import { bodyText, containerStyle, titleStyle } from '../../style';
 import BG from '../../assets/logo/SignUpBG.png';
 import BGWhite from '../../assets/logo/SignUpBGWhite.png';
 import { height, width } from '../../utils/UseDimensoins';
-import { useState } from 'react';
-import { Topics } from '../../Constants/Topics';
+import { useEffect, useRef, useState } from 'react';
 import { TopicRect } from '../../Components/TopicRect';
 import { Arrow } from '../../Components/SVG/Arrow';
 import { Colors } from '../../Constants/Colors';
+import { tapsState, useTapsState } from '../../States/Taps';
+import { setUser } from '../../utils/setters';
+import { useUserState } from '../../States/User';
+import { updateUser } from '../../utils/fetch';
+import { Pencil } from '../../Components/SVG/Pencil';
 
 export const SignUpTopics = ({ navigation, LoggedIn, user, changeUser }) => {
+	const taps = useTapsState().get();
+	const inputRef = useRef();
+	const userState = useUserState();
+
 	const [editUsername, setEditUsername] = useState(false);
 	const [tempUsername, setTempUsername] = useState(user.name);
+
+	const [allTopics, setAllTopics] = useState([]);
 
 	const [selected, setSelected] = useState([]);
 
@@ -41,29 +51,44 @@ export const SignUpTopics = ({ navigation, LoggedIn, user, changeUser }) => {
 		);
 	};
 
-	const setEditable = () => {
+	const setEditable = (ref) => {
 		if (!editUsername) {
 			setEditUsername(true);
+			console.log('hu');
+			ref.current.focus();
 		}
 	};
 
-	const submitUsername = () => {
+	const submitUsername = async () => {
 		setEditUsername(false);
 		const _user = user;
 		_user.name = tempUsername;
 		_user.selectedTopics = selected;
+
+		await setUser(user, _user.id);
+
 		changeUser(_user);
 	};
 
-	const goNext = () => {
+	const goNext = async () => {
 		const _user = user;
 		_user.name = tempUsername;
 		_user.selectedTopics = selected;
-		changeUser(_user);
+		await updateUser(_user);
+		userState.set(_user);
 		navigation.navigate('onboard');
 	};
 
 	const TopicWidth = width / 3;
+
+	useEffect(() => {
+		let _allTopics = [];
+		for (let i = 0; i < taps.length; i++) {
+			_allTopics = _allTopics.concat(taps[i].topics);
+		}
+
+		setAllTopics(_allTopics);
+	}, []);
 
 	return (
 		<View style={styles.container}>
@@ -86,8 +111,9 @@ export const SignUpTopics = ({ navigation, LoggedIn, user, changeUser }) => {
 						<View style={styles.profileContainer}>
 							<ProfielPic size={140} img={user.profilePic} />
 
-							<View>
+							<View style={{ flexDirection: 'row' }}>
 								<TextInput
+									ref={inputRef}
 									style={styles.userName}
 									value={tempUsername}
 									editable={editUsername}
@@ -96,7 +122,14 @@ export const SignUpTopics = ({ navigation, LoggedIn, user, changeUser }) => {
 									onBlur={() => submitUsername(false)}
 									placeholder={tempUsername}
 								/>
-								<Pressable onPressIn={() => setEditable()}></Pressable>
+								{editUsername ? null : (
+									<Pressable
+										style={{ width: 10, height: 10 }}
+										onPressIn={() => setEditable(inputRef)}
+									>
+										<Pencil width={50} height={60} />
+									</Pressable>
+								)}
 							</View>
 						</View>
 						<View style={{ marginTop: 50 }}>
@@ -107,7 +140,7 @@ export const SignUpTopics = ({ navigation, LoggedIn, user, changeUser }) => {
 								showsVerticalScrollIndicator={false}
 								showsHorizontalScrollIndicator={false}
 								numColumns={3}
-								data={Topics}
+								data={allTopics}
 								contentContainerStyle={{ alignItems: 'center' }}
 								renderItem={({ item }) => (
 									<TopicRect
@@ -122,8 +155,13 @@ export const SignUpTopics = ({ navigation, LoggedIn, user, changeUser }) => {
 							/>
 						</View>
 						<Pressable
+							disabled={selected.length <= 0}
 							onPress={() => goNext('onboard')}
-							style={styles.nextButton}
+							style={
+								selected.length <= 0
+									? { opacity: 0.5, ...styles.nextButton }
+									: styles.nextButton
+							}
 						>
 							<Arrow />
 						</Pressable>

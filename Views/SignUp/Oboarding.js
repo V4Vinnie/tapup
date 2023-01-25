@@ -26,7 +26,6 @@ const Round = ({ selected, ...props }) => (
 export const Onboard = ({ navigation, setLoggedIn }) => {
 	const DonePress = () => {
 		setLoggedIn(true);
-		navigation.navigate('home');
 	};
 
 	return (

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ImageBackground, Pressable, View } from 'react-native';
 import { Colors } from '../Constants/Colors';
 
@@ -21,7 +21,15 @@ export const TopicRect = ({
 		}
 	};
 
-	const image = { uri: topic.img };
+	const [image, setImage] = useState(null);
+
+	useEffect(() => {
+		if (topic.content) {
+			setImage(topic.content);
+		} else {
+			setImage(topic.img);
+		}
+	}, []);
 
 	return (
 		<Pressable
@@ -41,7 +49,7 @@ export const TopicRect = ({
 						  }
 						: { opacity: 1 }
 				}
-				source={image}
+				source={{ uri: image }}
 				resizeMode='cover'
 			></ImageBackground>
 		</Pressable>
