@@ -19,10 +19,10 @@ import { width } from '../../utils/UseDimensoins';
 import BGPink from '../../assets/logo/pinkBG.png';
 import BGDark from '../../assets/logo/darkBG.png';
 import { BigTopicRect } from '../../Components/BigTopicRect';
-import { useTapsState } from '../../States/Taps';
 import { Loading } from '../../Components/Loading';
 import { findTabByTopicId } from '../../utils/findTabByTopicId';
 import { fetchFrames } from '../../utils/fetch';
+import { useTaps } from '../../Providers/TapsProvider';
 
 export const TopicDetail = ({
 	navigation,
@@ -33,20 +33,24 @@ export const TopicDetail = ({
 	const [doneFrames, setDoneFrames] = useState(0);
 	const [allFrames, setAllFrames] = useState(null);
 
-	const taps = useTapsState().get();
+	const { taps } = useTaps();
 
-	useEffect(async () => {
-		setAllFrames(null);
-		const tapId = findTabByTopicId(taps, topic.id);
-		const _frames = await fetchFrames(tapId, topic.id);
-		let done = 0;
-		_frames.map((frame) => {
-			if (frame.isDone) {
-				done++;
-			}
-		});
-		setDoneFrames(done);
-		setAllFrames(_frames);
+	useEffect(() => {
+		const getTabs = async () => {
+			setAllFrames(null);
+			const tapId = findTabByTopicId(taps, topic.id);
+			const _frames = await fetchFrames(tapId, topic.id);
+			let done = 0;
+			_frames.map((frame) => {
+				if (frame.isDone) {
+					done++;
+				}
+			});
+			setDoneFrames(done);
+			setAllFrames(_frames);
+		};
+
+		getTabs();
 	}, [topic]);
 
 	const TopicWidth = width / 3;

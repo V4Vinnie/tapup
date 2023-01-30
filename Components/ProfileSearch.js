@@ -13,7 +13,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { async } from '@firebase/util';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebaseConfig';
-import { useUserState } from '../States/User';
 
 export const ProfielSearch = ({
 	userImg,
@@ -26,13 +25,8 @@ export const ProfielSearch = ({
 	setLoggedIn,
 	navigation,
 }) => {
-	const userState = useUserState();
-
 	const logOut = async () => {
-		signOut(auth).then(() => {
-			setLoggedIn(false);
-			navigation.navigate('start');
-		});
+		navigation.navigate('profile');
 	};
 
 	return (

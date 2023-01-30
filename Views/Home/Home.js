@@ -22,10 +22,8 @@ import BGDark from '../../assets/logo/darkBG.png';
 import { Pill } from '../../Components/Pill';
 import { ProfielSearch } from '../../Components/ProfileSearch';
 import { Back } from '../../Components/Back';
-import { useTapsState } from '../../States/Taps';
-import { useUserState } from '../../States/User';
-import { auth } from '../../firebaseConfig';
-import { fetchUserAllWatched } from '../../utils/fetch';
+import { useUser } from '../../Providers/UserProvider';
+import { useTaps } from '../../Providers/TapsProvider';
 
 export const Home = ({
 	navigation,
@@ -33,11 +31,9 @@ export const Home = ({
 	setTabDetail,
 	setLoggedIn,
 }) => {
-	const taps = useTapsState().get();
+	const { taps } = useTaps();
 
-	const user = useUserState().get();
-
-	
+	const { user } = useUser();
 
 	const [featureTopics, setFeatureTopics] = useState([]);
 	const [filteredTopics, setFilteredTopics] = useState([]);
@@ -96,6 +92,10 @@ export const Home = ({
 	const onBackClick = () => {
 		setPaddingHeight(110);
 		setSearch(false);
+	};
+
+	const goDashboard = () => {
+		navigation.navigate('profile');
 	};
 
 	return (
@@ -189,7 +189,10 @@ export const Home = ({
 									/>
 								</View>
 								<View style={styles.section}>
-									<Pressable style={styles.dashboardPress}>
+									<Pressable
+										style={styles.dashboardPress}
+										onPress={() => goDashboard()}
+									>
 										<Text style={styles.dashboardTitle}>Dashboard</Text>
 										<View style={{ height: 14, marginLeft: 10 }}>
 											<ArrowSmall />
@@ -216,31 +219,18 @@ export const Home = ({
 									</View>
 								</View>
 								<View style={styles.topicsPillSection}>
-									{taps.map((topic) => {
+									{taps.map((tap) => {
 										return (
 											<Pill
-												key={topic.id}
-												label={topic.title}
+												key={tap.id}
+												tap={tap}
 												color={Colors.primary.white}
 												textColor={Colors.primary.lightBleu}
+												setTabDetail={setTabDetail}
+												navigation={navigation}
 											/>
 										);
 									})}
-									<Pill
-										label={'5m'}
-										color={Colors.primary.white}
-										textColor={Colors.primary.lightBleu}
-									/>
-									<Pill
-										label={'1h'}
-										color={Colors.primary.white}
-										textColor={Colors.primary.lightBleu}
-									/>
-									<Pill
-										label={'30s'}
-										color={Colors.primary.white}
-										textColor={Colors.primary.lightBleu}
-									/>
 								</View>
 
 								{taps.map((tab) => (

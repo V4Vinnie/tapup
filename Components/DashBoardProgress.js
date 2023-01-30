@@ -2,15 +2,15 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Bar } from 'react-native-progress';
 import { Colors } from '../Constants/Colors';
-import { useTapsState } from '../States/Taps';
-import { useUserState } from '../States/User';
+import { useTaps } from '../Providers/TapsProvider';
+import { useUser } from '../Providers/UserProvider';
 import { fetchFrames, getWatchedFramesByTopicId } from '../utils/fetch';
 import { findTopicById } from '../utils/FindTopic';
 import { Loading } from './Loading';
 
 export const DashboardProgress = ({ topicId }) => {
-	const taps = useTapsState().get();
-	const user = useUserState().get();
+	const { taps } = useTaps();
+	const { user } = useUser();
 	const [doneFrames, setDoneFrames] = useState(0);
 	const [allFramesLength, setAllFramesLength] = useState(0);
 	const [topic, setTopic] = useState(null);

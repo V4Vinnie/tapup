@@ -19,16 +19,16 @@ import { useEffect, useRef, useState } from 'react';
 import { TopicRect } from '../../Components/TopicRect';
 import { Arrow } from '../../Components/SVG/Arrow';
 import { Colors } from '../../Constants/Colors';
-import { tapsState, useTapsState } from '../../States/Taps';
-import { setUser } from '../../utils/setters';
-import { useUserState } from '../../States/User';
 import { updateUser } from '../../utils/fetch';
 import { Pencil } from '../../Components/SVG/Pencil';
+import { useUser } from '../../Providers/UserProvider';
+import { useTaps } from '../../Providers/TapsProvider';
 
-export const SignUpTopics = ({ navigation, LoggedIn, user, changeUser }) => {
-	const taps = useTapsState().get();
+export const SignUpTopics = ({ navigation, LoggedIn }) => {
+	const { taps } = useTaps();
 	const inputRef = useRef();
-	const userState = useUserState();
+
+	const { user, setUser } = useUser();
 
 	const [editUsername, setEditUsername] = useState(false);
 	const [tempUsername, setTempUsername] = useState(user.name);
@@ -65,9 +65,9 @@ export const SignUpTopics = ({ navigation, LoggedIn, user, changeUser }) => {
 		_user.name = tempUsername;
 		_user.selectedTopics = selected;
 
-		await setUser(user, _user.id);
+		await updateUser(user);
 
-		changeUser(_user);
+		setUser(_user);
 	};
 
 	const goNext = async () => {
@@ -75,7 +75,7 @@ export const SignUpTopics = ({ navigation, LoggedIn, user, changeUser }) => {
 		_user.name = tempUsername;
 		_user.selectedTopics = selected;
 		await updateUser(_user);
-		userState.set(_user);
+		setUser(_user);
 		navigation.navigate('onboard');
 	};
 
