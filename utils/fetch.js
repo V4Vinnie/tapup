@@ -89,5 +89,10 @@ export const getWatchedFramesByTopicId = async (topicId, userId) => {
 
 export const updateUser = async (user) => {
 	const docRef = doc(DB, 'users', user.id);
-	setDoc(docRef, user, { merge: true });
+	await setDoc(docRef, user, { merge: true });
+};
+
+export const updateWatchedFrames = async (userId, frameData) => {
+	const docRef = doc(DB, 'users', userId, 'watchedFrames', frameData.id);
+	await setDoc(docRef, frameData, { merge: true });
 };

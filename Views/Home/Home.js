@@ -24,6 +24,7 @@ import { ProfielSearch } from '../../Components/ProfileSearch';
 import { Back } from '../../Components/Back';
 import { useUser } from '../../Providers/UserProvider';
 import { useTaps } from '../../Providers/TapsProvider';
+import { fetchUserAllWatched } from '../../utils/fetch';
 
 export const Home = ({
 	navigation,
@@ -33,7 +34,7 @@ export const Home = ({
 }) => {
 	const { taps } = useTaps();
 
-	const { user } = useUser();
+	const { user, setUser } = useUser();
 
 	const [featureTopics, setFeatureTopics] = useState([]);
 	const [filteredTopics, setFilteredTopics] = useState([]);
@@ -62,7 +63,19 @@ export const Home = ({
 		}
 
 		searchTopics();
+
+		if (!user.watchedFrames) {
+			getWatchedFrames();
+		}
 	}, []);
+
+	const getWatchedFrames = async () => {
+		const _watchedFrames = await fetchUserAllWatched(user.id);
+		let _user = { ...user };
+		_user.watchedFrames = _watchedFrames;
+		console.log(_user.watchedFrames);
+		setUser(_user);
+	};
 
 	const searchTopics = () => {
 		let _filteredTopics = [];
@@ -199,23 +212,25 @@ export const Home = ({
 										</View>
 									</Pressable>
 									<View style={styles.dashboardStats}>
-										{user.selectedTopics.length > 3
-											? user.selectedTopics.slice(0, 3).map((topicId) => {
-													return (
-														<DashboardProgress
-															key={topicId}
-															topicId={topicId}
-														/>
-													);
-											  })
-											: user.selectedTopics.map((topicId) => {
-													return (
-														<DashboardProgress
-															key={topicId}
-															topicId={topicId}
-														/>
-													);
-											  })}
+										{user.watchedFrames
+											? user.selectedTopics.length > 3
+												? user.selectedTopics.slice(0, 3).map((topicId) => {
+														return (
+															<DashboardProgress
+																key={topicId}
+																topicId={topicId}
+															/>
+														);
+												  })
+												: user.selectedTopics.map((topicId) => {
+														return (
+															<DashboardProgress
+																key={topicId}
+																topicId={topicId}
+															/>
+														);
+												  })
+											: null}
 									</View>
 								</View>
 								<View style={styles.topicsPillSection}>

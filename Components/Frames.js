@@ -1,8 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { SafeAreaView, Text, View } from 'react-native';
 import Carousel, { Pagination } from 'react-native-new-snap-carousel';
 import { Colors } from '../Constants/Colors';
+import { useUser } from '../Providers/UserProvider';
 import { cacheImages, cacheVideo } from '../utils/downloadAssets';
+import { updateWatchedFrames } from '../utils/fetch';
+import { findById, findWatchedFrameIndex } from '../utils/findById';
 import { height, width } from '../utils/UseDimensoins';
 import { Back } from './Back';
 import { Frame } from './Frame';
@@ -11,28 +14,41 @@ import { Loading } from './Loading';
 
 export const Frames = ({ navigation, frame }) => {
 	const [carRef, setCarRef] = useState();
+	const { user, setUser } = useUser();
 
 	const [activeFrame, setActiveFrame] = useState(0);
 
-	const [showTime, setShowTime] = useState(10000);
+	const [showTime, setShowTime] = useState(frame.contents[0].time);
 
 	const [isLoading, setIsLoading] = useState(true);
 
 	const [frameContents, setFrameContents] = useState([]);
 
 	const goNext = () => {
-		carRef.snapToNext();
+		if (activeFrame + 1 === frameContents.length) {
+			console.log('max');
+			return;
+		} else {
+			const newFrame = activeFrame + 1;
+			setActiveFrame(newFrame);
+			setShowTime(frameContents[newFrame].time);
+		}
 	};
 
 	const goPrev = () => {
-		carRef.snapToPrev();
+		if (activeFrame === 0) {
+			return;
+		} else {
+			const newFrame = activeFrame - 1;
+			setActiveFrame(newFrame);
+			setShowTime(frameContents[newFrame].time);
+		}
 	};
 
 	useEffect(() => {
 		const cacheContent = async () => {
 			setIsLoading(true);
 			let _frameContens = frame.contents;
-
 			let imgs = [];
 			let videos = [];
 			_frameContens.map((_content) => {
@@ -55,6 +71,10 @@ export const Frames = ({ navigation, frame }) => {
 				}
 			} catch (e) {
 			} finally {
+				const _watched = findById(user.watchedFrames, frame.id);
+				if (_watched[0]) {
+					setActiveFrame(_watched[0].watchedContentIndex);
+				}
 				setFrameContents(_frameContens);
 				setShowTime(_frameContens[0].time);
 				setIsLoading(false);
@@ -63,10 +83,46 @@ export const Frames = ({ navigation, frame }) => {
 
 		cacheContent();
 	}, [frame]);
+	const countInterval = useRef(null);
+	useEffect(() => {
+		if (!isLoading) {
+			if (countInterval) {
+				clearTimeout(countInterval);
+			}
+			countInterval.current = setTimeout(() => {
+				goNext();
+			}, showTime);
+		}
+	}, [showTime, isLoading]);
 
-	const changeFrame = (i) => {
-		setShowTime(frameContents[i].time);
-		setActiveFrame(i);
+	const saveGoBack = async () => {
+		const checkIsDone = () => {
+			if (activeFrame + 1 === frameContents.length) {
+				return true;
+			} else {
+				return false;
+			}
+		};
+
+		const frameData = {
+			id: frame.id,
+			isDone: checkIsDone(),
+			topicId: frame.topicId,
+			watchedContentIndex: activeFrame,
+		};
+		let _user = user;
+		const watchIndx = await findWatchedFrameIndex(user.watchedFrames, frame.id);
+		let allWatched = user.watchedFrames;
+		if (watchIndx >= 0) {
+			allWatched[watchIndx] = frameData;
+		} else {
+			allWatched = [...user.watchedFrames, frameData];
+		}
+		_user.watchedFrames = allWatched;
+		console.log(_user.watchedFrames);
+		setUser(_user);
+		updateWatchedFrames(user.id, frameData);
+		navigation.goBack();
 	};
 
 	if (!isLoading) {
@@ -83,7 +139,7 @@ export const Frames = ({ navigation, frame }) => {
 						alignItems: 'start',
 					}}
 				>
-					<Back navigate={() => navigation.goBack()} />
+					<Back navigate={() => saveGoBack()} />
 					<Text
 						style={{
 							fontSize: 24,
@@ -95,30 +151,18 @@ export const Frames = ({ navigation, frame }) => {
 						{frame.title}
 					</Text>
 				</SafeAreaView>
-				<Carousel
-					ref={(c) => {
-						setCarRef(c);
-					}}
-					data={frameContents}
-					renderItem={(contenFrame) => (
-						<Frame {...contenFrame} goPrev={goPrev} goNext={goNext} />
-					)}
-					sliderWidth={width}
-					itemWidth={width}
-					itemHeight={height}
-					sliderHeight={height}
-					autoplay={true}
-					autoplayDelay={0}
-					autoplayInterval={showTime}
-					layout={'stack'}
-					layoutCardOffset={-2}
-					inactiveSlideScale={1}
-					inactiveSlideOpacity={1}
-					containerCustomStyle={{ backgroundColor: Colors.primary.bleuBottom }}
-					onSnapToItem={(index) => changeFrame(index)}
+				<Frame
+					item={frameContents[activeFrame]}
+					index={activeFrame}
+					goNext={goNext}
+					goPrev={goPrev}
 				/>
 
-				<FramePogress length={frameContents.length} activeFrame={activeFrame} />
+				<FramePogress
+					length={frameContents.length}
+					time={showTime}
+					activeFrame={activeFrame}
+				/>
 			</>
 		);
 	}

@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import { Bar } from 'react-native-progress';
 import { Back } from '../../Components/Back';
-import { ProfielSearch } from '../../Components/ProfileSearch';
 import { TopicRectApp } from '../../Components/TopicRectApp';
 import { Colors } from '../../Constants/Colors';
 import { sectionTitle } from '../../style';
@@ -21,8 +20,10 @@ import BGDark from '../../assets/logo/darkBG.png';
 import { BigTopicRect } from '../../Components/BigTopicRect';
 import { Loading } from '../../Components/Loading';
 import { findTabByTopicId } from '../../utils/findTabByTopicId';
-import { fetchFrames } from '../../utils/fetch';
+import { fetchFrames, getWatchedFramesByTopicId } from '../../utils/fetch';
 import { useTaps } from '../../Providers/TapsProvider';
+import { useUser } from '../../Providers/UserProvider';
+import { useIsFocused } from '@react-navigation/native';
 
 export const TopicDetail = ({
 	navigation,
@@ -35,23 +36,33 @@ export const TopicDetail = ({
 
 	const { taps } = useTaps();
 
+	const { user } = useUser();
+
+	const isFocused = useIsFocused();
+
 	useEffect(() => {
 		const getTabs = async () => {
 			setAllFrames(null);
 			const tapId = findTabByTopicId(taps, topic.id);
 			const _frames = await fetchFrames(tapId, topic.id);
+			const _watchedFrames = await getWatchedFramesByTopicId(topic.id, user.id);
+
 			let done = 0;
-			_frames.map((frame) => {
-				if (frame.isDone) {
-					done++;
-				}
-			});
+
+			if (_watchedFrames) {
+				_watchedFrames.map((frame) => {
+					if (frame.isDone) {
+						done++;
+					}
+				});
+			}
+
 			setDoneFrames(done);
 			setAllFrames(_frames);
 		};
-
+		
 		getTabs();
-	}, [topic]);
+	}, [isFocused]);
 
 	const TopicWidth = width / 3;
 

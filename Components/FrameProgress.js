@@ -1,10 +1,20 @@
 import { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { Animated, View } from 'react-native';
 import { Colors } from '../Constants/Colors';
 import { height, width } from '../utils/UseDimensoins';
 
-export const FramePogress = ({ length, activeFrame }) => {
+export const FramePogress = ({ length, activeFrame, time }) => {
 	const [bars, setBars] = useState([]);
+
+	const [progress, setProgress] = useState(new Animated.Value(0));
+
+	useEffect(() => {
+		Animated.timing(progress, {
+			toValue: 1,
+			duration: time,
+			useNativeDriver: false,
+		}).start();
+	}, [time]);
 
 	useEffect(() => {
 		let _bars = [];

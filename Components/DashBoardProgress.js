@@ -1,3 +1,4 @@
+import { useIsFocused } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Bar } from 'react-native-progress';
@@ -5,8 +6,8 @@ import { Colors } from '../Constants/Colors';
 import { useTaps } from '../Providers/TapsProvider';
 import { useUser } from '../Providers/UserProvider';
 import { fetchFrames, getWatchedFramesByTopicId } from '../utils/fetch';
+import { findWatchedFrameById } from '../utils/findById';
 import { findTopicById } from '../utils/FindTopic';
-import { Loading } from './Loading';
 
 export const DashboardProgress = ({ topicId }) => {
 	const { taps } = useTaps();
@@ -14,13 +15,15 @@ export const DashboardProgress = ({ topicId }) => {
 	const [doneFrames, setDoneFrames] = useState(0);
 	const [allFramesLength, setAllFramesLength] = useState(0);
 	const [topic, setTopic] = useState(null);
-
+	const isFocused = useIsFocused();
 	useEffect(() => {
 		const fetchTopic = async () => {
 			const { fetchedTopic, index } = await findTopicById(taps, topicId);
 			let _topic = fetchedTopic;
-			const _watchedFrames = await getWatchedFramesByTopicId(topicId, user.id);
-
+			const _watchedFrames = findWatchedFrameById(
+				user.watchedFrames,
+				_topic.id
+			);
 			const allFrames = await fetchFrames(taps[index].id, _topic.id);
 
 			let done = 0;
@@ -32,14 +35,13 @@ export const DashboardProgress = ({ topicId }) => {
 					}
 				});
 			}
-
 			setAllFramesLength(allFrames.length);
 			setDoneFrames(done);
 			setTopic(_topic);
 		};
 
 		fetchTopic();
-	}, []);
+	}, [isFocused]);
 
 	if (topic !== null) {
 		return (
