@@ -23,8 +23,9 @@ import { updateUser } from '../../utils/fetch';
 import { Pencil } from '../../Components/SVG/Pencil';
 import { useUser } from '../../Providers/UserProvider';
 import { useTaps } from '../../Providers/TapsProvider';
+import { Loading } from '../../Components/Loading';
 
-export const SignUpTopics = ({ navigation, LoggedIn }) => {
+export const SignUpTopics = ({ navigation }) => {
 	const { taps } = useTaps();
 	const inputRef = useRef();
 
@@ -54,7 +55,6 @@ export const SignUpTopics = ({ navigation, LoggedIn }) => {
 	const setEditable = (ref) => {
 		if (!editUsername) {
 			setEditUsername(true);
-			console.log('hu');
 			ref.current.focus();
 		}
 	};
@@ -82,6 +82,32 @@ export const SignUpTopics = ({ navigation, LoggedIn }) => {
 	const TopicWidth = width / 3;
 
 	useEffect(() => {
+		//signOut(auth);
+		const test = async () => {
+			setIsLoading(true);
+
+			const Taps = await fetchTaps();
+
+			const _taps = [];
+
+			for (let i = 0; i < Taps.length; i++) {
+				let tap = Taps[i];
+				let _topics = await fetchTopics(tap.id);
+
+				tap.topics = _topics;
+
+				_taps.push(tap);
+			}
+			setTaps(_taps);
+
+			setIsLoading(false);
+		};
+		if (!taps) {
+			test();
+		}
+	}, []);
+
+	useEffect(() => {
 		let _allTopics = [];
 		for (let i = 0; i < taps.length; i++) {
 			_allTopics = _allTopics.concat(taps[i].topics);
@@ -89,6 +115,10 @@ export const SignUpTopics = ({ navigation, LoggedIn }) => {
 
 		setAllTopics(_allTopics);
 	}, []);
+
+	if (!taps) {
+		return <Loading />;
+	}
 
 	return (
 		<View style={styles.container}>

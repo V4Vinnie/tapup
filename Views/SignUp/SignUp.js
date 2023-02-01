@@ -22,7 +22,7 @@ import { auth, DB, storage } from '../../firebaseConfig';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { fetchUser } from '../../utils/fetch';
-import { manipulateAsync, FlipType, SaveFormat } from 'expo-image-manipulator';
+import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 
 export const SignUp = ({ navigation, signUp }) => {
 	const [email, setEmail] = useState('');

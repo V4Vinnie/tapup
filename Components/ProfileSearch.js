@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
 	containerShadow: {
 		position: 'absolute',
 		zIndex: 999,
-		width: '100%',
+		right: 2,
 	},
 
 	inwrap: {

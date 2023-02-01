@@ -52,7 +52,6 @@ export const fetchUser = async (userId) => {
 export const fetchUserWatchedFrame = async (frameID) => {
 	const docRef = doc(DB, 'users', 'watchedFrames', frameID);
 	const _watchedRef = await getDoc(docRef);
-	console.log('Watched', _watchedRef.data());
 	return _watchedRef.data();
 };
 

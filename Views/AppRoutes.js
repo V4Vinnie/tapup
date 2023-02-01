@@ -25,9 +25,7 @@ import { useTaps } from '../Providers/TapsProvider';
 const Stack = createNativeStackNavigator();
 
 export const AppRoutes = () => {
-	const { setUser } = useUser();
-
-	const { taps, setTaps } = useTaps();
+	const { user, setUser } = useUser();
 
 	const [loggedIn, setLoggedIn] = useState(false);
 	const [topicDetail, setTopicDetail] = useState(null);
@@ -43,27 +41,10 @@ export const AppRoutes = () => {
 		//signOut(auth);
 		const test = async () => {
 			setIsLoading(true);
-
-			const Taps = await fetchTaps();
-
-			const _taps = [];
-
-			for (let i = 0; i < Taps.length; i++) {
-				let tap = Taps[i];
-				let _topics = await fetchTopics(tap.id);
-
-				tap.topics = _topics;
-
-				_taps.push(tap);
-			}
-			setTaps(_taps);
-			console.log('taps', taps);
-
 			await onAuthStateChanged(auth, async (user) => {
 				if (user) {
 					const _user = await fetchUser(user.uid);
 					if (_user.selectedTopics) {
-						console.log('RunnedChange');
 						setUser(_user);
 						setLoggedIn(true);
 					}
@@ -72,7 +53,6 @@ export const AppRoutes = () => {
 
 			setIsLoading(false);
 		};
-
 		test();
 	}, []);
 
@@ -82,7 +62,6 @@ export const AppRoutes = () => {
 			.then(async (userCredential) => {
 				// Signed in
 				const _user = await fetchUser(userCredential.user.uid);
-				console.log('USER', _user);
 				setUser(_user);
 				// ...
 			})
@@ -169,7 +148,7 @@ export const AppRoutes = () => {
 							</Stack.Screen>
 
 							<Stack.Screen name='profile'>
-								{(props) => <Profile {...props} />}
+								{(props) => <Profile {...props} setLoggedIn={setLoggedIn} />}
 							</Stack.Screen>
 						</>
 					)}

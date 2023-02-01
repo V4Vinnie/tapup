@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
 	FlatList,
 	ImageBackground,
@@ -24,7 +24,8 @@ import { ProfielSearch } from '../../Components/ProfileSearch';
 import { Back } from '../../Components/Back';
 import { useUser } from '../../Providers/UserProvider';
 import { useTaps } from '../../Providers/TapsProvider';
-import { fetchUserAllWatched } from '../../utils/fetch';
+import { fetchTaps, fetchTopics, fetchUserAllWatched } from '../../utils/fetch';
+import { Loading } from '../../Components/Loading';
 
 export const Home = ({
 	navigation,
@@ -32,7 +33,7 @@ export const Home = ({
 	setTabDetail,
 	setLoggedIn,
 }) => {
-	const { taps } = useTaps();
+	const { taps, setTaps } = useTaps();
 
 	const { user, setUser } = useUser();
 
@@ -47,37 +48,54 @@ export const Home = ({
 	const [searchValue, setSearchValeu] = useState('');
 
 	useEffect(() => {
-		let features = [];
-		taps.map(async (tap) => {
-			if (tap.isFeature) {
-				features.push(tap);
+		//signOut(auth);
+		const test = async () => {
+			const Taps = await fetchTaps();
+
+			const _taps = [];
+
+			for (let i = 0; i < Taps.length; i++) {
+				let tap = Taps[i];
+				let _topics = await fetchTopics(tap.id);
+
+				tap.topics = _topics;
+
+				_taps.push(tap);
 			}
-		});
-		setFeatureTopics(features);
-		if (user.selectedTopics.length === 1) {
-			setBleuHeight(310);
-		} else if (user.selectedTopics.length === 2) {
-			setBleuHeight(350);
-		} else {
-			setBleuHeight(390);
-		}
+			setTaps(_taps);
 
-		searchTopics();
+			let features = [];
+			_taps.map(async (tap) => {
+				if (tap.isFeature) {
+					features.push(tap);
+				}
+			});
+			setFeatureTopics(features);
+			if (user.selectedTopics.length === 1) {
+				setBleuHeight(310);
+			} else if (user.selectedTopics.length === 2) {
+				setBleuHeight(350);
+			} else {
+				setBleuHeight(390);
+			}
 
-		if (!user.watchedFrames) {
-			getWatchedFrames();
-		}
+			searchTopics(_taps);
+
+			if (!user.watchedFrames) {
+				getWatchedFrames();
+			}
+		};
+		test();
 	}, []);
 
 	const getWatchedFrames = async () => {
 		const _watchedFrames = await fetchUserAllWatched(user.id);
 		let _user = { ...user };
 		_user.watchedFrames = _watchedFrames;
-		console.log(_user.watchedFrames);
 		setUser(_user);
 	};
 
-	const searchTopics = () => {
+	const searchTopics = (taps) => {
 		let _filteredTopics = [];
 		taps.map((tap) => {
 			tap.topics.map((topic) => {
@@ -97,7 +115,9 @@ export const Home = ({
 	};
 
 	useEffect(() => {
-		searchTopics();
+		if (taps) {
+			searchTopics(taps);
+		}
 	}, [searchValue]);
 
 	const TopicWidth = width / 3;
@@ -110,7 +130,9 @@ export const Home = ({
 	const goDashboard = () => {
 		navigation.navigate('profile');
 	};
-
+	if (!taps) {
+		return <Loading />;
+	}
 	return (
 		<>
 			<ProfielSearch

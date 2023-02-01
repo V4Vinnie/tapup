@@ -96,7 +96,9 @@ export const TabDetail = ({ navigation, tab, setTopicDetail }) => {
 									/>
 								)}
 							</View>
-							<Text style={styles.moreText}>More</Text>
+							<Text style={styles.moreText}>
+								{moreTopics.length === 0 ? '' : 'More'}
+							</Text>
 							<FlatList
 								showsVerticalScrollIndicator={false}
 								showsHorizontalScrollIndicator={false}

@@ -4,7 +4,7 @@ import Carousel, { Pagination } from 'react-native-new-snap-carousel';
 import { Colors } from '../Constants/Colors';
 import { useUser } from '../Providers/UserProvider';
 import { cacheImages, cacheVideo } from '../utils/downloadAssets';
-import { updateWatchedFrames } from '../utils/fetch';
+import { updateUser, updateWatchedFrames } from '../utils/fetch';
 import { findById, findWatchedFrameIndex } from '../utils/findById';
 import { height, width } from '../utils/UseDimensoins';
 import { Back } from './Back';
@@ -26,7 +26,6 @@ export const Frames = ({ navigation, frame }) => {
 
 	const goNext = () => {
 		if (activeFrame + 1 === frameContents.length) {
-			console.log('max');
 			return;
 		} else {
 			const newFrame = activeFrame + 1;
@@ -83,7 +82,9 @@ export const Frames = ({ navigation, frame }) => {
 
 		cacheContent();
 	}, [frame]);
+
 	const countInterval = useRef(null);
+
 	useEffect(() => {
 		if (!isLoading) {
 			if (countInterval) {
@@ -110,18 +111,33 @@ export const Frames = ({ navigation, frame }) => {
 			topicId: frame.topicId,
 			watchedContentIndex: activeFrame,
 		};
-		let _user = user;
+
 		const watchIndx = await findWatchedFrameIndex(user.watchedFrames, frame.id);
+
 		let allWatched = user.watchedFrames;
+
 		if (watchIndx >= 0) {
 			allWatched[watchIndx] = frameData;
 		} else {
 			allWatched = [...user.watchedFrames, frameData];
 		}
-		_user.watchedFrames = allWatched;
-		console.log(_user.watchedFrames);
-		setUser(_user);
+		let isInSelected = false;
+		for (let i = 0; i < user.selectedTopics.length; i++) {
+			const element = user.selectedTopics[i];
+			if (element === frame.topicId) {
+				isInSelected = true;
+			}
+		}
+		let selected;
+		if (!isInSelected) {
+			selected = [...user.selectedTopics, frame.topicId];
+		}
+
+		setUser({ ...user, selectedTopics: selected, watchedFrames: allWatched });
 		updateWatchedFrames(user.id, frameData);
+		let _user = user;
+		delete _user.watchedFrames;
+		updateUser(_user);
 		navigation.goBack();
 	};
 
