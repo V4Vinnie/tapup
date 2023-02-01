@@ -19,14 +19,16 @@ import { useEffect, useRef, useState } from 'react';
 import { TopicRect } from '../../Components/TopicRect';
 import { Arrow } from '../../Components/SVG/Arrow';
 import { Colors } from '../../Constants/Colors';
-import { updateUser } from '../../utils/fetch';
+import { fetchTaps, fetchTopics, updateUser } from '../../utils/fetch';
 import { Pencil } from '../../Components/SVG/Pencil';
 import { useUser } from '../../Providers/UserProvider';
 import { useTaps } from '../../Providers/TapsProvider';
 import { Loading } from '../../Components/Loading';
+import { updateProfile } from 'firebase/auth';
+import { auth } from '../../firebaseConfig';
 
 export const SignUpTopics = ({ navigation }) => {
-	const { taps } = useTaps();
+	const { taps, setTaps } = useTaps();
 	const inputRef = useRef();
 
 	const { user, setUser } = useUser();
@@ -39,17 +41,11 @@ export const SignUpTopics = ({ navigation }) => {
 	const [selected, setSelected] = useState([]);
 
 	const addSelected = (topic) => {
-		let _selected = selected;
-		_selected.push(topic.id);
-		setSelected(_selected);
+		setSelected([...selected, topic]);
 	};
 
 	const removeSelected = (topic) => {
-		setSelected((current) =>
-			current.filter((currentTopic) => {
-				return currentTopic !== topic.id;
-			})
-		);
+		setSelected(selected.filter((t) => t !== topic));
 	};
 
 	const setEditable = (ref) => {
@@ -87,10 +83,7 @@ export const SignUpTopics = ({ navigation }) => {
 	useEffect(() => {
 		//signOut(auth);
 		const test = async () => {
-			setIsLoading(true);
-
 			const Taps = await fetchTaps();
-
 			const _taps = [];
 
 			for (let i = 0; i < Taps.length; i++) {
@@ -101,23 +94,19 @@ export const SignUpTopics = ({ navigation }) => {
 
 				_taps.push(tap);
 			}
+
+			let _allTopics = [];
+			for (let i = 0; i < _taps.length; i++) {
+				_allTopics = _allTopics.concat(_taps[i].topics);
+			}
+
+			setAllTopics(_allTopics);
 			setTaps(_taps);
-
-			setIsLoading(false);
 		};
-		if (!taps) {
-			test();
-		}
+		test();
 	}, []);
 
-	useEffect(() => {
-		let _allTopics = [];
-		for (let i = 0; i < taps.length; i++) {
-			_allTopics = _allTopics.concat(taps[i].topics);
-		}
-
-		setAllTopics(_allTopics);
-	}, []);
+	useEffect(() => {}, []);
 
 	if (!taps) {
 		return <Loading />;
@@ -188,10 +177,10 @@ export const SignUpTopics = ({ navigation }) => {
 							/>
 						</View>
 						<Pressable
-							disabled={selected.length <= 0}
+							disabled={selected.length === 0}
 							onPress={() => goNext('onboard')}
 							style={
-								selected.length <= 0
+								selected.length === 0
 									? { opacity: 0.5, ...styles.nextButton }
 									: styles.nextButton
 							}

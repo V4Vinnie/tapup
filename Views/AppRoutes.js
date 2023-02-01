@@ -1,5 +1,5 @@
-import { createContext, useContext, useEffect, useState } from 'react';
-import { LogBox, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { StyleSheet } from 'react-native';
 import { Colors } from '../Constants/Colors';
 import { bodyText, buttonStyle } from '../style';
 
@@ -13,25 +13,19 @@ import { Onboard } from './SignUp/Oboarding';
 import { Home } from './Home/Home';
 import { TopicDetail } from './Detail/TopicDetail';
 import { TabDetail } from './Detail/TabDetail';
-import { fetchTaps, fetchTopics, fetchUser } from '../utils/fetch';
-import {
-	onAuthStateChanged,
-	signInWithEmailAndPassword,
-	updateCurrentUser,
-	updateProfile,
-} from 'firebase/auth';
+import { fetchUser } from '../utils/fetch';
+import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebaseConfig';
 import { Frames } from '../Components/Frames';
 import { Loading } from '../Components/Loading';
 import { Profile } from './Profile/Profile';
 import { useUser } from '../Providers/UserProvider';
-import { useTaps } from '../Providers/TapsProvider';
 import { Login } from './Login';
 
 const Stack = createNativeStackNavigator();
 
 export const AppRoutes = () => {
-	const { user, setUser } = useUser();
+	const { setUser } = useUser();
 
 	const [loggedIn, setLoggedIn] = useState(false);
 	const [topicDetail, setTopicDetail] = useState(null);

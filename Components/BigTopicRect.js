@@ -52,6 +52,8 @@ export const BigTopicRect = ({
 						height: height,
 						backgroundColor: Colors.primary.pink,
 						justifyContent: 'flex-end',
+						borderRadius: 2,
+						overflow: 'hidden',
 					}}
 					source={{ uri: image }}
 					resizeMode='cover'
@@ -89,5 +91,6 @@ const styles = StyleSheet.create({
 		opacity: 0.3,
 		color: Colors.primary.black,
 		height: 45,
+		marginTop: 5,
 	},
 });

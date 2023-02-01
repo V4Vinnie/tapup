@@ -14,10 +14,10 @@ export const TopicRect = ({
 	const clickedOnTopic = () => {
 		if (isSelected) {
 			setIsSeleted(false);
-			removeSelected(topic);
+			removeSelected(topic.id);
 		} else {
 			setIsSeleted(true);
-			addSelected(topic);
+			addSelected(topic.id);
 		}
 	};
 
