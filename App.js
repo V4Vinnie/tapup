@@ -2,6 +2,7 @@ import { LogBox } from 'react-native';
 import { TapsProvider } from './Providers/TapsProvider';
 import { UserProvider } from './Providers/UserProvider';
 import { AppRoutes } from './Views/AppRoutes';
+import 'expo-dev-client';
 
 LogBox.ignoreAllLogs();
 

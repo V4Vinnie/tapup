@@ -179,6 +179,7 @@ export const Home = ({
 										topic={item}
 										setTopicDetail={setTopicDetail}
 										navigation={navigation}
+										key={item.id}
 									/>
 								)}
 								keyExtractor={(topic) => topic.id}
@@ -218,6 +219,7 @@ export const Home = ({
 												topic={item}
 												setTabDetail={setTabDetail}
 												navigation={navigation}
+												key={item.id}
 											/>
 										)}
 										keyExtractor={(topic) => topic.id}
@@ -273,7 +275,7 @@ export const Home = ({
 								{taps.map((tab) => (
 									<View style={styles.section}>
 										<Text style={{ ...sectionTitle, color: '#3A3A3A' }}>
-											{tab.title}
+											{tab.title} Taps
 										</Text>
 										<FlatList
 											showsVerticalScrollIndicator={false}
@@ -287,6 +289,7 @@ export const Home = ({
 													topic={item}
 													setTopicDetail={setTopicDetail}
 													navigation={navigation}
+													key={item.id}
 												/>
 											)}
 											keyExtractor={(topic) => topic.id}

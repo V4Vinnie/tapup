@@ -19,7 +19,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { shortUid, userUid } from '../../utils/uid';
 import { ref, uploadBytes } from 'firebase/storage';
 import { auth, DB, storage } from '../../firebaseConfig';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { fetchUser } from '../../utils/fetch';
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
@@ -190,7 +190,7 @@ export const SignUp = ({ navigation, signUp }) => {
 								<Text style={styles.subTitle}>Already have an account? </Text>
 								<Pressable
 									disabled={isSending}
-									onPress={() => navigation.navigate('start')}
+									onPress={() => navigation.navigate('login')}
 								>
 									<Text style={bodyText}>Log in</Text>
 								</Pressable>

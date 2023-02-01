@@ -16,7 +16,7 @@ export const StartScreen = ({ navigation, logginPress, isLogginIn }) => {
 			</View>
 			<View>
 				<Pressable
-					onPress={() => logginPress(navigation, true)}
+					onPress={() => navigation.navigate('login')}
 					style={
 						isLogginIn ? { opacity: 0.3, ...styles.button } : styles.button
 					}

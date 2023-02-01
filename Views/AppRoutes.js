@@ -14,13 +14,19 @@ import { Home } from './Home/Home';
 import { TopicDetail } from './Detail/TopicDetail';
 import { TabDetail } from './Detail/TabDetail';
 import { fetchTaps, fetchTopics, fetchUser } from '../utils/fetch';
-import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
+import {
+	onAuthStateChanged,
+	signInWithEmailAndPassword,
+	updateCurrentUser,
+	updateProfile,
+} from 'firebase/auth';
 import { auth } from '../firebaseConfig';
 import { Frames } from '../Components/Frames';
 import { Loading } from '../Components/Loading';
 import { Profile } from './Profile/Profile';
 import { useUser } from '../Providers/UserProvider';
 import { useTaps } from '../Providers/TapsProvider';
+import { Login } from './Login';
 
 const Stack = createNativeStackNavigator();
 
@@ -56,26 +62,6 @@ export const AppRoutes = () => {
 		test();
 	}, []);
 
-	const LogIn = async (navigator, directLogin) => {
-		setIsLogginIn(true);
-		await signInWithEmailAndPassword(auth, 'ciel@test.be', 'test123')
-			.then(async (userCredential) => {
-				// Signed in
-				const _user = await fetchUser(userCredential.user.uid);
-				setUser(_user);
-				// ...
-			})
-			.catch((error) => {
-				console.log(error);
-			});
-
-		if (directLogin) {
-			setLoggedIn(true);
-			navigator.navigate('home');
-		}
-		setIsLogginIn(false);
-	};
-
 	if (!isloading) {
 		return (
 			<NavigationContainer>
@@ -87,13 +73,7 @@ export const AppRoutes = () => {
 					{!loggedIn ? (
 						<>
 							<Stack.Screen name='start'>
-								{(props) => (
-									<StartScreen
-										isLogginIn={isLogginIn}
-										{...props}
-										logginPress={LogIn}
-									/>
-								)}
+								{(props) => <StartScreen isLogginIn={isLogginIn} {...props} />}
 							</Stack.Screen>
 
 							<Stack.Screen name='sign-up'>
@@ -107,6 +87,10 @@ export const AppRoutes = () => {
 
 							<Stack.Screen name='onboard'>
 								{(props) => <Onboard setLoggedIn={setLoggedIn} {...props} />}
+							</Stack.Screen>
+
+							<Stack.Screen name='login'>
+								{(props) => <Login {...props} />}
 							</Stack.Screen>
 						</>
 					) : (

@@ -75,6 +75,9 @@ export const SignUpTopics = ({ navigation }) => {
 		_user.name = tempUsername;
 		_user.selectedTopics = selected;
 		await updateUser(_user);
+		updateProfile(auth.currentUser, {
+			displayName: _user.name,
+		});
 		setUser(_user);
 		navigation.navigate('onboard');
 	};

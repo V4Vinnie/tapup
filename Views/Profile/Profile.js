@@ -133,7 +133,8 @@ const styles = StyleSheet.create({
 
 	profilePictureWrapper: {
 		marginTop: 30,
-		alignItems: 'center',
+		alignSelf: 'center',
+		borderRadius: 60,
 	},
 
 	profileSection: {
