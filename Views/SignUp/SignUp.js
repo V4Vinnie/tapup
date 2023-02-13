@@ -42,8 +42,7 @@ export const SignUp = ({ navigation, signUp }) => {
 
 		let error = null;
 
-		let onlineImg =
-			'https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/UI%2FprofilePic.png?alt=media';
+		let onlineImg = 'UI%2FprofilePic.png';
 
 		await createUserWithEmailAndPassword(auth, email, password)
 			.then(async (userCredential) => {
@@ -63,14 +62,9 @@ export const SignUp = ({ navigation, signUp }) => {
 			const response = await fetch(userImg);
 			const blobFile = await response.blob();
 
-			const fileNameSplit = userImg.split('/');
-
-			const storageRef = ref(
-				storage,
-				`users/${id}-${fileNameSplit[fileNameSplit.length - 1]}`
-			);
+			const storageRef = ref(storage, `users/${id}/profilePicture.png`);
 			await uploadBytes(storageRef, blobFile).then((snapshot) => {
-				onlineImg = `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/users%2F${snapshot.metadata.name}?alt=media`;
+				onlineImg = `users%2F${id}%2FprofilePicture.png`;
 				setErrorMessage(null);
 			});
 		}

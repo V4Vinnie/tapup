@@ -48,10 +48,10 @@ export const SignUpTopics = ({ navigation }) => {
 		setSelected(selected.filter((t) => t !== topic));
 	};
 
-	const setEditable = (ref) => {
+	const setEditable = () => {
 		if (!editUsername) {
 			setEditUsername(true);
-			ref.current.focus();
+			inputRef.current.focus();
 		}
 	};
 
@@ -143,15 +143,20 @@ export const SignUpTopics = ({ navigation }) => {
 									onPressIn={() => setEditable()}
 									onBlur={() => submitUsername(false)}
 									placeholder={tempUsername}
+									selectTextOnFocus
 								/>
-								{editUsername ? null : (
+								{/* {editUsername ? null : (
 									<Pressable
 										style={{ width: 10, height: 10 }}
-										onPressIn={() => setEditable(inputRef)}
+										onPressIn={() => setEditable()}
 									>
-										<Pencil width={50} height={60} />
+										<Pencil
+											color={Colors.primary.white}
+											width={50}
+											height={60}
+										/>
 									</Pressable>
-								)}
+								)} */}
 							</View>
 						</View>
 						<View style={{ marginTop: 50 }}>

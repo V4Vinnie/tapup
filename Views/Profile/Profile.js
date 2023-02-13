@@ -55,15 +55,13 @@ export const Profile = ({ navigation, setLoggedIn }) => {
 			const response = await fetch(manipResult.uri);
 			const blobFile = await response.blob();
 
-			const storageRef = ref(
-				storage,
-				`users/${user.id}/${user.name}-profilePicture.png`
-			);
+			const storageRef = ref(storage, `users/${user.id}/profilePicture.png`);
 			await uploadBytes(storageRef, blobFile).then((snapshot) => {
-				const onlineImg = `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/users%2F${user.id}%2F${snapshot.metadata.name}?alt=media`;
-				let _user = user;
-				_user.profilePic = manipResult.uri;
-				setUser({ ...user, profilePic: manipResult.uri });
+				const onlineImg = `users%2F${user.id}%2FprofilePicture.png`;
+				setUser({
+					...user,
+					profilePic: { isLocal: true, url: manipResult.uri },
+				});
 				updateUser({ ...user, profilePic: onlineImg });
 			});
 		}

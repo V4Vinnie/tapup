@@ -18,13 +18,15 @@ export const ProfielPic = ({ size, img, isEditable }) => {
 			) : null}
 			<Image
 				style={styles.ProfielPicImg}
-				source={{
-					uri: `${
-						img
-							? img
-							: 'https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/UI%2FprofilePic.png?alt=media'
-					}`,
-				}}
+				source={
+					img.isLocal
+						? {
+								uri: img.url,
+						  }
+						: {
+								uri: `${`https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/${img}?alt=media`}`,
+						  }
+				}
 			/>
 		</View>
 	);
