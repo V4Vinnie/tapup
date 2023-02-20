@@ -9,10 +9,9 @@ import { Colors } from '../Constants/Colors';
 import { height, width } from '../utils/UseDimensoins';
 import { ProfielPic } from './ProfilePic';
 import { Shadow } from 'react-native-shadow-2';
-import { Ionicons } from '@expo/vector-icons';
-import { async } from '@firebase/util';
-import { signOut } from 'firebase/auth';
-import { auth } from '../firebaseConfig';
+import { Ionicons, Entypo } from '@expo/vector-icons';
+import { ROLES } from '../Constants/Roles';
+import { useUser } from '../Providers/UserProvider';
 
 export const ProfielSearch = ({
 	userImg,
@@ -25,8 +24,18 @@ export const ProfielSearch = ({
 	setLoggedIn,
 	navigation,
 }) => {
-	const logOut = async () => {
+	const { user } = useUser();
+
+	const toProfile = async () => {
 		navigation.navigate('profile');
+	};
+
+	const clickNav = () => {
+		if (user.role === ROLES.CREATOR) {
+			navigation.navigate('editorOverview');
+		} else {
+			setSearch(true);
+		}
 	};
 
 	return (
@@ -37,7 +46,7 @@ export const ProfielSearch = ({
 		>
 			<View style={styles.inwrap}>
 				<Shadow style={styles.container}>
-					<Pressable onPress={() => setSearch(true)} style={{ padding: 15 }}>
+					<Pressable onPress={() => clickNav()} style={{ padding: 15 }}>
 						{showInput ? (
 							<TextInput
 								value={searchValue}
@@ -47,11 +56,13 @@ export const ProfielSearch = ({
 								onFocus={() => setPaddingHeight((width / 8) * 9)}
 								onBlur={() => setPaddingHeight(110)}
 							/>
+						) : user.role === ROLES.CREATOR ? (
+							<Entypo name='plus' size={24} color='#A7A7A7' />
 						) : (
 							<Ionicons name='search' size={24} color='#A7A7A7' />
 						)}
 					</Pressable>
-					<Pressable onPress={() => logOut()}>
+					<Pressable onPress={() => toProfile()}>
 						<ProfielPic img={userImg} size={74} />
 					</Pressable>
 				</Shadow>

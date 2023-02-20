@@ -1,5 +1,6 @@
 import {
 	collection,
+	deleteDoc,
 	doc,
 	getDoc,
 	getDocs,
@@ -94,4 +95,39 @@ export const updateUser = async (user) => {
 export const updateWatchedFrames = async (userId, frameData) => {
 	const docRef = doc(DB, 'users', userId, 'watchedFrames', frameData.id);
 	await setDoc(docRef, frameData, { merge: true });
+};
+
+export const fetchFramesForCreator = async (tapId, topicId, creatorId) => {
+	const framesCollec = collection(DB, `taps/${tapId}/topics/${topicId}/frames`);
+	const framesQuery = query(framesCollec, where('creator', '==', creatorId));
+	const frames = await getDocs(framesQuery);
+
+	if (frames.empty) {
+		return null;
+	}
+	let _frames = [];
+
+	frames.forEach((created) => {
+		_frames.push(created.data());
+	});
+
+	return _frames;
+};
+
+export const updateFrame = async (frameData) => {
+	const docRef = doc(
+		DB,
+		'taps',
+		frameData.tapId,
+		'topics',
+		frameData.topicId,
+		'frames',
+		frameData.id
+	);
+	await setDoc(docRef, frameData, { merge: true });
+};
+
+export const deleteFrame = async (tapId, topicId, frameId) => {
+	const docRef = doc(DB, 'taps', tapId, 'topics', topicId, 'frames', frameId);
+	await deleteDoc(docRef);
 };

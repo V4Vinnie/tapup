@@ -23,6 +23,7 @@ import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { fetchUser } from '../../utils/fetch';
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
+import { ROLES } from '../../Constants/Roles';
 
 export const SignUp = ({ navigation, signUp }) => {
 	const [email, setEmail] = useState('');
@@ -49,6 +50,7 @@ export const SignUp = ({ navigation, signUp }) => {
 				id = userCredential.user.uid;
 				await setDoc(doc(DB, 'users', id), {
 					id: id,
+					role: ROLES.USER,
 				});
 				_user = await fetchUser(id);
 				setErrorMessage(null);
@@ -74,6 +76,7 @@ export const SignUp = ({ navigation, signUp }) => {
 				name: `User${shortUid()}`,
 				email: email,
 				profilePic: onlineImg,
+				role: ROLES.USER,
 				..._user,
 			});
 

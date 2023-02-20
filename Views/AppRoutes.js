@@ -21,11 +21,14 @@ import { Loading } from '../Components/Loading';
 import { Profile } from './Profile/Profile';
 import { useUser } from '../Providers/UserProvider';
 import { Login } from './Login';
+import { EditorOverview } from './Editor/EditorOverview';
+import { ROLES } from '../Constants/Roles';
+import { EditFrame } from './Editor/EditFrame';
 
 const Stack = createNativeStackNavigator();
 
 export const AppRoutes = () => {
-	const { setUser } = useUser();
+	const { user, setUser } = useUser();
 
 	const [loggedIn, setLoggedIn] = useState(false);
 	const [topicDetail, setTopicDetail] = useState(null);
@@ -36,6 +39,8 @@ export const AppRoutes = () => {
 	const [isLogginIn, setIsLogginIn] = useState(false);
 
 	const [isloading, setIsLoading] = useState(true);
+
+	const [editorFrame, setEditorFrame] = useState(null);
 
 	useEffect(() => {
 		//signOut(auth);
@@ -128,6 +133,25 @@ export const AppRoutes = () => {
 							<Stack.Screen name='profile'>
 								{(props) => <Profile {...props} setLoggedIn={setLoggedIn} />}
 							</Stack.Screen>
+
+							{user.role === ROLES.CREATOR && (
+								<>
+									<Stack.Screen name='editorOverview'>
+										{(props) => (
+											<EditorOverview
+												{...props}
+												setEditorFrame={setEditorFrame}
+											/>
+										)}
+									</Stack.Screen>
+
+									<Stack.Screen name='editFrame'>
+										{(props) => (
+											<EditFrame {...props} editorFrame={editorFrame} />
+										)}
+									</Stack.Screen>
+								</>
+							)}
 						</>
 					)}
 				</Stack.Navigator>

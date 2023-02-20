@@ -128,7 +128,7 @@ export const Frames = ({ navigation, frame }) => {
 				isInSelected = true;
 			}
 		}
-		let selected;
+		let selected = [...user.selectedTopics];
 		if (!isInSelected) {
 			selected = [...user.selectedTopics, frame.topicId];
 		}

@@ -40,11 +40,11 @@ export const TopicDetail = ({
 
 	const isFocused = useIsFocused();
 
-	useEffect(() => {
+	useEffect(() => {	
 		const getTabs = async () => {
 			setAllFrames(null);
-			const tapId = findTabByTopicId(taps, topic.id);
-			const _frames = await fetchFrames(tapId, topic.id);
+			const tap = findTabByTopicId(taps, topic.id);
+			const _frames = await fetchFrames(tap.id, topic.id);
 			const _watchedFrames = await getWatchedFramesByTopicId(topic.id, user.id);
 
 			let done = 0;
@@ -60,7 +60,7 @@ export const TopicDetail = ({
 			setDoneFrames(done);
 			setAllFrames(_frames);
 		};
-		
+
 		getTabs();
 	}, [isFocused]);
 

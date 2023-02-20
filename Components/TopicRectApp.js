@@ -3,6 +3,7 @@ import { Colors } from '../Constants/Colors';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Shadow } from 'react-native-shadow-2';
 import { useEffect, useState } from 'react';
+import { useUser } from '../Providers/UserProvider';
 
 export const TopicRectApp = ({
 	navigation,
@@ -12,7 +13,9 @@ export const TopicRectApp = ({
 	setTopicDetail,
 	setFrames,
 	setTabDetail,
+	setEditorFrame,
 }) => {
+	const { user } = useUser();
 	const clickedOnTopic = () => {
 		if (setTabDetail) {
 			setTabDetail(topic);
@@ -22,19 +25,11 @@ export const TopicRectApp = ({
 			navigation.navigate('detail');
 		} else if (setFrames) {
 			setFrames(topic);
+		} else if (setEditorFrame) {
+			setEditorFrame(topic);
+			navigation.navigate('editFrame');
 		}
 	};
-
-	const [image, setImage] = useState(null);
-
-	useEffect(() => {
-		if (topic.content) {
-			setImage(topic.content);
-		} else {
-			setImage(topic.img);
-		}
-	}, []);
-
 	return (
 		<Shadow
 			distance={5}
@@ -53,7 +48,7 @@ export const TopicRectApp = ({
 						backgroundColor: Colors.primary.pink,
 						justifyContent: 'flex-end',
 					}}
-					source={{ uri: image }}
+					source={{ uri: topic.img }}
 					resizeMode='cover'
 				>
 					<LinearGradient
@@ -64,7 +59,9 @@ export const TopicRectApp = ({
 						<Text style={{ fontSize: 13, fontWeight: '600' }}>
 							{topic.title}
 						</Text>
-						<Text style={{ fontSize: 11 }}>{topic.creator}</Text>
+						<Text style={{ fontSize: 11 }}>
+							{topic.creator === user.id ? user.name : 'creator'}
+						</Text>
 					</LinearGradient>
 				</ImageBackground>
 			</Pressable>

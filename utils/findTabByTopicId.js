@@ -7,5 +7,5 @@ export const findTabByTopicId = (taps, topicId) => {
 			}
 		});
 	});
-	return taps[tapIndex].id;
+	return taps[tapIndex];
 };
