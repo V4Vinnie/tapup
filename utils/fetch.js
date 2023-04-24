@@ -115,6 +115,20 @@ export const fetchFramesForCreator = async (tapId, topicId, creatorId) => {
 };
 
 export const updateFrame = async (frameData) => {
+	const _data = frameData;
+	const docRef = doc(
+		DB,
+		'taps',
+		_data.tapId,
+		'topics',
+		_data.topicId,
+		'frames',
+		_data.id
+	);
+	await setDoc(docRef, _data, { merge: true });
+};
+
+export const updateFrameContent = async (frameData) => {
 	const docRef = doc(
 		DB,
 		'taps',

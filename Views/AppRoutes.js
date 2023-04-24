@@ -24,6 +24,7 @@ import { Login } from './Login';
 import { EditorOverview } from './Editor/EditorOverview';
 import { ROLES } from '../Constants/Roles';
 import { EditFrame } from './Editor/EditFrame';
+import { EditorFrameContent } from './Editor/EditFrameContent';
 
 const Stack = createNativeStackNavigator();
 
@@ -148,6 +149,16 @@ export const AppRoutes = () => {
 									<Stack.Screen name='editFrame'>
 										{(props) => (
 											<EditFrame {...props} editorFrame={editorFrame} />
+										)}
+									</Stack.Screen>
+
+									<Stack.Screen name='editContent'>
+										{(props) => (
+											<EditorFrameContent
+												{...props}
+												editorFrame={editorFrame}
+												setEditorFrame={setEditorFrame}
+											/>
 										)}
 									</Stack.Screen>
 								</>

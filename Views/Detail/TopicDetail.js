@@ -40,7 +40,7 @@ export const TopicDetail = ({
 
 	const isFocused = useIsFocused();
 
-	useEffect(() => {	
+	useEffect(() => {
 		const getTabs = async () => {
 			setAllFrames(null);
 			const tap = findTabByTopicId(taps, topic.id);
@@ -52,7 +52,9 @@ export const TopicDetail = ({
 			if (_watchedFrames) {
 				_watchedFrames.map((frame) => {
 					if (frame.isDone) {
-						done++;
+						if (done !== _frames.length) {
+							done++;
+						}
 					}
 				});
 			}

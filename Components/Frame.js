@@ -23,6 +23,18 @@ export const Frame = ({ item, index, goNext, goPrev }) => {
 				source={{ uri: item.content }}
 			>
 				<SafeAreaView style={{ flexDirection: 'row' }}>
+					{item.textContent &&
+						item.textContent.map(({ text, bounds, y, x }) => (
+							<Text
+								style={{
+									...styles.textContentItem,
+									top: y + 48,
+									left: x,
+								}}
+							>
+								{text}
+							</Text>
+						))}
 					<Pressable
 						onPress={() => goPrev()}
 						style={{ width: '50%', height: height }}
@@ -46,6 +58,18 @@ export const Frame = ({ item, index, goNext, goPrev }) => {
 				shouldPlay={true}
 			/>
 			<SafeAreaView style={{ flexDirection: 'row' }}>
+				{item.textContent &&
+					item.textContent.map(({ text, bounds, x, y }) => (
+						<Text
+							style={{
+								...styles.textContentItem,
+								top: y + 48,
+								left: x,
+							}}
+						>
+							{text}
+						</Text>
+					))}
 				<Pressable
 					onPress={() => goPrev()}
 					style={{ width: '50%', height: height }}
@@ -70,5 +94,12 @@ const styles = StyleSheet.create({
 		bottom: 0,
 		right: 0,
 		backgroundColor: Colors.primary.bleuBottom,
+	},
+
+	textContentItem: {
+		position: 'absolute',
+		fontSize: 20,
+		fontWeight: 'bold',
+		textAlign: 'center',
 	},
 });

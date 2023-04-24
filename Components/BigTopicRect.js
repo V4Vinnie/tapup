@@ -9,6 +9,7 @@ import { Colors } from '../Constants/Colors';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Shadow } from 'react-native-shadow-2';
 import { useEffect, useState } from 'react';
+import { useUser } from '../Providers/UserProvider';
 
 export const BigTopicRect = ({
 	navigation,
@@ -18,6 +19,7 @@ export const BigTopicRect = ({
 	setFrames,
 	setTabDetail,
 }) => {
+	const { user } = useUser();
 	const clickedOnTopic = () => {
 		if (setTabDetail) {
 			setTabDetail(topic);
@@ -66,7 +68,9 @@ export const BigTopicRect = ({
 						<Text style={{ fontSize: 13, fontWeight: '600' }}>
 							{topic.title}
 						</Text>
-						<Text style={{ fontSize: 11 }}>{topic.creator}</Text>
+						<Text style={{ fontSize: 11 }}>
+							{topic.creator === user.id ? user.name : 'creator'}
+						</Text>
 					</LinearGradient>
 				</ImageBackground>
 				<Text numberOfLines={3} style={styles.descriptionText}>

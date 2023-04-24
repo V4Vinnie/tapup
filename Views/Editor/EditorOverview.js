@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
 	FlatList,
 	ImageBackground,
@@ -20,6 +20,7 @@ import { useUser } from '../../Providers/UserProvider';
 import { titleStyle } from '../../style';
 import { fetchFramesForCreator } from '../../utils/fetch';
 import { width } from '../../utils/UseDimensoins';
+import uuid from 'uuid';
 
 export const EditorOverview = ({ navigation, setEditorFrame }) => {
 	const { user, setUser } = useUser();
@@ -51,7 +52,17 @@ export const EditorOverview = ({ navigation, setEditorFrame }) => {
 	}, []);
 
 	const clickAddFrame = () => {
-		setEditorFrame({});
+		setEditorFrame({
+			added: Date.now(),
+			contents: [],
+			creator: user.id,
+			description: '',
+			id: uuid.v4(),
+			img: '',
+			tapId: '',
+			title: '',
+			topicId: '',
+		});
 		navigation.navigate('editFrame');
 	};
 

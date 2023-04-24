@@ -3,7 +3,11 @@ import { SafeAreaView, Text, View } from 'react-native';
 import Carousel, { Pagination } from 'react-native-new-snap-carousel';
 import { Colors } from '../Constants/Colors';
 import { useUser } from '../Providers/UserProvider';
-import { cacheImages, cacheVideo } from '../utils/downloadAssets';
+import {
+	cacheContents,
+	cacheImages,
+	cacheVideo,
+} from '../utils/downloadAssets';
 import { updateUser, updateWatchedFrames } from '../utils/fetch';
 import { findById, findWatchedFrameIndex } from '../utils/findById';
 import { height, width } from '../utils/UseDimensoins';
@@ -48,22 +52,21 @@ export const Frames = ({ navigation, frame }) => {
 		const cacheContent = async () => {
 			setIsLoading(true);
 			let _frameContens = frame.contents;
-			let imgs = [];
-			let videos = [];
-			_frameContens.map((_content) => {
+			let contents = [];
+
+			for (let index = 0; index < _frameContens.length; index++) {
+				const _content = _frameContens[index];
+
 				const contentURL = `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/frames%2F${frame.id}%2F${_content.content}?alt=media`;
 
 				if (_content.type === 'image') {
-					imgs.push(contentURL);
+					contents.push(contentURL);
 				} else if (_content.type === 'video') {
-					videos.push(contentURL);
+					contents.push(contentURL);
 				}
-			});
+			}
 			try {
-				const downloaded = await Promise.all([
-					...cacheVideo(videos),
-					...cacheImages(imgs),
-				]);
+				const downloaded = await Promise.all([...cacheContents(contents)]);
 
 				for (let index = 0; index < _frameContens.length; index++) {
 					_frameContens[index].content = downloaded[index].localUri;
@@ -136,7 +139,6 @@ export const Frames = ({ navigation, frame }) => {
 		setUser({ ...user, selectedTopics: selected, watchedFrames: allWatched });
 		updateWatchedFrames(user.id, frameData);
 		let _user = user;
-		delete _user.watchedFrames;
 		updateUser(_user);
 		navigation.goBack();
 	};
