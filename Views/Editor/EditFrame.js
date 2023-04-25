@@ -71,31 +71,34 @@ export const EditFrame = ({ editorFrame, navigation, setEditorFrame }) => {
 
 			for (let index = 0; index < _frameContens.length; index++) {
 				const _content = _frameContens[index];
+				if (!_content.contentUrl) {
+					const contentURL = `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/frames%2F${editorFrame.id}%2F${_content.content}?alt=media`;
 
-				const contentURL = `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/frames%2F${editorFrame.id}%2F${_content.content}?alt=media`;
-
-				if (_content.type === 'image') {
-					contents.push(contentURL);
-				} else if (_content.type === 'video') {
-					contents.push(contentURL);
+					if (_content.type === 'image') {
+						contents.push(contentURL);
+					} else if (_content.type === 'video') {
+						contents.push(contentURL);
+					}
 				}
 			}
 
 			try {
-				const downloaded = await Promise.all([...cacheContents(contents)]);
+				if (contents.length !== 0) {
+					const downloaded = await Promise.all([...cacheContents(contents)]);
 
-				for (let index = 0; index < _frameContens.length; index++) {
-					_frameContens[index].contentUrl = downloaded[index].localUri;
-					const thumbURL = `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/frames%2F${editorFrame.id}%2F${_frameContens[index].thumbnail}.png?alt=media`;
-					_frameContens[index].thumbnailUrl = thumbURL;
-					// try {
-					// 	const downloadThumb = await Promise.all([
-					// 		...cacheImages([thumbURL]),
-					// 	]);
+					for (let index = 0; index < _frameContens.length; index++) {
+						_frameContens[index].contentUrl = downloaded[index].localUri;
+						const thumbURL = `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/frames%2F${editorFrame.id}%2F${_frameContens[index].thumbnail}.png?alt=media`;
+						_frameContens[index].thumbnailUrl = thumbURL;
+						// try {
+						// 	const downloadThumb = await Promise.all([
+						// 		...cacheImages([thumbURL]),
+						// 	]);
 
-					// } catch (error) {
-					// 	console.log('error', error);
-					// }
+						// } catch (error) {
+						// 	console.log('error', error);
+						// }
+					}
 				}
 			} catch (e) {
 			} finally {

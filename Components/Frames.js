@@ -51,25 +51,29 @@ export const Frames = ({ navigation, frame }) => {
 	useEffect(() => {
 		const cacheContent = async () => {
 			setIsLoading(true);
+			setActiveFrame(0);
 			let _frameContens = frame.contents;
 			let contents = [];
 
 			for (let index = 0; index < _frameContens.length; index++) {
 				const _content = _frameContens[index];
+				if (!_content.contentUrl) {
+					const contentURL = `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/frames%2F${frame.id}%2F${_content.content}?alt=media`;
 
-				const contentURL = `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/frames%2F${frame.id}%2F${_content.content}?alt=media`;
-
-				if (_content.type === 'image') {
-					contents.push(contentURL);
-				} else if (_content.type === 'video') {
-					contents.push(contentURL);
+					if (_content.type === 'image') {
+						contents.push(contentURL);
+					} else if (_content.type === 'video') {
+						contents.push(contentURL);
+					}
 				}
 			}
 			try {
-				const downloaded = await Promise.all([...cacheContents(contents)]);
+				if (contents.length !== 0) {
+					const downloaded = await Promise.all([...cacheContents(contents)]);
 
-				for (let index = 0; index < _frameContens.length; index++) {
-					_frameContens[index].content = downloaded[index].localUri;
+					for (let index = 0; index < _frameContens.length; index++) {
+						_frameContens[index].contentUrl = downloaded[index].localUri;
+					}
 				}
 			} catch (e) {
 			} finally {
@@ -158,6 +162,8 @@ export const Frames = ({ navigation, frame }) => {
 					}}
 				>
 					<Back navigate={() => saveGoBack()} />
+
+					{console.log('ACTIVE', activeFrame)}
 					<Text
 						style={{
 							fontSize: 24,

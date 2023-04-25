@@ -12,6 +12,8 @@ import { Back } from './Back';
 import { Video, AVPlaybackStatus } from 'expo-av';
 
 export const Frame = ({ item, index, goNext, goPrev }) => {
+	console.log(item);
+
 	if (item.type === 'image') {
 		return (
 			<ImageBackground
@@ -20,7 +22,7 @@ export const Frame = ({ item, index, goNext, goPrev }) => {
 					height: height,
 					backgroundColor: Colors.primary.bleuBottom,
 				}}
-				source={{ uri: item.content }}
+				source={{ uri: item.contentUrl }}
 			>
 				<SafeAreaView style={{ flexDirection: 'row' }}>
 					{item.textContent &&
@@ -51,7 +53,7 @@ export const Frame = ({ item, index, goNext, goPrev }) => {
 	return (
 		<>
 			<Video
-				source={{ uri: item.content }}
+				source={{ uri: item.contentUrl }}
 				style={styles.backgroundVideo}
 				resizeMode={'cover'}
 				useNativeControls={false}

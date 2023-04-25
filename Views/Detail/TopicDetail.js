@@ -129,13 +129,16 @@ export const TopicDetail = ({
 										horizontal
 										data={allFrames}
 										renderItem={({ item }) => (
-											<TopicRectApp
-												width={TopicWidth - 10}
-												height={200}
-												topic={item}
-												setFrames={setFrames}
-												navigation={navigation}
-											/>
+											<>
+							
+												<TopicRectApp
+													width={TopicWidth - 10}
+													height={200}
+													topic={item}
+													setFrames={setFrames}
+													navigation={navigation}
+												/>
+											</>
 										)}
 										keyExtractor={(frame) => frame.id}
 									/>
