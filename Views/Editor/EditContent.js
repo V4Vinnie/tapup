@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import ViewShot from 'react-native-view-shot';
 import { Back } from '../../Components/Back';
-import { updateFrame } from '../../utils/fetch';
 import { height, width } from '../../utils/UseDimensoins';
 import { DragText } from './DragText';
 import uuid from 'uuid';
@@ -41,7 +40,7 @@ export const EditContent = ({
 			setImageText([]);
 		}
 
-		console.log(editContent);
+
 	}, [editContent]);
 
 	const addImageText = () => {
@@ -88,7 +87,6 @@ export const EditContent = ({
 
 	const saveEditFrame = async () => {
 		const thumbUri = await snapRef.current.capture();
-		console.log('MADE snapshot', thumbUri);
 
 		const contentInd = [...editorContent]
 			.map((e) => e.contentUrl)
@@ -102,9 +100,6 @@ export const EditContent = ({
 
 		_content[contentInd].textContent = imageText;
 		_content[contentInd].thumbnailUrl = thumbUri;
-
-		console.log('MADE FRAME UPDATE');
-
 
 		setEditorContent(_content);
 		setIsTextEditing(false);

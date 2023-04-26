@@ -36,7 +36,7 @@ export const BigTopicRect = ({
 	useEffect(() => {
 		if (topic.content) {
 			setImage(topic.content);
-			console.log(image);
+	
 		} else {
 			setImage(topic.img);
 		}

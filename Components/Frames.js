@@ -1,16 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { SafeAreaView, Text, View } from 'react-native';
-import Carousel, { Pagination } from 'react-native-new-snap-carousel';
+import { SafeAreaView, Text } from 'react-native';
 import { Colors } from '../Constants/Colors';
 import { useUser } from '../Providers/UserProvider';
-import {
-	cacheContents,
-	cacheImages,
-	cacheVideo,
-} from '../utils/downloadAssets';
+import { cacheContents } from '../utils/downloadAssets';
 import { updateUser, updateWatchedFrames } from '../utils/fetch';
 import { findById, findWatchedFrameIndex } from '../utils/findById';
-import { height, width } from '../utils/UseDimensoins';
+import { width } from '../utils/UseDimensoins';
 import { Back } from './Back';
 import { Frame } from './Frame';
 import { FramePogress } from './FrameProgress';
@@ -163,7 +158,6 @@ export const Frames = ({ navigation, frame }) => {
 				>
 					<Back navigate={() => saveGoBack()} />
 
-					{console.log('ACTIVE', activeFrame)}
 					<Text
 						style={{
 							fontSize: 24,

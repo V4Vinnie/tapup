@@ -4,15 +4,13 @@ import {
 	SafeAreaView,
 	StyleSheet,
 	Text,
-	View,
 } from 'react-native';
 import { Colors } from '../Constants/Colors';
 import { height, width } from '../utils/UseDimensoins';
-import { Back } from './Back';
-import { Video, AVPlaybackStatus } from 'expo-av';
+import { Video } from 'expo-av';
 
 export const Frame = ({ item, index, goNext, goPrev }) => {
-	console.log(item);
+	console.log(index);
 
 	if (item.type === 'image') {
 		return (

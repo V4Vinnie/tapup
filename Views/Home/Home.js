@@ -311,6 +311,7 @@ const styles = StyleSheet.create({
 	container: {
 		alignItems: 'center',
 		width: '100%',
+		marginBottom: 80,
 	},
 
 	section: {

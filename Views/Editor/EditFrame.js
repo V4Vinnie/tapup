@@ -146,7 +146,6 @@ export const EditFrame = ({ editorFrame, navigation, setEditorFrame }) => {
 
 				const contentFetch = await fetch(manipResult.uri);
 
-				console.log('manipulate', manipResult);
 				const id = uuid.v4();
 				const newImg = {
 					content: `${id}.png`,
@@ -181,8 +180,6 @@ export const EditFrame = ({ editorFrame, navigation, setEditorFrame }) => {
 	};
 
 	const uploadThumbnail = async (thumbBlob, thumbName) => {
-		console.log('MADE BLOB', thumbBlob);
-
 		const storageRef = ref(storage, `frames/${editorFrame.id}/${thumbName}`);
 
 		await uploadBytes(storageRef, thumbBlob);
@@ -247,7 +244,7 @@ export const EditFrame = ({ editorFrame, navigation, setEditorFrame }) => {
 				deleteFrame(prevTap, prevTopic, editorFrame.id);
 			}
 			const frameIndex = findWatchedFrameIndex(user.frames, editorFrame.id);
-			console.log('indx', frameIndex);
+
 			let _frames = [...user.frames];
 			_frames[frameIndex] = _frame;
 			setUser({ ...user, frames: _frames });

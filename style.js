@@ -1,4 +1,5 @@
 import { Colors } from './Constants/Colors';
+import { width } from './utils/UseDimensoins';
 
 export const bodyText = { color: Colors.primary.white, fontSize: 24 };
 
@@ -27,6 +28,7 @@ export const sectionTitle = {
 	fontSize: 24,
 	color: Colors.primary.white,
 	marginBottom: 8,
+	maxWidth: width / 2 - 10,
 };
 
 export const shadowProp = {

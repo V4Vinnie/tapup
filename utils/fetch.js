@@ -46,7 +46,6 @@ export const fetchFrames = async (tapId, topicId) => {
 export const fetchUser = async (userId) => {
 	const docRef = doc(DB, 'users', userId);
 	const _userRef = await getDoc(docRef);
-	console.log('fetchUser', _userRef.data());
 	return _userRef.data();
 };
 

@@ -1,14 +1,5 @@
-import { useEffect, useState } from 'react';
-import {
-	FlatList,
-	ImageBackground,
-	SafeAreaView,
-	ScrollView,
-	StyleSheet,
-	Text,
-	TextInput,
-	View,
-} from 'react-native';
+import { useEffect } from 'react';
+import { FlatList, ImageBackground, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import BGDark from '../../assets/logo/darkBG.png';
 import { AddFrame } from '../../Components/AddFrame';
 import { Back } from '../../Components/Back';
@@ -17,7 +8,6 @@ import { TopicRectApp } from '../../Components/TopicRectApp';
 import { Colors } from '../../Constants/Colors';
 import { useTaps } from '../../Providers/TapsProvider';
 import { useUser } from '../../Providers/UserProvider';
-import { titleStyle } from '../../style';
 import { fetchFramesForCreator } from '../../utils/fetch';
 import { width } from '../../utils/UseDimensoins';
 import uuid from 'uuid';
@@ -41,7 +31,7 @@ export const EditorOverview = ({ navigation, setEditorFrame }) => {
 					);
 					if (topicCreated) {
 						createdFrames = createdFrames.concat(topicCreated);
-						console.log('created', createdFrames);
+	
 					}
 				}
 			}
