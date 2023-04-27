@@ -36,9 +36,14 @@ export const BigTopicRect = ({
 	useEffect(() => {
 		if (topic.content) {
 			setImage(topic.content);
-	
 		} else {
-			setImage(topic.img);
+			if (topic.img.includes('/')) {
+				setImage(topic.img);
+			} else {
+				setImage(
+					`https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/frames%2F${topic.id}%2F${topic.img}?alt=media`
+				);
+			}
 		}
 	}, []);
 

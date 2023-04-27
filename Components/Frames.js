@@ -27,8 +27,7 @@ export const Frames = ({ navigation, frame }) => {
 		if (activeFrame + 1 === frameContents.length) {
 			return;
 		} else {
-			const newFrame = activeFrame + 1;
-			setActiveFrame(newFrame);
+			setActiveFrame(activeFrame + 1);
 			setShowTime(frameContents[newFrame].time);
 		}
 	};

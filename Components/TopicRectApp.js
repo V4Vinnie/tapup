@@ -30,6 +30,7 @@ export const TopicRectApp = ({
 			navigation.navigate('editFrame');
 		}
 	};
+
 	return (
 		<Shadow
 			distance={5}
@@ -48,7 +49,13 @@ export const TopicRectApp = ({
 						backgroundColor: Colors.primary.pink,
 						justifyContent: 'flex-end',
 					}}
-					source={{ uri: topic.img }}
+					source={
+						topic.img.includes('/')
+							? { uri: topic.img }
+							: {
+									uri: `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/frames%2F${topic.id}%2F${topic.img}?alt=media`,
+							  }
+					}
 					resizeMode='cover'
 				>
 					<LinearGradient

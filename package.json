@@ -37,7 +37,7 @@
 		"prop-types": "^15.8.1",
 		"react": "18.1.0",
 		"react-dom": "18.1.0",
-		"react-native": "0.70.5",
+		"react-native": "0.70.8",
 		"react-native-compressor": "^1.6.1",
 		"react-native-draggable": "^3.3.0",
 		"react-native-new-snap-carousel": "^3.9.3",

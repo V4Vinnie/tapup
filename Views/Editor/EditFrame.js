@@ -102,7 +102,15 @@ export const EditFrame = ({ editorFrame, navigation, setEditorFrame }) => {
 				}
 			} catch (e) {
 			} finally {
-				setEditorContent(_frameContens);
+				setEditorContent([
+					{
+						type: 'cover',
+						thumbnailUrl: editorFrame.img.includes('/')
+							? editorFrame.img
+							: `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/frames%2FBPuFm3XKvHw4c1pnTjjE%2F${editorFrame.img}?alt=media`,
+					},
+					..._frameContens,
+				]);
 				setLoading(false);
 			}
 		};
@@ -192,7 +200,7 @@ export const EditFrame = ({ editorFrame, navigation, setEditorFrame }) => {
 			let prevURL = [];
 			let prevThumbURL = [];
 
-			for (let index = 0; index < editorContent.length; index++) {
+			for (let index = 1; index < editorContent.length; index++) {
 				const item = editorContent[index];
 				prevURL.push(item.contentUrl);
 				prevThumbURL.push(item.thumbnailUrl);
@@ -217,13 +225,22 @@ export const EditFrame = ({ editorFrame, navigation, setEditorFrame }) => {
 				});
 			}
 
+			if (editorContent[0].thumbnailUrl.includes('file:')) {
+				const contentFetch = await fetch(editorContent[0].thumbnailUrl);
+				const contentBlob = await contentFetch.blob();
+				await uploadThumbnail(
+					contentBlob,
+					`${editorFrame.id.trim()}_thumbnail.png`
+				);
+			}
+
 			const _frame = {
 				added: editorFrame.added,
 				contents: _content,
 				creator: user.id,
 				description: descriptionEdit,
 				id: editorFrame.id.trim(),
-				img: editorFrame.img,
+				img: `${editorFrame.id.trim()}_thumbnail.png`,
 				tapId: tapCategory,
 				title: titleEdit,
 				topicId: topicCategory,
@@ -237,6 +254,7 @@ export const EditFrame = ({ editorFrame, navigation, setEditorFrame }) => {
 			});
 
 			_frame.contents = _content;
+			_frame.img = editorContent[0].thumbnailUrl;
 
 			setPrevTap(tapCategory);
 			setPrevTopic(topicCategory);
@@ -249,6 +267,29 @@ export const EditFrame = ({ editorFrame, navigation, setEditorFrame }) => {
 			_frames[frameIndex] = _frame;
 			setUser({ ...user, frames: _frames });
 			navigation.navigate('editorOverview');
+		}
+	};
+
+	const addCover = async () => {
+		let result = await ImagePicker.launchImageLibraryAsync({
+			mediaTypes: ImagePicker.MediaTypeOptions.Images,
+			aspect: [16, 9],
+			allowsEditing: true,
+			quality: 1,
+		});
+
+		if (!result.canceled) {
+			const manipResult = await manipulateAsync(result.assets[0].uri, [], {
+				compress: 0.4,
+				format: SaveFormat.PNG,
+			});
+
+			let _contents = [...editorContent];
+			_contents[0].thumbnailUrl = manipResult.uri;
+
+			console.log('URL', manipResult.uri);
+
+			setEditorContent(_contents);
 		}
 	};
 
@@ -338,6 +379,7 @@ export const EditFrame = ({ editorFrame, navigation, setEditorFrame }) => {
 											item={item}
 											editThisFrame={setEditContent}
 											frameID={editorFrame.id}
+											addCover={addCover}
 										/>
 									)}
 									keyExtractor={(content) => content.id}

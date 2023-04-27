@@ -10,8 +10,6 @@ import { height, width } from '../utils/UseDimensoins';
 import { Video } from 'expo-av';
 
 export const Frame = ({ item, index, goNext, goPrev }) => {
-	console.log(index);
-
 	if (item.type === 'image') {
 		return (
 			<ImageBackground
