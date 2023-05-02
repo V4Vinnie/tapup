@@ -37,9 +37,10 @@ export const EditFrame = ({ editorFrame, navigation, setEditorFrame }) => {
 	const { user, setUser } = useUser();
 	const { taps } = useTaps();
 	const isFocused = useIsFocused();
-	const isNew = Object.keys(editorFrame).length === 0 ? true : false;
 
 	const [loading, setLoading] = useState(true);
+
+	const [isNew, setIsNew] = useState();
 
 	const [tapTopic, setTapTopics] = useState();
 
@@ -114,8 +115,21 @@ export const EditFrame = ({ editorFrame, navigation, setEditorFrame }) => {
 				setLoading(false);
 			}
 		};
-		if (!isNew) {
+		if (!editorFrame.isNew) {
+			setIsNew(false);
 			cacheContent();
+		} else {
+			setIsNew(true);
+			setEditorContent([
+				{
+					type: 'cover',
+					isNew: true,
+					thumbnailUrl: editorFrame.img.includes('/')
+						? editorFrame.img
+						: `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/frames%2FBPuFm3XKvHw4c1pnTjjE%2F${editorFrame.img}?alt=media`,
+				},
+			]);
+			setLoading(false);
 		}
 	}, [isFocused, editorFrame]);
 
@@ -286,6 +300,7 @@ export const EditFrame = ({ editorFrame, navigation, setEditorFrame }) => {
 
 			let _contents = [...editorContent];
 			_contents[0].thumbnailUrl = manipResult.uri;
+			_contents[0].isNew = false;
 
 			console.log('URL', manipResult.uri);
 
@@ -376,6 +391,7 @@ export const EditFrame = ({ editorFrame, navigation, setEditorFrame }) => {
 									data={editorContent}
 									renderItem={({ item }) => (
 										<EditFrameContent
+											isNew={isNew}
 											item={item}
 											editThisFrame={setEditContent}
 											frameID={editorFrame.id}

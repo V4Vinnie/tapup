@@ -1,5 +1,12 @@
 import { useEffect } from 'react';
-import { FlatList, ImageBackground, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import {
+	FlatList,
+	ImageBackground,
+	SafeAreaView,
+	StyleSheet,
+	Text,
+	View,
+} from 'react-native';
 import BGDark from '../../assets/logo/darkBG.png';
 import { AddFrame } from '../../Components/AddFrame';
 import { Back } from '../../Components/Back';
@@ -31,7 +38,6 @@ export const EditorOverview = ({ navigation, setEditorFrame }) => {
 					);
 					if (topicCreated) {
 						createdFrames = createdFrames.concat(topicCreated);
-	
 					}
 				}
 			}
@@ -52,6 +58,7 @@ export const EditorOverview = ({ navigation, setEditorFrame }) => {
 			tapId: '',
 			title: '',
 			topicId: '',
+			isNew: true,
 		});
 		navigation.navigate('editFrame');
 	};

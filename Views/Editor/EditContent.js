@@ -16,6 +16,7 @@ import { DragText } from './DragText';
 import uuid from 'uuid';
 import { Colors } from '../../Constants/Colors';
 import { storage } from '../../firebaseConfig';
+import { ColorPicker } from './ColorPicker';
 
 export const EditContent = ({
 	editorContent,
@@ -27,6 +28,7 @@ export const EditContent = ({
 	const snapRef = useRef();
 
 	const [isTextEditing, setIsTextEditing] = useState(false);
+	const [textIndex, setTextIndex] = useState(0);
 	const [textRefs, setTextRefs] = useState([]);
 
 	const [imageText, setImageText] = useState(
@@ -39,12 +41,11 @@ export const EditContent = ({
 		} else {
 			setImageText([]);
 		}
-
-
 	}, [editContent]);
 
 	const addImageText = () => {
 		if (!isTextEditing) {
+			const newLength = imageText.length;
 			setImageText([
 				...imageText,
 				{
@@ -53,8 +54,10 @@ export const EditContent = ({
 					text: 'New text',
 					id: uuid.v4(),
 					created: true,
+					style: { color: '#000000' },
 				},
 			]);
+			setTextIndex(newLength);
 		}
 	};
 
@@ -98,7 +101,9 @@ export const EditContent = ({
 
 		await uploadThumbnail(thumbBlob, `${editContent.thumbnail}.png`);
 
-		_content[contentInd].textContent = imageText;
+		const _imageText = imageText.filter((e) => e.text !== '');
+
+		_content[contentInd].textContent = _imageText;
 		_content[contentInd].thumbnailUrl = thumbUri;
 
 		setEditorContent(_content);
@@ -109,18 +114,26 @@ export const EditContent = ({
 
 	return (
 		<>
-			<View style={styles.navHeading}>
-				<Back
-					navigate={() => {
-						// setImageText([]);
-						setIsTextEditing(false);
-						setEditContent(undefined);
-					}}
+			{isTextEditing ? (
+				<ColorPicker
+					setColor={updateImageText}
+					index={textIndex}
+					imageTexts={imageText}
 				/>
-				<Pressable onPress={() => saveEditFrame()}>
-					<Text style={styles.saveText}>Save</Text>
-				</Pressable>
-			</View>
+			) : (
+				<View style={styles.navHeading}>
+					<Back
+						navigate={() => {
+							// setImageText([]);
+							setIsTextEditing(false);
+							setEditContent(undefined);
+						}}
+					/>
+					<Pressable onPress={() => saveEditFrame()}>
+						<Text style={styles.saveText}>Save</Text>
+					</Pressable>
+				</View>
+			)}
 
 			{editContent.type === 'video' ? (
 				<ViewShot
@@ -171,6 +184,7 @@ export const EditContent = ({
 												updateTextEdit={setIsTextEditing}
 												textRefs={textRefs}
 												setTextRefs={setTextRefs}
+												updateTextIndex={setTextIndex}
 											/>
 										))}
 								</Pressable>
@@ -215,6 +229,7 @@ export const EditContent = ({
 											updateTextEdit={setIsTextEditing}
 											textRefs={textRefs}
 											setTextRefs={setTextRefs}
+											updateTextIndex={setTextIndex}
 										/>
 									))}
 							</Pressable>

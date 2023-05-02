@@ -22,13 +22,22 @@ export const Frame = ({ item, index, goNext, goPrev }) => {
 			>
 				<SafeAreaView style={{ flexDirection: 'row' }}>
 					{item.textContent &&
-						item.textContent.map(({ text, bounds, y, x }) => (
+						item.textContent.map(({ text, bounds, y, x, style }) => (
 							<Text
-								style={{
-									...styles.textContentItem,
-									top: y + 48,
-									left: x,
-								}}
+								style={
+									style
+										? {
+												...styles.textContentItem,
+												top: y + 48,
+												left: x,
+												...style,
+										  }
+										: {
+												...styles.textContentItem,
+												top: y + 48,
+												left: x,
+										  }
+								}
 							>
 								{text}
 							</Text>
@@ -57,13 +66,22 @@ export const Frame = ({ item, index, goNext, goPrev }) => {
 			/>
 			<SafeAreaView style={{ flexDirection: 'row' }}>
 				{item.textContent &&
-					item.textContent.map(({ text, bounds, x, y }) => (
+					item.textContent.map(({ text, bounds, x, y, style }) => (
 						<Text
-							style={{
-								...styles.textContentItem,
-								top: y + 48,
-								left: x,
-							}}
+							style={
+								style
+									? {
+											...styles.textContentItem,
+											top: y + 48,
+											left: x,
+											...style,
+									  }
+									: {
+											...styles.textContentItem,
+											top: y + 48,
+											left: x,
+									  }
+							}
 						>
 							{text}
 						</Text>

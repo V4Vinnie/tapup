@@ -2,15 +2,8 @@ import { useEffect, useState } from 'react';
 import { Animated, ImageBackground, Pressable, Text, View } from 'react-native';
 import { Colors } from '../../Constants/Colors';
 import { height, width } from '../../utils/UseDimensoins';
-import * as ImagePicker from 'expo-image-picker';
 
-export const EditFrameContent = ({
-	item,
-	editThisFrame,
-	setImageText,
-	frameID,
-	addCover,
-}) => {
+export const EditFrameContent = ({ item, editThisFrame, addCover }) => {
 	const [isPressed, setIsPressed] = useState(false);
 	const [colorAnimation] = useState(new Animated.Value(0));
 
@@ -72,7 +65,9 @@ export const EditFrameContent = ({
 							style={{
 								height: '100%',
 								width: '100%',
-								backgroundColor: 'rgba(255, 255, 255, 0.6)',
+								backgroundColor: item.isNew
+									? 'rgba(255, 255, 255, 1)'
+									: 'rgba(255, 255, 255, 0.6)',
 								display: 'flex',
 								justifyContent: 'center',
 								alignItems: 'center',
@@ -87,7 +82,7 @@ export const EditFrameContent = ({
 									color: Colors.primary.bleuTop,
 								}}
 							>
-								Change cover
+								{item.isNew ? 'Upload' : 'Change'} cover
 							</Text>
 						</View>
 					</ImageBackground>

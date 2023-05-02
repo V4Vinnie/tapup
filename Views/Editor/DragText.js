@@ -10,6 +10,7 @@ export const DragText = ({
 	updateTextEdit,
 	setTextRefs,
 	textRefs,
+	updateTextIndex,
 	...args
 }) => {
 	const [edit, setEdit] = useState(true);
@@ -17,6 +18,7 @@ export const DragText = ({
 	const [startPos, setStartPos] = useState({ x: item.x, y: item.y });
 
 	const onShortPress = () => {
+		updateTextIndex(index);
 		updateTextEdit(true);
 		setEdit(true);
 	};
@@ -53,12 +55,23 @@ export const DragText = ({
 					onChangeText={(e) => changeText({ text: e, created: false }, index)}
 					onBlur={() => onSubmitText()}
 					onFocus={() => updateTextEdit(true)}
-					style={styles.textStyle}
+					style={
+						item.style
+							? { ...styles.textStyle, ...item.style }
+							: { ...styles.textStyle }
+					}
 					autoFocus={item.created}
 					ref={txtRef}
 				/>
 			) : (
-				<Text ref={textRef} style={styles.textStyle}>
+				<Text
+					ref={textRef}
+					style={
+						item.style
+							? { ...styles.textStyle, ...item.style }
+							: { ...styles.textStyle }
+					}
+				>
 					{item.text}
 				</Text>
 			)}
