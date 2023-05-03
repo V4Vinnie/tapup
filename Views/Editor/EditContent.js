@@ -182,6 +182,7 @@ export const EditContent = ({
 												index={index}
 												changeText={updateImageText}
 												updateTextEdit={setIsTextEditing}
+												isTextEditing={isTextEditing}
 												textRefs={textRefs}
 												setTextRefs={setTextRefs}
 												updateTextIndex={setTextIndex}
@@ -228,6 +229,7 @@ export const EditContent = ({
 											changeText={updateImageText}
 											updateTextEdit={setIsTextEditing}
 											textRefs={textRefs}
+											isTextEditing={isTextEditing}
 											setTextRefs={setTextRefs}
 											updateTextIndex={setTextIndex}
 										/>

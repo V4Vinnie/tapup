@@ -1,9 +1,17 @@
-import { ImageBackground, Pressable, Text, View } from 'react-native';
+import {
+	Image,
+	ImageBackground,
+	Pressable,
+	StyleSheet,
+	Text,
+	View,
+} from 'react-native';
 import { Colors } from '../Constants/Colors';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Shadow } from 'react-native-shadow-2';
 import { useEffect, useState } from 'react';
 import { useUser } from '../Providers/UserProvider';
+import tapTopIMG from '../assets/tapTop.png';
 
 export const TopicRectApp = ({
 	navigation,
@@ -46,7 +54,7 @@ export const TopicRectApp = ({
 					style={{
 						width: width,
 						height: height,
-						backgroundColor: Colors.primary.pink,
+						backgroundColor: Colors.primary.lightBleu,
 						justifyContent: 'flex-end',
 					}}
 					source={
@@ -58,20 +66,29 @@ export const TopicRectApp = ({
 					}
 					resizeMode='cover'
 				>
-					<LinearGradient
-						locations={[0.1, 0.5]}
-						colors={['rgba(255,255,255,0)', 'rgba(255,255,255,0.8)']}
-						style={{ height: '40%', justifyContent: 'flex-end', padding: 5 }}
-					>
-						<Text style={{ fontSize: 13, fontWeight: '600' }}>
-							{topic.title}
-						</Text>
-						<Text style={{ fontSize: 11 }}>
-							{topic.creator === user.id ? user.name : 'creator'}
-						</Text>
-					</LinearGradient>
+					<View>
+						<Image style={{ marginBottom: -3 }} source={tapTopIMG} />
+						<View style={styles.titleWrapper}>
+							<Text style={{ fontSize: 11, color: 'white' }}>
+								{topic.creator === user.id ? user.name : 'creator'}
+							</Text>
+							<Text style={{ fontSize: 12, fontWeight: '600', color: 'white' }}>
+								{topic.title}
+							</Text>
+						</View>
+					</View>
 				</ImageBackground>
 			</Pressable>
 		</Shadow>
 	);
 };
+
+const styles = StyleSheet.create({
+	titleWrapper: {
+		backgroundColor: Colors.primary.pink,
+		justifyContent: 'flex-end',
+		padding: 5,
+		paddingBottom: 8,
+		paddingTop: 0,
+	},
+});

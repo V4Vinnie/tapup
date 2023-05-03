@@ -11,6 +11,7 @@ export const DragText = ({
 	setTextRefs,
 	textRefs,
 	updateTextIndex,
+	isTextEditing,
 	...args
 }) => {
 	const [edit, setEdit] = useState(true);
@@ -18,9 +19,11 @@ export const DragText = ({
 	const [startPos, setStartPos] = useState({ x: item.x, y: item.y });
 
 	const onShortPress = () => {
-		updateTextIndex(index);
-		updateTextEdit(true);
-		setEdit(true);
+		if (!isTextEditing) {
+			updateTextIndex(index);
+			updateTextEdit(true);
+			setEdit(true);
+		}
 	};
 
 	const onSubmitText = () => {
@@ -36,8 +39,13 @@ export const DragText = ({
 		setTextRefs([...textRefs, txtRef]);
 	}, []);
 
+	const keyPress = ({ key, e }) => {
+		console.log('value', key);
+	};
+
 	return (
 		<Draggable
+			disabled={isTextEditing}
 			onShortPressRelease={() => onShortPress()}
 			onLongPress={() => changeText({ text: '' }, index)}
 			onDragRelease={(event, gest, bounds) => {
@@ -51,6 +59,9 @@ export const DragText = ({
 		>
 			{edit ? (
 				<TextInput
+					returnKeyType='send'
+					blurOnSubmit
+					multiline={true}
 					value={item.text}
 					onChangeText={(e) => changeText({ text: e, created: false }, index)}
 					onBlur={() => onSubmitText()}
@@ -81,9 +92,9 @@ export const DragText = ({
 
 const styles = StyleSheet.create({
 	textStyle: {
+		maxWidth: '80%',
 		fontWeight: 'bold',
 		fontSize: 20,
-		textAlign: 'center',
 		zIndex: 99999,
 	},
 

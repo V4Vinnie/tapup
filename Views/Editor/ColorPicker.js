@@ -1,5 +1,8 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Colors } from '../../Constants/Colors';
+import Slider from '@react-native-community/slider';
+import { useEffect, useState } from 'react';
+import fontSizeImg from '../../assets/fontSize.png';
 
 const colors = [
 	'#000000',
@@ -15,22 +18,48 @@ const colors = [
 export const ColorPicker = ({ setColor, index, imageTexts }) => {
 	return (
 		<View style={styles.navHeading}>
-			{colors.map((colorVal) => (
-				<Pressable
-					style={
-						imageTexts[index].style &&
-						imageTexts[index].style.color === colorVal
-							? {
-									...styles.colorButton,
-									borderColor: Colors.primary.pink,
-									backgroundColor: colorVal,
-									transform: [{ scale: 0.85 }],
-							  }
-							: { ...styles.colorButton, backgroundColor: colorVal }
-					}
-					onPress={() => setColor({ style: { color: colorVal } }, index)}
-				></Pressable>
-			))}
+			<Slider
+				value={
+					imageTexts[index].style && imageTexts[index].style.fontSize
+						? Number(imageTexts[index].style.fontSize)
+						: 20
+				}
+				minimumValue={12}
+				step={1}
+				maximumValue={36}
+				onValueChange={(val) =>
+					setColor(
+						{ style: { ...imageTexts[index].style, fontSize: val } },
+						index
+					)
+				}
+				thumbImage={fontSizeImg}
+			/>
+
+			<View style={styles.colorWrapper}>
+				{colors.map((colorVal) => (
+					<Pressable
+						style={
+							imageTexts[index].style &&
+							imageTexts[index].style.color === colorVal
+								? {
+										...styles.colorButton,
+										borderColor: Colors.primary.pink,
+										backgroundColor: colorVal,
+										borderWidth: 4,
+										transform: [{ scale: 0.85 }],
+								  }
+								: { ...styles.colorButton, backgroundColor: colorVal }
+						}
+						onPress={() =>
+							setColor(
+								{ style: { ...imageTexts[index].style, color: colorVal } },
+								index
+							)
+						}
+					></Pressable>
+				))}
+			</View>
 		</View>
 	);
 };
@@ -40,11 +69,14 @@ const styles = StyleSheet.create({
 		position: 'absolute',
 		top: 55,
 		zIndex: 500,
+		width: '100%',
+		paddingHorizontal: 15,
+	},
+
+	colorWrapper: {
 		display: 'flex',
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		width: '100%',
-		paddingHorizontal: 15,
 	},
 
 	colorButton: {
