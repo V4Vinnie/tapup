@@ -8,6 +8,8 @@ import {
 	View,
 	ScrollView,
 	ImageBackground,
+	KeyboardAvoidingView,
+	Platform,
 } from 'react-native';
 import { height, width } from '../../utils/UseDimensoins';
 import { Colors } from '../../Constants/Colors';
@@ -27,13 +29,18 @@ import { Loading } from '../../Components/Loading';
 import { EditFrameContent } from './EditFrameContent';
 import uuid from 'uuid';
 import * as VideoThumbnails from 'expo-video-thumbnails';
-import { ref, uploadBytes } from 'firebase/storage';
+import { deleteObject, ref, uploadBytes } from 'firebase/storage';
 import { storage } from '../../firebaseConfig';
 import { EditContent } from './EditContent';
 import { none } from '@hookstate/core';
 import BGDark from '../../assets/logo/darkBG.png';
 
-export const EditFrame = ({ editorFrame, navigation, setEditorFrame }) => {
+export const EditFrame = ({
+	editorFrame,
+	navigation,
+	setEditorFrame,
+	removedFrameLocal,
+}) => {
 	const { user, setUser } = useUser();
 	const { taps } = useTaps();
 	const isFocused = useIsFocused();
@@ -177,6 +184,7 @@ export const EditFrame = ({ editorFrame, navigation, setEditorFrame }) => {
 					type: 'image',
 					time: 20000,
 					isNew: true,
+					isDeleted: false,
 				};
 
 				setEditContent(newImg);
@@ -193,6 +201,7 @@ export const EditFrame = ({ editorFrame, navigation, setEditorFrame }) => {
 					time: result.assets[0].duration,
 					thumbnail: thumb,
 					isNew: true,
+					isDeleted: false,
 				};
 				setImageText([]);
 				setEditContent(newVid);
@@ -207,81 +216,93 @@ export const EditFrame = ({ editorFrame, navigation, setEditorFrame }) => {
 		await uploadBytes(storageRef, thumbBlob);
 	};
 
+	const deleteFrameContent = async (itemName) => {
+		const desertRef = ref(storage, `frames/${editorFrame.id}/${itemName}`);
+		await deleteObject(desertRef)
+			.then(() => {
+				console.log('DELETED');
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	};
+
 	const saveFrame = async () => {
-		if (!isNew) {
-			let _content = [];
+		let _content = [];
 
-			let prevURL = [];
-			let prevThumbURL = [];
+		let prevURL = [];
+		let prevThumbURL = [];
 
-			for (let index = 1; index < editorContent.length; index++) {
-				const item = editorContent[index];
-				prevURL.push(item.contentUrl);
-				prevThumbURL.push(item.thumbnailUrl);
+		for (let index = 1; index < editorContent.length; index++) {
+			const item = editorContent[index];
+			prevURL.push(item.contentUrl);
+			prevThumbURL.push(item.thumbnailUrl);
 
-				const thumbFetch = await fetch(item.thumbnailUrl);
-				const thumbBlob = await thumbFetch.blob();
+			const thumbFetch = await fetch(item.thumbnailUrl);
+			const thumbBlob = await thumbFetch.blob();
 
-				// await uploadThumbnail(thumbBlob, `${item.thumbnail}.png`);
+			// await uploadThumbnail(thumbBlob, `${item.thumbnail}.png`);
 
-				if (item.isNew) {
-					const contentFetch = await fetch(item.contentUrl);
-					const contentBlob = await contentFetch.blob();
+			if (item.isNew) {
+				const contentFetch = await fetch(item.contentUrl);
+				const contentBlob = await contentFetch.blob();
 
-					await uploadThumbnail(contentBlob, item.content);
-				}
-
+				await uploadThumbnail(contentBlob, item.content);
+			}
+			if (!item.isDeleted) {
 				_content.push({
 					...item,
 					contentUrl: null,
 					thumbnailUrl: null,
 					isNew: false,
 				});
+			} else {
+				deleteFrameContent(item.content);
 			}
-
-			if (editorContent[0].thumbnailUrl.includes('file:')) {
-				const contentFetch = await fetch(editorContent[0].thumbnailUrl);
-				const contentBlob = await contentFetch.blob();
-				await uploadThumbnail(
-					contentBlob,
-					`${editorFrame.id.trim()}_thumbnail.png`
-				);
-			}
-
-			const _frame = {
-				added: editorFrame.added,
-				contents: _content,
-				creator: user.id,
-				description: descriptionEdit,
-				id: editorFrame.id.trim(),
-				img: `${editorFrame.id.trim()}_thumbnail.png`,
-				tapId: tapCategory,
-				title: titleEdit,
-				topicId: topicCategory,
-			};
-
-			await updateFrame(_frame);
-
-			_content.map((item, index) => {
-				_content[index].contentUrl = prevURL[index];
-				_content[index].thumbnailUrl = prevThumbURL[index];
-			});
-
-			_frame.contents = _content;
-			_frame.img = editorContent[0].thumbnailUrl;
-
-			setPrevTap(tapCategory);
-			setPrevTopic(topicCategory);
-			if (prevTap !== tapCategory || prevTopic !== topicCategory) {
-				deleteFrame(prevTap, prevTopic, editorFrame.id);
-			}
-			const frameIndex = findWatchedFrameIndex(user.frames, editorFrame.id);
-
-			let _frames = [...user.frames];
-			_frames[frameIndex] = _frame;
-			setUser({ ...user, frames: _frames });
-			navigation.navigate('editorOverview');
 		}
+
+		if (editorContent[0].thumbnailUrl.includes('file:')) {
+			const contentFetch = await fetch(editorContent[0].thumbnailUrl);
+			const contentBlob = await contentFetch.blob();
+			await uploadThumbnail(
+				contentBlob,
+				`${editorFrame.id.trim()}_thumbnail.png`
+			);
+		}
+
+		const _frame = {
+			added: editorFrame.added,
+			contents: _content,
+			creator: user.id,
+			description: descriptionEdit,
+			id: editorFrame.id.trim(),
+			img: `${editorFrame.id.trim()}_thumbnail.png`,
+			tapId: tapCategory,
+			title: titleEdit,
+			topicId: topicCategory,
+		};
+
+		await updateFrame(_frame);
+
+		_content.map((item, index) => {
+			_content[index].contentUrl = prevURL[index];
+			_content[index].thumbnailUrl = prevThumbURL[index];
+		});
+
+		_frame.contents = _content;
+		_frame.img = editorContent[0].thumbnailUrl;
+
+		setPrevTap(tapCategory);
+		setPrevTopic(topicCategory);
+		if (prevTap !== tapCategory || prevTopic !== topicCategory) {
+			deleteFrame(prevTap, prevTopic, editorFrame.id);
+		}
+		const frameIndex = findWatchedFrameIndex(user.frames, editorFrame.id);
+
+		let _frames = [...user.frames];
+		_frames[frameIndex] = _frame;
+		setUser({ ...user, frames: _frames });
+		navigation.navigate('editorOverview');
 	};
 
 	const addCover = async () => {
@@ -306,6 +327,25 @@ export const EditFrame = ({ editorFrame, navigation, setEditorFrame }) => {
 
 			setEditorContent(_contents);
 		}
+	};
+
+	const deleteFrameItem = (itemID) => {
+		console.log('DELETE', itemID);
+		let _contents = [...editorContent];
+		const frameIndex = _contents.map((e) => e.content).indexOf(itemID);
+		_contents[frameIndex].isDeleted = true;
+		setEditorContent(_contents);
+	};
+
+	const deleteFullFrame = async () => {
+		await deleteFrame(
+			editorFrame.tapId,
+			editorFrame.topicId,
+			editorFrame.id,
+			editorFrame.contents
+		);
+		removedFrameLocal(editorFrame.id);
+		navigation.goBack();
 	};
 
 	if (loading) {
@@ -389,15 +429,20 @@ export const EditFrame = ({ editorFrame, navigation, setEditorFrame }) => {
 									showsHorizontalScrollIndicator={false}
 									horizontal
 									data={editorContent}
-									renderItem={({ item }) => (
-										<EditFrameContent
-											isNew={isNew}
-											item={item}
-											editThisFrame={setEditContent}
-											frameID={editorFrame.id}
-											addCover={addCover}
-										/>
-									)}
+									renderItem={({ item }) => {
+										if (!item.isDeleted) {
+											return (
+												<EditFrameContent
+													deleteFrame={deleteFrameItem}
+													isNew={isNew}
+													item={item}
+													editThisFrame={setEditContent}
+													frameID={editorFrame.id}
+													addCover={addCover}
+												/>
+											);
+										}
+									}}
 									keyExtractor={(content) => content.id}
 								/>
 							)}
@@ -412,7 +457,7 @@ export const EditFrame = ({ editorFrame, navigation, setEditorFrame }) => {
 								placeholderTextColor='rgba(255, 255, 255, 0.6)'
 							/>
 						</View>
-						<View style={styles.formSection}>
+						<KeyboardAvoidingView style={styles.formSection}>
 							<Text style={styles.labelText}>Frame description</Text>
 							<TextInput
 								style={styles.editorInputDesc}
@@ -421,8 +466,10 @@ export const EditFrame = ({ editorFrame, navigation, setEditorFrame }) => {
 								numberOfLines={3}
 								maxLength={150}
 								onChangeText={(e) => setDescriptionEdit(e)}
+								returnKeyType='send'
+								blurOnSubmit
 							/>
-						</View>
+						</KeyboardAvoidingView>
 						<View style={styles.formSection}>
 							<Text style={styles.labelText}>Tap category</Text>
 							<Picker
@@ -451,6 +498,12 @@ export const EditFrame = ({ editorFrame, navigation, setEditorFrame }) => {
 								</Picker>
 							</View>
 						)}
+						<Pressable
+							onPress={() => deleteFullFrame()}
+							style={styles.deleteButton}
+						>
+							<Text style={styles.deleteText}>Delete frame</Text>
+						</Pressable>
 					</ScrollView>
 				</ImageBackground>
 			</SafeAreaView>
@@ -580,5 +633,20 @@ const styles = StyleSheet.create({
 		paddingVertical: 10,
 		borderRadius: 10,
 		marginTop: 10,
+	},
+
+	deleteButton: {
+		backgroundColor: Colors.primary.white,
+		borderRadius: 10,
+		alignItems: 'center',
+		marginBottom: 150,
+		marginTop: 10,
+		padding: 10,
+	},
+
+	deleteText: {
+		fontSize: 20,
+		color: Colors.primary.pink,
+		fontWeight: 'bold',
 	},
 });

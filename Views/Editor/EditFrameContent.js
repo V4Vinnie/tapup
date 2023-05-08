@@ -3,7 +3,12 @@ import { Animated, ImageBackground, Pressable, Text, View } from 'react-native';
 import { Colors } from '../../Constants/Colors';
 import { height, width } from '../../utils/UseDimensoins';
 
-export const EditFrameContent = ({ item, editThisFrame, addCover }) => {
+export const EditFrameContent = ({
+	item,
+	editThisFrame,
+	addCover,
+	deleteFrame,
+}) => {
 	const [isPressed, setIsPressed] = useState(false);
 	const [colorAnimation] = useState(new Animated.Value(0));
 
@@ -94,7 +99,7 @@ export const EditFrameContent = ({ item, editThisFrame, addCover }) => {
 	return (
 		<>
 			<Pressable
-				onLongPress={() => console.log('DELETE')}
+				onLongPress={() => deleteFrame(item.content)}
 				onPress={() => {
 					editThisFrame(item);
 				}}

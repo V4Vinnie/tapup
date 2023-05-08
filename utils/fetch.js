@@ -8,7 +8,8 @@ import {
 	setDoc,
 	where,
 } from 'firebase/firestore';
-import { DB } from '../firebaseConfig';
+import { DB, storage } from '../firebaseConfig';
+import { deleteObject, ref } from 'firebase/storage';
 
 export const fetchTaps = async () => {
 	const _allTabs = await getDocs(collection(DB, 'taps'));
@@ -140,7 +141,24 @@ export const updateFrameContent = async (frameData) => {
 	await setDoc(docRef, frameData, { merge: true });
 };
 
-export const deleteFrame = async (tapId, topicId, frameId) => {
+const deleteFrameContent = async (frameID, itemName) => {
+	const desertRef = ref(storage, `frames/${frameID}/${itemName}`);
+	await deleteObject(desertRef)
+		.then(() => {
+			console.log('DELETED');
+		})
+		.catch((error) => {
+			console.log(error);
+		});
+};
+
+export const deleteFrame = async (tapId, topicId, frameId, frameContent) => {
 	const docRef = doc(DB, 'taps', tapId, 'topics', topicId, 'frames', frameId);
 	await deleteDoc(docRef);
+	if (frameContent) {
+		for (let index = 0; index < frameContent.length; index++) {
+			const element = frameContent[index];
+			await deleteFrameContent(frameId, element.content);
+		}
+	}
 };

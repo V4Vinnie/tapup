@@ -62,6 +62,12 @@ export const AppRoutes = () => {
 		test();
 	}, []);
 
+	const removedFrameLocal = (removeID) => {
+		const frameIndex = user.frames.filter((e) => removeID !== e.id);
+
+		setUser({ ...user, frames: frameIndex });
+	};
+
 	if (!isloading) {
 		return (
 			<NavigationContainer>
@@ -148,7 +154,11 @@ export const AppRoutes = () => {
 
 									<Stack.Screen name='editFrame'>
 										{(props) => (
-											<EditFrame {...props} editorFrame={editorFrame} />
+											<EditFrame
+												{...props}
+												editorFrame={editorFrame}
+												removedFrameLocal={removedFrameLocal}
+											/>
 										)}
 									</Stack.Screen>
 
