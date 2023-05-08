@@ -241,5 +241,6 @@ const styles = StyleSheet.create({
 		position: 'absolute',
 		top: height - 120,
 		left: width - 95,
+		transform: [{ rotate: '-90deg' }],
 	},
 });
