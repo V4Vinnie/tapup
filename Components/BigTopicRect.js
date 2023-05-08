@@ -1,4 +1,5 @@
 import {
+	Image,
 	ImageBackground,
 	Pressable,
 	StyleSheet,
@@ -10,6 +11,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Shadow } from 'react-native-shadow-2';
 import { useEffect, useState } from 'react';
 import { useUser } from '../Providers/UserProvider';
+import tapTopIMG from '../assets/tapTop_white.png';
 
 export const BigTopicRect = ({
 	navigation,
@@ -65,18 +67,20 @@ export const BigTopicRect = ({
 					source={{ uri: image }}
 					resizeMode='cover'
 				>
-					<LinearGradient
-						locations={[0.1, 0.5]}
-						colors={['rgba(255,255,255,0)', 'rgba(255,255,255,0.8)']}
-						style={{ height: '40%', justifyContent: 'flex-end', padding: 5 }}
-					>
-						<Text style={{ fontSize: 13, fontWeight: '600' }}>
-							{topic.title}
-						</Text>
-						<Text style={{ fontSize: 11 }}>
-							{topic.creator === user.id ? user.name : 'creator'}
-						</Text>
-					</LinearGradient>
+					<View>
+						<Image
+							style={{ marginBottom: -3, marginLeft: -3 }}
+							source={tapTopIMG}
+						/>
+						<View style={styles.titleWrapper}>
+							<Text style={{ fontSize: 11 }}>
+								{topic.creator === user.id ? user.name : 'creator'}
+							</Text>
+							<Text style={{ fontSize: 13, fontWeight: '600' }}>
+								{topic.title}
+							</Text>
+						</View>
+					</View>
 				</ImageBackground>
 				<Text numberOfLines={3} style={styles.descriptionText}>
 					{topic.description}
@@ -101,5 +105,11 @@ const styles = StyleSheet.create({
 		color: Colors.primary.black,
 		height: 45,
 		marginTop: 5,
+	},
+
+	titleWrapper: {
+		backgroundColor: Colors.primary.white,
+		justifyContent: 'flex-end',
+		paddingTop: 0,
 	},
 });

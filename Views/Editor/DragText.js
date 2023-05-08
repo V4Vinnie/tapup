@@ -19,11 +19,9 @@ export const DragText = ({
 	const [startPos, setStartPos] = useState({ x: item.x, y: item.y });
 
 	const onShortPress = () => {
-		if (!isTextEditing) {
-			updateTextIndex(index);
-			updateTextEdit(true);
-			setEdit(true);
-		}
+		updateTextIndex(index);
+		updateTextEdit(true);
+		setEdit(true);
 	};
 
 	const onSubmitText = () => {
@@ -39,10 +37,6 @@ export const DragText = ({
 		setTextRefs([...textRefs, txtRef]);
 	}, []);
 
-	const keyPress = ({ key, e }) => {
-		console.log('value', key);
-	};
-
 	return (
 		<Draggable
 			disabled={isTextEditing}
@@ -54,8 +48,8 @@ export const DragText = ({
 					index
 				);
 			}}
-			x={startPos ? startPos.x : 0}
-			y={startPos ? startPos.y : 0}
+			x={edit ? width / 2 - 50 : startPos ? startPos.x : 0}
+			y={edit ? height / 2 - 150 : startPos ? startPos.y : 0}
 		>
 			{edit ? (
 				<TextInput

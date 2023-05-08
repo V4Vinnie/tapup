@@ -154,7 +154,7 @@ export const EditContent = ({
 							backgroundColor: Colors.primary.bleuBottom,
 						}}
 						source={{
-							uri: `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/frames%2F${editorFrame.id}%2F${editContent.thumbnail}.png?alt=media`,
+							uri: `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/frames%2F${editorFrame.id}%2F${editContent.thumbnail}?alt=media`,
 						}}
 					>
 						<Video
@@ -166,6 +166,7 @@ export const EditContent = ({
 							resizeMode={'cover'}
 							useNativeControls={false}
 							shouldPlay={true}
+							isLooping={true}
 						>
 							<SafeAreaView
 								style={{ width: width, height: height, zIndex: 450 }}
