@@ -20,11 +20,6 @@ export const ColorPicker = ({ setColor, index, imageTexts }) => {
 		<View style={styles.navHeading}>
 			{console.log(imageTexts[index].style)}
 			<Slider
-				value={
-					imageTexts[index].style && imageTexts[index].style.fontSize
-						? imageTexts[index].style.fontSize
-						: 35
-				}
 				minimumValue={12}
 				step={1}
 				maximumValue={36}
@@ -35,6 +30,7 @@ export const ColorPicker = ({ setColor, index, imageTexts }) => {
 					)
 				}
 				thumbImage={fontSizeImg}
+				value={imageTexts[index].style.fontSize}
 			/>
 
 			<View style={styles.colorWrapper}>
