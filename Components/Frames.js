@@ -28,17 +28,21 @@ export const Frames = ({ navigation, frame }) => {
 			return;
 		} else {
 			const newFrame = activeFrame + 1;
-			setActiveFrame(activeFrame + 1);
+			setActiveFrame(newFrame);
 			setShowTime(frameContents[newFrame].time);
 		}
 	};
 
 	const goPrev = () => {
 		if (activeFrame === 0) {
-			return;
+			setActiveFrame(0);
 		} else {
 			const newFrame = activeFrame - 1;
-			setActiveFrame(newFrame);
+			if (newFrame === 0) {
+				setActiveFrame(0);
+			} else {
+				setActiveFrame(activeFrame - 1);
+			}
 			setShowTime(frameContents[newFrame].time);
 		}
 	};
@@ -87,24 +91,24 @@ export const Frames = ({ navigation, frame }) => {
 
 	const countInterval = useRef(null);
 
-	useEffect(() => {
-		if (!isLoading) {
-			if (countInterval) {
-				clearTimeout(countInterval);
-			}
-			countInterval.current = setTimeout(() => {
-				goNext();
-			}, showTime);
+	// useEffect(() => {
+	// 	if (!isLoading) {
+	// 		if (countInterval) {
+	// 			clearTimeout(countInterval);
+	// 		}
+	// 		countInterval.current = setTimeout(() => {
+	// 			goNext();
+	// 		}, showTime);
 
-			return () => {
-				clearTimeout(countInterval);
-			};
-		}
+	// 		return () => {
+	// 			clearTimeout(countInterval);
+	// 		};
+	// 	}
 
-		return () => {
-			clearTimeout(countInterval);
-		};
-	}, [showTime, isLoading]);
+	// 	return () => {
+	// 		clearTimeout(countInterval);
+	// 	};
+	// }, [showTime, isLoading]);
 
 	const saveGoBack = async () => {
 		const checkIsDone = () => {
@@ -186,8 +190,10 @@ export const Frames = ({ navigation, frame }) => {
 
 				<FramePogress
 					length={frameContents.length}
-					time={showTime}
+					updateActiveFrame={setActiveFrame}
+					time={frameContents[activeFrame].time}
 					activeFrame={activeFrame}
+					goNext={goNext}
 				/>
 			</>
 		);
