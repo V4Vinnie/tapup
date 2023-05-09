@@ -18,11 +18,12 @@ const colors = [
 export const ColorPicker = ({ setColor, index, imageTexts }) => {
 	return (
 		<View style={styles.navHeading}>
+			{console.log(imageTexts[index].style)}
 			<Slider
 				value={
 					imageTexts[index].style && imageTexts[index].style.fontSize
-						? Number(imageTexts[index].style.fontSize)
-						: 20
+						? imageTexts[index].style.fontSize
+						: 35
 				}
 				minimumValue={12}
 				step={1}

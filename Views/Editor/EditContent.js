@@ -54,7 +54,7 @@ export const EditContent = ({
 					text: 'New text',
 					id: uuid.v4(),
 					created: true,
-					style: { color: '#000000' },
+					style: { color: '#000000', fontSize: 20, backgroundColor: 'none' },
 				},
 			]);
 			setTextIndex(newLength);

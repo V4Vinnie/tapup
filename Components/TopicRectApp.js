@@ -12,6 +12,7 @@ import { Shadow } from 'react-native-shadow-2';
 import { useEffect, useState } from 'react';
 import { useUser } from '../Providers/UserProvider';
 import tapTopIMG from '../assets/tapTop.png';
+import { fetchCreator } from '../utils/fetch';
 
 export const TopicRectApp = ({
 	navigation,
@@ -36,6 +37,21 @@ export const TopicRectApp = ({
 		} else if (setEditorFrame) {
 			setEditorFrame(topic);
 			navigation.navigate('editFrame');
+		}
+	};
+
+	useEffect(() => {
+		getCreator(topic.creator);
+	}, []);
+
+	const [creator, setCreator] = useState('');
+
+	const getCreator = async (creatorId) => {
+		console.log('RUNNED', topic);
+		const _creator = await fetchCreator(creatorId);
+		console.log('AFTER', _creator);
+		if (_creator) {
+			setCreator(creator);
 		}
 	};
 
@@ -70,7 +86,11 @@ export const TopicRectApp = ({
 						<Image style={{ marginBottom: -3 }} source={tapTopIMG} />
 						<View style={styles.titleWrapper}>
 							<Text style={{ fontSize: 11, color: 'white' }}>
-								{topic.creator === user.id ? user.name : 'creator'}
+								{topic.creator === user.id
+									? user.name
+									: creator
+									? creator
+									: 'TapUp'}
 							</Text>
 							<Text style={{ fontSize: 12, fontWeight: '600', color: 'white' }}>
 								{topic.title}

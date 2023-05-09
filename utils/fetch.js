@@ -162,3 +162,13 @@ export const deleteFrame = async (tapId, topicId, frameId, frameContent) => {
 		}
 	}
 };
+
+export const fetchCreator = async (creatorID) => {
+	console.log('ID', creatorID);
+	const docRef = doc(DB, 'users', creatorID);
+	let creatorName;
+	const _userRef = await getDoc(docRef)
+		.then(() => (creatorName = _userRef.data().name))
+		.catch(() => (creatorName = undefined));
+	return creatorName;
+};
