@@ -37,6 +37,15 @@ const backgroundColors = [
 	'#FFE600',
 ];
 
+const fontStyles = [
+	'normal',
+	'AvenirNext-Heavy',
+	'Avenir-HeavyOblique',
+	'American Typewriter',
+	'Times New Roman',
+	'Copperplate',
+];
+
 export const TextStyleSwitcher = ({ imageTexts, index, setColor }) => {
 	const [styleMenu, setStyleMenu] = useState();
 
@@ -108,6 +117,41 @@ export const TextStyleSwitcher = ({ imageTexts, index, setColor }) => {
 				</>
 			);
 
+		case MENU.STYLE:
+			return (
+				<>
+					<Pressable onPress={() => setStyleMenu('')}>
+						<Image source={Arrow} />
+					</Pressable>
+					{fontStyles.map((fontVal) => (
+						<Pressable
+							style={
+								imageTexts[index].style &&
+								imageTexts[index].style.backgroundColor === fontVal
+									? {
+											...styles.styleButton,
+											transform: [{ scale: 0.85 }],
+									  }
+									: { ...styles.styleButton, fontFamily: fontVal }
+							}
+							onPress={() =>
+								setColor(
+									{
+										style: {
+											...imageTexts[index].style,
+											fontFamily: fontVal,
+										},
+									},
+									index
+								)
+							}
+						>
+							<Text style={{ fontSize: 12, fontFamily: fontVal }}>Abc</Text>
+						</Pressable>
+					))}
+				</>
+			);
+
 		default:
 			return (
 				<View style={styles.styleEditButtonWrapper}>
@@ -122,7 +166,6 @@ export const TextStyleSwitcher = ({ imageTexts, index, setColor }) => {
 					</Pressable>
 				</View>
 			);
-		
 	}
 };
 
@@ -133,6 +176,13 @@ const styles = StyleSheet.create({
 		borderRadius: 20,
 		borderColor: Colors.primary.white,
 		borderWidth: 2,
+	},
+
+	styleButton: {
+		backgroundColor: Colors.primary.white,
+		padding: 5,
+		borderRadius: 4,
+		fontWeight: 'bold',
 	},
 
 	styleEditButtonWrapper: {

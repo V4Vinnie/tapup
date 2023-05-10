@@ -4,6 +4,7 @@ import {
 	SafeAreaView,
 	StyleSheet,
 	Text,
+	View,
 } from 'react-native';
 import { Colors } from '../Constants/Colors';
 import { height, width } from '../utils/UseDimensoins';
@@ -25,24 +26,22 @@ export const Frame = ({ item, index, goNext, goPrev }) => {
 				<SafeAreaView style={{ flexDirection: 'row' }}>
 					{item.textContent &&
 						item.textContent.map(({ text, bounds, y, x, style }) => (
-							<Text
-								style={
-									style
-										? {
-												...styles.textContentItem,
-												top: y + 48,
-												left: x,
-												...style,
-										  }
-										: {
-												...styles.textContentItem,
-												top: y + 48,
-												left: x,
-										  }
-								}
-							>
-								{text}
-							</Text>
+							<View style={{ ...styles.textWrapper, top: y + 48, left: x }}>
+								<Text
+									style={
+										style
+											? {
+													...styles.textContentItem,
+													...style,
+											  }
+											: {
+													...styles.textContentItem,
+											  }
+									}
+								>
+									{text}
+								</Text>
+							</View>
 						))}
 					<Pressable
 						onPress={() => goPrev()}
@@ -69,24 +68,22 @@ export const Frame = ({ item, index, goNext, goPrev }) => {
 			<SafeAreaView style={{ flexDirection: 'row' }}>
 				{item.textContent &&
 					item.textContent.map(({ text, bounds, x, y, style }) => (
-						<Text
-							style={
-								style
-									? {
-											...styles.textContentItem,
-											top: y + 48,
-											left: x,
-											...style,
-									  }
-									: {
-											...styles.textContentItem,
-											top: y + 48,
-											left: x,
-									  }
-							}
-						>
-							{text}
-						</Text>
+						<View style={{ ...styles.textWrapper, top: y + 48, left: x }}>
+							<Text
+								style={
+									style
+										? {
+												...styles.textContentItem,
+												...style,
+										  }
+										: {
+												...styles.textContentItem,
+										  }
+								}
+							>
+								{text}
+							</Text>
+						</View>
 					))}
 				<Pressable
 					onPress={() => goPrev()}
@@ -114,10 +111,14 @@ const styles = StyleSheet.create({
 		backgroundColor: Colors.primary.bleuBottom,
 	},
 
-	textContentItem: {
+	textWrapper: {
 		position: 'absolute',
-		fontWeight: 'bold',
+		pointerEvents: 'none',
 		maxWidth: width - 120,
 		height: '100%',
+	},
+
+	textContentItem: {
+		fontWeight: 'bold',
 	},
 });
