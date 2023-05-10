@@ -6,7 +6,7 @@ export const Arrow = ({ width = 55, height = 33, ...props }) => {
 			{...props}
 			width={width}
 			height={height}
-			viewBox='0 0 50 33'
+			viewBox={`0 0 ${height} ${width}`}
 			fill='none'
 			xmlns='http://www.w3.org/2000/svg'
 		>

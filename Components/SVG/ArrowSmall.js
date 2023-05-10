@@ -1,9 +1,9 @@
 import Svg, { Path } from 'react-native-svg';
 
-export const ArrowSmall = () => (
+export const ArrowSmall = ({ width = '5', height = '8' }) => (
 	<Svg
-		width='5'
-		height='8'
+		width={width}
+		height={height}
 		viewBox='0 0 5 8'
 		fill='none'
 		xmlns='http://www.w3.org/2000/svg'

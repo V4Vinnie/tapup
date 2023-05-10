@@ -16,7 +16,7 @@ import { DragText } from './DragText';
 import uuid from 'uuid';
 import { Colors } from '../../Constants/Colors';
 import { storage } from '../../firebaseConfig';
-import { ColorPicker } from './ColorPicker';
+import { TextEditor } from './TextEditor';
 
 export const EditContent = ({
 	editorContent,
@@ -115,7 +115,7 @@ export const EditContent = ({
 	return (
 		<>
 			{isTextEditing ? (
-				<ColorPicker
+				<TextEditor
 					setColor={updateImageText}
 					index={textIndex}
 					imageTexts={imageText}

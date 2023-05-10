@@ -3,19 +3,10 @@ import { Colors } from '../../Constants/Colors';
 import Slider from '@react-native-community/slider';
 import { useEffect, useState } from 'react';
 import fontSizeImg from '../../assets/fontSize.png';
+import { TextStyleSwitcher } from './TextStyleSwitcher';
 
-const colors = [
-	'#000000',
-	'#FFFFFF',
-	'#FF0000',
-	'#05FF00',
-	'#0094FF',
-	'#2E2AE5',
-	'#AD00FF',
-	'#FF00E5',
-];
 
-export const ColorPicker = ({ setColor, index, imageTexts }) => {
+export const TextEditor = ({ setColor, index, imageTexts }) => {
 	return (
 		<View style={styles.navHeading}>
 			{console.log(imageTexts[index].style)}
@@ -34,28 +25,11 @@ export const ColorPicker = ({ setColor, index, imageTexts }) => {
 			/>
 
 			<View style={styles.colorWrapper}>
-				{colors.map((colorVal) => (
-					<Pressable
-						style={
-							imageTexts[index].style &&
-							imageTexts[index].style.color === colorVal
-								? {
-										...styles.colorButton,
-										borderColor: Colors.primary.pink,
-										backgroundColor: colorVal,
-										borderWidth: 4,
-										transform: [{ scale: 0.85 }],
-								  }
-								: { ...styles.colorButton, backgroundColor: colorVal }
-						}
-						onPress={() =>
-							setColor(
-								{ style: { ...imageTexts[index].style, color: colorVal } },
-								index
-							)
-						}
-					></Pressable>
-				))}
+				<TextStyleSwitcher
+					imageTexts={imageTexts}
+					index={index}
+					setColor={setColor}
+				/>
 			</View>
 		</View>
 	);

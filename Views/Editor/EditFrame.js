@@ -182,7 +182,7 @@ export const EditFrame = ({
 					thumbnail: `thumbnail_${id}`,
 					thumbnailUrl: contentFetch.url,
 					type: 'image',
-					time: 20000,
+					time: 10000,
 					isNew: true,
 					isDeleted: false,
 				};

@@ -8,6 +8,8 @@ import {
 import { Colors } from '../Constants/Colors';
 import { height, width } from '../utils/UseDimensoins';
 import { Video } from 'expo-av';
+import Draggable from 'react-native-draggable';
+import { useState } from 'react';
 
 export const Frame = ({ item, index, goNext, goPrev }) => {
 	if (item.type === 'image') {
@@ -114,8 +116,8 @@ const styles = StyleSheet.create({
 
 	textContentItem: {
 		position: 'absolute',
-		fontSize: 20,
 		fontWeight: 'bold',
-		textAlign: 'center',
+		maxWidth: width - 120,
+		height: '100%',
 	},
 });
