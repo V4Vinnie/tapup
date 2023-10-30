@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Animated, ImageBackground, Pressable, Text, View } from 'react-native';
 import { Colors } from '../../Constants/Colors';
 import { height, width } from '../../utils/UseDimensoins';
+import { BoldText } from '../../Components/Text/BoldText';
 
 export const EditFrameContent = ({
 	item,
@@ -78,7 +79,7 @@ export const EditFrameContent = ({
 								alignItems: 'center',
 							}}
 						>
-							<Text
+							<BoldText
 								style={{
 									fontSize: 20,
 									fontWeight: 'bold',
@@ -88,7 +89,7 @@ export const EditFrameContent = ({
 								}}
 							>
 								{item.isNew ? 'Upload' : 'Change'} cover
-							</Text>
+							</BoldText>
 						</View>
 					</ImageBackground>
 				</Pressable>

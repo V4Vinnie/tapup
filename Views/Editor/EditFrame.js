@@ -1,39 +1,40 @@
 import {
-	FlatList,
 	Pressable,
 	SafeAreaView,
 	StyleSheet,
-	Text,
 	TextInput,
 	View,
 	ScrollView,
 	ImageBackground,
-	KeyboardAvoidingView,
-	Platform,
+	Text,
+	Image,
+	TouchableOpacity,
 } from 'react-native';
 import { height, width } from '../../utils/UseDimensoins';
 import { Colors } from '../../Constants/Colors';
-import { Back } from '../../Components/Back';
 import { useEffect, useState } from 'react';
-import { Picker } from '@react-native-picker/picker';
 import { useTaps } from '../../Providers/TapsProvider';
 import { findById, findWatchedFrameIndex } from '../../utils/findById';
 import { cacheContents } from '../../utils/downloadAssets';
 import { useIsFocused } from '@react-navigation/native';
-import { Entypo } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 import { deleteFrame, updateFrame } from '../../utils/fetch';
 import { useUser } from '../../Providers/UserProvider';
 import { Loading } from '../../Components/Loading';
-import { EditFrameContent } from './EditFrameContent';
 import uuid from 'uuid';
 import * as VideoThumbnails from 'expo-video-thumbnails';
 import { deleteObject, ref, uploadBytes } from 'firebase/storage';
 import { storage } from '../../firebaseConfig';
 import { EditContent } from './EditContent';
 import { none } from '@hookstate/core';
-import BGDark from '../../assets/logo/darkBG.png';
+import { MediumText } from '../../Components/Text/MediumText';
+import { PageHeader } from '../../Components/PageHeader';
+import blueBG from '../../assets/bleuBG.png';
+import { Dropdown } from 'react-native-element-dropdown';
+import { BlackArrow } from '../../Components/SVG/BlackArrow';
+import tapTopIMG from '../../assets/tapTop_pink.png';
+import { Pencil } from '../../Components/SVG/Pencil';
 
 export const EditFrame = ({
 	editorFrame,
@@ -64,6 +65,8 @@ export const EditFrame = ({
 	const [prevTopic, setPrevTopic] = useState(editorFrame.topicId);
 
 	const [editContent, setEditContent] = useState();
+
+	const [thumbCover, setThumbCover] = useState(editorFrame.img);
 
 	useEffect(() => {
 		if (tapCategory) {
@@ -140,9 +143,10 @@ export const EditFrame = ({
 		}
 	}, [isFocused, editorFrame]);
 
-	const setTapCat = (tapId) => {
-		setTapCategory(tapId);
-		const _topics = findById(taps, tapId);
+	const setTapCat = ({ id }) => {
+		console.log('vals', id);
+		setTapCategory(id);
+		const _topics = findById(taps, id);
 		setTapTopics(_topics[0].topics);
 		setTopicCategory(_topics[0].topics[0].id);
 	};
@@ -214,6 +218,32 @@ export const EditFrame = ({
 		const storageRef = ref(storage, `frames/${editorFrame.id}/${thumbName}`);
 
 		await uploadBytes(storageRef, thumbBlob);
+	};
+
+	const pickCoverpic = async () => {
+		let result = await ImagePicker.launchImageLibraryAsync({
+			allowsEditing: true,
+			quality: 1,
+		});
+
+		if (!result.canceled) {
+			const manipResult = await manipulateAsync(result.assets[0].uri, [], {
+				compress: 0.5,
+				format: SaveFormat.PNG,
+			});
+
+			const response = await fetch(manipResult.uri);
+			const blobFile = await response.blob();
+
+			const coverPic = `${editorFrame.id}_cover.png`;
+
+			const storageRef = ref(storage, `frames/${editorFrame.id}/${coverPic}`);
+
+			setThumbCover({ ...response, isLocal: true });
+			setEditorFrame({ ...editorFrame, img: { ...response, isLocal: true } });
+			// await uploadBytes(storageRef, blobFile).then((snapshot) => {
+			// });
+		}
 	};
 
 	const deleteFrameContent = async (itemName) => {
@@ -323,14 +353,11 @@ export const EditFrame = ({
 			_contents[0].thumbnailUrl = manipResult.uri;
 			_contents[0].isNew = false;
 
-			console.log('URL', manipResult.uri);
-
 			setEditorContent(_contents);
 		}
 	};
 
 	const deleteFrameItem = (itemID) => {
-		console.log('DELETE', itemID);
 		let _contents = [...editorContent];
 		const frameIndex = _contents.map((e) => e.content).indexOf(itemID);
 		_contents[frameIndex].isDeleted = true;
@@ -367,31 +394,20 @@ export const EditFrame = ({
 
 	return (
 		<>
+			<PageHeader
+				titleName={'Frame info'}
+				backgroundColor={Colors.primary.lightBleu}
+				withBack
+				navigation={navigation}
+			/>
 			<SafeAreaView style={styles.editorWrapper}>
-				<ImageBackground
-					resizeMode='cover'
-					imageStyle={{
-						width: width,
-						height: 226.5,
-						top: -50,
-					}}
-					source={BGDark}
+				<ScrollView
+					style={styles.formWrapper}
+					showsHorizontalScrollIndicator={false}
+					showsVerticalScrollIndicator={false}
 				>
-					<View style={styles.header}>
-						<Back navigate={() => navigation.goBack()} />
-						<Text numberOfLines={1} style={[styles.titleText]}>
-							{titleEdit}
-						</Text>
-						<Pressable onPress={() => saveFrame()}>
-							<Text style={styles.saveText}>Save</Text>
-						</Pressable>
-					</View>
-					<ScrollView
-						style={styles.formWrapper}
-						showsHorizontalScrollIndicator={false}
-						showsVerticalScrollIndicator={false}
-					>
-						<View style={styles.formSection}>
+					<>
+						{/* <View style={styles.formSection}>
 							<View
 								style={{
 									flexDirection: 'row',
@@ -399,7 +415,7 @@ export const EditFrame = ({
 									alignItems: 'center',
 								}}
 							>
-								<Text style={styles.labelText}>Frame content</Text>
+								<MediumText style={styles.labelText}>Frame content</MediumText>
 								<Pressable onPress={() => addContent()}>
 									<Entypo name='plus' size={24} color='#EEEEEE' />
 								</Pressable>
@@ -415,12 +431,16 @@ export const EditFrame = ({
 										alignItems: 'center',
 									}}
 								>
-									<Text style={styles.noContentText}>No content yet</Text>
+									<MediumText style={styles.noContentText}>
+										No content yet
+									</MediumText>
 									<Pressable
 										style={styles.addContentBtn}
 										onPress={() => addContent()}
 									>
-										<Text style={styles.noContentText}>Add content</Text>
+										<MediumText style={styles.noContentText}>
+											Add content
+										</MediumText>
 									</Pressable>
 								</View>
 							) : (
@@ -446,9 +466,15 @@ export const EditFrame = ({
 									keyExtractor={(content) => content.id}
 								/>
 							)}
-						</View>
+						</View> */}
+					</>
+					<ImageBackground
+						source={blueBG}
+						imageStyle={{ height: 530, top: -230, zIndex: -10, width: width }}
+						style={{ padding: 10 }}
+					>
 						<View style={styles.formSection}>
-							<Text style={styles.labelText}>Frame title</Text>
+							<MediumText style={styles.labelText}>Frame title</MediumText>
 							<TextInput
 								onChangeText={(e) => setTitleEdit(e)}
 								style={styles.editorInput}
@@ -457,55 +483,184 @@ export const EditFrame = ({
 								placeholderTextColor='rgba(255, 255, 255, 0.6)'
 							/>
 						</View>
-						<KeyboardAvoidingView style={styles.formSection}>
-							<Text style={styles.labelText}>Frame description</Text>
-							<TextInput
-								style={styles.editorInputDesc}
-								value={descriptionEdit}
-								multiline
-								numberOfLines={3}
-								maxLength={150}
-								onChangeText={(e) => setDescriptionEdit(e)}
-								returnKeyType='send'
-								blurOnSubmit
-							/>
-						</KeyboardAvoidingView>
+
 						<View style={styles.formSection}>
-							<Text style={styles.labelText}>Tap category</Text>
-							<Picker
-								selectedValue={tapCategory}
-								style={styles.pickerStyle}
-								onValueChange={(tapId) => setTapCat(tapId)}
-								itemStyle={styles.pickerItemStyle}
-							>
-								{taps.map((tap) => (
-									<Picker.Item label={tap.title} value={tap.id} />
-								))}
-							</Picker>
+							<MediumText style={styles.labelText}>Tap category</MediumText>
+
+							<Dropdown
+								style={{
+									width: '100%',
+									padding: 0,
+									textAlign: 'center',
+									fontSize: 16,
+									paddingHorizontal: 10,
+									justifyContent: 'center',
+									borderWidth: 2,
+									borderRadius: 10,
+									borderColor: Colors.primary.white,
+								}}
+								selectedTextStyle={{
+									textAlign: 'left',
+									fontSize: 16,
+									color: Colors.primary.white,
+									fontFamily: 'DMSans-Regular',
+								}}
+								placeholderStyle={{
+									textAlign: 'left',
+									fontSize: 16,
+									opacity: 0.8,
+									color: Colors.primary.white,
+									fontFamily: 'DMSans-Regular',
+								}}
+								labelField='title'
+								valueField='id'
+								data={taps}
+								placeholder='Select'
+								value={tapCategory}
+								itemTextStyle={{
+									color: Colors.primary.black,
+									fontFamily: 'DMSans-Regular',
+								}}
+								onChange={(tapId) => setTapCat(tapId)}
+								renderRightIcon={() => (
+									<BlackArrow
+										color={Colors.primary.white}
+										style={{
+											transform: [{ rotate: '90deg' }, { scale: 1.5 }],
+											marginRight: 5,
+										}}
+									/>
+								)}
+							/>
 						</View>
 						{tapTopic && (
 							<View style={styles.formSection}>
-								<Text style={styles.labelText}>Topic category</Text>
-								<Picker
-									selectedValue={topicCategory}
-									style={styles.pickerStyle}
-									onValueChange={(topic) => setTopicCategory(topic)}
-									itemStyle={styles.pickerItemStyle}
-								>
-									{tapTopic.map((topic) => (
-										<Picker.Item label={topic.title} value={topic.id} />
-									))}
-								</Picker>
+								<MediumText style={styles.labelText}>Topic category</MediumText>
+
+								<Dropdown
+									style={{
+										width: '100%',
+										padding: 0,
+										textAlign: 'center',
+										fontSize: 16,
+										paddingHorizontal: 10,
+
+										justifyContent: 'center',
+										borderWidth: 2,
+										borderRadius: 10,
+										borderColor: Colors.primary.white,
+									}}
+									selectedTextStyle={{
+										textAlign: 'left',
+										fontSize: 16,
+										color: Colors.primary.white,
+										fontFamily: 'DMSans-Regular',
+									}}
+									placeholderStyle={{
+										textAlign: 'left',
+										fontSize: 16,
+										opacity: 0.8,
+										color: Colors.primary.white,
+										fontFamily: 'DMSans-Regular',
+									}}
+									labelField='title'
+									valueField='id'
+									data={tapTopic}
+									placeholder='Select'
+									value={topicCategory}
+									itemTextStyle={{
+										color: Colors.primary.black,
+										fontFamily: 'DMSans-Regular',
+									}}
+									onChange={(topic) => setTopicCategory(topic)}
+									renderRightIcon={() => (
+										<BlackArrow
+											color={Colors.primary.white}
+											style={{
+												transform: [{ rotate: '90deg' }, { scale: 1.5 }],
+												marginRight: 5,
+											}}
+										/>
+									)}
+								/>
 							</View>
 						)}
-						<Pressable
-							onPress={() => deleteFullFrame()}
-							style={styles.deleteButton}
+					</ImageBackground>
+					<View
+						style={{
+							alignItems: 'center',
+							marginTop: 20,
+						}}
+					>
+						<TouchableOpacity
+							style={{ position: 'absolute', zIndex: 800, top: -40, right: 65 }}
+							onPress={() => pickCoverpic()}
 						>
-							<Text style={styles.deleteText}>Delete frame</Text>
-						</Pressable>
-					</ScrollView>
-				</ImageBackground>
+							<Pencil width={50} color={Colors.primary.pink} />
+						</TouchableOpacity>
+						<View
+							style={{
+								height: 350,
+								width: 230,
+								backgroundColor: Colors.primary.pink,
+								borderRadius: 20,
+								overflow: 'hidden',
+							}}
+						>
+							<ImageBackground
+								source={
+									thumbCover && thumbCover.isLocal
+										? {
+												uri: thumbCover.url,
+										  }
+										: thumbCover
+										? {
+												uri: `${`https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/frames%2F${editorFrame.id}%2F${thumbCover}?alt=media`}`,
+										  }
+										: {}
+								}
+								imageStyle={{
+									backgroundColor: Colors.primary.bleuBottom,
+									width: 230,
+								}}
+								style={{
+									height: 350,
+									flexDirection: 'row',
+									alignItems: 'flex-end',
+								}}
+							>
+								<View
+									style={{
+										width: '100%',
+									}}
+								>
+									<Image
+										style={{ marginBottom: -2, left: -35 }}
+										source={tapTopIMG}
+									/>
+									<View
+										style={{
+											backgroundColor: Colors.primary.pink,
+											paddingHorizontal: 10,
+											paddingBottom: 15,
+										}}
+									>
+										<Text style={styles.creatorMockText}>{user.name}</Text>
+										<Text style={styles.titleMockText}>
+											{titleEdit ? titleEdit : 'Title here'}
+										</Text>
+									</View>
+								</View>
+							</ImageBackground>
+						</View>
+					</View>
+					<Pressable
+						onPress={() => deleteFullFrame()}
+						style={styles.deleteButton}
+					>
+						<MediumText style={styles.deleteText}>Delete frame</MediumText>
+					</Pressable>
+				</ScrollView>
 			</SafeAreaView>
 		</>
 	);
@@ -513,7 +668,7 @@ export const EditFrame = ({
 
 const styles = StyleSheet.create({
 	editorWrapper: {
-		backgroundColor: Colors.primary.pink,
+		backgroundColor: Colors.primary.white,
 		height: '100%',
 	},
 
@@ -549,16 +704,14 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 	},
 
-	formWrapper: {
-		marginHorizontal: 15,
-	},
+	formWrapper: {},
 	formSection: {
-		marginVertical: 10,
+		marginVertical: 5,
 	},
 
 	labelText: {
 		color: Colors.primary.white,
-		fontSize: 20,
+		fontSize: 16,
 		marginBottom: 3,
 	},
 
@@ -566,11 +719,11 @@ const styles = StyleSheet.create({
 		backgroundColor: none,
 		color: Colors.primary.white,
 		borderColor: Colors.primary.white,
-		borderWidth: 1,
-		borderRadius: 5,
+		borderWidth: 2,
+		borderRadius: 10,
 		paddingHorizontal: 10,
-		paddingVertical: 10,
-		fontSize: 14,
+		paddingVertical: 8,
+		fontSize: 16,
 	},
 
 	editorInputDesc: {
@@ -581,7 +734,7 @@ const styles = StyleSheet.create({
 		borderRadius: 5,
 		paddingHorizontal: 10,
 		paddingVertical: 10,
-		fontSize: 14,
+		fontSize: 16,
 		height: 55,
 	},
 
@@ -648,5 +801,16 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 		color: Colors.primary.pink,
 		fontWeight: 'bold',
+	},
+
+	titleMockText: {
+		fontSize: 20,
+		color: Colors.primary.white,
+	},
+
+	creatorMockText: {
+		fontSize: 16,
+		color: Colors.primary.white,
+		opacity: 0.75,
 	},
 });

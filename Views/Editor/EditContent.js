@@ -17,6 +17,7 @@ import uuid from 'uuid';
 import { Colors } from '../../Constants/Colors';
 import { storage } from '../../firebaseConfig';
 import { TextEditor } from './TextEditor';
+import { MediumText } from '../../Components/Text/MediumText';
 
 export const EditContent = ({
 	editorContent,
@@ -130,7 +131,7 @@ export const EditContent = ({
 						}}
 					/>
 					<Pressable onPress={() => saveEditFrame()}>
-						<Text style={styles.saveText}>Save</Text>
+						<MediumText style={styles.saveText}>Save</MediumText>
 					</Pressable>
 				</View>
 			)}

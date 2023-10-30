@@ -1,9 +1,7 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Colors } from '../Constants/Colors';
 import { Shadow } from 'react-native-shadow-2';
-import { Ionicons, Entypo } from '@expo/vector-icons';
-import { ROLES } from '../Constants/Roles';
-import { useUser } from '../Providers/UserProvider';
+import { Entypo } from '@expo/vector-icons';
 
 export const AddFrame = ({ navigation, clickNav }) => {
 	return (
@@ -25,7 +23,7 @@ const styles = StyleSheet.create({
 		position: 'absolute',
 		zIndex: 999,
 		right: 80,
-		bottom: 100,
+		bottom: 180,
 	},
 	container: {
 		position: 'absolute',

@@ -1,15 +1,12 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Colors } from '../../Constants/Colors';
 import Slider from '@react-native-community/slider';
-import { useEffect, useState } from 'react';
 import fontSizeImg from '../../assets/fontSize.png';
 import { TextStyleSwitcher } from './TextStyleSwitcher';
-
 
 export const TextEditor = ({ setColor, index, imageTexts }) => {
 	return (
 		<View style={styles.navHeading}>
-			{console.log(imageTexts[index].style)}
 			<Slider
 				minimumValue={12}
 				step={1}

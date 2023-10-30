@@ -4,7 +4,7 @@ import { Colors } from '../../Constants/Colors';
 export const Pencil = ({
 	width = 100,
 	height = 100,
-	color = Colors.primary.pink,
+	color = Colors.primary.lightBleu,
 }) => (
 	<Svg
 		width={width}
@@ -13,7 +13,7 @@ export const Pencil = ({
 		fill='none'
 		xmlns='http://www.w3.org/2000/svg'
 	>
-		<G opacity='0.5'>
+		<G opacity='0.8'>
 			<Path
 				d='M34.0457 193.918L38.0999 160.482L63.5256 177.297L34.3441 194.115C34.2013 194.198 34.0258 194.082 34.0457 193.918Z'
 				fill={color}

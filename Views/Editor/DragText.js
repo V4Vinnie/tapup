@@ -39,9 +39,6 @@ export const DragText = ({
 		setTextRefs([...textRefs, txtRef]);
 	}, []);
 
-	useEffect(() => {
-		console.log(textRef.current);
-	}, [textRef]);
 
 	const findDimesions = (layout) => {
 		const { x, y, width, height } = layout;

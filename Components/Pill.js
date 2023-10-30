@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { shadowProp } from '../style';
 import { Shadow } from 'react-native-shadow-2';
+import { RegularText } from './Text/RegularText';
 
 export const Pill = ({ tap, color, textColor, setTabDetail, navigation }) => {
 	const onPillClick = () => {
@@ -10,7 +11,7 @@ export const Pill = ({ tap, color, textColor, setTabDetail, navigation }) => {
 	return (
 		<Shadow containerStyle={{ margin: 5 }}>
 			<Pressable style={styles.pillConainer} onPress={() => onPillClick()}>
-				<Text
+				<RegularText
 					style={{
 						paddingHorizontal: 10,
 						paddingVertical: 5,
@@ -21,7 +22,7 @@ export const Pill = ({ tap, color, textColor, setTabDetail, navigation }) => {
 					}}
 				>
 					{tap.title}
-				</Text>
+				</RegularText>
 			</Pressable>
 		</Shadow>
 	);

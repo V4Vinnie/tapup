@@ -1,14 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
-	FlatList,
-	ImageBackground,
-	Pressable,
-	SafeAreaView,
-	ScrollView,
-	StyleSheet,
-	Text,
-	View,
-} from 'react-native';
+import { FlatList, ImageBackground, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import { Bar } from 'react-native-progress';
 import { Back } from '../../Components/Back';
 import { TopicRectApp } from '../../Components/TopicRectApp';
@@ -20,10 +11,12 @@ import BGDark from '../../assets/logo/darkBG.png';
 import { BigTopicRect } from '../../Components/BigTopicRect';
 import { Loading } from '../../Components/Loading';
 import { findTabByTopicId } from '../../utils/findTabByTopicId';
-import { fetchFrames, getWatchedFramesByTopicId } from '../../utils/fetch';
+import { fetchFrames } from '../../utils/fetch';
 import { useTaps } from '../../Providers/TapsProvider';
 import { useUser } from '../../Providers/UserProvider';
 import { useIsFocused } from '@react-navigation/native';
+import { MediumText } from '../../Components/Text/MediumText';
+import { RegularText } from '../../Components/Text/RegularText';
 
 export const TopicDetail = ({
 	navigation,
@@ -45,12 +38,11 @@ export const TopicDetail = ({
 			setAllFrames(null);
 			const tap = findTabByTopicId(taps, topic.id);
 			const _frames = await fetchFrames(tap.id, topic.id);
-			const _watchedFrames = await getWatchedFramesByTopicId(topic.id, user.id);
 
 			let done = 0;
 
-			if (_watchedFrames) {
-				_watchedFrames.map((frame) => {
+			if (user.watchedFrames) {
+				user.watchedFrames.map((frame) => {
 					if (frame.isDone) {
 						if (done !== _frames.length) {
 							done++;
@@ -76,97 +68,155 @@ export const TopicDetail = ({
 	if (allFrames) {
 		return (
 			<>
-				<ScrollView
-					nestedScrollEnabled
+				<SafeAreaView
+					style={{ backgroundColor: Colors.primary.bleuBottom }}
+				></SafeAreaView>
+
+				<SafeAreaView
 					style={{
+						zIndex: 12,
+						height: '100%',
 						backgroundColor: Colors.primary.white,
 					}}
-					contentContainerStyle={{ alignItems: 'center' }}
-					showsVerticalScrollIndicator={false}
 				>
-					<ImageBackground
-						source={BGDark}
-						resizeMode='cover'
-						imageStyle={{
-							height: 225,
-							width: width + 50,
-							left: -15,
-						}}
-					>
+					<View style={styles.headerContainer}>
 						<ImageBackground
+							source={BGDark}
 							resizeMode='cover'
 							imageStyle={{
-								height: 430,
+								height: 195,
 								width: width,
-								marginLeft: -10,
-								marginTop: 180,
+								left: -10,
+								top: -80,
 							}}
-							source={BGPink}
 						>
-							<SafeAreaView style={{ width: width - 20 }}>
-								<Back navigate={() => navigation.goBack()} />
-								<View>
-									<View style={styles.headerContainer}>
-										<Text style={sectionTitle}>{topic.title}</Text>
-										<View style={styles.barContainer}>
-											<Bar
-												progress={doneFrames / allFrames.length}
-												width={width / 3}
-												borderWidth={0}
-												unfilledColor='#EAEAEA'
-												color={Colors.primary.pink}
-												height={8}
-												style={{ height: 8 }}
-											/>
-											<Text style={styles.progrestext}>
-												{doneFrames}/{allFrames.length}
-											</Text>
-										</View>
-									</View>
-									<FlatList
-										showsVerticalScrollIndicator={false}
-										showsHorizontalScrollIndicator={false}
-										horizontal
-										data={allFrames}
-										renderItem={({ item }) => (
-											<>
-							
-												<TopicRectApp
-													width={TopicWidth - 10}
-													height={200}
-													topic={item}
-													setFrames={setFrames}
-													navigation={navigation}
-												/>
-											</>
-										)}
-										keyExtractor={(frame) => frame.id}
-									/>
-									<Text style={styles.relatedText}>Related Taps</Text>
-									<View
-										style={{
-											flex: 1,
-											flexDirection: 'row',
-											flexWrap: 'wrap',
-											alignItems: 'flex-start',
-											justifyContent: 'space-between',
-										}}
-									>
-										{taps.map((tab) => (
-											<BigTopicRect
-												height={250}
-												topic={tab}
-												setTabDetail={setTabDetail}
-												navigation={navigation}
-												key={tab.id}
-											/>
-										))}
-									</View>
-								</View>
-							</SafeAreaView>
+							<Back navigate={() => navigation.goBack()} />
+							<View
+								style={{
+									width: '100%',
+									flexDirection: 'row',
+									alignItems: 'center',
+									justifyContent: 'space-between',
+									marginTop: 15,
+								}}
+							>
+								<MediumText
+									style={{
+										...sectionTitle,
+										maxWidth: '75%',
+										textAlign: 'left',
+										marginTop: 0,
+									}}
+								>
+									{topic.title}
+								</MediumText>
+
+								<Bar
+									progress={doneFrames / allFrames.length}
+									width={width / 3}
+									borderWidth={0}
+									unfilledColor='#EAEAEA'
+									color={Colors.primary.pink}
+									height={8}
+									style={{ height: 8 }}
+								/>
+							</View>
 						</ImageBackground>
-					</ImageBackground>
-				</ScrollView>
+					</View>
+					<ScrollView style={{ paddingHorizontal: 10 }}>
+						<View
+							style={{
+								zIndex: 0,
+								justifyContent: 'center',
+								marginTop: 40,
+							}}
+						>
+							<ImageBackground
+								resizeMode='cover'
+								imageStyle={{
+									height: 200,
+									width: width,
+									left: -10,
+									top: -50,
+								}}
+								source={
+									topic.img.includes('/')
+										? { uri: topic.img }
+										: {
+												uri: `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/frames%2F${topic.id}%2F${topic.img}?alt=media`,
+										  }
+								}
+							>
+								<ImageBackground
+									resizeMode='cover'
+									imageStyle={{
+										height: 200,
+										width: width,
+										left: -10,
+										top: -50,
+										opacity: 0.8,
+									}}
+									source={BGPink}
+								>
+									<RegularText style={{ color: Colors.primary.white }}>
+										{topic.description}
+									</RegularText>
+								</ImageBackground>
+							</ImageBackground>
+						</View>
+
+						<View style={styles.bigItemsConainer}>
+							{allFrames.length > 1 ? (
+								<>
+									<BigTopicRect
+										width={width / 2 - 50}
+										height={300}
+										topic={allFrames[0]}
+										setFrames={setFrames}
+										navigation={navigation}
+									/>
+									<BigTopicRect
+										width={width / 2 - 10}
+										height={300}
+										topic={allFrames[1]}
+										setFrames={setFrames}
+										navigation={navigation}
+									/>
+								</>
+							) : (
+								<BigTopicRect
+									width={width / 2 - 10}
+									height={300}
+									topic={allFrames[0]}
+									setFrames={setFrames}
+									navigation={navigation}
+								/>
+							)}
+						</View>
+						<MediumText style={styles.moreMediumText}>
+							{allFrames.length === 0 ? '' : 'More'}
+						</MediumText>
+						<FlatList
+							style={{ marginBottom: 150 }}
+							showsVerticalScrollIndicator={false}
+							showsHorizontalScrollIndicator={false}
+							numColumns={3}
+							data={allFrames}
+							renderItem={({ item }) => (
+								<>
+									<TopicRectApp
+										width={TopicWidth - 10}
+										height={200}
+										topic={item}
+										setFrames={setFrames}
+										navigation={navigation}
+									/>
+								</>
+							)}
+							keyExtractor={(frame) => frame.id}
+						/>
+					</ScrollView>
+				</SafeAreaView>
 			</>
 		);
 	}
@@ -176,11 +226,11 @@ export const TopicDetail = ({
 
 const styles = StyleSheet.create({
 	headerContainer: {
-		flexDirection: 'row',
+		flexDirection: 'column',
 		width: '100%',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		marginTop: 10,
+		alignItems: 'start',
+		zIndex: 10,
+		paddingHorizontal: 10,
 	},
 
 	barContainer: {
@@ -199,5 +249,16 @@ const styles = StyleSheet.create({
 		marginBottom: 10,
 		fontSize: 18,
 		color: Colors.primary.white,
+	},
+
+	bigItemsConainer: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		marginBottom: 20,
+		marginTop: 30,
+	},
+
+	moreText: {
+		fontSize: 18,
 	},
 });

@@ -3,16 +3,16 @@ import {
 	ImageBackground,
 	Pressable,
 	StyleSheet,
-	Text,
 	View,
 } from 'react-native';
 import { Colors } from '../Constants/Colors';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Shadow } from 'react-native-shadow-2';
 import { useEffect, useState } from 'react';
 import { useUser } from '../Providers/UserProvider';
 import tapTopIMG from '../assets/tapTop.png';
 import { fetchCreator } from '../utils/fetch';
+import { RegularText } from './Text/RegularText';
+import { MediumText } from './Text/MediumText';
 
 export const TopicRectApp = ({
 	navigation,
@@ -47,9 +47,8 @@ export const TopicRectApp = ({
 	const [creator, setCreator] = useState('');
 
 	const getCreator = async (creatorId) => {
-		console.log('RUNNED', topic);
 		const _creator = await fetchCreator(creatorId);
-		console.log('AFTER', _creator);
+
 		if (_creator) {
 			setCreator(creator);
 		}
@@ -59,7 +58,10 @@ export const TopicRectApp = ({
 		<Shadow
 			distance={5}
 			offset={[1, 1]}
-			style={{ width: width, borderRadius: 5 }}
+			style={{
+				width: width,
+				borderRadius: 5,
+			}}
 			containerStyle={{ margin: 5, borderRadius: 5 }}
 		>
 			<Pressable
@@ -83,18 +85,26 @@ export const TopicRectApp = ({
 					resizeMode='cover'
 				>
 					<View>
-						<Image style={{ marginBottom: -3 }} source={tapTopIMG} />
+						<Image
+							style={{
+								marginBottom: -1,
+								height: 10,
+								width: '100%',
+								right: '40%',
+							}}
+							source={tapTopIMG}
+						/>
 						<View style={styles.titleWrapper}>
-							<Text style={{ fontSize: 11, color: 'white' }}>
+							<RegularText style={{ fontSize: 11, color: 'white' }}>
 								{topic.creator === user.id
 									? user.name
 									: creator
 									? creator
 									: 'TapUp'}
-							</Text>
-							<Text style={{ fontSize: 12, fontWeight: '600', color: 'white' }}>
+							</RegularText>
+							<MediumText style={{ fontSize: 12, color: 'white' }}>
 								{topic.title}
-							</Text>
+							</MediumText>
 						</View>
 					</View>
 				</ImageBackground>

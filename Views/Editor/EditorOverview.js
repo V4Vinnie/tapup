@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
 	FlatList,
 	ImageBackground,
@@ -18,8 +18,13 @@ import { useUser } from '../../Providers/UserProvider';
 import { fetchFramesForCreator } from '../../utils/fetch';
 import { width } from '../../utils/UseDimensoins';
 import uuid from 'uuid';
+import { PageHeader } from '../../Components/PageHeader';
+import blueBG from '../../assets/bleuBG.png';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { EditFrameContent } from './EditFrameContent';
+import { EditFrame } from './EditFrame';
 
-export const EditorOverview = ({ navigation, setEditorFrame }) => {
+const EditorOverview = ({ navigation, setEditorFrame }) => {
 	const { user, setUser } = useUser();
 	const { taps } = useTaps();
 	useEffect(() => {
@@ -70,21 +75,15 @@ export const EditorOverview = ({ navigation, setEditorFrame }) => {
 		return (
 			<>
 				<AddFrame clickNav={clickAddFrame} />
+				<PageHeader
+					titleName={'Your frames'}
+					backgroundColor={Colors.primary.lightBleu}
+				/>
 				<SafeAreaView>
 					<ImageBackground
-						resizeMode='cover'
-						imageStyle={{
-							width: width,
-							height: 226.5,
-							top: -50,
-						}}
-						source={BGDark}
+						source={blueBG}
+						imageStyle={{ height: 530, top: -200, zIndex: -10 }}
 					>
-						<View style={styles.header}>
-							<Back navigate={() => navigation.goBack()} />
-							<Text style={[styles.titleText]}>Your frames</Text>
-							<View style={{ width: 50 }}></View>
-						</View>
 						<FlatList
 							showsVerticalScrollIndicator={false}
 							showsHorizontalScrollIndicator={false}
@@ -107,6 +106,55 @@ export const EditorOverview = ({ navigation, setEditorFrame }) => {
 			</>
 		);
 	}
+};
+
+const Stack = createNativeStackNavigator();
+
+export const EditorView = ({}) => {
+	const [editorFrame, setEditorFrame] = useState(null);
+
+	const { user, setUser } = useUser();
+
+	const removedFrameLocal = (removeID) => {
+		const frameIndex = user.frames.filter((e) => removeID !== e.id);
+
+		setUser({ ...user, frames: frameIndex });
+	};
+
+	return (
+		<Stack.Navigator
+			screenOptions={{
+				headerShown: false,
+			}}
+			initialRouteName='editorOverview'
+		>
+			<Stack.Screen name='editorOverview'>
+				{(props) => (
+					<EditorOverview {...props} setEditorFrame={setEditorFrame} />
+				)}
+			</Stack.Screen>
+
+			<Stack.Screen name='editFrame'>
+				{(props) => (
+					<EditFrame
+						{...props}
+						editorFrame={editorFrame}
+						removedFrameLocal={removedFrameLocal}
+					/>
+				)}
+			</Stack.Screen>
+
+			<Stack.Screen name='editContent'>
+				{(props) => (
+					<EditFrameContent
+						{...props}
+						editorFrame={editorFrame}
+						setEditorFrame={setEditorFrame}
+					/>
+				)}
+			</Stack.Screen>
+		</Stack.Navigator>
+	);
 };
 
 const styles = StyleSheet.create({

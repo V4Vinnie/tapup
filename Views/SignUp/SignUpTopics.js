@@ -26,6 +26,7 @@ import { useTaps } from '../../Providers/TapsProvider';
 import { Loading } from '../../Components/Loading';
 import { updateProfile } from 'firebase/auth';
 import { auth } from '../../firebaseConfig';
+import { MediumText } from '../../Components/Text/MediumText';
 
 export const SignUpTopics = ({ navigation }) => {
 	const { taps, setTaps } = useTaps();
@@ -146,7 +147,7 @@ export const SignUpTopics = ({ navigation }) => {
 									selectTextOnFocus
 								/>
 								{/* {editUsername ? null : (
-									<Pressable
+									<	
 										style={{ width: 10, height: 10 }}
 										onPressIn={() => setEditable()}
 									>
@@ -160,9 +161,9 @@ export const SignUpTopics = ({ navigation }) => {
 							</View>
 						</View>
 						<View style={{ marginTop: 50 }}>
-							<Text style={styles.infoText}>
+							<MediumText style={styles.infoText}>
 								Select topics & users you're intrested in
-							</Text>
+							</MediumText>
 							<FlatList
 								showsVerticalScrollIndicator={false}
 								showsHorizontalScrollIndicator={false}

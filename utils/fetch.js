@@ -164,11 +164,58 @@ export const deleteFrame = async (tapId, topicId, frameId, frameContent) => {
 };
 
 export const fetchCreator = async (creatorID) => {
-	console.log('ID', creatorID);
 	const docRef = doc(DB, 'users', creatorID);
 	let creatorName;
 	const _userRef = await getDoc(docRef)
 		.then(() => (creatorName = _userRef.data().name))
 		.catch(() => (creatorName = undefined));
 	return creatorName;
+};
+
+export const createNewQuestion = async (question) => {
+	const docRef = doc(DB, 'questions', question.id);
+	await setDoc(docRef, question);
+};
+
+export const fetchQuestionForUser = async (userId) => {
+	const questionsCollec = collection(DB, `questions`);
+	const questionsQuery = query(questionsCollec, where('askedBy', '==', userId));
+	const questions = await getDocs(questionsQuery);
+
+	if (questions.empty) {
+		return null;
+	}
+	let _questions = [];
+
+	questions.forEach((created) => {
+		_questions.push(created.data());
+	});
+
+	return _questions;
+};
+
+export const fetchFrameById = async ({ tapId, topicId, id }) => {
+	const docRef = doc(DB, `taps/${tapId}/topics/${topicId}/frames/`, id);
+	const _frameData = await getDoc(docRef);
+	return _frameData.data();
+};
+
+export const fetchQuestrionsAskedForUser = async (userId) => {
+	const questionsCollec = collection(DB, `questions`);
+	const questionsQuery = query(
+		questionsCollec,
+		where('creatorId', '==', userId)
+	);
+	const questions = await getDocs(questionsQuery);
+
+	if (questions.empty) {
+		return null;
+	}
+	let _questions = [];
+
+	questions.forEach((created) => {
+		_questions.push(created.data());
+	});
+
+	return _questions;
 };

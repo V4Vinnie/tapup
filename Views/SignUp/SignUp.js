@@ -11,28 +11,35 @@ import {
 import { ProfielPic } from '../../Components/ProfilePic';
 import { bodyText, buttonStyle, containerStyle } from '../../style';
 
-import BG from '../../assets/logo/SignUpBG.png';
+import BG from '../../assets/bleuBG.png';
 import { Colors } from '../../Constants/Colors';
-import { width } from '../../utils/UseDimensoins';
-import { useState } from 'react';
+import { height, width } from '../../utils/UseDimensoins';
+import { useEffect, useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { shortUid, userUid } from '../../utils/uid';
 import { ref, uploadBytes } from 'firebase/storage';
 import { auth, DB, storage } from '../../firebaseConfig';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { fetchUser } from '../../utils/fetch';
+import { fetchUser, updateUser } from '../../utils/fetch';
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 import { ROLES } from '../../Constants/Roles';
+import { Back } from '../../Components/Back';
+import { RoleSelect } from '../../Components/RoleSelect';
+import { InterestPills } from '../../Components/InterestPills';
+import { MediumText } from '../../Components/Text/MediumText';
+import { RegularText } from '../../Components/Text/RegularText';
 
 export const SignUp = ({ navigation, signUp }) => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
+	const [name, setName] = useState('');
+	const [selectedTopics, setSelectedTopics] = useState([]);
 	const [errorMessage, setErrorMessage] = useState(null);
 
-	const [userImg, setUserImg] = useState(
-		'https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/UI%2FprofilePic.png?alt=media'
-	);
+	const [role, setRole] = useState('Select');
+
+	const [userImg, setUserImg] = useState('UI%2FprofilePic.png');
 
 	const [isSending, setIsSending] = useState(false);
 
@@ -72,20 +79,38 @@ export const SignUp = ({ navigation, signUp }) => {
 		}
 
 		if (!error) {
-			signUp({
-				name: `User${shortUid()}`,
-				email: email,
+			const newUser = {
 				profilePic: onlineImg,
 				role: ROLES.USER,
+				compagnyRole: role,
+				name: name,
+				email: email,
+				selectedTopics: selectedTopics,
+				watchedFrames: [],
+				badges: [],
 				..._user,
-			});
+			};
+			updateUser(newUser);
 
-			navigation.navigate('sign-up-topic');
+			signUp(newUser);
+
+			navigation.navigate('onboard');
 			setIsSending(false);
 		} else {
 			setErrorMessage(error);
 		}
 		setIsSending(false);
+	};
+
+	const clickTopic = (tap) => {
+		let _selectedTopics = [...selectedTopics];
+		if (selectedTopics.includes(tap.id)) {
+			const _newSelectedTopics = _selectedTopics.filter((id) => id !== tap.id);
+			setSelectedTopics(_newSelectedTopics);
+		} else {
+			_selectedTopics.push(tap.id);
+			setSelectedTopics(_selectedTopics);
+		}
 	};
 
 	const pickUserImg = async () => {
@@ -104,7 +129,7 @@ export const SignUp = ({ navigation, signUp }) => {
 				}
 			);
 
-			setUserImg(manipResult.uri);
+			setUserImg({ isLocal: true, url: manipResult.uri });
 		}
 	};
 
@@ -117,84 +142,150 @@ export const SignUp = ({ navigation, signUp }) => {
 			<ImageBackground
 				resizeMode='cover'
 				imageStyle={{
-					height: '75%',
-					marginTop: '55%',
+					height: '100%',
+					top: -300,
+					zIndex: 0,
 				}}
 				source={BG}
 			>
-				<View
-					style={{
-						...containerStyle,
-						backgroundColor: 'none',
-						width: width,
-					}}
-				>
-					<Pressable onPress={() => pickUserImg()}>
-						<ProfielPic size={230} img={userImg} isEditable />
-					</Pressable>
-					<View style={{ paddingTop: 80 }}>
+				<SafeAreaView style={{ height: '100%' }}>
+					<View
+						style={{
+							height: 170,
+							position: 'absolute',
+							backgroundColor: Colors.primary.bleuBottom,
+							width: '100%',
+						}}
+					></View>
+					<View style={{ padding: 15 }}>
+						<Back navigate={() => navigation.goBack()} />
+					</View>
+					<View
+						style={{
+							...containerStyle,
+							backgroundColor: 'none',
+							width: width,
+							zIndex: 10,
+							paddingHorizontal: 20,
+						}}
+					>
 						<View>
-							<Text
-								style={{
-									marginLeft: 10,
-									height: 15,
-									fontSize: 14,
-									marginBottom: 10,
-									color: Colors.primary.white,
-									textDecorationLine: 'underline',
-								}}
-							>
-								{errorMessage === 'auth/invalid-email'
-									? 'Please fill a valid email in'
-									: errorMessage}
-							</Text>
-							<TextInput
-								keyboardType='email-address'
-								editable
-								value={email}
-								onChangeText={isSending ? null : (newText) => setEmail(newText)}
-								style={{ width: '100%', ...styles.inputStyle }}
-								placeholder='Email'
-								placeholderTextColor='#FFD1E5'
-							/>
-							<TextInput
-								secureTextEntry
-								editable
-								value={password}
-								onChangeText={
-									isSending ? null : (newText) => setPassword(newText)
-								}
-								style={styles.inputStyle}
-								placeholder='Password'
-								placeholderTextColor='#FFD1E5'
+							<ProfielPic
+								clickPencil={pickUserImg}
+								size={180}
+								img={userImg}
+								isEditable
+								pencilPlace={{ top: -20, left: 60 }}
+								pencilSize={60}
 							/>
 						</View>
-						<View style={{ alignSelf: 'flex-end', marginTop: 60 }}>
-							<Pressable
-								onPress={() => submitSignIn()}
-								style={
-									password === '' || email === '' || isSending
-										? { opacity: 0.5, ...styles.signUp }
-										: styles.signUp
-								}
-								disabled={password === '' || email === '' ? true : isSending}
-							>
-								<Text style={{ ...bodyText, color: Colors.primary.pink }}>
-									Sign up
-								</Text>
-							</Pressable>
-							<View style={styles.logInContainer}>
-								<Text style={styles.subTitle}>Already have an account? </Text>
-								<Pressable
-									disabled={isSending}
-									onPress={() => navigation.navigate('login')}
+						<View style={{}}>
+							<View>
+								<MediumText
+									style={{
+										marginLeft: 10,
+										height: 15,
+										fontSize: 14,
+										marginBottom: 10,
+										color: Colors.primary.white,
+										textDecorationLine: 'underline',
+									}}
 								>
-									<Text style={bodyText}>Log in</Text>
+									{errorMessage === 'auth/invalid-email'
+										? 'Please fill a valid email in'
+										: errorMessage}
+								</MediumText>
+								<TextInput
+									editable
+									value={name}
+									onChangeText={
+										isSending ? null : (newText) => setName(newText)
+									}
+									style={{ width: '100%', ...styles.inputStyle }}
+									placeholder='Name'
+									placeholderTextColor='rgba(255, 255, 255, 0.50)'
+								/>
+
+								<TextInput
+									keyboardType='email-address'
+									editable
+									value={email}
+									onChangeText={
+										isSending ? null : (newText) => setEmail(newText)
+									}
+									style={{ width: '100%', ...styles.inputStyle }}
+									placeholder='Email'
+									placeholderTextColor='rgba(255, 255, 255, 0.50)'
+								/>
+								<TextInput
+									secureTextEntry
+									editable
+									value={password}
+									onChangeText={
+										isSending ? null : (newText) => setPassword(newText)
+									}
+									style={styles.inputStyle}
+									placeholder='Password'
+									placeholderTextColor='rgba(255, 255, 255, 0.50)'
+								/>
+
+								<RoleSelect role={role} setRole={setRole} />
+							</View>
+							<View style={{ marginTop: 25 }}>
+								<RegularText style={{ marginBottom: 5, fontSize: 16 }}>
+									Select topics
+								</RegularText>
+								<InterestPills
+									clickTopic={clickTopic}
+									selectedTopics={selectedTopics}
+								/>
+							</View>
+							<View style={{ marginTop: 30 }}>
+								<Pressable
+									onPress={() => submitSignIn()}
+									style={
+										password === '' ||
+										email === '' ||
+										isSending ||
+										name === '' ||
+										role === 'Select'
+											? { opacity: 0.5, ...styles.signUp }
+											: styles.signUp
+									}
+									disabled={
+										password === '' ||
+										email === '' ||
+										name === '' ||
+										role === 'Select'
+											? true
+											: isSending
+									}
+								>
+									<MediumText
+										style={{
+											...bodyText,
+											color: Colors.primary.white,
+											textAlign: 'center',
+										}}
+									>
+										Sign up
+									</MediumText>
 								</Pressable>
+								<View style={styles.logInContainer}>
+									<RegularText style={styles.subTitle}>
+										Already have an account?{' '}
+									</RegularText>
+									<Pressable
+										disabled={isSending}
+										onPress={() => navigation.navigate('login')}
+									>
+										<MediumText style={bodyText}>Log in</MediumText>
+									</Pressable>
+								</View>
 							</View>
 						</View>
 					</View>
-				</View>
+				</SafeAreaView>
 			</ImageBackground>
 		</KeyboardAvoidingView>
 	);
@@ -204,20 +295,22 @@ const styles = StyleSheet.create({
 	container: {
 		width: '100%',
 		...containerStyle,
+		backgroundColor: Colors.primary.white,
 	},
 
 	inputStyle: {
-		padding: 12,
+		padding: 10,
+		paddingVertical: 5,
 		borderColor: Colors.primary.white,
 		borderWidth: 2,
-		borderRadius: 18,
+		borderRadius: 15,
 		...bodyText,
-		marginBottom: 18,
+		marginBottom: 15,
 	},
 
 	signUp: {
 		...buttonStyle,
-		backgroundColor: Colors.primary.white,
+		backgroundColor: Colors.primary.pink,
 	},
 
 	logInContainer: {

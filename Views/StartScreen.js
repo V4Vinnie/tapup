@@ -3,6 +3,9 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Logo } from '../Components/SVG/Logo';
 import { Colors } from '../Constants/Colors';
 import { bodyText, buttonStyle, titleStyle } from '../style';
+import { BoldText } from '../Components/Text/BoldText';
+import { MediumText } from '../Components/Text/MediumText';
+import { RegularText } from '../Components/Text/RegularText';
 
 export const StartScreen = ({ navigation, logginPress, isLogginIn }) => {
 	return (
@@ -10,8 +13,8 @@ export const StartScreen = ({ navigation, logginPress, isLogginIn }) => {
 			<View>
 				<View style={styles.logoConatiner}>
 					<Logo />
-					<Text style={styles.title}>Welcome</Text>
-					<Text style={styles.subTitle}>to the swipe academy</Text>
+					<BoldText style={styles.title}>Welcome</BoldText>
+					<MediumText style={styles.subTitle}>to the swipe academy</MediumText>
 				</View>
 			</View>
 			<View>
@@ -22,15 +25,15 @@ export const StartScreen = ({ navigation, logginPress, isLogginIn }) => {
 					}
 					disabled={isLogginIn}
 				>
-					<Text style={styles.text}>Log in</Text>
+					<MediumText style={styles.text}>Log in</MediumText>
 				</Pressable>
 				<View style={styles.signUpContainer}>
-					<Text style={styles.subTitle}>New user? </Text>
+					<RegularText style={styles.subTitle}>New user? </RegularText>
 					<Pressable
 						disabled={isLogginIn}
 						onPress={() => navigation.navigate('sign-up')}
 					>
-						<Text style={styles.text}>Sign up</Text>
+						<MediumText style={styles.text}>Sign up</MediumText>
 					</Pressable>
 				</View>
 			</View>
@@ -71,7 +74,7 @@ const styles = StyleSheet.create({
 		display: 'flex',
 		flexDirection: 'row',
 		justifyContent: 'center',
-		marginTop: 58,
+		marginTop: 30,
 	},
 
 	button: {

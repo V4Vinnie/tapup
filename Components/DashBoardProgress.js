@@ -8,6 +8,7 @@ import { useUser } from '../Providers/UserProvider';
 import { fetchFrames, getWatchedFramesByTopicId } from '../utils/fetch';
 import { findWatchedFrameById } from '../utils/findById';
 import { findTopicById } from '../utils/FindTopic';
+import { RegularText } from './Text/RegularText';
 
 export const DashboardProgress = ({ topicId }) => {
 	const { taps } = useTaps();
@@ -37,7 +38,7 @@ export const DashboardProgress = ({ topicId }) => {
 			}
 			setAllFramesLength(allFrames.length);
 			setDoneFrames(done);
-			setTopic(_topic);
+			setTopic({ ..._topic });
 		};
 
 		fetchTopic();
@@ -47,10 +48,10 @@ export const DashboardProgress = ({ topicId }) => {
 		return (
 			<View style={styles.container}>
 				<View style={styles.textContainer}>
-					<Text style={styles.progressText}>{topic.title}</Text>
-					<Text style={styles.progressText}>
+					<RegularText style={styles.progressText}>{topic.title}</RegularText>
+					<RegularText style={styles.progressText}>
 						{doneFrames}/{allFramesLength}
-					</Text>
+					</RegularText>
 				</View>
 				<Bar
 					progress={doneFrames / allFramesLength}
@@ -64,7 +65,7 @@ export const DashboardProgress = ({ topicId }) => {
 		);
 	}
 
-	return <Text>Loading...</Text>;
+	return <RegularText>Loading...</RegularText>;
 };
 
 const styles = StyleSheet.create({

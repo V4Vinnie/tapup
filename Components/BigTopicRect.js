@@ -11,8 +11,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Shadow } from 'react-native-shadow-2';
 import { useEffect, useState } from 'react';
 import { useUser } from '../Providers/UserProvider';
-import tapTopIMG from '../assets/tapTop_white.png';
+import tapTopIMG from '../assets/tapTop_blue.png';
 import { fetchCreator } from '../utils/fetch';
+import { MediumText } from './Text/MediumText';
+import { BoldText } from './Text/BoldText';
+import { RegularText } from './Text/RegularText';
 
 export const BigTopicRect = ({
 	navigation,
@@ -53,9 +56,7 @@ export const BigTopicRect = ({
 	}, []);
 
 	const getCreator = async (creatorId) => {
-		console.log('RUNNED', topic);
 		const _creator = await fetchCreator(creatorId);
-		console.log('AFTER', _creator);
 		if (_creator) {
 			setCreator(creator);
 		}
@@ -81,26 +82,32 @@ export const BigTopicRect = ({
 				>
 					<View>
 						<Image
-							style={{ marginBottom: -3, marginLeft: -3 }}
+							style={{ marginBottom: -2, marginLeft: -3 }}
 							source={tapTopIMG}
 						/>
 						<View style={styles.titleWrapper}>
-							<Text style={{ fontSize: 11 }}>
+							<MediumText style={{ color: Colors.primary.white, fontSize: 11 }}>
 								{topic.creator === user.id
 									? user.name
 									: creator
 									? creator
 									: 'TapUp'}
-							</Text>
-							<Text style={{ fontSize: 13, fontWeight: '600' }}>
+							</MediumText>
+							<BoldText
+								style={{
+									color: Colors.primary.white,
+									fontSize: 13,
+									fontWeight: '600',
+								}}
+							>
 								{topic.title}
-							</Text>
+							</BoldText>
 						</View>
 					</View>
 				</ImageBackground>
-				<Text numberOfLines={3} style={styles.descriptionText}>
+				<RegularText numberOfLines={3} style={styles.descriptionText}>
 					{topic.description}
-				</Text>
+				</RegularText>
 			</Pressable>
 		</Shadow>
 	);
@@ -111,20 +118,20 @@ const styles = StyleSheet.create({
 		borderRadius: 5,
 		overflow: 'hidden',
 		padding: 5,
-		backgroundColor: Colors.primary.white,
+		backgroundColor: Colors.primary.lightBleu,
 		width: '100%',
 	},
 
 	descriptionText: {
 		fontSize: 12,
-		opacity: 0.3,
-		color: Colors.primary.black,
+		opacity: 0.8,
+		color: Colors.primary.white,
 		height: 45,
 		marginTop: 5,
 	},
 
 	titleWrapper: {
-		backgroundColor: Colors.primary.white,
+		backgroundColor: Colors.primary.lightBleu,
 		justifyContent: 'flex-end',
 		paddingTop: 0,
 	},

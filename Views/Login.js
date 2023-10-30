@@ -18,6 +18,8 @@ import { auth } from '../firebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { fetchUser } from '../utils/fetch';
 import { Logo } from '../Components/SVG/Logo';
+import { MediumText } from '../Components/Text/MediumText';
+import { RegularText } from '../Components/Text/RegularText';
 
 export const Login = ({ navigation }) => {
 	const [email, setEmail] = useState('cielbrys@gmail.com');
@@ -29,9 +31,9 @@ export const Login = ({ navigation }) => {
 	const logIn = async () => {
 		setIsSending(true);
 		await signInWithEmailAndPassword(auth, email, password)
-			.then(async (userCredential) => {
+			.then(async ({ user }) => {
 				// Signed in
-				const _user = await fetchUser(userCredential.user.uid);
+				const _user = await fetchUser(user.uid);
 				setUser(_user);
 				// ...
 			})
@@ -73,7 +75,7 @@ export const Login = ({ navigation }) => {
 					</View>
 					<View style={{ paddingTop: 40 }}>
 						<View>
-							<Text
+							<MediumText
 								style={{
 									marginLeft: 10,
 									height: 15,
@@ -86,7 +88,7 @@ export const Login = ({ navigation }) => {
 								{errorMessage === 'auth/invalid-email'
 									? 'Please fill a valid email in'
 									: errorMessage}
-							</Text>
+							</MediumText>
 							<TextInput
 								keyboardType='email-address'
 								editable
@@ -118,17 +120,19 @@ export const Login = ({ navigation }) => {
 								}
 								disabled={password === '' || email === '' ? true : isSending}
 							>
-								<Text style={{ ...bodyText, color: Colors.primary.pink }}>
+								<MediumText style={{ ...bodyText, color: Colors.primary.pink }}>
 									Log in
-								</Text>
+								</MediumText>
 							</Pressable>
 							<View style={styles.logInContainer}>
-								<Text style={styles.subTitle}>No account yet? </Text>
+								<RegularText style={styles.subTitle}>
+									No account yet?{' '}
+								</RegularText>
 								<Pressable
 									disabled={isSending}
 									onPress={() => navigation.navigate('sign-up')}
 								>
-									<Text style={bodyText}>Sign Up</Text>
+									<MediumText style={bodyText}>Sign Up</MediumText>
 								</Pressable>
 							</View>
 						</View>

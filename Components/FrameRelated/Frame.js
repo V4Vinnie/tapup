@@ -6,11 +6,10 @@ import {
 	Text,
 	View,
 } from 'react-native';
-import { Colors } from '../Constants/Colors';
-import { height, width } from '../utils/UseDimensoins';
+import { Colors } from '../../Constants/Colors';
+import { height, width } from '../../utils/UseDimensoins';
 import { Video } from 'expo-av';
-import Draggable from 'react-native-draggable';
-import { useState } from 'react';
+import { RegularText } from '../Text/RegularText';
 
 export const Frame = ({ item, index, goNext, goPrev }) => {
 	if (item.type === 'image') {
@@ -20,14 +19,21 @@ export const Frame = ({ item, index, goNext, goPrev }) => {
 					width: width,
 					height: height,
 					backgroundColor: Colors.primary.bleuBottom,
+					aspectRatio: 9 / 16,
 				}}
 				source={{ uri: item.contentUrl }}
 			>
 				<SafeAreaView style={{ flexDirection: 'row' }}>
 					{item.textContent &&
 						item.textContent.map(({ text, bounds, y, x, style }) => (
-							<View style={{ ...styles.textWrapper, top: y + 48, left: x }}>
-								<Text
+							<View
+								style={{
+									...styles.textWrapper,
+									top: `${((y + 10) / 640) * 100}%`,
+									left: `${(x / 360) * 100}%`,
+								}}
+							>
+								<RegularText
 									style={
 										style
 											? {
@@ -40,7 +46,7 @@ export const Frame = ({ item, index, goNext, goPrev }) => {
 									}
 								>
 									{text}
-								</Text>
+								</RegularText>
 							</View>
 						))}
 					<Pressable
@@ -68,8 +74,14 @@ export const Frame = ({ item, index, goNext, goPrev }) => {
 			<SafeAreaView style={{ flexDirection: 'row' }}>
 				{item.textContent &&
 					item.textContent.map(({ text, bounds, x, y, style }) => (
-						<View style={{ ...styles.textWrapper, top: y + 48, left: x }}>
-							<Text
+						<View
+							style={{
+								...styles.textWrapper,
+								top: `${(y / 640) * 100}%`,
+								left: `${(x / 360) * 100}%`,
+							}}
+						>
+							<RegularText
 								style={
 									style
 										? {
@@ -82,7 +94,7 @@ export const Frame = ({ item, index, goNext, goPrev }) => {
 								}
 							>
 								{text}
-							</Text>
+							</RegularText>
 						</View>
 					))}
 				<Pressable

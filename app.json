@@ -1,50 +1,57 @@
 {
-  "expo": {
-    "name": "TapUp",
-    "slug": "TapUp",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "jsEngine": "hermes",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.storything.TapUp"
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      },
-      "package": "com.storything.TapUp"
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "25dd956a-c977-469b-8418-8dc42bf53821"
-      }
-    },
-    "plugins": [
-      [
-        "expo-image-picker",
-        {
-          "photosPermission": "The app accesses your photos to let you share them with your friends."
-        }
-      ],
-      "react-native-compressor"
-    ]
-  }
+	"expo": {
+		"name": "Tap Up",
+		"slug": "TapUp",
+		"version": "0.1.0",
+		"orientation": "portrait",
+		"jsEngine": "hermes",
+		"icon": "./assets/icon.png",
+		"privacy": "unlisted",
+		"userInterfaceStyle": "light",
+		"splash": {
+			"image": "./assets/splash.png",
+			"resizeMode": "cover",
+			"backgroundColor": "#1C2239"
+		},
+		"updates": {
+			"fallbackToCacheTimeout": 0
+		},
+		"assetBundlePatterns": ["**/*"],
+		"ios": {
+			"supportsTablet": true,
+			"bundleIdentifier": "com.storything.tapup"
+		},
+		"android": {
+			"adaptiveIcon": {
+				"foregroundImage": "./assets/adaptive-icon.png",
+				"backgroundColor": "#1C2239"
+			},
+			"package": "com.storything.tapup"
+		},
+		"web": {
+			"favicon": "./assets/favicon.png"
+		},
+		"extra": {
+			"eas": {
+				"projectId": "25dd956a-c977-469b-8418-8dc42bf53821"
+			}
+		},
+		"plugins": [
+			[
+				"expo-build-properties",
+				{
+					"ios": {
+						"useFrameworks": "static"
+					}
+				}
+			],
+			[
+				"expo-image-picker",
+				{
+					"photosPermission": "The app accesses your photos to let you share them with your friends."
+				}
+			],
+			"react-native-compressor"
+		]
+	}
 }

@@ -12,6 +12,5 @@ export const compressVideo = async (videoUrl) => {
 			}
 		}
 	);
-	console.log(result);
 	return result;
 };

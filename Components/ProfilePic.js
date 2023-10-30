@@ -1,20 +1,32 @@
-import { Image, StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Colors } from '../Constants/Colors';
 import { Pencil } from './SVG/Pencil';
 
-export const ProfielPic = ({ size, img, isEditable }) => {
-	const pencilTop = size / 2 - 50;
-
-	const pencilLeft = size / 2 - 50;
-
+export const ProfielPic = ({
+	size,
+	img,
+	isEditable,
+	clickPencil,
+	pencilPlace,
+	pencilSize,
+}) => {
 	return (
 		<View style={{ width: size, height: size, ...styles.profilePicWrapper }}>
 			{isEditable ? (
-				<View
-					style={{ top: pencilTop, left: pencilLeft, ...styles.pencilWrapper }}
+				<TouchableOpacity
+					style={
+						pencilPlace
+							? {
+									top: pencilPlace.top,
+									left: size - pencilPlace.left,
+									...styles.pencilWrapper,
+							  }
+							: { top: -40, left: size - 45, ...styles.pencilWrapper }
+					}
+					onPress={() => clickPencil()}
 				>
-					<Pencil />
-				</View>
+					<Pencil width={pencilSize ? pencilSize : 40} />
+				</TouchableOpacity>
 			) : null}
 			<Image
 				style={styles.ProfielPicImg}
@@ -35,7 +47,7 @@ export const ProfielPic = ({ size, img, isEditable }) => {
 const styles = StyleSheet.create({
 	profilePicWrapper: {
 		borderRadius: 5000,
-		overflow: 'hidden',
+
 		zIndex: 100,
 		backgroundColor: Colors.primary.white,
 	},
@@ -43,6 +55,8 @@ const styles = StyleSheet.create({
 	ProfielPicImg: {
 		width: '100%',
 		height: '100%',
+		borderRadius: 5000,
+		backgroundColor: Colors.primary.lightBleu,
 	},
 
 	pencilWrapper: {

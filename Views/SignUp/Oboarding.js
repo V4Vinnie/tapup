@@ -12,10 +12,13 @@ import { Colors } from '../../Constants/Colors';
 import { bodyText, titleStyle } from '../../style';
 import { height, width } from '../../utils/UseDimensoins';
 import BG from '../../assets/logo/SignUpBG.png';
+import { MediumText } from '../../Components/Text/MediumText';
+import { BoldText } from '../../Components/Text/BoldText';
+import { RegularText } from '../../Components/Text/RegularText';
 
 const Skip = ({ ...props }) => (
 	<Pressable style={styles.skipButton} {...props}>
-		<Text style={styles.skipText}>Skip</Text>
+		<MediumText style={styles.skipText}>Skip</MediumText>
 	</Pressable>
 );
 
@@ -59,11 +62,13 @@ export const Onboard = ({ navigation, setLoggedIn }) => {
 								source={BG}
 							>
 								<View style={styles.textContainer}>
-									<Text style={styles.onboardTitle}>Micro learning</Text>
-									<Text style={styles.subText}>
+									<BoldText style={styles.onboardTitle}>
+										Micro learning
+									</BoldText>
+									<RegularText style={styles.subText}>
 										TapUp is a true micro learning platform. Learn new skills by
 										browsing stories.
-									</Text>
+									</RegularText>
 								</View>
 							</ImageBackground>
 						),
@@ -87,11 +92,11 @@ export const Onboard = ({ navigation, setLoggedIn }) => {
 								source={BG}
 							>
 								<View style={styles.textContainer}>
-									<Text style={styles.onboardTitle}>Your own pace</Text>
-									<Text style={styles.subText}>
+									<BoldText style={styles.onboardTitle}>Your own pace</BoldText>
+									<RegularText style={styles.subText}>
 										Look at it like series on Netflix. You can binge or learn at
 										your own pace.
-									</Text>
+									</RegularText>
 								</View>
 							</ImageBackground>
 						),
@@ -115,11 +120,13 @@ export const Onboard = ({ navigation, setLoggedIn }) => {
 								source={BG}
 							>
 								<View style={styles.textContainer}>
-									<Text style={styles.onboardTitle}>Awsome feature</Text>
-									<Text style={styles.subText}>
+									<BoldText style={styles.onboardTitle}>
+										Awsome feature
+									</BoldText>
+									<MediumText style={styles.subText}>
 										Second line of text in here to describe an app feature
 										that’s really awesome
-									</Text>
+									</MediumText>
 								</View>
 							</ImageBackground>
 						),
@@ -147,13 +154,15 @@ const styles = StyleSheet.create({
 
 	onboardTitle: {
 		...titleStyle,
-		fontSize: 40,
+		fontSize: 35,
 		textAlign: 'center',
-		marginBottom: 20,
+		marginBottom: 15,
+		lineHeight: 40,
 	},
 
 	subText: {
 		...bodyText,
+		textAlign: 'center',
 	},
 
 	filledCircle: {

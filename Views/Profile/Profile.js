@@ -1,40 +1,40 @@
 import {
-	Image,
-	ImageBackground,
-	Pressable,
-	SafeAreaView,
-	StyleSheet,
-	Text,
-	View,
+    Image,
+    ImageBackground,
+    Pressable,
+    SafeAreaView,
+    StyleSheet,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { width } from '../../utils/UseDimensoins';
-import BGDark from '../../assets/logo/darkBG.png';
 import { ProfielPic } from '../../Components/ProfilePic';
 import { useUser } from '../../Providers/UserProvider';
-import { Back } from '../../Components/Back';
 import { Colors } from '../../Constants/Colors';
-import { sendPasswordResetEmail, signOut } from 'firebase/auth';
+import { signOut } from 'firebase/auth';
 import { auth, storage } from '../../firebaseConfig';
-import { Feather } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import tempBadges from '../../assets/badges/template.png';
 import { updateUser } from '../../utils/fetch';
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 import { ref, uploadBytes } from 'firebase/storage';
 
-export const Profile = ({ navigation, setLoggedIn }) => {
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { ProfileUpdate } from './ProfileUpdate';
+
+import Square from '../../assets/badges/censored/square.png';
+import SquareAng from '../../assets/badges/censored/square_angl.png';
+import Star from '../../assets/badges/censored/star.png';
+import { SelectGoal } from './SelectGoal';
+import { SelectInterests } from './SelectInterests';
+import { Fragment, useEffect, useState } from 'react';
+import blueBG from '../../assets/bleuBG_small.png';
+import { useIsFocused } from '@react-navigation/native';
+import { BoldText } from '../../Components/Text/BoldText';
+import { MediumText } from '../../Components/Text/MediumText';
+
+const ProfileMain = ({ navigation, setLoggedIn }) => {
 	const { user, setUser } = useUser();
-
-	const logOut = async () => {
-		signOut(auth).then(() => {
-			setLoggedIn(false);
-			navigation.navigate('start');
-		});
-	};
-
-	const sendResetPass = async () => {
-		await sendPasswordResetEmail(auth, user.email);
-	};
 
 	const pickUserImg = async () => {
 		let result = await ImagePicker.launchImageLibraryAsync({
@@ -57,57 +57,164 @@ export const Profile = ({ navigation, setLoggedIn }) => {
 
 			const storageRef = ref(storage, `users/${user.id}/profilePicture.png`);
 			await uploadBytes(storageRef, blobFile).then((snapshot) => {
-				const onlineImg = `users%2F${user.id}%2FprofilePicture.png`;
+				updateUser({
+					...user,
+					profilePic: `users%2F${user.id}%2FprofilePicture.png`,
+				});
+
 				setUser({
 					...user,
 					profilePic: { isLocal: true, url: manipResult.uri },
 				});
-				updateUser({ ...user, profilePic: onlineImg });
 			});
 		}
 	};
 
+	const [renderBadges, setRenderBadges] = useState(undefined);
+
+	const isFocused = useIsFocused();
+
+	useEffect(() => {
+		let hiddenBadges = [
+			Square,
+			Star,
+			SquareAng,
+			Square,
+			Star,
+			SquareAng,
+			Square,
+			Star,
+		];
+
+		if (user.badges) {
+			hiddenBadges.splice(0, user.badges.length);
+			let _renderBadges = [...user.badges, ...hiddenBadges];
+
+			setRenderBadges(_renderBadges);
+		} else {
+			setRenderBadges(hiddenBadges);
+		}
+	}, [isFocused]);
+
 	return (
-		<ImageBackground
-			resizeMode='cover'
-			imageStyle={{
-				width: width,
-				height: 226.5,
-				top: -50,
-			}}
-			source={BGDark}
-		>
-			<SafeAreaView>
+		<Fragment>
+			<SafeAreaView
+				style={{ backgroundColor: Colors.primary.bleuBottom, flex: 0 }}
+			></SafeAreaView>
+			<SafeAreaView
+				style={{
+					backgroundColor: Colors.primary.white,
+					flex: 1,
+					height: '100%',
+				}}
+			>
 				<View style={styles.headWrapper}>
-					<Back navigate={() => navigation.navigate('home')} />
-					<Text style={styles.username}>{user.name}</Text>
+					{/* <Back navigate={() => navigation.navigate('home')} /> */}
+					<BoldText style={styles.username}>{user.name}</BoldText>
 					<Pressable
 						style={{ width: 50, alignItems: 'flex-end' }}
-						onPress={() => logOut()}
+						onPress={() => navigation.navigate('UpdateProfile')}
 					>
-						<Feather name='log-out' size={24} color='white' />
+						<MaterialCommunityIcons name='cog' size={24} color='white' />
 					</Pressable>
 				</View>
-				<Pressable
-					onPress={() => pickUserImg()}
-					style={styles.profilePictureWrapper}
-				>
-					<ProfielPic size={width / 3} img={user.profilePic} isEditable />
-				</Pressable>
-				<View style={styles.profileSection}>
-					<Text style={styles.badgesTitle}>Badges</Text>
-					<View style={styles.badgesWrapper}>
-						<Image style={styles.badgesTempImg} source={tempBadges} />
-					</View>
+
+				<View style={styles.profilePictureWrapper}>
+					<ProfielPic
+						clickPencil={pickUserImg}
+						size={width / 3}
+						img={user.profilePic}
+						isEditable
+					/>
 				</View>
-				<Pressable
-					onPress={() => sendResetPass()}
-					style={styles.resetPassButton}
+				<ImageBackground
+					source={blueBG}
+					imageStyle={{ height: 350, top: -100, zIndex: -100 }}
+					style={{ padding: 10, zIndex: -100 }}
 				>
-					<Text style={styles.resetPassText}>Change password</Text>
-				</Pressable>
+					<View style={styles.profileSection}>
+						<MediumText style={styles.badgesTitle}>Badges</MediumText>
+						<View style={styles.badgesWrapper}>
+							{renderBadges ? (
+								renderBadges.map((badge) => {
+									if (badge.id === 'ID468') {
+										return (
+											<Image
+												style={styles.badgeImg}
+												source={{
+													uri: `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/badges%2F${badge.img}?alt=media`,
+												}}
+											/>
+										);
+									} else if (badge.id === 'ddFfhdks1532sqdqhg') {
+										return (
+											<Image
+												style={styles.badgeImg}
+												source={{
+													uri: `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/badges%2F${badge.img}?alt=media`,
+												}}
+											/>
+										);
+									} else {
+										return <Image style={styles.badgeImg} source={badge} />;
+									}
+								})
+							) : (
+								<Image style={styles.badgeImg} source={Square} />
+							)}
+						</View>
+					</View>
+				</ImageBackground>
+				<View style={{ alignItems: 'center', marginTop: 20 }}>
+					<TouchableOpacity
+						style={styles.signOutButton}
+						onPress={() => {
+							signOut(auth);
+							setLoggedIn(false);
+						}}
+					>
+						<MediumText style={{ color: Colors.primary.white }}>
+							Log Out
+						</MediumText>
+					</TouchableOpacity>
+				</View>
 			</SafeAreaView>
-		</ImageBackground>
+		</Fragment>
+	);
+};
+
+const ProfileStack = createNativeStackNavigator();
+
+export const Profile = ({ navigation, setLoggedIn }) => {
+	return (
+		<ProfileStack.Navigator
+			screenOptions={{
+				headerShown: false,
+			}}
+			initialRouteName='ProfileMain'
+		>
+			<ProfileStack.Screen name='ProfileMain'>
+				{(props) => (
+					<ProfileMain
+						setLoggedIn={setLoggedIn}
+						navigation={navigation}
+						{...props}
+					/>
+				)}
+			</ProfileStack.Screen>
+
+			<ProfileStack.Screen name='UpdateProfile'>
+				{(props) => <ProfileUpdate {...props} />}
+			</ProfileStack.Screen>
+
+			<ProfileStack.Screen name='SelectGoal'>
+				{(props) => <SelectGoal {...props} />}
+			</ProfileStack.Screen>
+
+			<ProfileStack.Screen name='SelectIntrests'>
+				{(props) => <SelectInterests {...props} />}
+			</ProfileStack.Screen>
+		</ProfileStack.Navigator>
 	);
 };
 
@@ -117,6 +224,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		alignItems: 'center',
 		paddingHorizontal: 10,
+		backgroundColor: Colors.primary.bleuBottom,
 	},
 
 	username: {
@@ -130,17 +238,33 @@ const styles = StyleSheet.create({
 	},
 
 	profilePictureWrapper: {
-		marginTop: 30,
-		alignSelf: 'center',
-		borderRadius: 60,
+		width: '100%',
+		justifyContent: 'center',
+		alignItems: 'center',
+		paddingTop: 30,
+		paddingBottom: 30,
+		backgroundColor: Colors.primary.bleuBottom,
 	},
 
 	profileSection: {
-		marginTop: 35,
+		marginTop: 15,
 		alignItems: 'center',
 	},
 
-	badgesWrapper: {},
+	badgesWrapper: {
+		display: 'flex',
+		flexDirection: 'row',
+		flexWrap: 'wrap',
+		width: 280,
+	},
+
+	badgeImg: {
+		width: 60,
+		height: 60,
+		objectFit: 'contain',
+		marginHorizontal: 5,
+		marginVertical: 5,
+	},
 
 	badgesTitle: {
 		fontSize: 30,
@@ -165,5 +289,15 @@ const styles = StyleSheet.create({
 	resetPassText: {
 		color: Colors.primary.white,
 		fontSize: 24,
+	},
+
+	signOutButton: {
+		backgroundColor: Colors.primary.pink,
+		justifyContent: 'center',
+		alignItems: 'center',
+		padding: 10,
+		borderRadius: 20,
+		marginTop: 50,
+		width: 200,
 	},
 });

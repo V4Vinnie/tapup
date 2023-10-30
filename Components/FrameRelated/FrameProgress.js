@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { Animated, View } from 'react-native';
-import { Colors } from '../Constants/Colors';
-import { height, width } from '../utils/UseDimensoins';
+import { Animated, TouchableOpacity, View } from 'react-native';
+import { Colors } from '../../Constants/Colors';
+import { height, width } from '../../utils/UseDimensoins';
+import { QuestionsSVG } from '../SVG/Icons/QuestionsSVG';
 
 const AnimatedProgressView = ({ time, index, length, goNextOnComplete }) => {
 	const [fillAnimation] = useState(new Animated.Value(0));
@@ -12,7 +13,6 @@ const AnimatedProgressView = ({ time, index, length, goNextOnComplete }) => {
 			duration: time,
 			useNativeDriver: false,
 		}).start(({ finished }) => {
-			console.log('H', index, finished);
 			if (finished) {
 				goNextOnComplete();
 			}
@@ -29,11 +29,11 @@ const AnimatedProgressView = ({ time, index, length, goNextOnComplete }) => {
 			style={
 				index === length - 1
 					? {
-							width: (width - 30) / length,
+							width: (width - 110) / length,
 							backgroundColor: Colors.primary.black,
 					  }
 					: {
-							width: (width - 30) / length,
+							width: (width - 110) / length,
 							backgroundColor: Colors.primary.black,
 							borderRightWidth: 1,
 							borderRightColor: Colors.primary.white,
@@ -54,7 +54,14 @@ const AnimatedProgressView = ({ time, index, length, goNextOnComplete }) => {
 	);
 };
 
-export const FramePogress = ({ length, activeFrame, time, goNext }) => {
+export const FramePogress = ({
+	length,
+	activeFrame,
+	time,
+	goNext,
+	setShowQuestion,
+	showQuestion,
+}) => {
 	const [bars, setBars] = useState([]);
 
 	useEffect(() => {
@@ -66,11 +73,11 @@ export const FramePogress = ({ length, activeFrame, time, goNext }) => {
 						style={
 							index === length - 1
 								? {
-										width: (width - 30) / length,
+										width: (width - 110) / length,
 										backgroundColor: Colors.primary.pink,
 								  }
 								: {
-										width: (width - 30) / length,
+										width: (width - 110) / length,
 										backgroundColor: Colors.primary.pink,
 										borderRightWidth: 1,
 										borderRightColor: Colors.primary.white,
@@ -85,6 +92,7 @@ export const FramePogress = ({ length, activeFrame, time, goNext }) => {
 						index={index}
 						length={length}
 						goNextOnComplete={goNext}
+						showQuestion={showQuestion}
 					/>
 				);
 			} else {
@@ -93,11 +101,11 @@ export const FramePogress = ({ length, activeFrame, time, goNext }) => {
 						style={
 							index === length - 1
 								? {
-										width: (width - 30) / length,
+										width: (width - 110) / length,
 										backgroundColor: Colors.primary.black,
 								  }
 								: {
-										width: (width - 30) / length,
+										width: (width - 110) / length,
 										backgroundColor: Colors.primary.black,
 										borderRightWidth: 1,
 										borderRightColor: Colors.primary.white,
@@ -114,17 +122,40 @@ export const FramePogress = ({ length, activeFrame, time, goNext }) => {
 		<View
 			style={{
 				position: 'absolute',
-				zIndex: 10,
-				width: width - 30,
-				height: 10,
+				zIndex: 5,
 				marginLeft: 15,
-				top: height - 70,
+				bottom: 40,
 				flexDirection: 'row',
-				borderRadius: 50,
-				overflow: 'hidden',
+				justifyContent: 'space-between',
+				alignItems: 'center',
+				width: width - 30,
 			}}
 		>
-			{bars.map((bar) => bar)}
+			<View
+				style={{
+					width: width - 110,
+					height: 20,
+					flexDirection: 'row',
+					borderRadius: 50,
+					overflow: 'hidden',
+				}}
+			>
+				{bars.map((bar) => bar)}
+			</View>
+
+			<TouchableOpacity
+				style={{
+					backgroundColor: Colors.primary.white,
+					height: 40,
+					width: 40,
+					borderRadius: 40,
+					justifyContent: 'center',
+					alignItems: 'center',
+				}}
+				onPress={() => setShowQuestion(true)}
+			>
+				<QuestionsSVG isActive={true} style={{ transform: [{ scale: 0.8 }] }} />
+			</TouchableOpacity>
 		</View>
 	);
 };
