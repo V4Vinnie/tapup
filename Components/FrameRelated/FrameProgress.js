@@ -62,8 +62,8 @@ export const FramePogress = ({
 	goNext,
 	setShowQuestion,
 	showQuestion,
+	toggleLike,
 	isLiked,
-	setIsLiked,
 }) => {
 	const [bars, setBars] = useState([]);
 
@@ -155,7 +155,7 @@ export const FramePogress = ({
 					justifyContent: 'center',
 					alignItems: 'center',
 				}}
-				onPress={isLiked ? () => setIsLiked(false) : () => setIsLiked(true)}
+				onPress={() => toggleLike()}
 			>
 				<HeartSVG isActive={isLiked} />
 			</TouchableOpacity>

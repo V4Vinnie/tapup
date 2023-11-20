@@ -3,7 +3,7 @@ import { ImageBackground, SafeAreaView } from 'react-native';
 import { Colors } from '../../Constants/Colors';
 import { useUser } from '../../Providers/UserProvider';
 import { cacheContents } from '../../utils/downloadAssets';
-import { fetchUser, updateUser } from '../../utils/fetch';
+import { fetchUser, updateFrame, updateUser } from '../../utils/fetch';
 import { findById, findWatchedFrameIndex } from '../../utils/findById';
 import { height, width } from '../../utils/UseDimensoins';
 import { Back } from '../Back';
@@ -315,6 +315,28 @@ export const Frames = ({ navigation, frame }) => {
 		navigation.goBack();
 	};
 
+	const toggleLike = async () => {
+		let likedFrame = { ...frame };
+
+		if (isLiked) {
+			setIsLiked(false);
+			const newLiked = [...likedFrame.likedBy].filter(
+				(likeId) => likeId !== user.id
+			);
+			likedFrame.likedBy = [newLiked];
+		} else {
+			setIsLiked(true);
+			if (likedFrame.likedBy) {
+				likedFrame.likedBy = [...likedFrame.likedBy, user.id];
+			} else {
+				likedFrame.likedBy = [user.id];
+			}
+		}
+
+		await updateFrame(likedFrame);
+		setFrameContents(likedFrame.contents);
+	};
+
 	if (!isLoading) {
 		return (
 			<>
@@ -393,7 +415,7 @@ export const Frames = ({ navigation, frame }) => {
 					setShowQuestion={setShowQuestion}
 					showQuestion={showQuestion}
 					isLiked={isLiked}
-					setIsLiked={setIsLiked}
+					toggleLike={toggleLike}
 				/>
 			</>
 		);

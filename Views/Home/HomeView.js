@@ -287,7 +287,7 @@ export const HomeView = ({
 												style={{ overflow: 'visible' }}
 												renderItem={({ item }) => (
 													<TopicRectApp
-														width={TopicWidth - 10}
+														width={TopicWidth - 11}
 														height={200}
 														topic={item}
 														setTopicDetail={setTopicDetail}
