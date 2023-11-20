@@ -1,15 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import {
 	FlatList,
 	ImageBackground,
 	SafeAreaView,
 	StyleSheet,
-	Text,
-	View,
 } from 'react-native';
-import BGDark from '../../assets/logo/darkBG.png';
 import { AddFrame } from '../../Components/AddFrame';
-import { Back } from '../../Components/Back';
 import { Loading } from '../../Components/Loading';
 import { TopicRectApp } from '../../Components/TopicRectApp';
 import { Colors } from '../../Constants/Colors';
@@ -21,12 +17,17 @@ import uuid from 'uuid';
 import { PageHeader } from '../../Components/PageHeader';
 import blueBG from '../../assets/bleuBG.png';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { EditFrameContent } from './EditFrameContent';
 import { EditFrame } from './EditFrame';
+import { EditContent } from './EditContent';
+import {
+	EditorFrameProvider,
+	useEditorFrame,
+} from '../../Providers/EditFrameProvider';
 
-const EditorOverview = ({ navigation, setEditorFrame }) => {
+const EditorOverview = ({ navigation, cacheContent }) => {
 	const { user, setUser } = useUser();
 	const { taps } = useTaps();
+	const { setEditorFrame } = useEditorFrame();
 	useEffect(() => {
 		const getFrames = async () => {
 			let createdFrames = [];
@@ -96,6 +97,7 @@ const EditorOverview = ({ navigation, setEditorFrame }) => {
 									width={TopicWidth - 10}
 									height={200}
 									navigation={navigation}
+									cacheContent={cacheContent}
 								/>
 							)}
 							keyExtractor={(frame) => frame.id}
@@ -111,8 +113,6 @@ const EditorOverview = ({ navigation, setEditorFrame }) => {
 const Stack = createNativeStackNavigator();
 
 export const EditorView = ({}) => {
-	const [editorFrame, setEditorFrame] = useState(null);
-
 	const { user, setUser } = useUser();
 
 	const removedFrameLocal = (removeID) => {
@@ -122,38 +122,28 @@ export const EditorView = ({}) => {
 	};
 
 	return (
-		<Stack.Navigator
-			screenOptions={{
-				headerShown: false,
-			}}
-			initialRouteName='editorOverview'
-		>
-			<Stack.Screen name='editorOverview'>
-				{(props) => (
-					<EditorOverview {...props} setEditorFrame={setEditorFrame} />
-				)}
-			</Stack.Screen>
+		<EditorFrameProvider>
+			<Stack.Navigator
+				screenOptions={{
+					headerShown: false,
+				}}
+				initialRouteName='editorOverview'
+			>
+				<Stack.Screen name='editorOverview'>
+					{(props) => <EditorOverview {...props} />}
+				</Stack.Screen>
 
-			<Stack.Screen name='editFrame'>
-				{(props) => (
-					<EditFrame
-						{...props}
-						editorFrame={editorFrame}
-						removedFrameLocal={removedFrameLocal}
-					/>
-				)}
-			</Stack.Screen>
+				<Stack.Screen name='editFrame'>
+					{(props) => (
+						<EditFrame {...props} removedFrameLocal={removedFrameLocal} />
+					)}
+				</Stack.Screen>
 
-			<Stack.Screen name='editContent'>
-				{(props) => (
-					<EditFrameContent
-						{...props}
-						editorFrame={editorFrame}
-						setEditorFrame={setEditorFrame}
-					/>
-				)}
-			</Stack.Screen>
-		</Stack.Navigator>
+				<Stack.Screen name='editContent'>
+					{(props) => <EditContent {...props} />}
+				</Stack.Screen>
+			</Stack.Navigator>
+		</EditorFrameProvider>
 	);
 };
 

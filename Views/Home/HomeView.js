@@ -1,25 +1,32 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
 	FlatList,
 	ImageBackground,
 	SafeAreaView,
-	StyleSheet,
 	View,
 	ScrollView,
+	StyleSheet,
+	RefreshControl,
 } from 'react-native';
 import BGBleu from '../../assets/logo/bleuBG.png';
 import BGDark from '../../assets/longDarkTop.png';
 import { Pill } from '../../Components/Pill';
-import { width } from '../../utils/UseDimensoins';
+import { height, width } from '../../utils/UseDimensoins';
 import { TopicRectApp } from '../../Components/TopicRectApp';
 import { Colors } from '../../Constants/Colors';
 import { sectionTitle } from '../../style';
 import { useTaps } from '../../Providers/TapsProvider';
 import { useUser } from '../../Providers/UserProvider';
-import { fetchFrameById, fetchTaps, fetchTopics } from '../../utils/fetch';
+import {
+	fetchCreators,
+	fetchFrameById,
+	fetchTaps,
+	fetchTopics,
+} from '../../utils/fetch';
 import { MediumText } from '../../Components/Text/MediumText';
 import { BoldText } from '../../Components/Text/BoldText';
 import { useIsFocused } from '@react-navigation/native';
+import { LoadingContent } from '../../Components/LoadingContent';
 
 export const HomeView = ({
 	navigation,
@@ -36,35 +43,55 @@ export const HomeView = ({
 	const [filteredTopics, setFilteredTopics] = useState([]);
 
 	const [userWatched, setUserWatched] = useState(undefined);
+	const [creators, setCreators] = useState(undefined);
+
+	const [refreshing, setRefreshing] = useState();
+
+	const [isLoading, setIsLoading] = useState(false);
+
+	const getAll = async () => {
+		setIsLoading(true);
+		const Taps = await fetchTaps();
+
+		const _taps = [];
+
+		for (let i = 0; i < Taps.length; i++) {
+			let tap = Taps[i];
+			let _topics = await fetchTopics(tap.id);
+
+			tap.topics = _topics;
+
+			_taps.push(tap);
+		}
+		setTaps(_taps);
+
+		let features = [];
+		_taps.map(async (tap) => {
+			if (tap.isFeature) {
+				features.push(tap);
+			}
+		});
+		setFeatureTopics(features);
+
+		searchTopics(_taps);
+
+		setRefreshing(false);
+		setIsLoading(false);
+	};
+
+	const getCreators = async () => {
+		const _creators = await fetchCreators();
+		setCreators(_creators);
+	};
 
 	useEffect(() => {
-		//signOut(auth);
-		const test = async () => {
-			const Taps = await fetchTaps();
+		getAll();
+		getCreators();
+	}, []);
 
-			const _taps = [];
-
-			for (let i = 0; i < Taps.length; i++) {
-				let tap = Taps[i];
-				let _topics = await fetchTopics(tap.id);
-
-				tap.topics = _topics;
-
-				_taps.push(tap);
-			}
-			setTaps(_taps);
-
-			let features = [];
-			_taps.map(async (tap) => {
-				if (tap.isFeature) {
-					features.push(tap);
-				}
-			});
-			setFeatureTopics(features);
-
-			searchTopics(_taps);
-		};
-		test();
+	const onRefresh = useCallback(() => {
+		setRefreshing(true);
+		getAll();
 	}, []);
 
 	const isFocused = useIsFocused();
@@ -114,157 +141,173 @@ export const HomeView = ({
 	};
 
 	return (
-		<ScrollView
-			showsVerticalScrollIndicator={false}
-			showsHorizontalScrollIndicator={false}
-			style={{
-				backgroundColor: Colors.primary.white,
-			}}
-		>
-			<ImageBackground
-				resizeMode='cover'
-				imageStyle={{
-					width: width,
-					height: 380,
-					top: 0,
+		<>
+			<SafeAreaView
+				style={{
+					backgroundColor: `#1C2239`,
 				}}
-				source={BGDark}
+			/>
+			<SafeAreaView
+				style={{
+					backgroundColor: Colors.primary.white,
+				}}
 			>
-				<SafeAreaView style={styles.container}>
-					<View style={styles.section}>
-						<MediumText style={sectionTitle}>Feature Taps</MediumText>
-						{featureTopics ? (
-							<FlatList
-								showsVerticalScrollIndicator={false}
-								showsHorizontalScrollIndicator={false}
-								scrollEnabled={false}
-								numColumns={3}
-								data={featureTopics}
-								renderItem={({ item }) => (
-									<TopicRectApp
-										width={TopicWidth - 11}
-										height={200}
-										topic={item}
-										setTabDetail={setTabDetail}
-										navigation={navigation}
-										key={item.id}
+				<ScrollView
+					showsVerticalScrollIndicator={false}
+					showsHorizontalScrollIndicator={false}
+					style={{}}
+				>
+					<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+					<View style={styles.container}>
+						<ImageBackground
+							resizeMode='cover'
+							imageStyle={{
+								width: width,
+								height: 380,
+								top: 0,
+								left: -10,
+							}}
+							source={BGDark}
+						>
+							<View style={styles.section}>
+								<MediumText style={sectionTitle}>Feature Taps</MediumText>
+								{featureTopics && !refreshing ? (
+									<FlatList
+										showsVerticalScrollIndicator={false}
+										showsHorizontalScrollIndicator={false}
+										scrollEnabled={false}
+										numColumns={3}
+										data={featureTopics}
+										renderItem={({ item }) => (
+											<TopicRectApp
+												width={TopicWidth - 11}
+												height={200}
+												topic={item}
+												setTabDetail={setTabDetail}
+												navigation={navigation}
+												key={item.id}
+											/>
+										)}
+										keyExtractor={(topic) => topic.id}
 									/>
+								) : (
+									<LoadingContent />
 								)}
-								keyExtractor={(topic) => topic.id}
-							/>
-						) : (
-							<BoldText>Loading...</BoldText>
-						)}
-					</View>
-					<ImageBackground
-						resizeMode='strech'
-						imageStyle={{
-							height: 300,
-							left: -11,
-							width: width + 2,
-						}}
-						source={BGBleu}
-					>
-						<View style={{ ...styles.section, marginTop: 20 }}>
-							<MediumText style={sectionTitle}>Keep watching</MediumText>
-							{userWatched ? (
-								<>
-									{userWatched.length === 0 ? (
-										<View
-											style={{
-												height: 200,
-												flexDirection: 'row',
-												width: width,
-											}}
-										>
-											<BoldText
-												style={{
-													fontSize: 50,
-													lineHeight: 50,
-													color: Colors.primary.bleuBottom,
-													opacity: 0.2,
-													textTransform: 'uppercase',
-													marginTop: 5,
-												}}
-											>
-												You have no frames in progres
-											</BoldText>
-										</View>
-									) : (
-										<FlatList
-											showsVerticalScrollIndicator={false}
-											showsHorizontalScrollIndicator={false}
-											horizontal
-											data={userWatched}
-											renderItem={({ item }) => (
-												<TopicRectApp
-													width={TopicWidth - 11}
-													height={200}
-													topic={item}
-													setFrames={setFrames}
-													navigation={navigation}
-													key={item.id}
+							</View>
+							<ImageBackground
+								resizeMode='stretch'
+								imageStyle={{
+									height: 300,
+									left: -11,
+									width: width + 2,
+								}}
+								source={BGBleu}
+							>
+								<View style={{ ...styles.section, marginTop: 20 }}>
+									<MediumText style={sectionTitle}>Keep watching</MediumText>
+									{userWatched && !refreshing ? (
+										<>
+											{userWatched.length === 0 ? (
+												<View
+													style={{
+														height: 200,
+														flexDirection: 'row',
+														width: width,
+													}}
+												>
+													<BoldText
+														style={{
+															fontSize: 50,
+															lineHeight: 50,
+															color: Colors.primary.bleuBottom,
+															opacity: 0.2,
+															textTransform: 'uppercase',
+															marginTop: 5,
+														}}
+													>
+														You have no frames in progres
+													</BoldText>
+												</View>
+											) : (
+												<FlatList
+													showsVerticalScrollIndicator={false}
+													showsHorizontalScrollIndicator={false}
+													horizontal
+													style={{ overflow: 'visible' }}
+													data={userWatched}
+													renderItem={({ item }) => (
+														<TopicRectApp
+															width={TopicWidth - 11}
+															height={200}
+															topic={item}
+															setFrames={setFrames}
+															navigation={navigation}
+															key={item.id}
+														/>
+													)}
+													keyExtractor={(topic) => topic.id}
 												/>
 											)}
-											keyExtractor={(topic) => topic.id}
-										/>
+										</>
+									) : (
+										<LoadingContent indicationColor={Colors.primary.white} />
 									)}
-								</>
-							) : (
-								<BoldText>Loading...</BoldText>
-							)}
-						</View>
-					</ImageBackground>
-					<View style={styles.topicsPillSection}>
-						{taps ? (
-							taps.map((tap) => {
-								return (
-									<Pill
-										key={tap.id}
-										tap={tap}
-										color={Colors.primary.white}
-										textColor={Colors.primary.lightBleu}
-										setTabDetail={setTabDetail}
-										navigation={navigation}
-									/>
-								);
-							})
-						) : (
-							<BoldText>Loading...</BoldText>
-						)}
-					</View>
-
-					{taps ? (
-						taps.map((tab) => (
-							<View style={styles.section}>
-								<MediumText style={{ ...sectionTitle, color: '#3A3A3A' }}>
-									{tab.title} Taps
-								</MediumText>
-								<FlatList
-									showsVerticalScrollIndicator={false}
-									showsHorizontalScrollIndicator={false}
-									horizontal
-									data={tab.topics}
-									renderItem={({ item }) => (
-										<TopicRectApp
-											width={TopicWidth - 10}
-											height={200}
-											topic={item}
-											setTopicDetail={setTopicDetail}
-											navigation={navigation}
-											key={item.id}
-										/>
-									)}
-									keyExtractor={(topic) => topic.id}
-								/>
+								</View>
+							</ImageBackground>
+							<View style={styles.topicsPillSection}>
+								{taps && !refreshing ? (
+									taps.map((tap) => {
+										return (
+											<Pill
+												key={tap.id}
+												tap={tap}
+												color={Colors.primary.white}
+												textColor={Colors.primary.lightBleu}
+												setTabDetail={setTabDetail}
+												navigation={navigation}
+											/>
+										);
+									})
+								) : (
+									<LoadingContent />
+								)}
 							</View>
-						))
-					) : (
-						<BoldText>Loading...</BoldText>
-					)}
-				</SafeAreaView>
-			</ImageBackground>
-		</ScrollView>
+							<View style={{ backgroundColor: Colors.primary.white }}>
+								{taps && !refreshing ? (
+									taps.map((tab) => (
+										<View style={styles.section}>
+											<MediumText style={{ ...sectionTitle, color: '#3A3A3A' }}>
+												{tab.title} Taps
+											</MediumText>
+											<FlatList
+												showsVerticalScrollIndicator={false}
+												showsHorizontalScrollIndicator={false}
+												horizontal
+												data={tab.topics}
+												style={{ overflow: 'visible' }}
+												renderItem={({ item }) => (
+													<TopicRectApp
+														width={TopicWidth - 10}
+														height={200}
+														topic={item}
+														setTopicDetail={setTopicDetail}
+														navigation={navigation}
+														key={item.id}
+													/>
+												)}
+												keyExtractor={(topic) => topic.id}
+											/>
+										</View>
+									))
+								) : (
+									<LoadingContent />
+								)}
+							</View>
+						</ImageBackground>
+					</View>
+				</ScrollView>
+			</SafeAreaView>
+		</>
 	);
 };
 
@@ -274,7 +317,8 @@ const styles = StyleSheet.create({
 	container: {
 		alignItems: 'center',
 		width: '100%',
-		marginBottom: 80,
+		marginBottom: height / 3,
+		backgroundColor: Colors.primary.white,
 	},
 
 	section: {

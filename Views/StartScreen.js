@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { Logo } from '../Components/SVG/Logo';
 import { Colors } from '../Constants/Colors';
 import { bodyText, buttonStyle, titleStyle } from '../style';
@@ -7,7 +6,7 @@ import { BoldText } from '../Components/Text/BoldText';
 import { MediumText } from '../Components/Text/MediumText';
 import { RegularText } from '../Components/Text/RegularText';
 
-export const StartScreen = ({ navigation, logginPress, isLogginIn }) => {
+export const StartScreen = ({ navigation, logginPress }) => {
 	return (
 		<View style={styles.container}>
 			<View>
@@ -20,19 +19,13 @@ export const StartScreen = ({ navigation, logginPress, isLogginIn }) => {
 			<View>
 				<Pressable
 					onPress={() => navigation.navigate('login')}
-					style={
-						isLogginIn ? { opacity: 0.3, ...styles.button } : styles.button
-					}
-					disabled={isLogginIn}
+					style={styles.button}
 				>
 					<MediumText style={styles.text}>Log in</MediumText>
 				</Pressable>
 				<View style={styles.signUpContainer}>
 					<RegularText style={styles.subTitle}>New user? </RegularText>
-					<Pressable
-						disabled={isLogginIn}
-						onPress={() => navigation.navigate('sign-up')}
-					>
+					<Pressable onPress={() => navigation.navigate('sign-up')}>
 						<MediumText style={styles.text}>Sign up</MediumText>
 					</Pressable>
 				</View>

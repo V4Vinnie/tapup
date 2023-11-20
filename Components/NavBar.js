@@ -1,17 +1,15 @@
-import { Text, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import { ProfielPic } from './ProfilePic';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useUser } from '../Providers/UserProvider';
 import { Colors } from '../Constants/Colors';
 import { width } from '../utils/UseDimensoins';
-import { ROLES } from '../Constants/Roles';
 import { useSetNavBar } from '../Providers/ShowNavBarProvider';
 import { HomeSVG } from './SVG/Icons/HomeSVG';
 import { SearchSVG } from './SVG/Icons/SearchSVG';
 import { QuestionsSVG } from './SVG/Icons/QuestionsSVG';
 import { GoalsSVG } from './SVG/Icons/GoalsSVG';
-import { BoldText } from './Text/BoldText';
 import { MediumText } from './Text/MediumText';
+import { checkIfCreator } from '../utils/checkIfCreator';
 
 export const NavBar = ({ state, descriptors, navigation }) => {
 	const { user } = useUser();
@@ -163,7 +161,7 @@ export const NavBar = ({ state, descriptors, navigation }) => {
 									<ProfielPic img={user ? user.profilePic : 'null'} size={35} />
 								</TouchableOpacity>
 
-								{user.role === ROLES.CREATOR && (
+								{checkIfCreator(user.role) && (
 									<TouchableOpacity
 										style={{ marginLeft: 10 }}
 										accessibilityRole='button'

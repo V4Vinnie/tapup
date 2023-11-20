@@ -23,9 +23,10 @@ export const TopicRectApp = ({
 	setFrames,
 	setTabDetail,
 	setEditorFrame,
+	cacheContent,
 }) => {
 	const { user } = useUser();
-	const clickedOnTopic = () => {
+	const clickedOnTopic = async () => {
 		if (setTabDetail) {
 			setTabDetail(topic);
 			navigation.navigate('tabDetail');
@@ -36,6 +37,7 @@ export const TopicRectApp = ({
 			setFrames(topic);
 		} else if (setEditorFrame) {
 			setEditorFrame(topic);
+
 			navigation.navigate('editFrame');
 		}
 	};
@@ -79,7 +81,15 @@ export const TopicRectApp = ({
 						topic.img.includes('/')
 							? { uri: topic.img }
 							: {
-									uri: `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/frames%2F${topic.id}%2F${topic.img}?alt=media`,
+									uri: `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/${
+										setTabDetail
+											? 'taps'
+											: setTopicDetail
+											? 'topics'
+											: setFrames || setEditorFrame
+											? 'frames'
+											: 'frames'
+									}%2F${topic.id}%2F${topic.img}?alt=media`,
 							  }
 					}
 					resizeMode='cover'

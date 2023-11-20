@@ -2,25 +2,24 @@ import {
 	ImageBackground,
 	SafeAreaView,
 	StyleSheet,
-	Text,
 	TextInput,
 	View,
 	Pressable,
 	KeyboardAvoidingView,
+	ScrollView,
 } from 'react-native';
 import { ProfielPic } from '../../Components/ProfilePic';
 import { bodyText, buttonStyle, containerStyle } from '../../style';
 
 import BG from '../../assets/bleuBG.png';
 import { Colors } from '../../Constants/Colors';
-import { height, width } from '../../utils/UseDimensoins';
-import { useEffect, useState } from 'react';
+import { width } from '../../utils/UseDimensoins';
+import { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
-import { shortUid, userUid } from '../../utils/uid';
 import { ref, uploadBytes } from 'firebase/storage';
 import { auth, DB, storage } from '../../firebaseConfig';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 import { fetchUser, updateUser } from '../../utils/fetch';
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 import { ROLES } from '../../Constants/Roles';
@@ -122,7 +121,7 @@ export const SignUp = ({ navigation, signUp }) => {
 		if (!result.canceled) {
 			const manipResult = await manipulateAsync(
 				result.assets[0].uri,
-				[{ resize: { width: 500, height: 500 } }],
+				[{ resize: { width: 400 } }],
 				{
 					compress: 0.4,
 					format: SaveFormat.JPEG,
@@ -169,7 +168,7 @@ export const SignUp = ({ navigation, signUp }) => {
 							paddingHorizontal: 20,
 						}}
 					>
-						<View>
+						<View style={{ zIndex: 3 }}>
 							<ProfielPic
 								clickPencil={pickUserImg}
 								size={180}
@@ -179,7 +178,12 @@ export const SignUp = ({ navigation, signUp }) => {
 								pencilSize={60}
 							/>
 						</View>
-						<View style={{}}>
+
+						<ScrollView
+							showsHorizontalScrollIndicator={false}
+							showsVerticalScrollIndicator={false}
+							style={{ width: '100%', overflow: 'visible', zIndex: 1 }}
+						>
 							<View>
 								<MediumText
 									style={{
@@ -283,7 +287,7 @@ export const SignUp = ({ navigation, signUp }) => {
 									</Pressable>
 								</View>
 							</View>
-						</View>
+						</ScrollView>
 					</View>
 				</SafeAreaView>
 			</ImageBackground>

@@ -9,6 +9,7 @@ import {
 	Text,
 	Image,
 	TouchableOpacity,
+	Alert,
 } from 'react-native';
 import { height, width } from '../../utils/UseDimensoins';
 import { Colors } from '../../Constants/Colors';
@@ -22,11 +23,8 @@ import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 import { deleteFrame, updateFrame } from '../../utils/fetch';
 import { useUser } from '../../Providers/UserProvider';
 import { Loading } from '../../Components/Loading';
-import uuid from 'uuid';
-import * as VideoThumbnails from 'expo-video-thumbnails';
-import { deleteObject, ref, uploadBytes } from 'firebase/storage';
+import { ref, uploadBytesResumable } from 'firebase/storage';
 import { storage } from '../../firebaseConfig';
-import { EditContent } from './EditContent';
 import { none } from '@hookstate/core';
 import { MediumText } from '../../Components/Text/MediumText';
 import { PageHeader } from '../../Components/PageHeader';
@@ -35,16 +33,15 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { BlackArrow } from '../../Components/SVG/BlackArrow';
 import tapTopIMG from '../../assets/tapTop_pink.png';
 import { Pencil } from '../../Components/SVG/Pencil';
+import { RegularText } from '../../Components/Text/RegularText';
+import { useEditorFrame } from '../../Providers/EditFrameProvider';
 
-export const EditFrame = ({
-	editorFrame,
-	navigation,
-	setEditorFrame,
-	removedFrameLocal,
-}) => {
+export const EditFrame = ({ navigation, removedFrameLocal }) => {
 	const { user, setUser } = useUser();
 	const { taps } = useTaps();
 	const isFocused = useIsFocused();
+
+	const { editorFrame, setEditorFrame } = useEditorFrame();
 
 	const [loading, setLoading] = useState(true);
 
@@ -54,17 +51,15 @@ export const EditFrame = ({
 
 	const [titleEdit, setTitleEdit] = useState(editorFrame.title);
 	const [tapCategory, setTapCategory] = useState(editorFrame.tapId);
-	const [topicCategory, setTopicCategory] = useState(editorFrame.topicId);
+	const [topicCategory, setTopicCategory] = useState({
+		id: editorFrame.topicId,
+	});
 	const [descriptionEdit, setDescriptionEdit] = useState(
 		editorFrame.description
 	);
 
-	const [editorContent, setEditorContent] = useState([]);
-
 	const [prevTap, setPrevTap] = useState(editorFrame.tapId);
 	const [prevTopic, setPrevTopic] = useState(editorFrame.topicId);
-
-	const [editContent, setEditContent] = useState();
 
 	const [thumbCover, setThumbCover] = useState(editorFrame.img);
 
@@ -113,116 +108,42 @@ export const EditFrame = ({
 				}
 			} catch (e) {
 			} finally {
-				setEditorContent([
-					{
-						type: 'cover',
-						thumbnailUrl: editorFrame.img.includes('/')
-							? editorFrame.img
-							: `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/frames%2FBPuFm3XKvHw4c1pnTjjE%2F${editorFrame.img}?alt=media`,
-					},
-					..._frameContens,
-				]);
+				setEditorFrame({ ...editorFrame, contents: [..._frameContens] });
 				setLoading(false);
 			}
 		};
-		if (!editorFrame.isNew) {
-			setIsNew(false);
-			cacheContent();
-		} else {
-			setIsNew(true);
-			setEditorContent([
-				{
-					type: 'cover',
-					isNew: true,
-					thumbnailUrl: editorFrame.img.includes('/')
-						? editorFrame.img
-						: `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/frames%2FBPuFm3XKvHw4c1pnTjjE%2F${editorFrame.img}?alt=media`,
-				},
-			]);
-			setLoading(false);
+
+		if (isFocused) {
+			if (!editorFrame.isNew) {
+				setIsNew(false);
+				cacheContent();
+			} else {
+				setIsNew(true);
+
+				setLoading(false);
+			}
 		}
-	}, [isFocused, editorFrame]);
+	}, [isFocused]);
 
 	const setTapCat = ({ id }) => {
 		console.log('vals', id);
 		setTapCategory(id);
 		const _topics = findById(taps, id);
 		setTapTopics(_topics[0].topics);
-		setTopicCategory(_topics[0].topics[0].id);
+		setTopicCategory({ id: _topics[0].topics[0].id });
 	};
 
-	const generateThumbnail = async (url) => {
-		try {
-			const { uri } = await VideoThumbnails.getThumbnailAsync(url, {
-				time: 0,
-			});
-			return uri;
-		} catch (e) {
-			console.warn(e);
-		}
-	};
+	const uploadThumbnail = async (thumbUrl, thumbName) => {
+		const fetchimg = await fetch(thumbUrl);
+		const blobImf = await fetchimg.blob();
 
-	const addContent = async () => {
-		let result = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.All,
-			aspect: [16, 9],
-			allowsEditing: true,
-			quality: 1,
-		});
-
-		if (!result.canceled) {
-			if (result.assets[0].duration === null) {
-				const manipResult = await manipulateAsync(result.assets[0].uri, [], {
-					compress: 0.4,
-					format: SaveFormat.PNG,
-				});
-
-				const contentFetch = await fetch(manipResult.uri);
-
-				const id = uuid.v4();
-				const newImg = {
-					content: `${id}.png`,
-					contentUrl: contentFetch.url,
-					thumbnail: `thumbnail_${id}`,
-					thumbnailUrl: contentFetch.url,
-					type: 'image',
-					time: 10000,
-					isNew: true,
-					isDeleted: false,
-				};
-
-				setEditContent(newImg);
-				setEditorContent([...editorContent, newImg]);
-			} else {
-				const thumb = await generateThumbnail(result.assets[0].uri);
-				const id = uuid.v4();
-				const newVid = {
-					content: `${id}.${result.assets[0].fileName
-						.split('.')[1]
-						.toLowerCase()}`,
-					contentUrl: result.assets[0].uri,
-					type: 'video',
-					time: result.assets[0].duration,
-					thumbnail: thumb,
-					isNew: true,
-					isDeleted: false,
-				};
-				setImageText([]);
-				setEditContent(newVid);
-				setEditorContent([...editorContent, newVid]);
-			}
-		}
-	};
-
-	const uploadThumbnail = async (thumbBlob, thumbName) => {
 		const storageRef = ref(storage, `frames/${editorFrame.id}/${thumbName}`);
 
-		await uploadBytes(storageRef, thumbBlob);
+		await uploadBytesResumable(storageRef, blobImf);
 	};
 
 	const pickCoverpic = async () => {
 		let result = await ImagePicker.launchImageLibraryAsync({
-			allowsEditing: true,
 			quality: 1,
 		});
 
@@ -239,129 +160,52 @@ export const EditFrame = ({
 
 			const storageRef = ref(storage, `frames/${editorFrame.id}/${coverPic}`);
 
-			setThumbCover({ ...response, isLocal: true });
-			setEditorFrame({ ...editorFrame, img: { ...response, isLocal: true } });
+			setThumbCover({ url: manipResult.uri, isLocal: true });
+			setEditorFrame({
+				...editorFrame,
+				img: { url: manipResult.uri, isLocal: true },
+			});
 			// await uploadBytes(storageRef, blobFile).then((snapshot) => {
 			// });
 		}
 	};
 
-	const deleteFrameContent = async (itemName) => {
-		const desertRef = ref(storage, `frames/${editorFrame.id}/${itemName}`);
-		await deleteObject(desertRef)
-			.then(() => {
-				console.log('DELETED');
-			})
-			.catch((error) => {
-				console.log(error);
-			});
-	};
-
 	const saveFrame = async () => {
-		let _content = [];
-
-		let prevURL = [];
-		let prevThumbURL = [];
-
-		for (let index = 1; index < editorContent.length; index++) {
-			const item = editorContent[index];
-			prevURL.push(item.contentUrl);
-			prevThumbURL.push(item.thumbnailUrl);
-
-			const thumbFetch = await fetch(item.thumbnailUrl);
-			const thumbBlob = await thumbFetch.blob();
-
-			// await uploadThumbnail(thumbBlob, `${item.thumbnail}.png`);
-
-			if (item.isNew) {
-				const contentFetch = await fetch(item.contentUrl);
-				const contentBlob = await contentFetch.blob();
-
-				await uploadThumbnail(contentBlob, item.content);
-			}
-			if (!item.isDeleted) {
-				_content.push({
-					...item,
-					contentUrl: null,
-					thumbnailUrl: null,
-					isNew: false,
-				});
-			} else {
-				deleteFrameContent(item.content);
-			}
-		}
-
-		if (editorContent[0].thumbnailUrl.includes('file:')) {
-			const contentFetch = await fetch(editorContent[0].thumbnailUrl);
-			const contentBlob = await contentFetch.blob();
+		if (thumbCover.isLocal) {
 			await uploadThumbnail(
-				contentBlob,
+				thumbCover.url,
 				`${editorFrame.id.trim()}_thumbnail.png`
 			);
 		}
 
 		const _frame = {
 			added: editorFrame.added,
-			contents: _content,
+			contents: [...editorFrame.contents],
 			creator: user.id,
 			description: descriptionEdit,
 			id: editorFrame.id.trim(),
 			img: `${editorFrame.id.trim()}_thumbnail.png`,
 			tapId: tapCategory,
 			title: titleEdit,
-			topicId: topicCategory,
+			topicId: topicCategory.id,
 		};
 
 		await updateFrame(_frame);
 
-		_content.map((item, index) => {
-			_content[index].contentUrl = prevURL[index];
-			_content[index].thumbnailUrl = prevThumbURL[index];
-		});
+		_frame.contents = editorFrame.contents;
+		_frame.img = thumbCover;
 
-		_frame.contents = _content;
-		_frame.img = editorContent[0].thumbnailUrl;
-
-		setPrevTap(tapCategory);
-		setPrevTopic(topicCategory);
-		if (prevTap !== tapCategory || prevTopic !== topicCategory) {
-			deleteFrame(prevTap, prevTopic, editorFrame.id);
+		if (prevTap !== tapCategory || prevTopic !== topicCategory.id) {
+			console.log('removing');
+			deleteFrame(prevTap, prevTopic, _frame.id);
 		}
-		const frameIndex = findWatchedFrameIndex(user.frames, editorFrame.id);
+		const frameIndex = findWatchedFrameIndex(user.frames, _frame.id);
 
 		let _frames = [...user.frames];
 		_frames[frameIndex] = _frame;
 		setUser({ ...user, frames: _frames });
+		setEditorFrame(_frame);
 		navigation.navigate('editorOverview');
-	};
-
-	const addCover = async () => {
-		let result = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.Images,
-			aspect: [16, 9],
-			allowsEditing: true,
-			quality: 1,
-		});
-
-		if (!result.canceled) {
-			const manipResult = await manipulateAsync(result.assets[0].uri, [], {
-				compress: 0.4,
-				format: SaveFormat.PNG,
-			});
-
-			let _contents = [...editorContent];
-			_contents[0].thumbnailUrl = manipResult.uri;
-			_contents[0].isNew = false;
-
-			setEditorContent(_contents);
-		}
-	};
-
-	const deleteFrameItem = (itemID) => {
-		let _contents = [...editorContent];
-		const frameIndex = _contents.map((e) => e.content).indexOf(itemID);
-		_contents[frameIndex].isDeleted = true;
-		setEditorContent(_contents);
 	};
 
 	const deleteFullFrame = async () => {
@@ -375,21 +219,23 @@ export const EditFrame = ({
 		navigation.goBack();
 	};
 
+	const removeAlert = () => {
+		Alert.alert(
+			'Removing frame',
+			`You are about to remove ${editorFrame.title}`,
+			[
+				{
+					text: 'Remove',
+					onPress: () => deleteFullFrame(),
+					style: 'destructive',
+				},
+				{ text: 'Keep content', onPress: () => console.log('OK Pressed') },
+			]
+		);
+	};
+
 	if (loading) {
 		return <Loading />;
-	}
-
-	if (editContent) {
-		return (
-			<EditContent
-				editorContent={editorContent}
-				setEditContent={setEditContent}
-				editorFrame={editorFrame}
-				editContent={editContent}
-				setEditorFrame={setEditorFrame}
-				setEditorContent={setEditorContent}
-			/>
-		);
 	}
 
 	return (
@@ -399,6 +245,29 @@ export const EditFrame = ({
 				backgroundColor={Colors.primary.lightBleu}
 				withBack
 				navigation={navigation}
+				onBackClick={async () => {
+					if (
+						editorFrame.isNew &&
+						titleEdit.trim() !== '' &&
+						typeof tapCategory !== 'string' &&
+						typeof topicCategory !== 'string' &&
+						thumbCover
+					) {
+						await saveFrame();
+					} else {
+						await saveFrame();
+					}
+				}}
+				rightAction={
+					<TouchableOpacity
+						style={{ justifyContent: 'center', alignItems: 'center' }}
+						onPress={() => navigation.navigate('editContent')}
+					>
+						<RegularText style={{ color: Colors.primary.white, fontSize: 14 }}>
+							Content
+						</RegularText>
+					</TouchableOpacity>
+				}
 			/>
 			<SafeAreaView style={styles.editorWrapper}>
 				<ScrollView
@@ -406,68 +275,6 @@ export const EditFrame = ({
 					showsHorizontalScrollIndicator={false}
 					showsVerticalScrollIndicator={false}
 				>
-					<>
-						{/* <View style={styles.formSection}>
-							<View
-								style={{
-									flexDirection: 'row',
-									justifyContent: 'space-between',
-									alignItems: 'center',
-								}}
-							>
-								<MediumText style={styles.labelText}>Frame content</MediumText>
-								<Pressable onPress={() => addContent()}>
-									<Entypo name='plus' size={24} color='#EEEEEE' />
-								</Pressable>
-							</View>
-
-							{editorContent.length === 0 ? (
-								<View
-									style={{
-										height: height / 4 - 20,
-										margin: 5,
-										display: 'flex',
-										justifyContent: 'center',
-										alignItems: 'center',
-									}}
-								>
-									<MediumText style={styles.noContentText}>
-										No content yet
-									</MediumText>
-									<Pressable
-										style={styles.addContentBtn}
-										onPress={() => addContent()}
-									>
-										<MediumText style={styles.noContentText}>
-											Add content
-										</MediumText>
-									</Pressable>
-								</View>
-							) : (
-								<FlatList
-									showsVerticalScrollIndicator={false}
-									showsHorizontalScrollIndicator={false}
-									horizontal
-									data={editorContent}
-									renderItem={({ item }) => {
-										if (!item.isDeleted) {
-											return (
-												<EditFrameContent
-													deleteFrame={deleteFrameItem}
-													isNew={isNew}
-													item={item}
-													editThisFrame={setEditContent}
-													frameID={editorFrame.id}
-													addCover={addCover}
-												/>
-											);
-										}
-									}}
-									keyExtractor={(content) => content.id}
-								/>
-							)}
-						</View> */}
-					</>
 					<ImageBackground
 						source={blueBG}
 						imageStyle={{ height: 530, top: -230, zIndex: -10, width: width }}
@@ -521,7 +328,9 @@ export const EditFrame = ({
 									color: Colors.primary.black,
 									fontFamily: 'DMSans-Regular',
 								}}
-								onChange={(tapId) => setTapCat(tapId)}
+								onChange={(tapId) => {
+									setTapCat(tapId);
+								}}
 								renderRightIcon={() => (
 									<BlackArrow
 										color={Colors.primary.white}
@@ -654,11 +463,8 @@ export const EditFrame = ({
 							</ImageBackground>
 						</View>
 					</View>
-					<Pressable
-						onPress={() => deleteFullFrame()}
-						style={styles.deleteButton}
-					>
-						<MediumText style={styles.deleteText}>Delete frame</MediumText>
+					<Pressable onPress={() => removeAlert()} style={styles.deleteButton}>
+						<RegularText style={styles.deleteText}>Delete frame</RegularText>
 					</Pressable>
 				</ScrollView>
 			</SafeAreaView>
@@ -792,7 +598,7 @@ const styles = StyleSheet.create({
 		backgroundColor: Colors.primary.white,
 		borderRadius: 10,
 		alignItems: 'center',
-		marginBottom: 150,
+		marginBottom: height / 3,
 		marginTop: 10,
 		padding: 10,
 	},

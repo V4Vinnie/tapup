@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { Image, SafeAreaView, Text, View } from 'react-native';
+import { ImageBackground, SafeAreaView } from 'react-native';
 import { Colors } from '../../Constants/Colors';
 import { useUser } from '../../Providers/UserProvider';
 import { cacheContents } from '../../utils/downloadAssets';
-import { fetchUser, updateUser, updateWatchedFrames } from '../../utils/fetch';
+import { fetchUser, updateUser } from '../../utils/fetch';
 import { findById, findWatchedFrameIndex } from '../../utils/findById';
 import { height, width } from '../../utils/UseDimensoins';
 import { Back } from '../Back';
@@ -16,11 +16,12 @@ import { GOALS } from '../../Views/Profile/SelectGoal';
 import { formatDate } from '../../utils/formatDate';
 import { checkHasBadge } from '../../utils/checkHasBadge';
 import { MediumText } from '../Text/MediumText';
-import { BoldText } from '../Text/BoldText';
 import { FrameFinished } from './FrameFinished';
 
 export const Frames = ({ navigation, frame }) => {
 	const { user, setUser } = useUser();
+
+	const [prevActiveFrame, setPrevActiveFrame] = useState(0);
 
 	const [activeFrame, setActiveFrame] = useState(0);
 
@@ -40,6 +41,8 @@ export const Frames = ({ navigation, frame }) => {
 
 	const [isFinished, setIsFinished] = useState(false);
 
+	const [isLiked, setIsLiked] = useState(false);
+
 	const hasCompletedFrames = () => {
 		let hasCompleted = false;
 
@@ -54,7 +57,7 @@ export const Frames = ({ navigation, frame }) => {
 		return hasCompleted;
 	};
 
-	const goNext = () => {
+	const goNext = async () => {
 		if (activeFrame + 1 === frameContents.length) {
 			if (!isFinished) {
 				setIsFinished(true);
@@ -146,6 +149,9 @@ export const Frames = ({ navigation, frame }) => {
 			return;
 		} else if (!showQuestion) {
 			const newFrame = activeFrame + 1;
+			const _prevActiveFrame = activeFrame;
+			setPrevActiveFrame(_prevActiveFrame);
+			await chachingItems({ isFirstLoad: false, locationInd: newFrame });
 			setActiveFrame(newFrame);
 			setShowTime(frameContents[newFrame].time);
 		}
@@ -156,9 +162,12 @@ export const Frames = ({ navigation, frame }) => {
 			if (activeFrame === 0) {
 				setActiveFrame(0);
 			} else if (!showQuestion) {
+				const _prevActiveFrame = activeFrame;
 				const newFrame = activeFrame - 1;
+				setPrevActiveFrame(_prevActiveFrame);
 				if (newFrame === 0) {
 					setActiveFrame(0);
+					setPrevActiveFrame(1);
 				} else {
 					setActiveFrame(activeFrame - 1);
 				}
@@ -167,45 +176,59 @@ export const Frames = ({ navigation, frame }) => {
 		}
 	};
 
-	useEffect(() => {
-		const cacheContent = async () => {
-			setIsLoading(true);
-			setActiveFrame(0);
-			let _frameContens = frame.contents;
-			let contents = [];
+	const chachingItems = async ({ isFirstLoad, locationInd, isPrev }) => {
+		let _frameContens = frame.contents;
+		let contents = [];
 
-			for (let index = 0; index < _frameContens.length; index++) {
-				const _content = _frameContens[index];
-				if (!_content.contentUrl) {
-					const contentURL = `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/frames%2F${frame.id}%2F${_content.content}?alt=media`;
+		let currentLocation = locationInd;
 
-					if (_content.type === 'image') {
-						contents.push(contentURL);
-					} else if (_content.type === 'video') {
-						contents.push(contentURL);
-					}
-				}
-			}
-			try {
-				if (contents.length !== 0) {
-					const downloaded = await Promise.all([...cacheContents(contents)]);
-
-					for (let index = 0; index < _frameContens.length; index++) {
-						_frameContens[index].contentUrl = downloaded[index].localUri;
-					}
-				}
-			} catch (e) {
-			} finally {
-				const _watched = findById(user.watchedFrames, frame.id);
-				if (_watched[0]) {
+		if (isFirstLoad) {
+			const _watched = findById(user.watchedFrames, frame.id);
+			if (_watched[0]) {
+				if (_watched[0].watchedContentIndex === frame.contents.length) {
+					setActiveFrame(frame.contents.length - 1);
+					currentLocation = frame.contents.length - 1;
+				} else {
 					setActiveFrame(_watched[0].watchedContentIndex);
+					currentLocation = _watched[0].watchedContentIndex;
 				}
-				setFrameContents(_frameContens);
-				setShowTime(_frameContens[0].time);
-				setIsLoading(false);
-			}
-		};
 
+				if (_watched[0].isLiked) {
+					setIsLiked(true);
+				}
+			} else {
+				setActiveFrame(0);
+				currentLocation = 0;
+			}
+		}
+		for (let index = 0; index < frame.contents.length; index++) {
+			const _content = _frameContens[index];
+			if (_content && !_content.contentUrl) {
+				const contentURL = `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/frames%2F${frame.id}%2F${_content.content}?alt=media`;
+				contents.push(contentURL);
+			}
+		}
+
+		try {
+			if (contents.length !== 0) {
+				const downloaded = await Promise.all([...cacheContents(contents)]);
+				let downloadedInd = 0;
+				for (let index = 0; index < frame.contents.length; index++) {
+					if (_frameContens[index]) {
+						_frameContens[index].contentUrl = downloaded[index].localUri;
+						// downloadedInd++;
+					}
+				}
+			}
+		} catch (e) {
+		} finally {
+			setFrameContents(_frameContens);
+			setShowTime(_frameContens[0].time);
+			setIsLoading(false);
+		}
+	};
+
+	useEffect(() => {
 		const getCreator = async () => {
 			const _creator = await fetchUser(frame.creator);
 			if (_creator) {
@@ -214,33 +237,27 @@ export const Frames = ({ navigation, frame }) => {
 		};
 
 		getCreator();
-		cacheContent();
 	}, [frame]);
 
 	useEffect(() => {
 		setShowNavBar(false);
 	}, []);
 
+	useEffect(() => {
+		const cacheContent = async () => {
+			if (frameContents.length === 0) {
+				setIsLoading(true);
+				await chachingItems({ isFirstLoad: true, locationInd: activeFrame });
+			} else if (prevActiveFrame < activeFrame) {
+				await chachingItems({ locationInd: activeFrame });
+			} else {
+				await chachingItems({ isPrev: true });
+			}
+		};
+		cacheContent();
+	}, []);
+
 	const countInterval = useRef(null);
-
-	// useEffect(() => {
-	// 	if (!isLoading) {
-	// 		if (countInterval) {
-	// 			clearTimeout(countInterval);
-	// 		}
-	// 		countInterval.current = setTimeout(() => {
-	// 			goNext();
-	// 		}, showTime);
-
-	// 		return () => {
-	// 			clearTimeout(countInterval);
-	// 		};
-	// 	}
-
-	// 	return () => {
-	// 		clearTimeout(countInterval);
-	// 	};
-	// }, [showTime, isLoading]);
 
 	const saveGoBack = async () => {
 		const checkIsDone = () => {
@@ -257,6 +274,7 @@ export const Frames = ({ navigation, frame }) => {
 			frameLink: { id: frame.id, topicId: frame.topicId, tapId: frame.tapId },
 			watchedContentIndex: activeFrame,
 			watchedDate: watchedDate,
+			isLiked: isLiked,
 		};
 
 		const watchIndx = await findWatchedFrameIndex(user.watchedFrames, frame.id);
@@ -300,6 +318,24 @@ export const Frames = ({ navigation, frame }) => {
 	if (!isLoading) {
 		return (
 			<>
+				<ImageBackground
+					blurRadius={75}
+					source={{
+						uri: `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/frames%2F${frame.id}%2F${frame.img}?alt=media`,
+					}}
+					imageStyle={{
+						width: width,
+						height: height,
+						objectFit: 'cover',
+						backgroundColor: Colors.primary.bleuBottom,
+					}}
+					style={{
+						position: 'absolute',
+						zIndex: 0,
+						width: width,
+						height: height,
+					}}
+				></ImageBackground>
 				<SafeAreaView
 					style={{
 						position: 'absolute',
@@ -308,7 +344,7 @@ export const Frames = ({ navigation, frame }) => {
 						marginLeft: 15,
 						flexDirection: 'row',
 						justifyContent: 'space-between',
-						alignItems: 'start',
+						alignItems: 'flex-start',
 					}}
 				>
 					<Back navigate={() => saveGoBack()} />
@@ -356,6 +392,8 @@ export const Frames = ({ navigation, frame }) => {
 					goNext={goNext}
 					setShowQuestion={setShowQuestion}
 					showQuestion={showQuestion}
+					isLiked={isLiked}
+					setIsLiked={setIsLiked}
 				/>
 			</>
 		);

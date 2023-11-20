@@ -1,4 +1,4 @@
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { TextInput, TouchableOpacity, View } from 'react-native';
 import { Colors } from '../../Constants/Colors';
 import { useEffect, useState } from 'react';
 import { createNewQuestion, fetchFrameById } from '../../utils/fetch';
@@ -15,6 +15,8 @@ export const Question = ({ question, isCreator }) => {
 
 	const [isSend, setIsSend] = useState(false);
 
+	const [titleLoading, setTitleLoading] = useState(false);
+
 	const sendAnswer = async () => {
 		if (answer) {
 			await createNewQuestion({ ...question, answer: answer });
@@ -24,8 +26,10 @@ export const Question = ({ question, isCreator }) => {
 
 	useEffect(() => {
 		const fetchFrameName = async () => {
+			setTitleLoading(true);
 			const _frame = await fetchFrameById(question.frameLink);
 			setFrameTitle(_frame.title);
+			setTitleLoading(false);
 		};
 		if (question) {
 			fetchFrameName();
@@ -47,10 +51,11 @@ export const Question = ({ question, isCreator }) => {
 				shadowRadius: 3,
 				backgroundColor: Colors.primary.white,
 				marginTop: 20,
+				display: !frameTitle && 'none',
 			}}
 		>
 			<BoldText style={{ fontWeight: 'bold', fontSize: 20 }}>
-				{frameTitle ? frameTitle : 'Loading'}
+				{titleLoading ? frameTitle : 'Loading'}
 			</BoldText>
 			<View style={{ marginTop: 5 }}>
 				<MediumText style={{ fontWeight: '600', fontSize: 16 }}>

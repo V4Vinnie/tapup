@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import { shadowProp } from '../../style';
 import { Shadow } from 'react-native-shadow-2';
 import { Colors } from '../../Constants/Colors';
@@ -6,7 +6,7 @@ import { MediumText } from '../../Components/Text/MediumText';
 
 export const IntrestPill = ({ topic, onPillClick, isSelected }) => {
 	return (
-		<Shadow containerStyle={{ margin: 5 }}>
+		<Shadow startColor='#00000015' distance={8} containerStyle={{ margin: 5 }}>
 			<Pressable style={styles.pillConainer} onPress={() => onPillClick(topic)}>
 				<MediumText
 					style={{

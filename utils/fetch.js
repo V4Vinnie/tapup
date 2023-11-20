@@ -10,6 +10,7 @@ import {
 } from 'firebase/firestore';
 import { DB, storage } from '../firebaseConfig';
 import { deleteObject, ref } from 'firebase/storage';
+import { ROLES } from '../Constants/Roles';
 
 export const fetchTaps = async () => {
 	const _allTabs = await getDocs(collection(DB, 'taps'));
@@ -115,7 +116,15 @@ export const fetchFramesForCreator = async (tapId, topicId, creatorId) => {
 };
 
 export const updateFrame = async (frameData) => {
+	let clearedContents = [...frameData.contents];
+
+	for (let ind = 0; ind < frameData.contents.length; ind++) {
+		clearedContents[ind].contentUrl = null;
+		clearedContents[ind].thumbnailUrl = null;
+	}
+
 	const _data = frameData;
+
 	const docRef = doc(
 		DB,
 		'taps',
@@ -125,7 +134,11 @@ export const updateFrame = async (frameData) => {
 		'frames',
 		_data.id
 	);
-	await setDoc(docRef, _data, { merge: true });
+	await setDoc(
+		docRef,
+		{ ..._data, contents: clearedContents },
+		{ merge: true }
+	);
 };
 
 export const updateFrameContent = async (frameData) => {
@@ -218,4 +231,24 @@ export const fetchQuestrionsAskedForUser = async (userId) => {
 	});
 
 	return _questions;
+};
+
+export const fetchCreators = async () => {
+	const creatorsCollec = collection(DB, `users`);
+	const creatorsQuery = query(
+		creatorsCollec,
+		where('role', '==', ROLES.CREATOR)
+	);
+	const creators = await getDocs(creatorsQuery);
+
+	if (creators.empty) {
+		return null;
+	}
+	let _creators = [];
+
+	creators.forEach((created) => {
+		_creators.push(created.data());
+	});
+
+	return _creators;
 };

@@ -3,11 +3,9 @@ import {
 	ImageBackground,
 	Pressable,
 	StyleSheet,
-	Text,
 	View,
 } from 'react-native';
 import { Colors } from '../Constants/Colors';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Shadow } from 'react-native-shadow-2';
 import { useEffect, useState } from 'react';
 import { useUser } from '../Providers/UserProvider';
@@ -15,7 +13,6 @@ import tapTopIMG from '../assets/tapTop_blue.png';
 import { fetchCreator } from '../utils/fetch';
 import { MediumText } from './Text/MediumText';
 import { BoldText } from './Text/BoldText';
-import { RegularText } from './Text/RegularText';
 
 export const BigTopicRect = ({
 	navigation,
@@ -48,7 +45,15 @@ export const BigTopicRect = ({
 				setImage(topic.img);
 			} else {
 				setImage(
-					`https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/frames%2F${topic.id}%2F${topic.img}?alt=media`
+					`https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/${
+						setTabDetail
+							? 'taps'
+							: setTopicDetail
+							? 'topics'
+							: setFrames
+							? 'frames'
+							: 'frames'
+					}%2F${topic.id}%2F${topic.img}?alt=media`
 				);
 			}
 		}
@@ -86,7 +91,7 @@ export const BigTopicRect = ({
 							source={tapTopIMG}
 						/>
 						<View style={styles.titleWrapper}>
-							<MediumText style={{ color: Colors.primary.white, fontSize: 11 }}>
+							<MediumText style={{ color: Colors.primary.white, fontSize: 14 }}>
 								{topic.creator === user.id
 									? user.name
 									: creator
@@ -96,7 +101,7 @@ export const BigTopicRect = ({
 							<BoldText
 								style={{
 									color: Colors.primary.white,
-									fontSize: 13,
+									fontSize: 16,
 									fontWeight: '600',
 								}}
 							>
@@ -105,9 +110,9 @@ export const BigTopicRect = ({
 						</View>
 					</View>
 				</ImageBackground>
-				<RegularText numberOfLines={3} style={styles.descriptionText}>
+				{/* <RegularText numberOfLines={3} style={styles.descriptionText}>
 					{topic.description}
-				</RegularText>
+				</RegularText> */}
 			</Pressable>
 		</Shadow>
 	);
@@ -134,5 +139,6 @@ const styles = StyleSheet.create({
 		backgroundColor: Colors.primary.lightBleu,
 		justifyContent: 'flex-end',
 		paddingTop: 0,
+		paddingBottom: 8,
 	},
 });

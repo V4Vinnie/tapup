@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Animated, TouchableOpacity, View } from 'react-native';
 import { Colors } from '../../Constants/Colors';
-import { height, width } from '../../utils/UseDimensoins';
+import { width } from '../../utils/UseDimensoins';
 import { QuestionsSVG } from '../SVG/Icons/QuestionsSVG';
+import { HeartSVG } from '../SVG/Icons/HeartSVG';
 
 const AnimatedProgressView = ({ time, index, length, goNextOnComplete }) => {
 	const [fillAnimation] = useState(new Animated.Value(0));
@@ -10,7 +11,7 @@ const AnimatedProgressView = ({ time, index, length, goNextOnComplete }) => {
 	useEffect(() => {
 		Animated.timing(fillAnimation, {
 			toValue: 1,
-			duration: time,
+			duration: time + 1000,
 			useNativeDriver: false,
 		}).start(({ finished }) => {
 			if (finished) {
@@ -61,6 +62,8 @@ export const FramePogress = ({
 	goNext,
 	setShowQuestion,
 	showQuestion,
+	isLiked,
+	setIsLiked,
 }) => {
 	const [bars, setBars] = useState([]);
 
@@ -133,8 +136,8 @@ export const FramePogress = ({
 		>
 			<View
 				style={{
-					width: width - 110,
-					height: 20,
+					width: width - 130,
+					height: 15,
 					flexDirection: 'row',
 					borderRadius: 50,
 					overflow: 'hidden',
@@ -142,6 +145,20 @@ export const FramePogress = ({
 			>
 				{bars.map((bar) => bar)}
 			</View>
+
+			<TouchableOpacity
+				style={{
+					backgroundColor: Colors.primary.white,
+					height: 40,
+					width: 40,
+					borderRadius: 40,
+					justifyContent: 'center',
+					alignItems: 'center',
+				}}
+				onPress={isLiked ? () => setIsLiked(false) : () => setIsLiked(true)}
+			>
+				<HeartSVG isActive={isLiked} />
+			</TouchableOpacity>
 
 			<TouchableOpacity
 				style={{

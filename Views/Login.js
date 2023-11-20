@@ -1,15 +1,12 @@
 import {
 	ImageBackground,
-	SafeAreaView,
 	StyleSheet,
-	Text,
 	TextInput,
 	View,
 	Pressable,
 	KeyboardAvoidingView,
 } from 'react-native';
 import { bodyText, buttonStyle, containerStyle } from '../style';
-
 import BG from '../assets/logo/SignUpBG.png';
 import { Colors } from '../Constants/Colors';
 import { width } from '../utils/UseDimensoins';
@@ -20,13 +17,16 @@ import { fetchUser } from '../utils/fetch';
 import { Logo } from '../Components/SVG/Logo';
 import { MediumText } from '../Components/Text/MediumText';
 import { RegularText } from '../Components/Text/RegularText';
+import { useUser } from '../Providers/UserProvider';
 
 export const Login = ({ navigation }) => {
-	const [email, setEmail] = useState('cielbrys@gmail.com');
-	const [password, setPassword] = useState('Kortrijk8500');
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
 	const [errorMessage, setErrorMessage] = useState(null);
 
 	const [isSending, setIsSending] = useState(false);
+
+	const { setUser } = useUser();
 
 	const logIn = async () => {
 		setIsSending(true);
@@ -40,6 +40,7 @@ export const Login = ({ navigation }) => {
 			.catch((error) => {
 				console.log(error);
 				setErrorMessage(error.code);
+				setIsSending(false);
 			});
 
 		if (directLogin) {
@@ -73,7 +74,13 @@ export const Login = ({ navigation }) => {
 					<View style={styles.logoWrapper}>
 						<Logo width={70} />
 					</View>
-					<View style={{ paddingTop: 40 }}>
+					<View
+						style={{
+							paddingTop: 40,
+							width: '100%',
+							paddingHorizontal: 10,
+						}}
+					>
 						<View>
 							<MediumText
 								style={{
@@ -110,7 +117,7 @@ export const Login = ({ navigation }) => {
 								placeholderTextColor='#FFD1E5'
 							/>
 						</View>
-						<View style={{ alignSelf: 'flex-end', marginTop: 60 }}>
+						<View style={{ marginTop: 60 }}>
 							<Pressable
 								onPress={() => logIn(navigation, true, email, password)}
 								style={
@@ -145,8 +152,8 @@ export const Login = ({ navigation }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		width: '100%',
 		...containerStyle,
+		width: '100%',
 	},
 
 	inputStyle: {

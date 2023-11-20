@@ -83,7 +83,7 @@ export const TabDetail = ({ navigation, tab, setTopicDetail }) => {
 								tab.img.includes('/')
 									? { uri: tab.img }
 									: {
-											uri: `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/frames%2F${tab.id}%2F${tab.img}?alt=media`,
+											uri: `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/taps%2F${tab.id}%2F${tab.img}?alt=media`,
 									  }
 							}
 						>
@@ -94,7 +94,7 @@ export const TabDetail = ({ navigation, tab, setTopicDetail }) => {
 									width: width,
 									left: -10,
 									top: -50,
-									opacity: 0.8,
+									opacity: 0.75,
 								}}
 								source={BGPink}
 							>
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
 	headerContainer: {
 		flexDirection: 'column',
 		width: '100%',
-		alignItems: 'start',
+		alignItems: 'flex-start',
 		zIndex: 10,
 		paddingHorizontal: 10,
 	},

@@ -1,5 +1,12 @@
 import { useEffect, useState } from 'react';
-import { FlatList, ImageBackground, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import {
+	FlatList,
+	ImageBackground,
+	SafeAreaView,
+	ScrollView,
+	StyleSheet,
+	View,
+} from 'react-native';
 import { Bar } from 'react-native-progress';
 import { Back } from '../../Components/Back';
 import { TopicRectApp } from '../../Components/TopicRectApp';
@@ -17,6 +24,7 @@ import { useUser } from '../../Providers/UserProvider';
 import { useIsFocused } from '@react-navigation/native';
 import { MediumText } from '../../Components/Text/MediumText';
 import { RegularText } from '../../Components/Text/RegularText';
+import { BoldText } from '../../Components/Text/BoldText';
 
 export const TopicDetail = ({
 	navigation,
@@ -33,12 +41,14 @@ export const TopicDetail = ({
 
 	const isFocused = useIsFocused();
 
+	const [isFetching, setIsFetching] = useState(false);
+
 	useEffect(() => {
 		const getTabs = async () => {
 			setAllFrames(null);
+			setIsFetching(true);
 			const tap = findTabByTopicId(taps, topic.id);
 			const _frames = await fetchFrames(tap.id, topic.id);
-
 			let done = 0;
 
 			if (user.watchedFrames) {
@@ -53,6 +63,8 @@ export const TopicDetail = ({
 
 			setDoneFrames(done);
 			setAllFrames(_frames);
+			console.log('Finished set ALL');
+			setIsFetching(false);
 		};
 
 		getTabs();
@@ -112,7 +124,9 @@ export const TopicDetail = ({
 								</MediumText>
 
 								<Bar
-									progress={doneFrames / allFrames.length}
+									progress={
+										allFrames.length === 0 ? 0 : doneFrames / allFrames.length
+									}
 									width={width / 3}
 									borderWidth={0}
 									unfilledColor='#EAEAEA'
@@ -143,7 +157,7 @@ export const TopicDetail = ({
 									topic.img.includes('/')
 										? { uri: topic.img }
 										: {
-												uri: `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/frames%2F${topic.id}%2F${topic.img}?alt=media`,
+												uri: `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/topics%2F${topic.id}%2F${topic.img}?alt=media`,
 										  }
 								}
 							>
@@ -154,7 +168,7 @@ export const TopicDetail = ({
 										width: width,
 										left: -10,
 										top: -50,
-										opacity: 0.8,
+										opacity: 0.7,
 									}}
 									source={BGPink}
 								>
@@ -166,55 +180,70 @@ export const TopicDetail = ({
 						</View>
 
 						<View style={styles.bigItemsConainer}>
-							{allFrames.length > 1 ? (
+							{!isFetching && (
 								<>
-									<BigTopicRect
-										width={width / 2 - 50}
-										height={300}
-										topic={allFrames[0]}
-										setFrames={setFrames}
-										navigation={navigation}
-									/>
-									<BigTopicRect
-										width={width / 2 - 10}
-										height={300}
-										topic={allFrames[1]}
-										setFrames={setFrames}
-										navigation={navigation}
-									/>
+									{allFrames.length === 0 ? (
+										<>
+											{console.log('VISUAL')}
+											<BoldText
+												style={{ fontSize: 20, color: Colors.primary.white }}
+											>
+												No frames in this topic
+											</BoldText>
+										</>
+									) : allFrames.length > 1 ? (
+										<>
+											<BigTopicRect
+												width={width / 2 - 50}
+												height={300}
+												topic={allFrames[0]}
+												setFrames={setFrames}
+												navigation={navigation}
+											/>
+											<BigTopicRect
+												width={width / 2 - 10}
+												height={300}
+												topic={allFrames[1]}
+												setFrames={setFrames}
+												navigation={navigation}
+											/>
+										</>
+									) : (
+										<BigTopicRect
+											width={width / 2 - 10}
+											height={300}
+											topic={allFrames[0]}
+											setFrames={setFrames}
+											navigation={navigation}
+										/>
+									)}
 								</>
-							) : (
-								<BigTopicRect
-									width={width / 2 - 10}
-									height={300}
-									topic={allFrames[0]}
-									setFrames={setFrames}
-									navigation={navigation}
-								/>
 							)}
 						</View>
 						<MediumText style={styles.moreMediumText}>
 							{allFrames.length === 0 ? '' : 'More'}
 						</MediumText>
-						<FlatList
-							style={{ marginBottom: 150 }}
-							showsVerticalScrollIndicator={false}
-							showsHorizontalScrollIndicator={false}
-							numColumns={3}
-							data={allFrames}
-							renderItem={({ item }) => (
-								<>
-									<TopicRectApp
-										width={TopicWidth - 10}
-										height={200}
-										topic={item}
-										setFrames={setFrames}
-										navigation={navigation}
-									/>
-								</>
-							)}
-							keyExtractor={(frame) => frame.id}
-						/>
+						{allFrames.length > 0 && (
+							<FlatList
+								style={{ marginBottom: 150 }}
+								showsVerticalScrollIndicator={false}
+								showsHorizontalScrollIndicator={false}
+								numColumns={3}
+								data={allFrames}
+								renderItem={({ item }) => (
+									<>
+										<TopicRectApp
+											width={TopicWidth - 10}
+											height={200}
+											topic={item}
+											setFrames={setFrames}
+											navigation={navigation}
+										/>
+									</>
+								)}
+								keyExtractor={(frame) => frame.id}
+							/>
+						)}
 					</ScrollView>
 				</SafeAreaView>
 			</>
@@ -228,7 +257,7 @@ const styles = StyleSheet.create({
 	headerContainer: {
 		flexDirection: 'column',
 		width: '100%',
-		alignItems: 'start',
+		alignItems: 'flex-start',
 		zIndex: 10,
 		paddingHorizontal: 10,
 	},

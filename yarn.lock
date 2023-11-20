@@ -1203,6 +1203,32 @@
     xcode "^3.0.1"
     xml2js "0.4.23"
 
+"@expo/config-plugins@^4.0.9":
+  version "4.1.5"
+  resolved "https://registry.npmjs.org/@expo/config-plugins/-/config-plugins-4.1.5.tgz"
+  integrity sha512-RVvU40RtZt12HavuDAe+LDIq9lHj7sheOfMEHdmpJ/uTA8pgvkbc56XF6JHQD+yRr6+uhhb+JnAasGq49dsQbw==
+  dependencies:
+    "@expo/config-types" "^45.0.0"
+    "@expo/json-file" "8.2.36"
+    "@expo/plist" "0.0.18"
+    "@expo/sdk-runtime-versions" "^1.0.0"
+    "@react-native/normalize-color" "^2.0.0"
+    chalk "^4.1.2"
+    debug "^4.3.1"
+    find-up "~5.0.0"
+    getenv "^1.0.0"
+    glob "7.1.6"
+    resolve-from "^5.0.0"
+    semver "^7.3.5"
+    slash "^3.0.0"
+    xcode "^3.0.1"
+    xml2js "0.4.23"
+
+"@expo/config-types@^45.0.0":
+  version "45.0.0"
+  resolved "https://registry.npmjs.org/@expo/config-types/-/config-types-45.0.0.tgz"
+  integrity sha512-/QGhhLWyaGautgEyU50UJr5YqKJix5t77ePTwreOVAhmZH+ff3nrrtYTTnccx+qF08ZNQmfAyYMCD3rQfzpiJA==
+
 "@expo/config-types@^47.0.0":
   version "47.0.0"
   resolved "https://registry.npmjs.org/@expo/config-types/-/config-types-47.0.0.tgz"
@@ -1282,7 +1308,7 @@
 
 "@expo/html-elements@^0.5.1":
   version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@expo/html-elements/-/html-elements-0.5.1.tgz#94f86afb1a57f95dbd45fb8326b985683cde3c93"
+  resolved "https://registry.npmjs.org/@expo/html-elements/-/html-elements-0.5.1.tgz"
   integrity sha512-BDAVI3ayykNykAeAc3B2USSiA244te2WAJDYske/AtDnm/AWZM/DE9lCwSkysuu7uOMcNp78LM2L/v6TwvxqZQ==
 
 "@expo/image-utils@0.3.22":
@@ -2070,9 +2096,14 @@
   resolved "https://registry.npmjs.org/@protobufjs/utf8/-/utf8-1.1.0.tgz"
   integrity sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==
 
+"@qeepsake/react-native-file-utils@^1.3.5":
+  version "1.3.5"
+  resolved "https://registry.yarnpkg.com/@qeepsake/react-native-file-utils/-/react-native-file-utils-1.3.5.tgz#98865b82ca346d0183cf669f2665154641b12510"
+  integrity sha512-nv4ygMaANmNzEzG6yVCkqa8jHv90gv3R1ObqbbN3zu14qtZD80w4mFLR34J9mmLywGbipybeyumvvBe29jAgGA==
+
 "@react-native-async-storage/async-storage@~1.17.3":
   version "1.17.12"
-  resolved "https://registry.yarnpkg.com/@react-native-async-storage/async-storage/-/async-storage-1.17.12.tgz#a39e4df5b06795ce49b2ca5b7ca9b8faadf8e621"
+  resolved "https://registry.npmjs.org/@react-native-async-storage/async-storage/-/async-storage-1.17.12.tgz"
   integrity sha512-BXg4OxFdjPTRt+8MvN6jz4muq0/2zII3s7HeT/11e4Zeh3WCgk/BleLzUcDfVqF3OzFHUqEkSrb76d6Ndjd/Nw==
   dependencies:
     merge-options "^3.0.4"
@@ -2278,11 +2309,11 @@
   integrity sha512-K0aGNn1TjalKj+65D7ycc1//H9roAQ51GJVk5ZJQFb2teECGmzd86bYDC0aYdbRf7gtovescq4Zt6FR0tgXiHQ==
 
 "@react-navigation/bottom-tabs@^6.5.9":
-  version "6.5.9"
-  resolved "https://registry.yarnpkg.com/@react-navigation/bottom-tabs/-/bottom-tabs-6.5.9.tgz#d132e787b58b23dedfeb19b586f9467613a0c6bf"
-  integrity sha512-366D4pwq41qKqzsrEk3OPW9atTQJrfrLHPJhX3NLOinRIuDrxal1jJwN3vzNZoEg7gIEKaPYckuqUKg0zRFdog==
+  version "6.5.11"
+  resolved "https://registry.npmjs.org/@react-navigation/bottom-tabs/-/bottom-tabs-6.5.11.tgz"
+  integrity sha512-CBN/NOdxnMvmjw+AJQI1kltOYaClTZmGec5pQ3ZNTPX86ytbIOylDIITKMfTgHZcIEFQDymx1SHeS++PIL3Szw==
   dependencies:
-    "@react-navigation/elements" "^1.3.19"
+    "@react-navigation/elements" "^1.3.21"
     color "^4.2.3"
     warn-once "^0.1.0"
 
@@ -2298,10 +2329,10 @@
     react-is "^16.13.0"
     use-latest-callback "^0.1.5"
 
-"@react-navigation/elements@^1.3.17", "@react-navigation/elements@^1.3.19":
-  version "1.3.19"
-  resolved "https://registry.npmjs.org/@react-navigation/elements/-/elements-1.3.19.tgz"
-  integrity sha512-7hLvSYKPuDS070pza5gd43WDX7QgfuEmuTWNbCJhKdWlLudYmq3qzxGCBwCfO2dEI6+p8tla5wruaWiGKAbTYw==
+"@react-navigation/elements@^1.3.17", "@react-navigation/elements@^1.3.19", "@react-navigation/elements@^1.3.21":
+  version "1.3.21"
+  resolved "https://registry.npmjs.org/@react-navigation/elements/-/elements-1.3.21.tgz"
+  integrity sha512-eyS2C6McNR8ihUoYfc166O1D8VYVh9KIl0UQPI8/ZJVsStlfSTgeEEh+WXge6+7SFPnZ4ewzEJdSAHH+jzcEfg==
 
 "@react-navigation/material-bottom-tabs@^6.2.17":
   version "6.2.17"
@@ -2734,7 +2765,7 @@ ajv@^6.1.0, ajv@^6.10.2, ajv@^6.12.4, ajv@^6.12.5:
 
 ajv@^8.11.0:
   version "8.12.0"
-  resolved "https://registry.yarnpkg.com/ajv/-/ajv-8.12.0.tgz#d1a0527323e22f53562c567c00991577dfbe19d1"
+  resolved "https://registry.npmjs.org/ajv/-/ajv-8.12.0.tgz"
   integrity sha512-sRu1kpcO9yLtYxBKvqfTeh9KzZEwO3STyX1HT+4CaDzC6HpTGYhIhPIzj9XuKU7KYDwnaeh5hcOwjy1QuJzBPA==
   dependencies:
     fast-deep-equal "^3.1.1"
@@ -4579,7 +4610,7 @@ color@^3.0.0, color@^3.1.2:
 
 color@^4.2.3:
   version "4.2.3"
-  resolved "https://registry.yarnpkg.com/color/-/color-4.2.3.tgz#d781ecb5e57224ee43ea9627560107c0e0c6463a"
+  resolved "https://registry.npmjs.org/color/-/color-4.2.3.tgz"
   integrity sha512-1rXeuUUiGGrykh+CeBdu5Ie7OJwinCgQY0bc7GCRxy5xVHy+moaqkpL/jqQq0MtQOeYcrqEz4abc5f0KtU7W4A==
   dependencies:
     color-convert "^2.0.1"
@@ -5800,7 +5831,7 @@ expo-av@~13.0.3:
 
 expo-build-properties@~0.4.1:
   version "0.4.1"
-  resolved "https://registry.yarnpkg.com/expo-build-properties/-/expo-build-properties-0.4.1.tgz#f2511d281898657b225710051860d71c63b9ad5e"
+  resolved "https://registry.npmjs.org/expo-build-properties/-/expo-build-properties-0.4.1.tgz"
   integrity sha512-Y492KoSfb8Jj5y8qA+J0Wu0HjuCmJuqCB7fxOAxqNDS5V8JJNUU9106ESDnlQ7xyxkjMlGmVZN1/oRUoC0zBJg==
   dependencies:
     ajv "^8.11.0"
@@ -5887,7 +5918,7 @@ expo-image-picker@~14.0.2:
 
 expo-intent-launcher@~10.3.1:
   version "10.3.1"
-  resolved "https://registry.yarnpkg.com/expo-intent-launcher/-/expo-intent-launcher-10.3.1.tgz#1479400f5f63096f73361f506bb4f7e067b050e6"
+  resolved "https://registry.npmjs.org/expo-intent-launcher/-/expo-intent-launcher-10.3.1.tgz"
   integrity sha512-T48ENkhcAkOkzKs3edGjNaCljfoEs/cyDQzAryjQdR8Wy5/BZwAPBd+ihf2Hzx1NhExatKFcWuKbwXvKDS+xkA==
 
 expo-json-utils@~0.4.0:
@@ -5972,10 +6003,10 @@ expo-video-thumbnails@~7.0.0:
   resolved "https://registry.npmjs.org/expo-video-thumbnails/-/expo-video-thumbnails-7.0.0.tgz"
   integrity sha512-QTifwHjz1VL+nXX39lSZHJtbHKI8a/DVCVk6iT/WQZG1JmZdeUHObrcWlIKeDsTCB5fQWIfOmin+N9hbe4n0qw==
 
-expo@~47.0.12:
-  version "47.0.13"
-  resolved "https://registry.npmjs.org/expo/-/expo-47.0.13.tgz"
-  integrity sha512-9VjjGdViCJ9NfWbUE7brkwFBDvKuA35V345vMtHFYNKoGJjXib36yitmawreMDQFv0kMTqTnzc7T2191Pod7Ng==
+expo@~47.0.14:
+  version "47.0.14"
+  resolved "https://registry.npmjs.org/expo/-/expo-47.0.14.tgz"
+  integrity sha512-WA6BbLI00R9TweBHRVm+kAFoYqkYOK4oMizNV2CmpxEJaRm8J4R9KI2+WnfkYVPiW6dzDTUR4bG6yAwgzSowEA==
   dependencies:
     "@babel/runtime" "^7.14.0"
     "@expo/cli" "0.4.11"
@@ -7814,7 +7845,7 @@ json-schema-traverse@^0.4.1:
 
 json-schema-traverse@^1.0.0:
   version "1.0.0"
-  resolved "https://registry.yarnpkg.com/json-schema-traverse/-/json-schema-traverse-1.0.0.tgz#ae7bcb3656ab77a73ba5c49bf654f38e6b6860e2"
+  resolved "https://registry.npmjs.org/json-schema-traverse/-/json-schema-traverse-1.0.0.tgz"
   integrity sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==
 
 json3@^3.3.2:
@@ -10261,7 +10292,7 @@ react-native-draggable@^3.3.0:
 
 react-native-element-dropdown@^2.10.0:
   version "2.10.0"
-  resolved "https://registry.yarnpkg.com/react-native-element-dropdown/-/react-native-element-dropdown-2.10.0.tgz#f4ec2310b37ff3ba64927286ab775c0ed28b681e"
+  resolved "https://registry.npmjs.org/react-native-element-dropdown/-/react-native-element-dropdown-2.10.0.tgz"
   integrity sha512-aFjw0JbUIKGkqklHxDm8aDCZW6Q1GICP7pIHc0sllvpWpEamItzOwAMV4G1mBIKxED77Mp+nkq9p0Dhsr/faVw==
   dependencies:
     lodash "^4.17.21"
@@ -10270,6 +10301,18 @@ react-native-gradle-plugin@^0.70.3:
   version "0.70.3"
   resolved "https://registry.npmjs.org/react-native-gradle-plugin/-/react-native-gradle-plugin-0.70.3.tgz"
   integrity sha512-oOanj84fJEXUg9FoEAQomA8ISG+DVIrTZ3qF7m69VQUJyOGYyDZmPqKcjvRku4KXlEH6hWO9i4ACLzNBh8gC0A==
+
+react-native-imglysdk@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npmjs.org/react-native-imglysdk/-/react-native-imglysdk-3.0.0.tgz"
+  integrity sha512-D+dPUvyltzXKqBqXsiffYoONIhMxlfsv2azSB+o9dimgE+ad/5Ser+IW4oAfyyaKde0GoRXCArS4JoKU6iO3rA==
+  dependencies:
+    "@expo/config-plugins" "^4.0.9"
+
+react-native-media-meta@^0.0.11:
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/react-native-media-meta/-/react-native-media-meta-0.0.11.tgz#d17fdbe43312d9a69fee862e91a1957d7b11726b"
+  integrity sha512-8pZA7wCoscLFJZRwd8GAYwsiuwc2XTYDcZm3cp9SN2wnKTnE2n1AW4AvBu0LGc1hyHYGLKPN4MJ6st0rY7H1vA==
 
 react-native-new-snap-carousel@^3.9.3:
   version "3.9.3"
@@ -10295,6 +10338,13 @@ react-native-paper@^5.10.6:
     "@callstack/react-theme-provider" "^3.0.9"
     color "^3.1.2"
     use-latest-callback "^0.1.5"
+
+react-native-photoeditorsdk@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-photoeditorsdk/-/react-native-photoeditorsdk-3.0.0.tgz#8a351c2422277acfa405f5705f7e0d493867c846"
+  integrity sha512-/6YXKB5zq8sglD4L1nVRMjtMRmVKQTu1xRu8nCZUD/dQOK0+IQyNxfJ+sXy510JPWyJZbOzs8mix5oCVDtV9/w==
+  dependencies:
+    react-native-imglysdk "3.0.0"
 
 react-native-progress@^5.0.0:
   version "5.0.0"
@@ -10354,6 +10404,13 @@ react-native-video-processing@^1.7.2:
     babel-preset-react-native "^4.0.0"
     babel-preset-react-native-stage-0 "1.0.1"
     lodash "^4.16.6"
+
+react-native-videoeditorsdk@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npmjs.org/react-native-videoeditorsdk/-/react-native-videoeditorsdk-3.0.0.tgz"
+  integrity sha512-RW7caPxDawLi25czzehWUzJkpb++TCfZThp04+Py4C6FMPy9kjfw354E/CPGrABrC4285KkM4NAEgQUvV2lB1w==
+  dependencies:
+    react-native-imglysdk "3.0.0"
 
 react-native-view-shot@3.4.0:
   version "3.4.0"

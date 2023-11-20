@@ -1,11 +1,11 @@
 import {
-    Image,
-    ImageBackground,
-    Pressable,
-    SafeAreaView,
-    StyleSheet,
-    TouchableOpacity,
-    View,
+	Image,
+	ImageBackground,
+	Pressable,
+	SafeAreaView,
+	StyleSheet,
+	TouchableOpacity,
+	View,
 } from 'react-native';
 import { width } from '../../utils/UseDimensoins';
 import { ProfielPic } from '../../Components/ProfilePic';
@@ -17,11 +17,9 @@ import * as ImagePicker from 'expo-image-picker';
 import { updateUser } from '../../utils/fetch';
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 import { ref, uploadBytes } from 'firebase/storage';
-
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ProfileUpdate } from './ProfileUpdate';
-
 import Square from '../../assets/badges/censored/square.png';
 import SquareAng from '../../assets/badges/censored/square_angl.png';
 import Star from '../../assets/badges/censored/star.png';
@@ -45,7 +43,7 @@ const ProfileMain = ({ navigation, setLoggedIn }) => {
 		if (!result.canceled) {
 			const manipResult = await manipulateAsync(
 				result.assets[0].uri,
-				[{ resize: { width: 500, height: 500 } }],
+				[{ resize: { width: 400 } }],
 				{
 					compress: 0.4,
 					format: SaveFormat.PNG,
@@ -64,7 +62,7 @@ const ProfileMain = ({ navigation, setLoggedIn }) => {
 
 				setUser({
 					...user,
-					profilePic: { isLocal: true, url: manipResult.uri },
+					profilePic: { ...response, isLocal: true },
 				});
 			});
 		}

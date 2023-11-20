@@ -1,7 +1,6 @@
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Colors } from '../../Constants/Colors';
 import { useState } from 'react';
-import { ArrowSmall } from '../../Components/SVG/ArrowSmall';
 import Arrow from '../../assets/arrow.png';
 
 import TextColor from '../../assets/icons/textColor.png';

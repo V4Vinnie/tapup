@@ -8,17 +8,16 @@ import {
 	FlatList,
 	ImageBackground,
 	SafeAreaView,
-	Text,
 	TouchableOpacity,
 	View,
 } from 'react-native';
 import { Colors } from '../../Constants/Colors';
 import { Question } from './Question';
-import { ROLES } from '../../Constants/Roles';
 import { PageHeader } from '../../Components/PageHeader';
 import blueBG from '../../assets/bleuBG.png';
 import { RegularText } from '../../Components/Text/RegularText';
 import { BoldText } from '../../Components/Text/BoldText';
+import { checkIfCreator } from '../../utils/checkIfCreator';
 
 export const Questions = () => {
 	const [questions, setQuestions] = useState();
@@ -62,7 +61,7 @@ export const Questions = () => {
 					imageStyle={{ height: 530, top: -200, zIndex: -10 }}
 					style={{ padding: 10 }}
 				></ImageBackground>
-				{user.role === ROLES.CREATOR && (
+				{checkIfCreator(user.role) && (
 					<View
 						style={{
 							flexDirection: 'row',

@@ -5,7 +5,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StartScreen } from './StartScreen';
 import { SignUp } from './SignUp/SignUp';
-import { SignUpTopics } from './SignUp/SignUpTopics';
 import { Onboard } from './SignUp/Oboarding';
 import { Home } from './Home/Home';
 import { fetchUser } from '../utils/fetch';
@@ -19,10 +18,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SearchView } from './Search/SearchView';
 import { NavBar } from '../Components/NavBar';
 import { height } from '../utils/UseDimensoins';
-import { ROLES } from '../Constants/Roles';
 import { EditorView } from './Editor/EditorOverview';
 import { Questions } from './Questions/Questions';
 import { Goals } from './Goals/Goals';
+import { Audio } from 'expo-av';
+import { checkIfCreator } from '../utils/checkIfCreator';
 
 const Stack = createNativeStackNavigator();
 
@@ -33,7 +33,6 @@ export const AppRoutes = () => {
 
 	const [loggedIn, setLoggedIn] = useState(false);
 
-	const [isLogginIn, setIsLogginIn] = useState(false);
 
 	const [isloading, setIsLoading] = useState(true);
 
@@ -52,13 +51,16 @@ export const AppRoutes = () => {
 					if (_user.selectedTopics) {
 						setUser(_user);
 						setLoggedIn(true);
+						setIsLoading(false);
 					}
+				} else {
+					setIsLoading(false);
 				}
 			});
-
-			setIsLoading(false);
 		};
 		test();
+
+		Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
 	}, []);
 
 	if (!isloading) {
@@ -71,14 +73,11 @@ export const AppRoutes = () => {
 						}}
 					>
 						<Stack.Screen name='start'>
-							{(props) => <StartScreen isLogginIn={isLogginIn} {...props} />}
+							{(props) => <StartScreen {...props} />}
 						</Stack.Screen>
 
 						<Stack.Screen name='sign-up'>
 							{(props) => <SignUp {...props} signUp={setUser} />}
-						</Stack.Screen>
-						<Stack.Screen name='sign-up-topic'>
-							{(props) => <SignUpTopics {...props} setLoggedIn={setLoggedIn} />}
 						</Stack.Screen>
 
 						<Stack.Screen name='onboard'>
@@ -90,43 +89,6 @@ export const AppRoutes = () => {
 						</Stack.Screen>
 					</Stack.Navigator>
 				) : (
-					<>
-						{/* {user.role === ROLES.CREATOR && (
-								<>
-									<Stack.Screen name='editorOverview'>
-										{(props) => (
-											<EditorOverview
-												{...props}
-												setEditorFrame={setEditorFrame}
-											/>
-										)}
-									</Stack.Screen>
-
-									<Stack.Screen name='editFrame'>
-										{(props) => (
-											<EditFrame
-												{...props}
-												editorFrame={editorFrame}
-												removedFrameLocal={removedFrameLocal}
-											/>
-										)}
-									</Stack.Screen>
-
-									<Stack.Screen name='editContent'>
-										{(props) => (
-											<EditorFrameContent
-												{...props}
-												editorFrame={editorFrame}
-												setEditorFrame={setEditorFrame}
-											/>
-										)}
-									</Stack.Screen>
-								</>
-							)} */}
-					</>
-				)}
-
-				{loggedIn && (
 					<>
 						<Tab.Navigator
 							tabBar={(props) => <NavBar {...props} />}
@@ -170,7 +132,7 @@ export const AppRoutes = () => {
 								{(props) => <Profile {...props} setLoggedIn={setLoggedIn} />}
 							</Tab.Screen>
 
-							{user.role === ROLES.CREATOR && (
+							{checkIfCreator(user.role) && (
 								<Tab.Screen name='Editor'>
 									{(props) => <EditorView {...props} />}
 								</Tab.Screen>

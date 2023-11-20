@@ -10,6 +10,7 @@ export const PageHeader = ({
 	backgroundColor,
 	withBack = false,
 	onBackClick,
+	rightAction,
 }) => (
 	<SafeAreaView
 		style={{
@@ -65,7 +66,9 @@ export const PageHeader = ({
 						{titleName}
 					</RegularText>
 
-					{withBack && <View style={{ width: 60 }}></View>}
+					{withBack && (
+						<View style={{ width: 60 }}>{rightAction && rightAction}</View>
+					)}
 				</View>
 			</ImageBackground>
 		</View>

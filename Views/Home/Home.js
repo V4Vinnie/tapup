@@ -8,6 +8,7 @@ import { ROLES } from '../../Constants/Roles';
 import { TabDetail } from '../Detail/TabDetail';
 import { TopicDetail } from '../Detail/TopicDetail';
 import { Frames } from '../../Components/FrameRelated/Frames';
+import { checkIfCreator } from '../../utils/checkIfCreator';
 
 const Stack = createNativeStackNavigator();
 
@@ -81,7 +82,7 @@ export const Home = ({
 					{(props) => <Frames frame={viewFrame} {...props} />}
 				</Stack.Screen>
 
-				{user.role === ROLES.CREATOR && (
+				{checkIfCreator(user.role) && (
 					<>
 						<Stack.Screen name='editorOverview'>
 							{(props) => (

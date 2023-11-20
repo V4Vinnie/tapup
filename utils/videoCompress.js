@@ -7,9 +7,7 @@ export const compressVideo = async (videoUrl) => {
 			compressionMethod: 'auto',
 		},
 		(progress) => {
-			if (backgroundMode) {
-				console.log('Compression Progress: ', progress);
-			}
+			console.log('Compression Progress: ', progress);
 		}
 	);
 	return result;

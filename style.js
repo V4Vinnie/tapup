@@ -34,8 +34,8 @@ export const sectionTitle = {
 };
 
 export const shadowProp = {
-	shadowColor: '#171717',
-	shadowOffset: { width: 0, height: 4 },
-	shadowOpacity: 0.8,
-	shadowRadius: 3,
+	shadowColor: 'rgba(0, 0, 0, 0.25)',
+	shadowOffset: { width: 0, height: 0 },
+	shadowOpacity: 0.2,
+	shadowRadius: 2,
 };
