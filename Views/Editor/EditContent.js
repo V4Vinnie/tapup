@@ -44,7 +44,21 @@ export const EditContent = ({ navigation }) => {
 
 	useEffect(() => {
 		setShowNavBar(false);
+
+		const gestureEndListener = (e) => {
+			setShowNavBar(true);
+		};
+
+		const gestureHandler = navigation.addListener(
+			'beforeRemove',
+			gestureEndListener
+		);
+
 		setOldContent([...editorFrame.contents]);
+
+		return () => {
+			gestureHandler.remove();
+		};
 	}, [isFocused]);
 
 	const uploadContent = async (contentUrl) => {

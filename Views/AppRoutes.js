@@ -33,7 +33,6 @@ export const AppRoutes = () => {
 
 	const [loggedIn, setLoggedIn] = useState(false);
 
-
 	const [isloading, setIsLoading] = useState(true);
 
 	const [topicDetail, setTopicDetail] = useState(null);
@@ -129,7 +128,13 @@ export const AppRoutes = () => {
 							</Tab.Screen>
 
 							<Tab.Screen name='Profile'>
-								{(props) => <Profile {...props} setLoggedIn={setLoggedIn} />}
+								{(props) => (
+									<Profile
+										{...props}
+										setViewFrame={setViewFrame}
+										setLoggedIn={setLoggedIn}
+									/>
+								)}
 							</Tab.Screen>
 
 							{checkIfCreator(user.role) && (

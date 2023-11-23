@@ -46,14 +46,19 @@ export const TopicRectApp = ({
 		getCreator(topic.creator);
 	}, []);
 
-	const [creator, setCreator] = useState('');
+	const [creator, setCreator] = useState(undefined);
+	const [isLoadingName, setIsLoadingName] = useState(true);
 
 	const getCreator = async (creatorId) => {
+		setIsLoadingName(true);
 		const _creator = await fetchCreator(creatorId);
 
 		if (_creator) {
-			setCreator(creator);
+			setCreator(_creator);
+		} else {
+			setCreator(undefined);
 		}
+		setIsLoadingName(false);
 	};
 
 	return (
@@ -101,15 +106,16 @@ export const TopicRectApp = ({
 								height: 10,
 								width: '100%',
 								right: '40%',
+								objectFit: 'contain',
 							}}
 							source={tapTopIMG}
 						/>
 						<View style={styles.titleWrapper}>
 							<RegularText style={{ fontSize: 11, color: 'white' }}>
-								{topic.creator === user.id
-									? user.name
-									: creator
+								{!isLoadingName
 									? creator
+									: topic.creator === user.id
+									? user.names
 									: 'TapUp'}
 							</RegularText>
 							<MediumText style={{ fontSize: 12, color: 'white' }}>

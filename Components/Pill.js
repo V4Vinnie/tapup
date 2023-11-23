@@ -1,9 +1,16 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import { shadowProp } from '../style';
 import { Shadow } from 'react-native-shadow-2';
 import { RegularText } from './Text/RegularText';
 
-export const Pill = ({ tap, color, textColor, setTabDetail, navigation }) => {
+export const Pill = ({
+	tap,
+	color,
+	textColor,
+	setTabDetail,
+	navigation,
+	isCreator,
+}) => {
 	const onPillClick = () => {
 		setTabDetail(tap);
 		navigation.navigate('tabDetail');
@@ -21,7 +28,7 @@ export const Pill = ({ tap, color, textColor, setTabDetail, navigation }) => {
 						fontSize: 12,
 					}}
 				>
-					{tap.title}
+					{isCreator ? tap.name : tap.title}
 				</RegularText>
 			</Pressable>
 		</Shadow>

@@ -51,11 +51,10 @@ export const Question = ({ question, isCreator }) => {
 				shadowRadius: 3,
 				backgroundColor: Colors.primary.white,
 				marginTop: 20,
-				display: !frameTitle && 'none',
 			}}
 		>
 			<BoldText style={{ fontWeight: 'bold', fontSize: 20 }}>
-				{titleLoading ? frameTitle : 'Loading'}
+				{question.frameTitle}
 			</BoldText>
 			<View style={{ marginTop: 5 }}>
 				<MediumText style={{ fontWeight: '600', fontSize: 16 }}>

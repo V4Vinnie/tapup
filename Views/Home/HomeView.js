@@ -27,6 +27,7 @@ import { MediumText } from '../../Components/Text/MediumText';
 import { BoldText } from '../../Components/Text/BoldText';
 import { useIsFocused } from '@react-navigation/native';
 import { LoadingContent } from '../../Components/LoadingContent';
+import { LoadingRefresh } from '../../Components/LoadingRefresh';
 
 export const HomeView = ({
 	navigation,
@@ -155,9 +156,22 @@ export const HomeView = ({
 				<ScrollView
 					showsVerticalScrollIndicator={false}
 					showsHorizontalScrollIndicator={false}
-					style={{}}
+					style={{ backgroundColor: `#1C2239` }}
 				>
 					<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+
+					{refreshing && (
+						<View
+							style={{
+								height: 100,
+								justifyContent: 'center',
+								alignItems: 'center',
+							}}
+						>
+							<LoadingRefresh />
+						</View>
+					)}
+
 					<View style={styles.container}>
 						<ImageBackground
 							resizeMode='cover'
@@ -254,24 +268,68 @@ export const HomeView = ({
 									)}
 								</View>
 							</ImageBackground>
-							<View style={styles.topicsPillSection}>
-								{taps && !refreshing ? (
-									taps.map((tap) => {
-										return (
-											<Pill
-												key={tap.id}
-												tap={tap}
-												color={Colors.primary.white}
-												textColor={Colors.primary.lightBleu}
-												setTabDetail={setTabDetail}
-												navigation={navigation}
-											/>
-										);
-									})
-								) : (
-									<LoadingContent />
-								)}
+							<View style={styles.topicsPillsWrapper}>
+								<MediumText
+									style={{
+										fontSize: 16,
+										marginBottom: 5,
+										color: Colors.primary.bleuBottom,
+									}}
+								>
+									Tap topics
+								</MediumText>
+								<View style={styles.topicsPillSection}>
+									{taps && !refreshing ? (
+										[...taps].map((tap) => {
+											return (
+												<Pill
+													key={tap.id}
+													tap={tap}
+													color={Colors.primary.white}
+													textColor={Colors.primary.lightBleu}
+													setTabDetail={setTabDetail}
+													navigation={navigation}
+													isCreator={tap.role}
+												/>
+											);
+										})
+									) : (
+										<LoadingContent />
+									)}
+								</View>
 							</View>
+
+							<View style={styles.topicsPillsWrapper}>
+								<MediumText
+									style={{
+										fontSize: 16,
+										marginBottom: 5,
+										color: Colors.primary.bleuBottom,
+									}}
+								>
+									Creators
+								</MediumText>
+								<View style={styles.topicsPillSection}>
+									{creators && !refreshing ? (
+										[...creators].map((tap) => {
+											return (
+												<Pill
+													key={tap.id}
+													tap={tap}
+													color={Colors.primary.white}
+													textColor={Colors.primary.lightBleu}
+													setTabDetail={setTabDetail}
+													navigation={navigation}
+													isCreator={tap.role}
+												/>
+											);
+										})
+									) : (
+										<LoadingContent />
+									)}
+								</View>
+							</View>
+
 							<View style={{ backgroundColor: Colors.primary.white }}>
 								{taps && !refreshing ? (
 									taps.map((tab) => (
@@ -317,7 +375,7 @@ const styles = StyleSheet.create({
 	container: {
 		alignItems: 'center',
 		width: '100%',
-		marginBottom: height / 3,
+		paddingBottom: height / 3,
 		backgroundColor: Colors.primary.white,
 	},
 
@@ -349,10 +407,15 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 
+	topicsPillsWrapper: {
+		display: 'flex',
+		flexDirection: 'column',
+		alignItems: 'center',
+	},
+
 	topicsPillSection: {
 		width: sectionWidth,
-		marginBottom: 20,
-		marginTop: 15,
+		marginBottom: 15,
 		flexDirection: 'row',
 		flexWrap: 'wrap',
 		justifyContent: 'center',

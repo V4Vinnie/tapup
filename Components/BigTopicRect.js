@@ -60,11 +60,18 @@ export const BigTopicRect = ({
 		getCreator(topic.creator);
 	}, []);
 
+	const [isLoadingName, setIsLoadingName] = useState(true);
+
 	const getCreator = async (creatorId) => {
+		setIsLoadingName(true);
 		const _creator = await fetchCreator(creatorId);
+
 		if (_creator) {
-			setCreator(creator);
+			setCreator(_creator);
+		} else {
+			setCreator(undefined);
 		}
+		setIsLoadingName(false);
 	};
 
 	return (
@@ -92,10 +99,10 @@ export const BigTopicRect = ({
 						/>
 						<View style={styles.titleWrapper}>
 							<MediumText style={{ color: Colors.primary.white, fontSize: 14 }}>
-								{topic.creator === user.id
-									? user.name
-									: creator
+								{!isLoadingName
 									? creator
+									: topic.creator === user.id
+									? user.names
 									: 'TapUp'}
 							</MediumText>
 							<BoldText

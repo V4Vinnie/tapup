@@ -29,7 +29,7 @@ export const Frames = ({ navigation, frame }) => {
 
 	const [isLoading, setIsLoading] = useState(true);
 
-	const [frameContents, setFrameContents] = useState([]);
+	const [frameContents, setFrameContents] = useState(undefined);
 
 	const [newBadges, setNewBadge] = useState(undefined);
 
@@ -151,7 +151,6 @@ export const Frames = ({ navigation, frame }) => {
 			const newFrame = activeFrame + 1;
 			const _prevActiveFrame = activeFrame;
 			setPrevActiveFrame(_prevActiveFrame);
-			await chachingItems({ isFirstLoad: false, locationInd: newFrame });
 			setActiveFrame(newFrame);
 			setShowTime(frameContents[newFrame].time);
 		}
@@ -177,20 +176,32 @@ export const Frames = ({ navigation, frame }) => {
 	};
 
 	const chachingItems = async ({ isFirstLoad, locationInd, isPrev }) => {
-		let _frameContens = frame.contents;
+		let _frameContens;
+		if (!frameContents) {
+			_frameContens = [...frame.contents];
+		} else {
+			_frameContens = [...frameContents];
+		}
+
 		let contents = [];
 
-		let currentLocation = locationInd;
+		let currentLocation = locationInd + 1;
+		let toLocation = locationInd + 2;
 
 		if (isFirstLoad) {
 			const _watched = findById(user.watchedFrames, frame.id);
+
+			console.log(_watched);
+
 			if (_watched[0]) {
 				if (_watched[0].watchedContentIndex === frame.contents.length) {
 					setActiveFrame(frame.contents.length - 1);
 					currentLocation = frame.contents.length - 1;
+					toLocation = frame.contents.length;
 				} else {
 					setActiveFrame(_watched[0].watchedContentIndex);
-					currentLocation = _watched[0].watchedContentIndex;
+					currentLocation = _watched[0].watchedContentIndex - 1;
+					toLocation = currentLocation + 3;
 				}
 
 				if (_watched[0].isLiked) {
@@ -201,11 +212,21 @@ export const Frames = ({ navigation, frame }) => {
 				currentLocation = 0;
 			}
 		}
-		for (let index = 0; index < frame.contents.length; index++) {
+
+		if (isPrev) {
+			currentLocation = locationInd - 2;
+			toLocation = locationInd + 1;
+		}
+
+		console.log(currentLocation, 'ACTIVEIND:', locationInd);
+
+		for (let index = currentLocation; index < toLocation; index++) {
 			const _content = _frameContens[index];
+
 			if (_content && !_content.contentUrl) {
 				const contentURL = `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/frames%2F${frame.id}%2F${_content.content}?alt=media`;
 				contents.push(contentURL);
+				console.log('pushed', _content);
 			}
 		}
 
@@ -213,10 +234,11 @@ export const Frames = ({ navigation, frame }) => {
 			if (contents.length !== 0) {
 				const downloaded = await Promise.all([...cacheContents(contents)]);
 				let downloadedInd = 0;
-				for (let index = 0; index < frame.contents.length; index++) {
+				for (let index = currentLocation; index < toLocation; index++) {
 					if (_frameContens[index]) {
-						_frameContens[index].contentUrl = downloaded[index].localUri;
-						// downloadedInd++;
+						_frameContens[index].contentUrl =
+							downloaded[downloadedInd].localUri;
+						downloadedInd++;
 					}
 				}
 			}
@@ -241,21 +263,33 @@ export const Frames = ({ navigation, frame }) => {
 
 	useEffect(() => {
 		setShowNavBar(false);
+
+		const gestureEndListener = (e) => {
+			setShowNavBar(true);
+		};
+
+		const gestureHandler = navigation.addListener(
+			'beforeRemove',
+			gestureEndListener
+		);
+		return () => {
+			gestureHandler.remove();
+		};
 	}, []);
 
 	useEffect(() => {
 		const cacheContent = async () => {
-			if (frameContents.length === 0) {
+			if (!frameContents) {
 				setIsLoading(true);
-				await chachingItems({ isFirstLoad: true, locationInd: activeFrame });
+				await chachingItems({ isFirstLoad: true, locationInd: 0 });
 			} else if (prevActiveFrame < activeFrame) {
 				await chachingItems({ locationInd: activeFrame });
 			} else {
-				await chachingItems({ isPrev: true });
+				await chachingItems({ locationInd: activeFrame, isPrev: true });
 			}
 		};
 		cacheContent();
-	}, []);
+	}, [activeFrame]);
 
 	const countInterval = useRef(null);
 
@@ -383,13 +417,15 @@ export const Frames = ({ navigation, frame }) => {
 					</MediumText>
 				</SafeAreaView>
 
-				{activeFrame + 1 === frameContents.length && isFinished && (
-					<FrameFinished
-						newBadges={newBadges}
-						frame={frame}
-						creator={creator}
-					/>
-				)}
+				{frameContents &&
+					activeFrame + 1 === frameContents.length &&
+					isFinished && (
+						<FrameFinished
+							newBadges={newBadges}
+							frame={frame}
+							creator={creator}
+						/>
+					)}
 
 				{showQuestion && (
 					<AskQuestion

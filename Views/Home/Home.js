@@ -4,7 +4,6 @@ import { useUser } from '../../Providers/UserProvider';
 import { useTaps } from '../../Providers/TapsProvider';
 import { HomeView } from './HomeView';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { ROLES } from '../../Constants/Roles';
 import { TabDetail } from '../Detail/TabDetail';
 import { TopicDetail } from '../Detail/TopicDetail';
 import { Frames } from '../../Components/FrameRelated/Frames';
@@ -62,6 +61,7 @@ export const Home = ({
 						<TabDetail
 							setTopicDetail={setTopicDetail}
 							tab={tabDetail}
+							setViewFrame={setViewFrame}
 							{...props}
 						/>
 					)}

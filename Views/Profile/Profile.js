@@ -1,20 +1,22 @@
 import {
+	FlatList,
 	Image,
 	ImageBackground,
 	Pressable,
 	SafeAreaView,
+	ScrollView,
 	StyleSheet,
 	TouchableOpacity,
 	View,
 } from 'react-native';
-import { width } from '../../utils/UseDimensoins';
+import { height, width } from '../../utils/UseDimensoins';
 import { ProfielPic } from '../../Components/ProfilePic';
 import { useUser } from '../../Providers/UserProvider';
 import { Colors } from '../../Constants/Colors';
 import { signOut } from 'firebase/auth';
 import { auth, storage } from '../../firebaseConfig';
 import * as ImagePicker from 'expo-image-picker';
-import { updateUser } from '../../utils/fetch';
+import { fetchFrameById, updateUser } from '../../utils/fetch';
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 import { ref, uploadBytes } from 'firebase/storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -30,8 +32,11 @@ import blueBG from '../../assets/bleuBG_small.png';
 import { useIsFocused } from '@react-navigation/native';
 import { BoldText } from '../../Components/Text/BoldText';
 import { MediumText } from '../../Components/Text/MediumText';
+import { TopicRectApp } from '../../Components/TopicRectApp';
+import { PrivacyPolicy } from './PrivacyPolicy';
+import { Report } from './Report';
 
-const ProfileMain = ({ navigation, setLoggedIn }) => {
+const ProfileMain = ({ navigation, setLoggedIn, setViewFrame }) => {
 	const { user, setUser } = useUser();
 
 	const pickUserImg = async () => {
@@ -92,19 +97,51 @@ const ProfileMain = ({ navigation, setLoggedIn }) => {
 		} else {
 			setRenderBadges(hiddenBadges);
 		}
+		getLikedFrames();
 	}, [isFocused]);
+
+	const [isLoading, setIsLoading] = useState(true);
+
+	const [likedFrames, setLikedFrames] = useState(undefined);
+
+	const getLikedFrames = async () => {
+		setIsLoading(true);
+
+		let _likedFrames = [];
+
+		for (let ind = 0; ind < user.watchedFrames.length; ind++) {
+			const _frame = user.watchedFrames[ind];
+
+			if (_frame.isLiked) {
+				const frameData = await fetchFrameById(_frame.frameLink);
+				if (frameData) {
+					_likedFrames.push(frameData);
+				}
+			}
+		}
+		setLikedFrames(_likedFrames);
+		setIsLoading(false);
+	};
+
+	const setFrames = (frame) => {
+		setViewFrame(frame);
+		navigation.navigate('frames');
+	};
 
 	return (
 		<Fragment>
 			<SafeAreaView
 				style={{ backgroundColor: Colors.primary.bleuBottom, flex: 0 }}
 			></SafeAreaView>
-			<SafeAreaView
+			<ScrollView
 				style={{
 					backgroundColor: Colors.primary.white,
 					flex: 1,
 					height: '100%',
 				}}
+				showsVerticalScrollIndicator={false}
+				showsHorizontalScrollIndicator={false}
+				bounces={false}
 			>
 				<View style={styles.headWrapper}>
 					{/* <Back navigate={() => navigation.navigate('home')} /> */}
@@ -138,23 +175,27 @@ const ProfileMain = ({ navigation, setLoggedIn }) => {
 									if (badge.id === 'ID468') {
 										return (
 											<Image
+												key={badge.id}
 												style={styles.badgeImg}
-												source={{
-													uri: `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/badges%2F${badge.img}?alt=media`,
-												}}
+												source={require(`../../assets/badges/badge_FirstFrame.png`)}
 											/>
 										);
 									} else if (badge.id === 'ddFfhdks1532sqdqhg') {
 										return (
 											<Image
+												key={badge.id}
 												style={styles.badgeImg}
-												source={{
-													uri: `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/badges%2F${badge.img}?alt=media`,
-												}}
+												source={require(`../../assets/badges/badge_WeekGoal.png`)}
 											/>
 										);
 									} else {
-										return <Image style={styles.badgeImg} source={badge} />;
+										return (
+											<Image
+												key={badge.id}
+												style={styles.badgeImg}
+												source={badge}
+											/>
+										);
 									}
 								})
 							) : (
@@ -163,7 +204,46 @@ const ProfileMain = ({ navigation, setLoggedIn }) => {
 						</View>
 					</View>
 				</ImageBackground>
-				<View style={{ alignItems: 'center', marginTop: 20 }}>
+
+				<View style={{ alignItems: 'center', marginTop: 40 }}>
+					<MediumText style={styles.likedTitle}>Liked Frames</MediumText>
+
+					{!isLoading && likedFrames.length ? (
+						<FlatList
+							showsVerticalScrollIndicator={false}
+							showsHorizontalScrollIndicator={false}
+							horizontal
+							data={likedFrames}
+							style={{
+								overflow: 'visible',
+								alignSelf: 'flex-start',
+								width: '100%',
+								padding: 15,
+							}}
+							renderItem={({ item }) => (
+								<TopicRectApp
+									width={width / 3 - 11}
+									height={200}
+									topic={item}
+									setFrames={setFrames}
+									navigation={navigation}
+									key={item.id}
+								/>
+							)}
+							keyExtractor={(topic) => topic.id}
+						/>
+					) : (
+						<BoldText>No liked frames</BoldText>
+					)}
+				</View>
+
+				<View
+					style={{
+						alignItems: 'center',
+						marginTop: 20,
+						marginBottom: height / 5,
+					}}
+				>
 					<TouchableOpacity
 						style={styles.signOutButton}
 						onPress={() => {
@@ -176,14 +256,14 @@ const ProfileMain = ({ navigation, setLoggedIn }) => {
 						</MediumText>
 					</TouchableOpacity>
 				</View>
-			</SafeAreaView>
+			</ScrollView>
 		</Fragment>
 	);
 };
 
 const ProfileStack = createNativeStackNavigator();
 
-export const Profile = ({ navigation, setLoggedIn }) => {
+export const Profile = ({ navigation, setLoggedIn, setViewFrame }) => {
 	return (
 		<ProfileStack.Navigator
 			screenOptions={{
@@ -196,6 +276,7 @@ export const Profile = ({ navigation, setLoggedIn }) => {
 					<ProfileMain
 						setLoggedIn={setLoggedIn}
 						navigation={navigation}
+						setViewFrame={setViewFrame}
 						{...props}
 					/>
 				)}
@@ -211,6 +292,14 @@ export const Profile = ({ navigation, setLoggedIn }) => {
 
 			<ProfileStack.Screen name='SelectIntrests'>
 				{(props) => <SelectInterests {...props} />}
+			</ProfileStack.Screen>
+
+			<ProfileStack.Screen name='PrivacyPolicy'>
+				{(props) => <PrivacyPolicy {...props} />}
+			</ProfileStack.Screen>
+
+			<ProfileStack.Screen name='Report'>
+				{(props) => <Report {...props} />}
 			</ProfileStack.Screen>
 		</ProfileStack.Navigator>
 	);
@@ -266,6 +355,11 @@ const styles = StyleSheet.create({
 
 	badgesTitle: {
 		fontSize: 30,
+		color: Colors.primary.bleuBottom,
+	},
+
+	likedTitle: {
+		fontSize: 20,
 		color: Colors.primary.bleuBottom,
 	},
 

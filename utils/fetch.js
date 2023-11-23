@@ -178,16 +178,25 @@ export const deleteFrame = async (tapId, topicId, frameId, frameContent) => {
 
 export const fetchCreator = async (creatorID) => {
 	const docRef = doc(DB, 'users', creatorID);
-	let creatorName;
-	const _userRef = await getDoc(docRef)
-		.then(() => (creatorName = _userRef.data().name))
-		.catch(() => (creatorName = undefined));
-	return creatorName;
+
+	const _userRef = await getDoc(docRef);
+	const creatorName = _userRef.data();
+	if (creatorName.name) {
+		return creatorName.name;
+	} else {
+		return undefined;
+	}
 };
 
 export const createNewQuestion = async (question) => {
 	const docRef = doc(DB, 'questions', question.id);
 	await setDoc(docRef, question);
+};
+
+export const fetchFrameById = async ({ tapId, topicId, id }) => {
+	const docRef = doc(DB, `taps/${tapId}/topics/${topicId}/frames/`, id);
+	const _frameData = await getDoc(docRef);
+	return _frameData.data();
 };
 
 export const fetchQuestionForUser = async (userId) => {
@@ -198,19 +207,27 @@ export const fetchQuestionForUser = async (userId) => {
 	if (questions.empty) {
 		return null;
 	}
+
 	let _questions = [];
+
+	let _fullQuestions = [];
 
 	questions.forEach((created) => {
 		_questions.push(created.data());
 	});
 
-	return _questions;
-};
+	for (let ind = 0; ind < _questions.length; ind++) {
+		const _frame = await fetchFrameById(_questions[ind].frameLink);
 
-export const fetchFrameById = async ({ tapId, topicId, id }) => {
-	const docRef = doc(DB, `taps/${tapId}/topics/${topicId}/frames/`, id);
-	const _frameData = await getDoc(docRef);
-	return _frameData.data();
+		if (_frame) {
+			_fullQuestions.push({
+				..._questions[ind],
+				frameTitle: _frame.title,
+			});
+		}
+	}
+
+	return _fullQuestions;
 };
 
 export const fetchQuestrionsAskedForUser = async (userId) => {
@@ -225,12 +242,24 @@ export const fetchQuestrionsAskedForUser = async (userId) => {
 		return null;
 	}
 	let _questions = [];
+	let _fullQuestions = [];
 
 	questions.forEach((created) => {
 		_questions.push(created.data());
 	});
 
-	return _questions;
+	for (let ind = 0; ind < _questions.length; ind++) {
+		const _frame = await fetchFrameById(_questions[ind].frameLink);
+
+		if (_frame) {
+			_fullQuestions.push({
+				..._questions[ind],
+				frameTitle: _frame.title,
+			});
+		}
+	}
+
+	return _fullQuestions;
 };
 
 export const fetchCreators = async () => {
@@ -251,4 +280,9 @@ export const fetchCreators = async () => {
 	});
 
 	return _creators;
+};
+
+export const addNewBug = async (report) => {
+	const docRef = doc(DB, 'reports', report.id);
+	await setDoc(docRef, report);
 };

@@ -93,29 +93,51 @@ export const Questions = () => {
 							onPress={() => setShowFor(true)}
 						>
 							{!showFor ? (
-								<RegularText>From You</RegularText>
+								<RegularText>For You</RegularText>
 							) : (
-								<BoldText>From You</BoldText>
+								<BoldText>For You</BoldText>
 							)}
 						</TouchableOpacity>
 					</View>
 				)}
-				<FlatList
-					showsVerticalScrollIndicator={false}
-					showsHorizontalScrollIndicator={false}
-					scrollEnabled
-					data={questions}
-					renderItem={({ item }) => (
-						<Question question={item} isCreator={showFor} />
-					)}
-					keyExtractor={(topic) => topic.id}
-					style={{
-						zIndex: 0,
+				{questions && questions.length === 0 ? (
+					<View
+						style={{
+							zIndex: 0,
+							padding: 20,
+							height: '100%',
+						}}
+					>
+						<BoldText
+							style={{
+								fontSize: 50,
+								lineHeight: 50,
+								color: Colors.primary.bleuBottom,
+								opacity: 0.2,
+								textTransform: 'uppercase',
+							}}
+						>
+							No questions asked
+						</BoldText>
+					</View>
+				) : (
+					<FlatList
+						showsVerticalScrollIndicator={false}
+						showsHorizontalScrollIndicator={false}
+						scrollEnabled
+						data={questions}
+						renderItem={({ item }) => (
+							<Question question={item} isCreator={showFor} />
+						)}
+						keyExtractor={(topic) => topic.id}
+						style={{
+							zIndex: 0,
 
-						padding: 20,
-						height: '100%',
-					}}
-				/>
+							padding: 20,
+							height: '100%',
+						}}
+					/>
+				)}
 			</SafeAreaView>
 		</Fragment>
 	);

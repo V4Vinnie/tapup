@@ -12,7 +12,7 @@ import { Back } from '../../Components/Back';
 import { TopicRectApp } from '../../Components/TopicRectApp';
 import { Colors } from '../../Constants/Colors';
 import { sectionTitle } from '../../style';
-import { width } from '../../utils/UseDimensoins';
+import { height, width } from '../../utils/UseDimensoins';
 import BGPink from '../../assets/logo/pinkBG.png';
 import BGDark from '../../assets/logo/darkBG.png';
 import { BigTopicRect } from '../../Components/BigTopicRect';
@@ -63,7 +63,7 @@ export const TopicDetail = ({
 
 			setDoneFrames(done);
 			setAllFrames(_frames);
-			console.log('Finished set ALL');
+
 			setIsFetching(false);
 		};
 
@@ -184,7 +184,6 @@ export const TopicDetail = ({
 								<>
 									{allFrames.length === 0 ? (
 										<>
-											{console.log('VISUAL')}
 											<BoldText
 												style={{ fontSize: 20, color: Colors.primary.white }}
 											>
@@ -225,7 +224,7 @@ export const TopicDetail = ({
 						</MediumText>
 						{allFrames.length > 0 && (
 							<FlatList
-								style={{ marginBottom: 150 }}
+								style={{ marginBottom: height / 3 }}
 								showsVerticalScrollIndicator={false}
 								showsHorizontalScrollIndicator={false}
 								numColumns={3}

@@ -5,12 +5,10 @@ import {
 	SafeAreaView,
 	ScrollView,
 	StyleSheet,
-	Text,
 	TextInput,
 	TouchableOpacity,
 	View,
 } from 'react-native';
-import { Back } from '../../Components/Back';
 import { Colors } from '../../Constants/Colors';
 import { useUser } from '../../Providers/UserProvider';
 import { Fragment, useState } from 'react';
@@ -23,7 +21,6 @@ import blueBG from '../../assets/bleuBG.png';
 import { BlackArrow } from '../../Components/SVG/BlackArrow';
 import { auth } from '../../firebaseConfig';
 import { height } from '../../utils/UseDimensoins';
-import { Dropdown } from 'react-native-element-dropdown';
 import { updateUser } from '../../utils/fetch';
 import { RoleSelect } from '../../Components/RoleSelect';
 import { MediumText } from '../../Components/Text/MediumText';
@@ -154,7 +151,7 @@ export const ProfileUpdate = ({ navigation }) => {
 								<MediumText style={styles.sectionTitle}>Privacy</MediumText>
 								<TouchableOpacity
 									style={styles.settingItem}
-									onPress={() => openSettings()}
+									onPress={() => clickNewPage('PrivacyPolicy')}
 								>
 									<RegularText>Privacy Policy</RegularText>
 									<BlackArrow style={{ marginLeft: 5 }} />
@@ -167,7 +164,7 @@ export const ProfileUpdate = ({ navigation }) => {
 								</MediumText>
 								<TouchableOpacity
 									style={styles.settingItem}
-									onPress={() => openSettings()}
+									onPress={() => clickNewPage('Report')}
 								>
 									<RegularText>Report an issue</RegularText>
 									<BlackArrow style={{ marginLeft: 5 }} />

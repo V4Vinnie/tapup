@@ -12,20 +12,61 @@ import { BigTopicRect } from '../../Components/BigTopicRect';
 import { TopicRectApp } from '../../Components/TopicRectApp';
 import { Colors } from '../../Constants/Colors';
 import { sectionTitle } from '../../style';
-import { width } from '../../utils/UseDimensoins';
+import { height, width } from '../../utils/UseDimensoins';
 import BGPink from '../../assets/logo/pinkBG.png';
 import BGDark from '../../assets/logo/darkBG.png';
 import { MediumText } from '../../Components/Text/MediumText';
 import { RegularText } from '../../Components/Text/RegularText';
+import { fetchFrameById } from '../../utils/fetch';
+import { BoldText } from '../../Components/Text/BoldText';
 
-export const TabDetail = ({ navigation, tab, setTopicDetail }) => {
+export const TabDetail = ({
+	navigation,
+	tab,
+	setTopicDetail,
+	setViewFrame,
+}) => {
 	const [moreTopics, setMoreTopics] = useState([]);
+
+	const [creatorFrames, setCreatorFrames] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
+
+	const [isCreator, setIsCreator] = useState(tab.role);
 
 	const TopicWidth = width / 3;
 
 	useEffect(() => {
-		setMoreTopics(tab.topics.slice(2, tab.topics.length));
+		const fetchCreatorFrames = async () => {
+			setIsLoading(true);
+			setIsCreator(true);
+			let _creatorFrames = [];
+			if (tab.frames) {
+				for (let ind = 0; ind < tab.frames.length; ind++) {
+					const _frame = tab.frames[ind];
+					const _creatorFrame = await fetchFrameById(_frame);
+					if (_creatorFrame) {
+						_creatorFrames.push(_creatorFrame);
+					}
+				}
+				setMoreTopics(_creatorFrames.slice(2, _creatorFrames.length));
+				setCreatorFrames(_creatorFrames);
+			} else {
+				setCreatorFrames(_creatorFrames);
+			}
+			setIsLoading(false);
+		};
+
+		if (tab.role) {
+			fetchCreatorFrames();
+		} else {
+			setMoreTopics(tab.topics.slice(2, tab.topics.length));
+		}
 	}, []);
+
+	const setFrames = (frame) => {
+		setViewFrame(frame);
+		navigation.navigate('frames');
+	};
 
 	return (
 		<>
@@ -59,7 +100,7 @@ export const TabDetail = ({ navigation, tab, setTopicDetail }) => {
 								textAlign: 'left',
 							}}
 						>
-							{tab.title}
+							{isCreator ? `Frames by ${tab.name}` : tab.title}
 						</MediumText>
 					</ImageBackground>
 				</View>
@@ -80,7 +121,11 @@ export const TabDetail = ({ navigation, tab, setTopicDetail }) => {
 								top: -50,
 							}}
 							source={
-								tab.img.includes('/')
+								tab.profilePic
+									? {
+											uri: `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/${tab.profilePic}?alt=media`,
+									  }
+									: tab.img.includes('/')
 									? { uri: tab.img }
 									: {
 											uri: `https://firebasestorage.googleapis.com/v0/b/tap-up.appspot.com/o/taps%2F${tab.id}%2F${tab.img}?alt=media`,
@@ -99,40 +144,75 @@ export const TabDetail = ({ navigation, tab, setTopicDetail }) => {
 								source={BGPink}
 							>
 								<RegularText style={{ color: Colors.primary.white }}>
-									{tab.description}
+									{!isCreator && tab.description}
 								</RegularText>
 							</ImageBackground>
 						</ImageBackground>
 					</View>
 
-					<View style={styles.bigItemsConainer}>
-						{tab.topics.length > 1 ? (
-							<>
+					{isCreator ? (
+						<View style={styles.bigItemsConainer}>
+							{!isLoading && creatorFrames.length > 1 ? (
+								<>
+									<BigTopicRect
+										width={width / 2 - 50}
+										height={300}
+										topic={creatorFrames[0]}
+										setFrames={setFrames}
+										navigation={navigation}
+									/>
+									<BigTopicRect
+										width={width / 2 - 10}
+										height={300}
+										topic={creatorFrames[1]}
+										setFrames={setFrames}
+										navigation={navigation}
+									/>
+								</>
+							) : creatorFrames.length === 0 ? (
+								<BoldText style={{ color: Colors.primary.white, fontSize: 20 }}>
+									No frames for this user
+								</BoldText>
+							) : (
 								<BigTopicRect
-									width={width / 2 - 50}
+									width={width / 2 - 10}
+									height={300}
+									topic={creatorFrames[0]}
+									setFrames={setFrames}
+									navigation={navigation}
+								/>
+							)}
+						</View>
+					) : (
+						<View style={styles.bigItemsConainer}>
+							{tab.topics.length > 1 ? (
+								<>
+									<BigTopicRect
+										width={width / 2 - 50}
+										height={300}
+										topic={tab.topics[0]}
+										setTopicDetail={setTopicDetail}
+										navigation={navigation}
+									/>
+									<BigTopicRect
+										width={width / 2 - 10}
+										height={300}
+										topic={tab.topics[1]}
+										setTopicDetail={setTopicDetail}
+										navigation={navigation}
+									/>
+								</>
+							) : (
+								<BigTopicRect
+									width={width / 2 - 10}
 									height={300}
 									topic={tab.topics[0]}
 									setTopicDetail={setTopicDetail}
 									navigation={navigation}
 								/>
-								<BigTopicRect
-									width={width / 2 - 10}
-									height={300}
-									topic={tab.topics[1]}
-									setTopicDetail={setTopicDetail}
-									navigation={navigation}
-								/>
-							</>
-						) : (
-							<BigTopicRect
-								width={width / 2 - 10}
-								height={300}
-								topic={tab.topics[0]}
-								setTopicDetail={setTopicDetail}
-								navigation={navigation}
-							/>
-						)}
-					</View>
+							)}
+						</View>
+					)}
 					<MediumText style={styles.moreText}>
 						{moreTopics.length === 0 ? '' : 'More'}
 					</MediumText>
@@ -141,6 +221,7 @@ export const TabDetail = ({ navigation, tab, setTopicDetail }) => {
 						showsHorizontalScrollIndicator={false}
 						numColumns={3}
 						data={moreTopics}
+						style={{ marginBottom: height / 3 }}
 						renderItem={({ item }) => (
 							<TopicRectApp
 								width={TopicWidth - 10}
@@ -187,6 +268,6 @@ const styles = StyleSheet.create({
 
 	moreText: {
 		fontSize: 18,
-		color: Colors.primary.white,
+		color: Colors.primary.bleuBottom,
 	},
 });

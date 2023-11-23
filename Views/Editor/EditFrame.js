@@ -126,7 +126,6 @@ export const EditFrame = ({ navigation, removedFrameLocal }) => {
 	}, [isFocused]);
 
 	const setTapCat = ({ id }) => {
-		console.log('vals', id);
 		setTapCategory(id);
 		const _topics = findById(taps, id);
 		setTapTopics(_topics[0].topics);
@@ -196,7 +195,6 @@ export const EditFrame = ({ navigation, removedFrameLocal }) => {
 		_frame.img = thumbCover;
 
 		if (prevTap !== tapCategory || prevTopic !== topicCategory.id) {
-			console.log('removing');
 			deleteFrame(prevTap, prevTopic, _frame.id);
 		}
 		const frameIndex = findWatchedFrameIndex(user.frames, _frame.id);
