@@ -21,13 +21,13 @@ import { auth, DB, storage } from '../../firebaseConfig';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { fetchUser, updateUser } from '../../utils/fetch';
-import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 import { ROLES } from '../../Constants/Roles';
 import { Back } from '../../Components/Back';
 import { RoleSelect } from '../../Components/RoleSelect';
 import { InterestPills } from '../../Components/InterestPills';
 import { MediumText } from '../../Components/Text/MediumText';
 import { RegularText } from '../../Components/Text/RegularText';
+import * as CompressImg from 'react-native-compressor';
 
 export const SignUp = ({ navigation, signUp }) => {
 	const [email, setEmail] = useState('');
@@ -119,16 +119,14 @@ export const SignUp = ({ navigation, signUp }) => {
 		});
 
 		if (!result.canceled) {
-			const manipResult = await manipulateAsync(
+			const manipResult = await CompressImg.Image.compress(
 				result.assets[0].uri,
-				[{ resize: { width: 400 } }],
 				{
-					compress: 0.4,
-					format: SaveFormat.JPEG,
+					maxWidth: 500,
 				}
 			);
 
-			setUserImg({ isLocal: true, url: manipResult.uri });
+			setUserImg({ isLocal: true, url: manipResult });
 		}
 	};
 

@@ -17,7 +17,6 @@ import { signOut } from 'firebase/auth';
 import { auth, storage } from '../../firebaseConfig';
 import * as ImagePicker from 'expo-image-picker';
 import { fetchFrameById, updateUser } from '../../utils/fetch';
-import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 import { ref, uploadBytes } from 'firebase/storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -35,6 +34,7 @@ import { MediumText } from '../../Components/Text/MediumText';
 import { TopicRectApp } from '../../Components/TopicRectApp';
 import { PrivacyPolicy } from './PrivacyPolicy';
 import { Report } from './Report';
+import * as CompressImg from 'react-native-compressor';
 
 const ProfileMain = ({ navigation, setLoggedIn, setViewFrame }) => {
 	const { user, setUser } = useUser();
@@ -46,16 +46,15 @@ const ProfileMain = ({ navigation, setLoggedIn, setViewFrame }) => {
 		});
 
 		if (!result.canceled) {
-			const manipResult = await manipulateAsync(
+			const manipResult = await CompressImg.Image.compress(
 				result.assets[0].uri,
-				[{ resize: { width: 400 } }],
 				{
-					compress: 0.4,
-					format: SaveFormat.PNG,
+					maxWidth: 500,
 				}
 			);
 
-			const response = await fetch(manipResult.uri);
+			const response = await fetch(manipResult);
+
 			const blobFile = await response.blob();
 
 			const storageRef = ref(storage, `users/${user.id}/profilePicture.png`);

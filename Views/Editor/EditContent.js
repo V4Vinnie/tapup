@@ -30,6 +30,7 @@ import { BoldText } from '../../Components/Text/BoldText';
 import { useIsFocused } from '@react-navigation/native';
 import { getVideoDuration } from '@qeepsake/react-native-file-utils';
 import { useEditorFrame } from '../../Providers/EditFrameProvider';
+import * as CompressImg from 'react-native-compressor';
 
 export const EditContent = ({ navigation }) => {
 	const snapRef = useRef();
@@ -120,16 +121,15 @@ export const EditContent = ({ navigation }) => {
 				result = await PESDK.openEditor(contentURL, configuration);
 
 				if (result != null) {
-					const manipResult = await manipulateAsync(result.image, [], {
-						compress: 0.3,
-						format: SaveFormat.PNG,
-					});
+					const manipResult = await CompressImg.Image.compress(
+						result.assets[0].uri
+					);
 
 					const _editorContent = [...editorFrame.contents];
 
-					_editorContent[editContentInd].contentUrl = manipResult.uri;
+					_editorContent[editContentInd].contentUrl = manipResult;
 
-					await uploadContent(manipResult.uri);
+					await uploadContent(manipResult);
 					setEditorFrame({ ...editorFrame, contents: _editorContent });
 				} else {
 					// The user tapped on the cancel button within the editor.
@@ -204,15 +204,15 @@ export const EditContent = ({ navigation }) => {
 					compress: 0.3,
 					format: SaveFormat.PNG,
 				});
-				const contentFetch = await fetch(manipResult.uri);
+				const contentFetch = await fetch(manipResult);
 				const contentBlob = await contentFetch.blob();
 
 				const id = uuid.v4();
 				const newImg = {
 					content: `${id}.png`,
-					contentUrl: manipResult.uri,
+					contentUrl: manipResult,
 					thumbnail: `thumbnail_${id}`,
-					thumbnailUrl: manipResult.uri,
+					thumbnailUrl: manipResult,
 					type: 'image',
 					time: 10000,
 					isNew: true,

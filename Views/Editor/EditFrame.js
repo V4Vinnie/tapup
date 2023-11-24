@@ -19,7 +19,6 @@ import { findById, findWatchedFrameIndex } from '../../utils/findById';
 import { cacheContents } from '../../utils/downloadAssets';
 import { useIsFocused } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
-import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 import { deleteFrame, updateFrame } from '../../utils/fetch';
 import { useUser } from '../../Providers/UserProvider';
 import { Loading } from '../../Components/Loading';
@@ -35,6 +34,7 @@ import tapTopIMG from '../../assets/tapTop_pink.png';
 import { Pencil } from '../../Components/SVG/Pencil';
 import { RegularText } from '../../Components/Text/RegularText';
 import { useEditorFrame } from '../../Providers/EditFrameProvider';
+import * as CompressImg from 'react-native-compressor';
 
 export const EditFrame = ({ navigation, removedFrameLocal }) => {
 	const { user, setUser } = useUser();
@@ -147,22 +147,24 @@ export const EditFrame = ({ navigation, removedFrameLocal }) => {
 		});
 
 		if (!result.canceled) {
-			const manipResult = await manipulateAsync(result.assets[0].uri, [], {
-				compress: 0.5,
-				format: SaveFormat.PNG,
-			});
+			const manipResult = await CompressImg.Image.compress(
+				result.assets[0].uri,
+				{
+					maxWidth: 500,
+				}
+			);
 
-			const response = await fetch(manipResult.uri);
+			const response = await fetch(manipResult);
 			const blobFile = await response.blob();
 
 			const coverPic = `${editorFrame.id}_cover.png`;
 
 			const storageRef = ref(storage, `frames/${editorFrame.id}/${coverPic}`);
 
-			setThumbCover({ url: manipResult.uri, isLocal: true });
+			setThumbCover({ url: manipResult, isLocal: true });
 			setEditorFrame({
 				...editorFrame,
-				img: { url: manipResult.uri, isLocal: true },
+				img: { url: manipResult, isLocal: true },
 			});
 			// await uploadBytes(storageRef, blobFile).then((snapshot) => {
 			// });
