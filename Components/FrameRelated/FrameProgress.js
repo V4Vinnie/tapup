@@ -1,29 +1,56 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Animated, TouchableOpacity, View } from 'react-native';
 import { Colors } from '../../Constants/Colors';
 import { width } from '../../utils/UseDimensoins';
 import { QuestionsSVG } from '../SVG/Icons/QuestionsSVG';
 import { HeartSVG } from '../SVG/Icons/HeartSVG';
+import { PlaySVG } from '../SVG/Icons/PlaySVG';
+import { PauseSVG } from '../SVG/Icons/PauseSVG';
 
-const AnimatedProgressView = ({ time, index, length, goNextOnComplete }) => {
-	const [fillAnimation] = useState(new Animated.Value(0));
+const AnimatedProgressView = ({
+	time,
+	index,
+	length,
+	goNextOnComplete,
+	paused,
+}) => {
+	const fillAnimation = useRef(new Animated.Value(0)).current;
+
+	const [animationStatus, setAnimationStatus] = useState(time);
 
 	useEffect(() => {
-		Animated.timing(fillAnimation, {
-			toValue: 1,
-			duration: time + 1000,
-			useNativeDriver: false,
-		}).start(({ finished }) => {
-			if (finished) {
-				goNextOnComplete();
+		let animation;
+
+		if (!paused) {
+			animation = Animated.timing(fillAnimation, {
+				toValue: 1,
+				duration: animationStatus,
+				useNativeDriver: false,
+			});
+
+			animation.start(({ finished }) => {
+				if (finished) {
+					goNextOnComplete();
+				}
+			});
+		} else {
+			if (animation) {
+				fillAnimation.stopAnimation((value) => {
+					const percentageValue = time * value;
+					setAnimationStatus(time - percentageValue);
+				});
 			}
-		});
+		}
 
 		return () => {
-			fillAnimation.setValue(0);
-			fillAnimation.stopAnimation();
+			if (animation) {
+				fillAnimation.stopAnimation((value) => {
+					const percentageValue = time * value;
+					setAnimationStatus(time - percentageValue);
+				});
+			}
 		};
-	}, []);
+	}, [fillAnimation, time, goNextOnComplete, paused]);
 
 	return (
 		<View
@@ -50,7 +77,7 @@ const AnimatedProgressView = ({ time, index, length, goNextOnComplete }) => {
 						outputRange: ['0%', '100%'],
 					}),
 				}}
-			></Animated.View>
+			/>
 		</View>
 	);
 };
@@ -64,8 +91,11 @@ export const FramePogress = ({
 	showQuestion,
 	toggleLike,
 	isLiked,
+	setPauseVideo,
+	pausedVideo,
 }) => {
 	const [bars, setBars] = useState([]);
+	const [paused, setPaused] = useState(false);
 
 	useEffect(() => {
 		let _bars = [];
@@ -73,6 +103,7 @@ export const FramePogress = ({
 			if (index < activeFrame) {
 				_bars.push(
 					<View
+						key={index}
 						style={
 							index === length - 1
 								? {
@@ -86,21 +117,23 @@ export const FramePogress = ({
 										borderRightColor: Colors.primary.white,
 								  }
 						}
-					></View>
+					/>
 				);
 			} else if (index === activeFrame) {
 				_bars.push(
 					<AnimatedProgressView
+						key={index}
 						time={time}
 						index={index}
 						length={length}
 						goNextOnComplete={goNext}
-						showQuestion={showQuestion}
+						paused={pausedVideo}
 					/>
 				);
 			} else {
 				_bars.push(
 					<View
+						key={index}
 						style={
 							index === length - 1
 								? {
@@ -114,12 +147,17 @@ export const FramePogress = ({
 										borderRightColor: Colors.primary.white,
 								  }
 						}
-					></View>
+					/>
 				);
 			}
 		}
 		setBars(_bars);
-	}, [activeFrame]);
+	}, [activeFrame, length, time, pausedVideo]);
+
+	const handleTogglePause = () => {
+		setPaused((prevPaused) => !prevPaused);
+		setPauseVideo((prevPaused) => !prevPaused);
+	};
 
 	return (
 		<View
@@ -134,9 +172,20 @@ export const FramePogress = ({
 				width: width - 30,
 			}}
 		>
+			<TouchableOpacity
+				style={{
+					width: 20,
+					justifyContent: 'center',
+					alignItems: 'center',
+				}}
+				onPress={handleTogglePause}
+			>
+				{pausedVideo ? <PlaySVG /> : <PauseSVG />}
+			</TouchableOpacity>
+
 			<View
 				style={{
-					width: width - 130,
+					width: width - 160,
 					height: 15,
 					flexDirection: 'row',
 					borderRadius: 50,
@@ -169,7 +218,12 @@ export const FramePogress = ({
 					justifyContent: 'center',
 					alignItems: 'center',
 				}}
-				onPress={() => setShowQuestion(true)}
+				onPress={() => {
+					if (!pausedVideo) {
+						handleTogglePause();
+					}
+					setShowQuestion(true);
+				}}
 			>
 				<QuestionsSVG isActive={true} style={{ transform: [{ scale: 0.8 }] }} />
 			</TouchableOpacity>

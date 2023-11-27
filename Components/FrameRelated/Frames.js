@@ -42,6 +42,7 @@ export const Frames = ({ navigation, frame }) => {
 	const [isFinished, setIsFinished] = useState(false);
 
 	const [isLiked, setIsLiked] = useState(false);
+	const [pauseVideo, setPauseVideo] = useState(false);
 
 	const hasCompletedFrames = () => {
 		let hasCompleted = false;
@@ -151,6 +152,7 @@ export const Frames = ({ navigation, frame }) => {
 			const newFrame = activeFrame + 1;
 			const _prevActiveFrame = activeFrame;
 			setPrevActiveFrame(_prevActiveFrame);
+			setPauseVideo(false);
 			setActiveFrame(newFrame);
 			setShowTime(frameContents[newFrame].time);
 		}
@@ -170,6 +172,7 @@ export const Frames = ({ navigation, frame }) => {
 				} else {
 					setActiveFrame(activeFrame - 1);
 				}
+				setPauseVideo(false);
 				setShowTime(frameContents[newFrame].time);
 			}
 		}
@@ -432,6 +435,7 @@ export const Frames = ({ navigation, frame }) => {
 						frame={frame}
 						creator={creator}
 						setShowQuestion={setShowQuestion}
+						setPauseVideo={setPauseVideo}
 					/>
 				)}
 
@@ -440,6 +444,7 @@ export const Frames = ({ navigation, frame }) => {
 					index={activeFrame}
 					goNext={goNext}
 					goPrev={goPrev}
+					pauseVideo={pauseVideo}
 				/>
 
 				<FramePogress
@@ -452,6 +457,8 @@ export const Frames = ({ navigation, frame }) => {
 					showQuestion={showQuestion}
 					isLiked={isLiked}
 					toggleLike={toggleLike}
+					setPauseVideo={setPauseVideo}
+					pausedVideo={pauseVideo}
 				/>
 			</>
 		);

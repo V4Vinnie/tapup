@@ -8,12 +8,20 @@ import { height, width } from '../../utils/UseDimensoins';
 import { Video } from 'expo-av';
 import { useEffect, useRef, useState } from 'react';
 
-export const Frame = ({ item, index, goNext, goPrev }) => {
+export const Frame = ({ item, index, goNext, goPrev, pauseVideo }) => {
 	const videoRef = useRef();
 
 	const [startVideo, setStartVideo] = useState(false);
 
 	const [startTime, setStartTime] = useState(0);
+
+	useEffect(() => {
+		if (pauseVideo) {
+			setStartVideo(false);
+		} else {
+			setStartVideo(true);
+		}
+	}, [pauseVideo]);
 
 	useEffect(() => {
 		setStartTime(0);

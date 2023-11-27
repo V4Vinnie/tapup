@@ -17,7 +17,12 @@ import { RegularText } from '../Text/RegularText';
 import { BoldText } from '../Text/BoldText';
 import { MediumText } from '../Text/MediumText';
 
-export const AskQuestion = ({ creator, setShowQuestion, frame }) => {
+export const AskQuestion = ({
+	creator,
+	setShowQuestion,
+	frame,
+	setPauseVideo,
+}) => {
 	const [question, setQuestion] = useState('');
 
 	const { user } = useUser();
@@ -81,7 +86,12 @@ export const AskQuestion = ({ creator, setShowQuestion, frame }) => {
 					) : null}{' '}
 					a question
 				</RegularText>
-				<TouchableOpacity onPress={() => setShowQuestion(false)}>
+				<TouchableOpacity
+					onPress={() => {
+						setShowQuestion(false);
+						setPauseVideo(false);
+					}}
+				>
 					<Image source={Cross} />
 				</TouchableOpacity>
 			</View>
