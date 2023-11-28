@@ -445,6 +445,7 @@ export const Frames = ({ navigation, frame }) => {
 					goNext={goNext}
 					goPrev={goPrev}
 					pauseVideo={pauseVideo}
+					setPauseVideo={setPauseVideo}
 				/>
 
 				<FramePogress

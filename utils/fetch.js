@@ -51,51 +51,9 @@ export const fetchUser = async (userId) => {
 	return _userRef.data();
 };
 
-export const fetchUserWatchedFrame = async (frameID) => {
-	const docRef = doc(DB, 'users', 'watchedFrames', frameID);
-	const _watchedRef = await getDoc(docRef);
-	return _watchedRef.data();
-};
-
-export const fetchUserAllWatched = async (userId) => {
-	const _allFrames = await getDocs(
-		collection(DB, `users/${userId}/watchedFrames`)
-	);
-	let allFrames = [];
-	_allFrames.forEach(async (doc) => {
-		let frame = { ...doc.data() };
-		allFrames.push(frame);
-	});
-
-	return allFrames;
-};
-
-export const getWatchedFramesByTopicId = async (topicId, userId) => {
-	const watchedRef = collection(DB, `users/${userId}/watchedFrames`);
-	const watchedQuerry = query(watchedRef, where('topicId', '==', topicId));
-
-	const watchedSnap = await getDocs(watchedQuerry);
-
-	if (watchedSnap.empty) {
-		return null;
-	}
-	let _watchedFrames = [];
-
-	watchedSnap.forEach((watched) => {
-		_watchedFrames.push(watched.data());
-	});
-
-	return _watchedFrames;
-};
-
 export const updateUser = async (user) => {
 	const docRef = doc(DB, 'users', user.id);
 	await setDoc(docRef, user, { merge: true });
-};
-
-export const updateWatchedFrames = async (userId, frameData) => {
-	const docRef = doc(DB, 'users', userId, 'watchedFrames', frameData.id);
-	await setDoc(docRef, frameData, { merge: true });
 };
 
 export const fetchFramesForCreator = async (tapId, topicId, creatorId) => {

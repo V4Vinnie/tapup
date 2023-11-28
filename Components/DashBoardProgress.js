@@ -1,11 +1,11 @@
 import { useIsFocused } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Bar } from 'react-native-progress';
 import { Colors } from '../Constants/Colors';
 import { useTaps } from '../Providers/TapsProvider';
 import { useUser } from '../Providers/UserProvider';
-import { fetchFrames, getWatchedFramesByTopicId } from '../utils/fetch';
+import { fetchFrames } from '../utils/fetch';
 import { findWatchedFrameById } from '../utils/findById';
 import { findTopicById } from '../utils/FindTopic';
 import { RegularText } from './Text/RegularText';
