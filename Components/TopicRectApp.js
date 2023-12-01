@@ -1,18 +1,12 @@
-import {
-	Image,
-	ImageBackground,
-	Pressable,
-	StyleSheet,
-	View,
-} from 'react-native';
+import { ImageBackground, Pressable, StyleSheet, View } from 'react-native';
 import { Colors } from '../Constants/Colors';
 import { Shadow } from 'react-native-shadow-2';
 import { useEffect, useState } from 'react';
 import { useUser } from '../Providers/UserProvider';
-import tapTopIMG from '../assets/tapTop.png';
 import { fetchCreator } from '../utils/fetch';
 import { RegularText } from './Text/RegularText';
 import { MediumText } from './Text/MediumText';
+import { TapTopSVG } from './SVG/TapTopSVG';
 
 export const TopicRectApp = ({
 	navigation,
@@ -100,7 +94,16 @@ export const TopicRectApp = ({
 					resizeMode='cover'
 				>
 					<View>
-						<Image
+						<TapTopSVG
+							style={{
+								marginBottom: -1,
+								height: 10,
+								width: '100%',
+								right: '40%',
+								objectFit: 'contain',
+							}}
+						/>
+						{/* <Image
 							style={{
 								marginBottom: -1,
 								height: 10,
@@ -109,7 +112,7 @@ export const TopicRectApp = ({
 								objectFit: 'contain',
 							}}
 							source={tapTopIMG}
-						/>
+						/> */}
 						<View style={styles.titleWrapper}>
 							<RegularText style={{ fontSize: 11, color: 'white' }}>
 								{!isLoadingName
