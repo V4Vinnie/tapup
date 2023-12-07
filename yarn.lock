@@ -2090,7 +2090,7 @@
 
 "@qeepsake/react-native-file-utils@^1.3.5":
   version "1.3.5"
-  resolved "https://registry.yarnpkg.com/@qeepsake/react-native-file-utils/-/react-native-file-utils-1.3.5.tgz#98865b82ca346d0183cf669f2665154641b12510"
+  resolved "https://registry.npmjs.org/@qeepsake/react-native-file-utils/-/react-native-file-utils-1.3.5.tgz"
   integrity sha512-nv4ygMaANmNzEzG6yVCkqa8jHv90gv3R1ObqbbN3zu14qtZD80w4mFLR34J9mmLywGbipybeyumvvBe29jAgGA==
 
 "@react-native-async-storage/async-storage@~1.17.3":
@@ -9413,7 +9413,7 @@ react-native-codegen@^0.70.6:
 
 react-native-compressor@^1.8.22:
   version "1.8.22"
-  resolved "https://registry.yarnpkg.com/react-native-compressor/-/react-native-compressor-1.8.22.tgz#c789d3f65e91a46e6ee1942e03cbc52f2e039b51"
+  resolved "https://registry.npmjs.org/react-native-compressor/-/react-native-compressor-1.8.22.tgz"
   integrity sha512-v+upvTvNFy85WpaV349cAg/eOiM1UsjGDT5ABlKbYCqSB7bFMV7y7YKb/UjbsDvZTWf/GJ2i1T5EbDLutcY4bA==
 
 react-native-draggable@^3.3.0:
@@ -9442,6 +9442,13 @@ react-native-imglysdk@3.0.0:
   dependencies:
     "@expo/config-plugins" "^4.0.9"
 
+react-native-imglysdk@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.npmjs.org/react-native-imglysdk/-/react-native-imglysdk-3.1.0.tgz"
+  integrity sha512-s7tk1cKYIpL7fpJh39oIEnMjv97ckfrJ5E5/t4UohPsSs6YAqf6eRo0O5/NtBEdwWfVDU5tegRJrXJewYeRuhg==
+  dependencies:
+    "@expo/config-plugins" "^4.0.9"
+
 react-native-onboarding-swiper@^1.2.0:
   version "1.2.0"
   resolved "https://registry.npmjs.org/react-native-onboarding-swiper/-/react-native-onboarding-swiper-1.2.0.tgz"
@@ -9450,11 +9457,11 @@ react-native-onboarding-swiper@^1.2.0:
     tinycolor2 "^1.4.1"
 
 react-native-photoeditorsdk@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/react-native-photoeditorsdk/-/react-native-photoeditorsdk-3.0.0.tgz#8a351c2422277acfa405f5705f7e0d493867c846"
-  integrity sha512-/6YXKB5zq8sglD4L1nVRMjtMRmVKQTu1xRu8nCZUD/dQOK0+IQyNxfJ+sXy510JPWyJZbOzs8mix5oCVDtV9/w==
+  version "3.1.0"
+  resolved "https://registry.npmjs.org/react-native-photoeditorsdk/-/react-native-photoeditorsdk-3.1.0.tgz"
+  integrity sha512-5LNdx+JQY4KYRYr7wI5AoHLuFmddQ5OvgGaccphuLA2QV6qK/rRwEoxeY3FngRvF/1vCio727Z0MglQ8w7OQkA==
   dependencies:
-    react-native-imglysdk "3.0.0"
+    react-native-imglysdk "3.1.0"
 
 react-native-progress@^5.0.0:
   version "5.0.0"

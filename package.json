@@ -9,7 +9,7 @@
     "postinstall": "patch-package",
     "buildEmulator": "eas build --profile development-simulator --platform ios",
     "prebuild": "npx expo prebuild",
-	"buildIos": "eas build --platform ios"
+    "buildIos": "eas build --platform ios"
   },
   "dependencies": {
     "@expo-google-fonts/dm-sans": "^0.2.2",
