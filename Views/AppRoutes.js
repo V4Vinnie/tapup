@@ -70,6 +70,7 @@ export const AppRoutes = () => {
 						screenOptions={{
 							headerShown: false,
 						}}
+						initialRouteName='start'
 					>
 						<Stack.Screen name='start'>
 							{(props) => <StartScreen {...props} />}

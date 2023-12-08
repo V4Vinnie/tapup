@@ -1,12 +1,4 @@
-import {
-	Image,
-	ImageBackground,
-	Pressable,
-	SafeAreaView,
-	StyleSheet,
-	Text,
-	View,
-} from 'react-native';
+import { ImageBackground, Pressable, StyleSheet, View } from 'react-native';
 import Onboarding from 'react-native-onboarding-swiper';
 import { Colors } from '../../Constants/Colors';
 import { bodyText, titleStyle } from '../../style';
@@ -15,6 +7,10 @@ import BG from '../../assets/logo/SignUpBG.png';
 import { MediumText } from '../../Components/Text/MediumText';
 import { BoldText } from '../../Components/Text/BoldText';
 import { RegularText } from '../../Components/Text/RegularText';
+
+import OnboardIMG1 from '../../assets/onboarding/onboard1.png';
+import OnboardIMG2 from '../../assets/onboarding/onboard2.png';
+import OnboardIMG3 from '../../assets/onboarding/onboard3.png';
 
 const Skip = ({ ...props }) => (
 	<Pressable style={styles.skipButton} {...props}>
@@ -47,11 +43,17 @@ export const Onboard = ({ navigation, setLoggedIn }) => {
 						subtitle: '',
 						backgroundColor: Colors.primary.pink,
 						image: (
-							<Image
-								style={{ width: width, height: height }}
-								source={{
-									uri: 'https://img.freepik.com/premium-vector/cybernetics-flat-modern-design-illustration_566886-390.jpg',
+							<ImageBackground
+								style={{
+									height: '100%',
+									width: '100%',
 								}}
+								imageStyle={{
+									height: '100%',
+									width: '100%',
+									objectFit: 'contain',
+								}}
+								source={OnboardIMG1}
 							/>
 						),
 						title: (
@@ -77,11 +79,17 @@ export const Onboard = ({ navigation, setLoggedIn }) => {
 						subtitle: '',
 						backgroundColor: Colors.primary.pink,
 						image: (
-							<Image
-								style={{ width: width, height: height }}
-								source={{
-									uri: 'https://img.freepik.com/premium-vector/cybernetics-flat-modern-design-illustration_566886-390.jpg',
+							<ImageBackground
+								style={{
+									height: '100%',
+									width: '100%',
 								}}
+								imageStyle={{
+									height: '100%',
+									width: '100%',
+									objectFit: 'contain',
+								}}
+								source={OnboardIMG2}
 							/>
 						),
 						title: (
@@ -105,11 +113,17 @@ export const Onboard = ({ navigation, setLoggedIn }) => {
 						subtitle: '',
 						backgroundColor: Colors.primary.pink,
 						image: (
-							<Image
-								style={{ width: width, height: height }}
-								source={{
-									uri: 'https://img.freepik.com/premium-vector/cybernetics-flat-modern-design-illustration_566886-390.jpg',
+							<ImageBackground
+								style={{
+									height: '100%',
+									width: '100%',
 								}}
+								imageStyle={{
+									height: '100%',
+									width: '100%',
+									objectFit: 'contain',
+								}}
+								source={OnboardIMG3}
 							/>
 						),
 						title: (
@@ -120,13 +134,11 @@ export const Onboard = ({ navigation, setLoggedIn }) => {
 								source={BG}
 							>
 								<View style={styles.textContainer}>
-									<BoldText style={styles.onboardTitle}>
-										Awsome feature
-									</BoldText>
-									<MediumText style={styles.subText}>
-										Second line of text in here to describe an app feature
-										that’s really awesome
-									</MediumText>
+									<BoldText style={styles.onboardTitle}>Test the Beta</BoldText>
+									<RegularText style={styles.subText}>
+										You are ready to test our beta! Make sure to let us know
+										what you think.
+									</RegularText>
 								</View>
 							</ImageBackground>
 						),
