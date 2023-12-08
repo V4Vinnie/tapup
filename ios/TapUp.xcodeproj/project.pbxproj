@@ -312,12 +312,14 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-TapUp/Pods-TapUp-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/PhotoEditorSDK/PhotoEditorSDK.framework/PhotoEditorSDK",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/VideoEditorSDK/VideoEditorSDK.framework/VideoEditorSDK",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/hermes.framework/hermes",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/imglyKit/ImglyKit.framework/ImglyKit",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PhotoEditorSDK.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/VideoEditorSDK.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ImglyKit.framework",
@@ -399,7 +401,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.storything.tapup;
-				PRODUCT_NAME = "TapUp";
+				PRODUCT_NAME = TapUp;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -425,7 +427,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.storything.tapup;
-				PRODUCT_NAME = "TapUp";
+				PRODUCT_NAME = TapUp;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
