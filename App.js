@@ -1,42 +1,23 @@
-import { LogBox } from 'react-native';
-import { TapsProvider } from './Providers/TapsProvider';
-import { UserProvider } from './Providers/UserProvider';
-import { AppRoutes } from './Views/AppRoutes';
-import 'expo-dev-client';
-import { SetNavBarProvider } from './Providers/ShowNavBarProvider';
-import { QuestionsProvider } from './Providers/QuestionsProvider';
+import { StatusBar } from 'expo-status-bar';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
-import { useCallback } from 'react';
-import { Loading } from './Components/Loading';
+import { NavigationContainer } from '@react-navigation/native';
+import { AuthProvider } from './src/providers/AuthProvider';
+import RootStack from './src/navigation/RootStack';
 
-LogBox.ignoreAllLogs();
 
 export default function App() {
-	const [fontsLoaded, fontError] = useFonts({
-		'DMSans-Bold': require('./assets/fonts/DMSans/DMSans-Bold.ttf'),
-		'DMSans-Medium': require('./assets/fonts/DMSans/DMSans-Medium.ttf'),
-		'DMSans-Regular': require('./assets/fonts/DMSans/DMSans-Regular.ttf'),
-	});
 
-	const onLayoutRootView = useCallback(async () => {
-		if (fontsLoaded || fontError) {
-			await SplashScreen.hideAsync();
-		}
-	}, [fontsLoaded, fontError]);
 
-	if (!fontsLoaded && !fontError) {
-		return <Loading />;
-	}
-
-	return (
-		<UserProvider onLayout={onLayoutRootView}>
-			<TapsProvider>
-				<QuestionsProvider>
-					<SetNavBarProvider>
-						<AppRoutes />
-					</SetNavBarProvider>
-				</QuestionsProvider>
-			</TapsProvider>
-		</UserProvider>
-	);
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <NavigationContainer>
+        <AuthProvider>
+          <StatusBar translucent />
+          <RootStack />
+        </AuthProvider>
+      </NavigationContainer>
+    </GestureHandlerRootView>
+  );
 }

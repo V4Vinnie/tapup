@@ -2,58 +2,27 @@
 	"expo": {
 		"name": "TapUp",
 		"slug": "TapUp",
-		"version": "0.6.0",
+		"version": "1.0.0",
 		"orientation": "portrait",
-		"jsEngine": "hermes",
-		"icon": "./assets/icon.png",
-		"privacy": "unlisted",
-		"userInterfaceStyle": "light",
+		"icon": "./assets/images/icon.png",
+		"userInterfaceStyle": "automatic",
 		"splash": {
-			"image": "./assets/splash.png",
-			"resizeMode": "cover",
-			"backgroundColor": "#1C2239"
-		},
-		"updates": {
-			"fallbackToCacheTimeout": 0
+			"image": "./assets/images/splash.png",
+			"resizeMode": "contain",
+			"backgroundColor": "#ffffff"
 		},
 		"assetBundlePatterns": ["**/*"],
 		"ios": {
-			"supportsTablet": true,
-			"bundleIdentifier": "com.storything.tapup",
-			"buildNumber": "8"
+			"supportsTablet": true
 		},
 		"android": {
 			"adaptiveIcon": {
-				"foregroundImage": "./assets/adaptive-icon.png",
-				"backgroundColor": "#1C2239"
-			},
-			"package": "com.storything.tapup"
-		},
-		"web": {
-			"favicon": "./assets/favicon.png"
-		},
-		"extra": {
-			"eas": {
-				"projectId": "25dd956a-c977-469b-8418-8dc42bf53821"
+				"foregroundImage": "./assets/images/adaptive-icon.png",
+				"backgroundColor": "#ffffff"
 			}
 		},
-		"plugins": [
-			[
-				"expo-build-properties",
-				{
-					"ios": {
-						"useFrameworks": "static"
-					}
-				}
-			],
-			[
-				"expo-image-picker",
-				{
-					"photosPermission": "The app accesses your photos to let you share them with your friends."
-				}
-			],
-			"react-native-compressor",
-			"react-native-imglysdk"
-		]
+		"web": {
+			"favicon": "./assets/images/favicon.png"
+		}
 	}
 }
