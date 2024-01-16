@@ -23,6 +23,12 @@ const HomeScreen = (props: Props) => {
 				)}
 				keyExtractor={(item) => item.id}
 			/>
+			<AppButton
+				title={'Logout'}
+				onPress={() => {
+					handleLogout();
+				}}
+			/>
 		</View>
 	);
 };

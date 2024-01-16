@@ -1,12 +1,12 @@
 import React, { ReactNode } from 'react';
-import { Text, TouchableHighlight, View } from 'react-native';
+import { Text, TouchableOpacity } from 'react-native';
 import { themeColors } from '../utils/constants';
 import { LinearGradient } from 'expo-linear-gradient';
 
 type Props = {
 	title: string;
 	onPress: () => void;
-	buttonProps?: TouchableHighlight['props'];
+	buttonProps?: TouchableOpacity['props'];
 	textProps?: Text['props'];
 	children?: ReactNode;
 };
@@ -19,11 +19,10 @@ const AppButton = ({
 	children,
 }: Props) => {
 	return (
-		<TouchableHighlight
+		<TouchableOpacity
 			{...buttonProps}
 			onPress={onPress}
-			underlayColor={themeColors.primaryColor[200]}
-			className={`w-full h-12 justify-center items-center rounded-full`}>
+			className={`w-full justify-center items-center rounded-full`}>
 			<LinearGradient
 				colors={[
 					themeColors.gradientColor1,
@@ -34,7 +33,7 @@ const AppButton = ({
 				locations={[0, 0.3, 0.8, 1]}
 				start={{ x: 0, y: 0 }}
 				end={{ x: 1, y: 0 }}
-				className={`w-full h-full flex justify-center items-center rounded-full ${
+				className={`w-full h-12 flex justify-center items-center rounded-full ${
 					buttonProps?.className ?? ''
 				}`}>
 				{children ?? (
@@ -47,7 +46,7 @@ const AppButton = ({
 					</Text>
 				)}
 			</LinearGradient>
-		</TouchableHighlight>
+		</TouchableOpacity>
 	);
 };
 

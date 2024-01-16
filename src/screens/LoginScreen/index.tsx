@@ -18,7 +18,6 @@ import { Routes, RootStackParamList } from '../../navigation/Routes';
 import AppButton from '../../components/AppButton';
 import { mode, themeColors } from '../../utils/constants';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { assets } from '../../../assets/Assets';
 
 type Props = {};
 
@@ -80,6 +79,7 @@ const LoginScreen = (props: Props) => {
 								placeholder: 'Email',
 								value: email,
 								keyboardType: 'email-address',
+								keyboardAppearance: mode,
 								onChangeText: (email) => {
 									setEmail(email);
 								},

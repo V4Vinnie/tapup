@@ -3,6 +3,12 @@ declare module '*.png' {
 	export = value;
 }
 
+declare module '*.svg' {
+	import { SvgProps } from 'react-native-svg';
+	const content: React.FC<SvgProps>;
+	export default content;
+}
+
 declare module '@env' {
 	export const FIREBASE_API_KEY: string;
 	export const FIREBASE_AUTH_DOMAIN: string;
