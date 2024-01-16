@@ -15,6 +15,7 @@ export const FONTS = {
 
 export const COLLECTIONS = {
 	USERS: 'users',
+	QUESTIONS: 'questions',
 };
 
 export const themeColors = settings.theme.extend.colors;

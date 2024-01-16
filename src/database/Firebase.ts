@@ -4,19 +4,30 @@ import { getFirestore } from 'firebase/firestore';
 import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getStorage } from 'firebase/storage';
+import {
+	FIREBASE_API_KEY,
+	FIREBASE_AUTH_DOMAIN,
+	FIREBASE_DATABASE_URL,
+	FIREBASE_PROJECT_ID,
+	FIREBASE_STORAGE_BUCKET,
+	FIREBASE_MESSAGING_SENDER_ID,
+	FIREBASE_APP_ID,
+	FIREBASE_MEASUREMENT_ID,
+} from '@env';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-	apiKey: 'AIzaSyDfstOpxkX4OGYooHy67st7DI85Mq_WFTs',
-	authDomain: 'tap-up.firebaseapp.com',
-	projectId: 'tap-up',
-	storageBucket: 'tap-up.appspot.com',
-	messagingSenderId: '889175786342',
-	appId: '1:889175786342:web:ff935007c2a7583cf27ea7',
-	measurementId: 'G-3L1M6N023M',
+	apiKey: FIREBASE_API_KEY,
+	authDomain: FIREBASE_AUTH_DOMAIN,
+	databaseURL: FIREBASE_DATABASE_URL,
+	projectId: FIREBASE_PROJECT_ID,
+	storageBucket: FIREBASE_STORAGE_BUCKET,
+	messagingSenderId: FIREBASE_MESSAGING_SENDER_ID,
+	appId: FIREBASE_APP_ID,
+	measurementId: FIREBASE_MEASUREMENT_ID,
 };
 
 // Initialize Firebase

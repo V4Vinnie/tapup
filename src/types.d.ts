@@ -34,3 +34,18 @@ export type TCampagnyRole = {
 	label: string;
 	value: string;
 };
+
+export type TQuestion = {
+	id: string;
+	question: string;
+	answer: string | false;
+	askedBy: string;
+	creatorId: string;
+	frameLink: TFrameLink;
+};
+
+export type TFrameLink = {
+	id: string;
+	tapId: string;
+	topicId: string;
+};

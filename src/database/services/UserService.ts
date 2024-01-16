@@ -6,8 +6,8 @@ import {
 } from 'firebase/auth';
 import { doc, getDoc, setDoc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { DB, auth } from '../Firebase';
-import { COLLECTIONS } from '../../constants';
-import { TUser } from '../../../types';
+import { COLLECTIONS } from '../../utils/constants';
+import { TUser } from '../../types';
 
 export async function loginUser(email: string, password: string) {
 	return new Promise(async (resolve, reject) => {

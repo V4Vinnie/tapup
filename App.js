@@ -5,6 +5,7 @@ import { useFonts } from 'expo-font';
 import { NavigationContainer } from '@react-navigation/native';
 import { AuthProvider } from './src/providers/AuthProvider';
 import RootStack from './src/navigation/RootStack';
+import { QuestionProvider } from './src/providers/QuestionProvider';
 
 
 export default function App() {
@@ -14,8 +15,10 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <NavigationContainer>
         <AuthProvider>
-          <StatusBar translucent />
-          <RootStack />
+          <QuestionProvider>
+            <StatusBar translucent />
+            <RootStack />
+          </QuestionProvider>
         </AuthProvider>
       </NavigationContainer>
     </GestureHandlerRootView>
