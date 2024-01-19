@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Animated, SafeAreaView, ScrollView, View } from 'react-native';
+import { Animated, SafeAreaView, ScrollView, Text, View } from 'react-native';
 import SearchBar from '../../components/SearchBar';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -8,6 +8,9 @@ import SectionHeader from '../../components/SectionHeader';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
 import TapRow from '../../components/TapRow';
 import { useTaps } from '../../providers/TapProvider';
+import { InstagramStoryProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/instagramStoriesDTO';
+import CustomStory from '../../components/Custom/CustomStory';
+import { mode, themeColors } from '../../utils/constants';
 
 type Props = {};
 
@@ -22,6 +25,31 @@ const HomeScreen = (props: Props) => {
 		inputRange: [0, 130],
 		outputRange: [0, -130],
 	});
+
+	const stories: InstagramStoryProps[] = [
+		{
+			id: 'user1',
+			name: 'User 1',
+			imgUrl: 'https://picsum.photos/200/300',
+			stories: [
+				{
+					id: 'story1',
+					sourceUrl: 'https://picsum.photos/720/1080',
+					mediaType: 'image',
+				},
+				{
+					id: 'story2',
+					sourceUrl: 'https://picsum.photos/720/1080',
+					mediaType: 'image',
+				},
+				{
+					id: 'story3',
+					sourceUrl: 'https://picsum.photos/720/1080',
+					mediaType: 'image',
+				},
+			],
+		},
+	];
 
 	return (
 		<SafeAreaView className='flex-1 items-center bg-dark-primaryBackground'>
@@ -60,6 +88,27 @@ const HomeScreen = (props: Props) => {
 							}
 						/>
 						<TapRow tapData={taps} />
+						<CustomStory
+							backgroundColor={
+								themeColors[mode].primaryBackground
+							}
+							textStyle={{
+								color: themeColors[mode].textColor,
+							}}
+							modalAnimationDuration={400}
+							animationDuration={3000}
+							closeIconColor='white'
+							stories={stories}
+							progressColor={
+								themeColors[mode].secondaryBackground
+							}
+							progressActiveColor={themeColors.primaryColor[100]}
+							containerStyle={{
+								height: '100%',
+							}}
+							saveProgress={true}
+							storyAvatarSize={30}
+						/>
 					</View>
 				</ScrollView>
 			</View>
