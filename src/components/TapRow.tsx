@@ -1,6 +1,7 @@
 import { FlatList, Text, View } from 'react-native';
 import React from 'react';
 import { TTap } from '../types';
+import TapComponent from './TapComponent';
 
 type Props = {
 	tapData: TTap[];
@@ -14,9 +15,10 @@ const TapRow = ({ tapData, containerProps }: Props) => {
 				horizontal
 				data={tapData}
 				keyExtractor={(item) => item.id}
-				renderItem={({ item }) => (
-					<Text className='text-white'>{item.name}</Text>
-				)}
+				contentContainerStyle={{
+					gap: 16,
+				}}
+				renderItem={({ item }) => <TapComponent data={item} />}
 			/>
 		</View>
 	);

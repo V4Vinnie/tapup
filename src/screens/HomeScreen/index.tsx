@@ -88,27 +88,6 @@ const HomeScreen = (props: Props) => {
 							}
 						/>
 						<TapRow tapData={taps} />
-						<CustomStory
-							backgroundColor={
-								themeColors[mode].primaryBackground
-							}
-							textStyle={{
-								color: themeColors[mode].textColor,
-							}}
-							modalAnimationDuration={400}
-							animationDuration={3000}
-							closeIconColor='white'
-							stories={stories}
-							progressColor={
-								themeColors[mode].secondaryBackground
-							}
-							progressActiveColor={themeColors.primaryColor[100]}
-							containerStyle={{
-								height: '100%',
-							}}
-							saveProgress={true}
-							storyAvatarSize={30}
-						/>
 					</View>
 				</ScrollView>
 			</View>

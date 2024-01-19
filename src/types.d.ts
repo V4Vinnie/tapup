@@ -23,6 +23,7 @@ export type TTap = {
 	id: string;
 	name: string;
 	description: string;
+	thumbnail: string;
 	topicId: string;
 	chapterIds: string[];
 	companyId: string;

@@ -11,7 +11,7 @@ type Props = {
 const SectionHeader = ({ title, onPress }: Props) => {
 	return (
 		<TouchableOpacity onPress={onPress} className='w-full'>
-			<View className='w-full flex-row items-center justify-between py-4 my-4'>
+			<View className='w-full flex-row items-center justify-between py-4 mt-4'>
 				<Text className='font-inter-bold text-xl text-dark-headerPrimaryColor'>
 					{title}
 				</Text>
