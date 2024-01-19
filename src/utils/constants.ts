@@ -15,6 +15,8 @@ export const FONTS = {
 
 export const COLLECTIONS = {
 	USERS: 'users',
+	TAPS: 'taps',
+	TOPICS: 'topics',
 };
 
 export const themeColors = settings.theme.extend.colors;

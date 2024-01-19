@@ -5,17 +5,39 @@ import { useFonts } from 'expo-font';
 import { NavigationContainer } from '@react-navigation/native';
 import { AuthProvider } from './src/providers/AuthProvider';
 import RootStack from './src/navigation/RootStack';
+import {
+  Inter_300Light,
+  Inter_400Regular,
+  Inter_500Medium,
+  Inter_600SemiBold,
+  Inter_700Bold,
+} from '@expo-google-fonts/inter';
+import { TapProvider } from './src/providers/TapProvider';
 
-
+SplashScreen.preventAutoHideAsync();
 export default function App() {
+  const [loaded] = useFonts({
+    'Inter-Light': Inter_300Light,
+    'Inter-Regular': Inter_400Regular,
+    'Inter-Medium': Inter_500Medium,
+    'Inter-SemiBold': Inter_600SemiBold,
+    'Inter-Bold': Inter_700Bold,
+  });
 
+  if (!loaded) {
+    return null; // TODO: Add a No internet connection screen
+  }
+
+  SplashScreen.hideAsync();
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <NavigationContainer>
         <AuthProvider>
-          <StatusBar translucent />
-          <RootStack />
+          <TapProvider>
+            <StatusBar translucent />
+            <RootStack />
+          </TapProvider>
         </AuthProvider>
       </NavigationContainer>
     </GestureHandlerRootView>

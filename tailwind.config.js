@@ -18,8 +18,8 @@ const settings = {
                     secondaryBackground: "#2b2b3b",
 
                     //Header color
-                    headerBackground: "#66002c",
-                    headerPrimaryColor: "#ff99c5",
+                    headerBackground: "#2b2b3b",
+                    headerPrimaryColor: "#ffffff",
 
                     //Text Input
                     inputBackground: "#3B3B43",
@@ -58,13 +58,20 @@ const settings = {
                 },
                 primaryColor: {
                     100: "#ff197c",
-                    200: "#b3004e",
+                    200: "#5B163A",
                 },
                 white: "#ffffff",
                 gradientColor1: "#27a4ff",
                 gradientColor2: "#3354ff",
                 gradientColor3: "#f64abb",
                 gradientColor4: "#ff7c33",
+            },
+            fontFamily: {
+                'inter-light': ['Inter-Light'],
+                'inter-regular': ['Inter-Regular'],
+                'inter-medium': ['Inter-Medium'],
+                'inter-semiBold': ['Inter-SemiBold'],
+                'inter-bold': ['Inter-Bold'],
             },
         }
     },

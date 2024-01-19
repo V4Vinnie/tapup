@@ -1,6 +1,9 @@
 import React from 'react';
 import { TextInput, TouchableHighlight, View } from 'react-native';
 import { mode, themeColors } from '../utils/constants';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../navigation/Routes';
 
 type Props = {
 	containerProps?: View['props'];
@@ -13,6 +16,7 @@ type Props = {
 		component: JSX.Element;
 		buttonProps?: TouchableHighlight['props'];
 	};
+	autoFocus?: boolean;
 };
 
 const AppInput = ({
@@ -20,7 +24,26 @@ const AppInput = ({
 	inputProps,
 	rightIcon,
 	leftIcon,
+	autoFocus,
 }: Props) => {
+	const navigation =
+		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+	const inputRef = React.useRef<TextInput>(null);
+
+	React.useEffect(() => {
+		if (autoFocus) {
+			navigation.addListener('focus', () => {
+				inputRef.current?.focus();
+			});
+		}
+
+		return () => {
+			navigation.removeListener('focus', () => {
+				inputRef.current?.focus();
+			});
+		};
+	}, []);
+
 	return (
 		<View
 			{...containerProps}
@@ -28,8 +51,9 @@ const AppInput = ({
 				containerProps?.className ?? ''
 			}`}>
 			<TextInput
+				ref={inputRef}
 				{...inputProps}
-				className={`w-full h-12 pl-12 text-base text-white ${
+				className={`w-full h-12 pl-12 text-base leading-5 text-white ${
 					inputProps?.className ?? ''
 				}`}
 				placeholderTextColor={themeColors[mode].subTextColor}

@@ -18,7 +18,6 @@ import { Routes, RootStackParamList } from '../../navigation/Routes';
 import AppButton from '../../components/AppButton';
 import { mode, themeColors } from '../../utils/constants';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { assets } from '../../../assets/Assets';
 
 type Props = {};
 
@@ -55,11 +54,11 @@ const LoginScreen = (props: Props) => {
 
 				<View className='w-4/5 h-full pb-8 pt-52 justify-between'>
 					<View>
-						<Text className='text-3xl font-medium text-center text-dark-textColor'>
+						<Text className='text-3xl font-inter-bold text-center text-dark-textColor'>
 							{'Welcome back!'}
 						</Text>
 
-						<Text className='text-base font-normal text-center text-dark-subTextColor'>
+						<Text className='text-base font-inter-medium text-center text-dark-subTextColor'>
 							{'Sign in to your account.'}
 						</Text>
 
@@ -111,7 +110,7 @@ const LoginScreen = (props: Props) => {
 
 						{status && (
 							<Text
-								className={`text-base font-normal ${
+								className={`text-base font-inter-medium ${
 									status.type === 'error'
 										? 'text-red-500'
 										: 'text-green-500'
@@ -131,14 +130,14 @@ const LoginScreen = (props: Props) => {
 
 					<View>
 						<View className='flex-row items-center justify-center mt-4'>
-							<Text className='text-base font-normal text-dark-subTextColor'>
+							<Text className='text-base font-inter-regular text-dark-subTextColor'>
 								{"Don't have an account?"}
 							</Text>
 							<TouchableOpacity
 								onPress={() => {
 									navigation.navigate(Routes.SIGNUP);
 								}}>
-								<Text className='text-base font-bold text-dark-textColor'>
+								<Text className='text-base font-inter-bold text-dark-textColor'>
 									{' Signup'}
 								</Text>
 							</TouchableOpacity>
@@ -147,7 +146,7 @@ const LoginScreen = (props: Props) => {
 							onPress={() => {
 								navigation.navigate(Routes.FORGOT_PASSWORD);
 							}}>
-							<Text className='text-base text-center font-bold text-dark-textColor mt-2'>
+							<Text className='text-base text-center font-inter-bold text-dark-textColor mt-2'>
 								{' Forgot Password'}
 							</Text>
 						</TouchableOpacity>

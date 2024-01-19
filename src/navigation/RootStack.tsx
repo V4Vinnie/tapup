@@ -8,6 +8,8 @@ import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import HomeScreen from '../screens/HomeScreen';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import BottomTabBar from '../components/BottomTabBar';
+import SearchScreen from '../screens/SearchScreen';
+import GeneralSeeMoreScreen from '../screens/GeneralSeeMoreScreen';
 
 type Props = {};
 
@@ -45,6 +47,14 @@ const HomeStack = () => {
 	return (
 		<Stack.Navigator screenOptions={{ headerShown: false }}>
 			<Stack.Screen name={Routes.HOME_LANDING} component={HomeScreen} />
+			<Stack.Screen
+				name={Routes.SEARCH_SCREEN}
+				component={SearchScreen}
+			/>
+			<Stack.Screen
+				name={Routes.GENERAL_SEE_MORE}
+				component={GeneralSeeMoreScreen}
+			/>
 		</Stack.Navigator>
 	);
 };

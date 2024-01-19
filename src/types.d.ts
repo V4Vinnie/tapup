@@ -5,32 +5,41 @@ export interface TUser extends User {
 	name: string;
 	profilePic: string;
 	email: string;
-	role: 'USER | ADMIN' | 'CREATOR';
+	role: 'USER' | 'ADMIN' | 'CREATOR';
 
-	lastWatched?: Timestamp;
-	selectedTopics?: string[];
-	watchedFrames?: TFrame[];
+	topicSubscriptionIds?: string[];
+	userSubscriptionIds?: string[];
 	badges?: TBadge[];
-	campagnyRole?: TCampagnyRole;
+	companyId?: string;
+	companyRole?: 'EMPLOYER' | 'EMPLOYEE';
 }
 
-export type TFrame = {
+export type TTopic = {
 	id: string;
-	tapId: string;
+	name: string;
+};
+
+export type TTap = {
+	id: string;
+	name: string;
+	description: string;
 	topicId: string;
-	isDone: boolean;
-	watchedContentIndex: number;
-	watchedDate: Timestamp;
+	chapterIds: string[];
+	companyId: string;
+	createdAt: Timestamp;
+};
+
+export type TChapter = {
+	id: string;
+	name: string;
+	description: string;
+	tapId: string;
+	creatorId: string;
+	creationDate: Timestamp;
 };
 
 export type TBadge = {
 	id: string;
 	img: string;
 	name: string;
-};
-
-export type TCampagnyRole = {
-	_index: number;
-	label: string;
-	value: string;
 };

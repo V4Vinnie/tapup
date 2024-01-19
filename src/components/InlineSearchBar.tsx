@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Animated, View } from 'react-native';
-import IonIcon from 'react-native-vector-icons/Ionicons';
+import { Animated, TextInput, View } from 'react-native';
+import FontistoIcon from 'react-native-vector-icons/Fontisto';
 import settings from '../../tailwind.config';
 import AppInput from './AppInput';
 
@@ -28,23 +28,24 @@ const InlineSearchBar = ({
 	}, [search]);
 
 	return (
-		<Animated.View {...containerProps}>
+		<Animated.View {...containerProps} className='shrink'>
 			<AppInput
+				autoFocus={true}
 				containerProps={{
 					className:
-						'relative w-full self-center h-12 rounded-standard bg-light-primaryBackground dark:bg-dark-secondaryBackground flex-row items-center mt-6 z-50',
+						'relative w-full self-center h-10 rounded-standard bg-dark-secondaryBackground flex-row items-center mt-6 z-50',
 				}}
 				inputProps={{
 					onChangeText: setSearch,
 					placeholder: 'Search keywords...',
-					placeholderTextColor: themeColors[mode].inputColor,
+					autoFocus: true,
 				}}
 				leftIcon={{
 					component: (
-						<IonIcon
-							name='search-outline'
-							size={20}
-							color={themeColors[mode].inputColor}
+						<FontistoIcon
+							name='search'
+							size={17}
+							color={themeColors.primaryColor[100]}
 						/>
 					),
 				}}

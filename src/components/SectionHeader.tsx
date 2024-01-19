@@ -10,16 +10,16 @@ type Props = {
 
 const SectionHeader = ({ title, onPress }: Props) => {
 	return (
-		<TouchableOpacity onPress={onPress}>
-			<View className='w-11/12 flex-row items-center justify-between py-4 my-4'>
-				<Text className='font-bold text-xl text-light-textColor dark:text-dark-textColor'>
+		<TouchableOpacity onPress={onPress} className='w-full'>
+			<View className='w-full flex-row items-center justify-between py-4 my-4'>
+				<Text className='font-inter-bold text-xl text-dark-headerPrimaryColor'>
 					{title}
 				</Text>
 
 				<AntIcon
 					name='arrowright'
 					size={20}
-					color={themeColors[mode].subTextColor}
+					color={themeColors[mode].headerPrimaryColor}
 				/>
 			</View>
 		</TouchableOpacity>

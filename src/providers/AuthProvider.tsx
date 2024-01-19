@@ -1,13 +1,13 @@
 import { TUser } from '../types';
 import { useNavigation } from '@react-navigation/native';
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../utils/Firebase/Firebase';
+import { auth } from '../database/Firebase';
 import {
 	getUser,
 	loginUser,
 	registerUser,
 	sendForgotPasswordEmail,
-} from '../utils/Firebase/services/UserService';
+} from '../database/services/UserService';
 import { RootStackParamList } from '../navigation/Routes';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React from 'react';

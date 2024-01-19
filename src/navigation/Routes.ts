@@ -1,3 +1,5 @@
+import { TTap, TTopic } from '../types';
+
 export const Routes = {
 	WELCOME: 'Welcome',
 	HOME_LANDING: 'HomeLanding',
@@ -5,6 +7,8 @@ export const Routes = {
 	LOGIN: 'Login',
 	SIGNUP: 'Signup',
 	FORGOT_PASSWORD: 'ForgotPassword',
+	SEARCH_SCREEN: 'SearchScreen',
+	GENERAL_SEE_MORE: 'GeneralSeeMore',
 } as const;
 
 export type RootStackParamList = {
@@ -14,4 +18,9 @@ export type RootStackParamList = {
 	ForgotPassword: undefined;
 	Home: undefined;
 	HomeLanding: undefined;
+	SearchScreen: undefined;
+	GeneralSeeMore: {
+		title: string;
+		data: TTap[] | TTopic[];
+	};
 };
