@@ -23,6 +23,7 @@ type Props = {
 	bottomMargin?: StyleProp<ViewStyle>;
 	overrideTheme?: 'dark' | 'light' | false;
 	darkIcons?: boolean;
+	centerComponent?: JSX.Element;
 };
 
 const AppHeader = ({
@@ -39,6 +40,7 @@ const AppHeader = ({
 	},
 	overrideTheme = false,
 	darkIcons = false,
+	centerComponent,
 }: Props) => {
 	const navigation =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -58,7 +60,7 @@ const AppHeader = ({
 						headerWithBack ? navigation.goBack() : null;
 					}}>
 					{headerWithBack ? (
-						<View className='ml-4'>
+						<View className='pr-4'>
 							<Icon
 								name='arrowleft'
 								size={24}
@@ -70,14 +72,18 @@ const AppHeader = ({
 					)}
 				</TouchableWithoutFeedback>
 			}
-			centerComponent={{
-				text: title,
-				style: {
-					color: foregroundColor,
-					fontSize: FONTS.SIZE.XL,
-					// TODO: Add fontFamily here
-				},
-			}}
+			centerComponent={
+				!centerComponent
+					? {
+							text: title,
+							style: {
+								color: foregroundColor,
+								fontSize: FONTS.SIZE.XL,
+								// TODO: Add fontFamily here
+							},
+					  }
+					: centerComponent
+			}
 			centerContainerStyle={centerContainerStyle}
 			rightComponent={
 				rightIcon && (

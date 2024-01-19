@@ -17,7 +17,7 @@ const BottomTabBar = ({
 }: BottomTabBarProps) => {
 	return (
 		<View
-			className='flex-row bg-light-secondaryBackground shadow-xl shadow-light-subTextColor/60
+			className='flex-row bg-dark-secondaryBackground shadow-xl shadow-light-subTextColor/60
         '>
 			{state.routes.map((route, index) => {
 				const isFocused = state.index === index;
@@ -52,8 +52,8 @@ const BottomTabBar = ({
 					<TouchableOpacity
 						key={route.key}
 						onPress={onPress}
-						className='flex-1 h-20 bg-dark-secondaryBackground justify-center items-center'>
-						<View className='w-20 h-20 rounded-full justify-center items-center'>
+						className='flex-1 h-14 bg-dark-secondaryBackground justify-center items-center'>
+						<View className='w-20 h-full rounded-full justify-center items-center'>
 							<View className='justify-center items-center'>
 								{icon}
 							</View>
@@ -64,7 +64,7 @@ const BottomTabBar = ({
 						key={icon.key}
 						activeOpacity={0.8}
 						onPress={onPress}
-						className='flex-1 h-20 bg-dark-secondaryBackground justify-center items-center'>
+						className='flex-1 h-14 bg-dark-secondaryBackground justify-center items-center'>
 						{icon}
 					</TouchableOpacity>
 				);
@@ -76,7 +76,9 @@ const BottomTabBar = ({
 const standardProps = (isFocused: boolean) => {
 	return {
 		size: isFocused ? 32 : 30,
-		color: isFocused ? themeColors.white : themeColors.primaryColor[200],
+		color: isFocused
+			? themeColors.dark.textColor
+			: themeColors.dark.subTextColor,
 	};
 };
 

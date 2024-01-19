@@ -14,7 +14,7 @@ export async function loginUser(email: string, password: string) {
 		try {
 			const userCredential = await signInWithEmailAndPassword(
 				auth,
-				email,
+				email.toLowerCase(),
 				password
 			);
 			resolve(userCredential);
@@ -37,7 +37,7 @@ export async function registerUser(
 		try {
 			const userCredential = await createUserWithEmailAndPassword(
 				auth,
-				email,
+				email.toLowerCase(),
 				password
 			);
 			await updateProfile(userCredential.user, {

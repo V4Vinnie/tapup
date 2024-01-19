@@ -36,7 +36,7 @@ const ForgotPasswordScreen = (props: Props) => {
 			style={scrollViewContainer}
 			contentContainerStyle={scrollViewContentContainer}
 			showsVerticalScrollIndicator={false}>
-			<View className='flex-1 items-center bg-light-secondaryBackground'>
+			<View className='flex-1 items-center bg-dark-primaryBackground'>
 				<AppHeader
 					headerWithBackground
 					headerWithBack
@@ -49,11 +49,11 @@ const ForgotPasswordScreen = (props: Props) => {
 				/>
 
 				<View className='w-4/5 grow py-2 justify-center '>
-					<Text className='text-3xl font-medium text-light-textColor text-center mb-4'>
+					<Text className='text-3xl font-inter-bold text-dark-textColor text-center mb-4'>
 						{'Forgot Password'}
 					</Text>
 
-					<Text className='text-base text-center font-normal text-light-subTextColor'>
+					<Text className='text-base text-center font-inter-medium text-dark-subTextColor'>
 						{
 							'Enter your email and we will send you instructions on how to reset it.'
 						}
@@ -65,7 +65,7 @@ const ForgotPasswordScreen = (props: Props) => {
 						}}
 						leftIcon={{
 							component: (
-								<Icon name='mail' size={16} color={'gray'} />
+								<Icon name='mail' size={16} color={'white'} />
 							),
 						}}
 						inputProps={{
@@ -102,7 +102,7 @@ const ForgotPasswordScreen = (props: Props) => {
 					)}
 					{status?.type === 'success' && (
 						<Text
-							className={`text-sm font-normal text-center opacity-60`}>
+							className={`text-sm font-inter-regular text-center opacity-60`}>
 							{`Didn't receive an email? Check your spam folder.`}
 						</Text>
 					)}

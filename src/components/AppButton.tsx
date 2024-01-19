@@ -39,7 +39,7 @@ const AppButton = ({
 				{children ?? (
 					<Text
 						{...textProps}
-						className={`text-white text-lg font-bold ${
+						className={`text-white text-lg font-inter-bold ${
 							textProps?.className ?? ''
 						}`}>
 						{title}

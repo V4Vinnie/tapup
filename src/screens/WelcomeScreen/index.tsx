@@ -26,10 +26,10 @@ const WelcomeScreen = (props: Props) => {
 				<View className='flex items-center gap-y-20 pt-20'>
 					<Logo />
 					<View className='w-full space-y-8'>
-						<Text className='text-3xl font-medium text-dark-textColor text-center'>
+						<Text className='text-3xl font-inter-semiBold text-dark-textColor text-center'>
 							{'Welcome to TapUp learning app'}
 						</Text>
-						<Text className='text-base font-normal text-dark-subTextColor text-center'>
+						<Text className='text-base font-inter-med text-dark-subTextColor text-center'>
 							{
 								'TapUp offers educational content in a way designed for fast consumption.'
 							}

@@ -54,11 +54,11 @@ const SignupScreen = (props: Props) => {
 
 				<View className='w-4/5 h-full py-2 justify-between pb-8 pt-52'>
 					<View>
-						<Text className='text-3xl font-medium text-center text-dark-textColor'>
-							{'Create Account!'}
+						<Text className='text-3xl font-inter-bold text-center text-dark-textColor'>
+							{'Create account!'}
 						</Text>
 
-						<Text className='text-base font-normal text-center text-dark-subTextColor'>
+						<Text className='text-base font-inter-medium text-center text-dark-subTextColor'>
 							{'Quickly create account'}
 						</Text>
 
@@ -132,7 +132,7 @@ const SignupScreen = (props: Props) => {
 
 						{status && (
 							<Text
-								className={`text-base font-normal ${
+								className={`text-base font-inter-medium ${
 									status.type === 'error'
 										? 'text-red-500'
 										: 'text-green-500'
@@ -151,14 +151,14 @@ const SignupScreen = (props: Props) => {
 					</View>
 
 					<View className='flex-row items-center justify-center mt-4'>
-						<Text className='text-base font-normal text-dark-subTextColor'>
+						<Text className='text-base font-inter-regular text-dark-subTextColor'>
 							{'Already have an account?'}
 						</Text>
 						<TouchableOpacity
 							onPress={() => {
 								navigation.navigate(Routes.LOGIN);
 							}}>
-							<Text className='text-base font-bold text-dark-textColor'>
+							<Text className='text-base font-inter-bold text-dark-textColor'>
 								{' Login'}
 							</Text>
 						</TouchableOpacity>

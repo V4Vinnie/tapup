@@ -1,35 +1,69 @@
 import React, { useEffect } from 'react';
-import { FlatList, Text, View } from 'react-native';
-import { useQuestions } from '../../providers/QuestionProvider';
-import AppButton from '../../components/AppButton';
-import { useAuth } from '../../providers/AuthProvider';
+import { Animated, SafeAreaView, ScrollView, View } from 'react-native';
+import SearchBar from '../../components/SearchBar';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList, Routes } from '../../navigation/Routes';
+import SectionHeader from '../../components/SectionHeader';
+import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
+import TapRow from '../../components/TapRow';
+import { useTaps } from '../../providers/TapProvider';
 
 type Props = {};
 
 const HomeScreen = (props: Props) => {
-	const { handleLogout } = useAuth();
-	const { questions } = useQuestions();
+	const { navigate } =
+		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+	const { taps } = useTaps();
+
+	const scrollY = new Animated.Value(0);
+	const diffClamp = Animated.diffClamp(scrollY, 0, 130);
+	const translateY = diffClamp.interpolate({
+		inputRange: [0, 130],
+		outputRange: [0, -130],
+	});
 
 	return (
-		<View className='flex-1 justify-center items-center bg-dark-primaryBackground'>
-			<Text className='text-dark-textColor'>HomeScreen</Text>
-			<Text className='text-dark-textColor'>Questions:</Text>
-			<FlatList
-				data={questions}
-				renderItem={({ item }) => (
-					<Text className='text-dark-textColor'>
-						{item.frameLink.tapId}
-					</Text>
-				)}
-				keyExtractor={(item) => item.id}
-			/>
-			<AppButton
-				title={'Logout'}
-				onPress={() => {
-					handleLogout();
-				}}
-			/>
-		</View>
+		<SafeAreaView className='flex-1 items-center bg-dark-primaryBackground'>
+			<FocusAwareStatusBar translucent barStyle={'light-content'} />
+			<View className='flex w-11/12 mt-8'>
+				<SearchBar
+					containerProps={{
+						style: {
+							position: 'absolute',
+							top: 0,
+							left: 0,
+							zIndex: 100,
+							transform: [{ translateY: translateY }],
+						},
+					}}
+					onPress={() => navigate(Routes.SEARCH_SCREEN)}
+				/>
+				<ScrollView
+					className='w-full mt-6'
+					contentContainerStyle={{
+						alignItems: 'center',
+						justifyContent: 'center',
+					}}
+					showsVerticalScrollIndicator={false}
+					onScroll={(e) => {
+						scrollY.setValue(e.nativeEvent.contentOffset.y);
+					}}>
+					<View className='w-full mt-8'>
+						<SectionHeader
+							title='Continue watching'
+							onPress={() =>
+								navigate(Routes.GENERAL_SEE_MORE, {
+									title: 'Continue watching',
+									data: taps,
+								})
+							}
+						/>
+						<TapRow tapData={taps} />
+					</View>
+				</ScrollView>
+			</View>
+		</SafeAreaView>
 	);
 };
 
