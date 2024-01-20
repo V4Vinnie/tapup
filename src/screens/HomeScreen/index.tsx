@@ -9,8 +9,6 @@ import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
 import TapRow from '../../components/TapRow';
 import { useTaps } from '../../providers/TapProvider';
 import { InstagramStoryProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/instagramStoriesDTO';
-import CustomStory from '../../components/Custom/CustomStory';
-import { mode, themeColors } from '../../utils/constants';
 
 type Props = {};
 

@@ -1,11 +1,11 @@
-// /** @type {import('tailwindcss').Config} */
-const settings = {
+/** @type {import('tailwindcss').Config} */
+module.exports = {
     content: [
         './src/screens/**/*.{js,jsx,ts,tsx}',
         './src/components/**/*.{js,jsx,ts,tsx}',
         './src/providers/**/*.{js,jsx,ts,tsx}'
     ],
-    darkMode: 'media',
+    darkMode: ['class'],
     theme: {
         extend: {
             colors: {
@@ -76,5 +76,3 @@ const settings = {
         }
     },
 };
-
-module.exports = settings;
