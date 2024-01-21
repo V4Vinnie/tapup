@@ -1,10 +1,10 @@
 import { FlatList, View } from 'react-native';
 import React from 'react';
-import { TTap } from '../types';
+import { TContinueWatchingTap, TTap } from '../types';
 import TapComponent from './TapComponent';
 
 type Props = {
-	tapData: TTap[];
+	tapData: TTap[] | TContinueWatchingTap[];
 	containerProps?: View['props'];
 };
 

@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { TTap } from '../types';
-import { getTaps, getTapsForUser } from '../database/services/MockTapService';
+import {
+	getTaps,
+	getTapsWithProgressForUser,
+} from '../database/services/MockTapService';
 import { useAuth } from './AuthProvider';
 
 const TapContext = React.createContext<{
 	loadingInitial: boolean;
 	taps: TTap[];
-	userTaps: TTap[];
+	getUserTaps: () => Promise<TTap[]>;
 }>({
 	loadingInitial: true,
 	taps: [],
-	userTaps: [],
+	getUserTaps: async () => [],
 });
 
 type Props = {
@@ -21,21 +24,13 @@ export const TapProvider = ({ children }: Props) => {
 	const { user } = useAuth();
 	const [loadingInitial, setLoadingInitial] = useState<boolean>(true);
 	const [taps, setTaps] = useState<TTap[]>([]);
-	const [userTaps, setUserTaps] = useState<TTap[]>([]);
 
 	// User taps
-	useEffect(() => {
-		const getUserTaps = async () => {
-			const _userTaps = await getTapsForUser(user!);
-			setUserTaps((_) => {
-				setLoadingInitial(false);
-				return _userTaps ?? [];
-			});
-		};
-		if (user) {
-			getUserTaps();
-		}
-	}, [user]);
+	const getUserTaps = async () => {
+		const _userTaps = await getTapsWithProgressForUser(user!);
+		setLoadingInitial(typeof _userTaps === 'undefined');
+		return _userTaps ?? [];
+	};
 
 	// TODO: Discover taps
 	useEffect(() => {
@@ -50,10 +45,9 @@ export const TapProvider = ({ children }: Props) => {
 		() => ({
 			loadingInitial,
 			taps,
-			userTaps,
-			setUserTaps,
+			getUserTaps,
 		}),
-		[loadingInitial, taps, userTaps]
+		[loadingInitial, taps, getUserTaps]
 	);
 
 	return (

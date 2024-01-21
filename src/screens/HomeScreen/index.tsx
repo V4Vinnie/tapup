@@ -1,21 +1,16 @@
-import React, { useEffect } from 'react';
-import { Animated, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { Animated, SafeAreaView, ScrollView, View } from 'react-native';
 import SearchBar from '../../components/SearchBar';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
-import SectionHeader from '../../components/SectionHeader';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
-import TapRow from '../../components/TapRow';
-import { useTaps } from '../../providers/TapProvider';
-import { InstagramStoryProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/instagramStoriesDTO';
+import ContinueWatching from './ContinueWatching';
 
 type Props = {};
 
 const HomeScreen = (props: Props) => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-	const { taps } = useTaps();
 
 	const scrollY = new Animated.Value(0);
 	const diffClamp = Animated.diffClamp(scrollY, 0, 130);
@@ -52,16 +47,7 @@ const HomeScreen = (props: Props) => {
 						scrollY.setValue(e.nativeEvent.contentOffset.y);
 					}}>
 					<View className='w-full mt-8'>
-						<SectionHeader
-							title='Continue watching'
-							onPress={() =>
-								navigate(Routes.GENERAL_SEE_MORE, {
-									title: 'Continue watching',
-									data: taps,
-								})
-							}
-						/>
-						<TapRow tapData={taps} />
+						<ContinueWatching />
 					</View>
 				</ScrollView>
 			</View>

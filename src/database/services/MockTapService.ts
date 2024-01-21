@@ -1,50 +1,91 @@
 import { Timestamp } from 'firebase/firestore';
 
-import { TChapter, TFrame, TTap, TUser } from '../../types';
+import {
+	TChapter,
+	TContinueWatchingTap,
+	TFrame,
+	TTap,
+	TUser,
+} from '../../types';
 import { getUser } from './UserService';
 
 export const getTaps = async () => {
 	return MOCK_TAPS;
 };
 
-export const getTapsForUser = async (user: TUser) => {
-	try {
-		const uniqueChapterIds = new Set<string>();
-		const userData = await getUser(user.uid);
-		if (!userData) throw new Error('User not found');
-		userData.watchedFrameIds.forEach((frameId) => {
-			const frame = MOCK_FRAMES.find((frame) => frame.id === frameId);
-			if (frame) uniqueChapterIds.add(frame.chapterId);
-		});
-		const chapterIds = Array.from(uniqueChapterIds);
-		return MOCK_TAPS.filter((tap) => {
-			return tap.chapters.some((chapter) =>
-				chapterIds.includes(chapter.id)
-			);
-		});
-	} catch (error) {
-		console.log('getTapsForUser in MockTapService ', error);
-	}
+const createFrameToChapterMap = (frames: TFrame[]) => {
+	const frameToChapterMap = new Map<string, string>();
+	frames.forEach((frame) => {
+		frameToChapterMap.set(frame.id, frame.chapterId);
+	});
+	return frameToChapterMap;
 };
 
-// Returns a number between 0 and 1
-export const getTapProgress = async (user: TUser, tap: TTap) => {
+const createWatchedChapterIds = (
+	userData: TUser,
+	frameToChapterMap: Map<string, string>
+) => {
+	const watchedChapterIds = new Set<string>();
+	userData.watchedFrameIds.forEach((frameId) => {
+		const chapterId = frameToChapterMap.get(frameId);
+		if (chapterId) watchedChapterIds.add(chapterId);
+	});
+	return watchedChapterIds;
+};
+
+const calculateProgress = (
+	tapChapters: TChapter[],
+	userData: TUser,
+	frameToChapterMap: Map<string, string>
+) => {
+	const totalFrames = tapChapters.reduce(
+		(total, chapter) => total + chapter.frames.length,
+		0
+	);
+	const watchedFrames = userData.watchedFrameIds.filter(
+		(frameId) =>
+			frameToChapterMap.get(frameId) &&
+			tapChapters.find(
+				(chapter) => chapter.id === frameToChapterMap.get(frameId)
+			)
+	).length;
+	return (watchedFrames / totalFrames) * 100;
+};
+
+export const getTapsWithProgressForUser = async (user: TUser) => {
 	try {
 		const userData = await getUser(user.uid);
 		if (!userData) throw new Error('User not found');
-		const watchedFrames = userData.watchedFrameIds.filter((frameId) => {
-			return tap.chapters.some((chapter) => {
-				return chapter.frames.some((frame) => frame.id === frameId);
-			});
-		}).length;
-		const totalFrames = tap.chapters.reduce((acc, chapter) => {
-			return acc + chapter.frames.length;
-		}, 0);
 
-		return watchedFrames / totalFrames;
+		const frameToChapterMap = createFrameToChapterMap(MOCK_FRAMES);
+		const watchedChapterIds = createWatchedChapterIds(
+			userData,
+			frameToChapterMap
+		);
+
+		const tapsWithProgress = MOCK_TAPS.reduce((acc, tap) => {
+			const tapChapters = tap.chapters.filter((chapter) =>
+				watchedChapterIds.has(chapter.id)
+			);
+			if (tapChapters.length > 0) {
+				const progress = calculateProgress(
+					tapChapters,
+					userData,
+					frameToChapterMap
+				);
+				acc.push({ ...tap, progress } as TContinueWatchingTap);
+			}
+			return acc;
+		}, [] as TContinueWatchingTap[]);
+
+		// wait for 1 second to simulate network delay
+		return new Promise<TContinueWatchingTap[]>((resolve) => {
+			setTimeout(() => {
+				resolve(tapsWithProgress);
+			}, 1000);
+		});
 	} catch (error) {
-		console.log('getTapProgress in MockTapService ', error);
-		return 0;
+		console.log('getTapsWithProgressForUser in MockTapService ', error);
 	}
 };
 

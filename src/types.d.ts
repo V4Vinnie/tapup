@@ -31,6 +31,10 @@ export type TTap = {
 	createdAt: Timestamp;
 };
 
+export type TContinueWatchingTap = TTap & {
+	progress?: number;
+};
+
 export type TChapter = {
 	id: string;
 	name: string;
