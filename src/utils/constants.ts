@@ -1,5 +1,4 @@
-import resolveCofig from 'tailwindcss/resolveConfig';
-import tailwindConfig from '../../tailwind.config';
+import settings from '../../tailwind.config';
 
 export const FONTS = {
 	FAMILY: {},
@@ -20,10 +19,5 @@ export const COLLECTIONS = {
 	TOPICS: 'topics',
 };
 
-const config: Partial<import('tailwindcss').Config> =
-	resolveCofig(tailwindConfig);
-export const themeColors = config.theme!.colors as {
-	dark: { [key: string]: string };
-	light: { [key: string]: string };
-};
-export const mode = config.darkMode ? 'dark' : 'light';
+export const themeColors = settings.theme.extend.colors;
+export const mode = themeColors.darkMode ? 'dark' : 'light';

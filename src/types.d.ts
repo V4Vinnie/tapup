@@ -1,12 +1,13 @@
+import { User } from 'firebase/auth';
 import { Timestamp } from 'firebase/firestore';
 
 export interface TUser extends User {
-	id: string;
 	name: string;
 	profilePic: string;
 	email: string;
 	role: 'USER' | 'ADMIN' | 'CREATOR';
 
+	watchedFrameIds: string[];
 	topicSubscriptionIds?: string[];
 	userSubscriptionIds?: string[];
 	badges?: TBadge[];
@@ -24,8 +25,8 @@ export type TTap = {
 	name: string;
 	description: string;
 	thumbnail: string;
+	chapters: TChapter[];
 	topicId: string;
-	chapterIds: string[];
 	companyId: string;
 	createdAt: Timestamp;
 };
@@ -34,7 +35,17 @@ export type TChapter = {
 	id: string;
 	name: string;
 	description: string;
+	frames: TFrame[];
 	tapId: string;
+	creatorId: string;
+	creationDate: Timestamp;
+};
+
+export type TFrame = {
+	id: string;
+	media: string;
+	mediaType: 'IMAGE' | 'VIDEO';
+	chapterId: string;
 	creatorId: string;
 	creationDate: Timestamp;
 };

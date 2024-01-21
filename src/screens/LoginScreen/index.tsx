@@ -34,7 +34,9 @@ const LoginScreen = (props: Props) => {
 
 	const logIn = async () => {
 		setIsSending(true);
-		handleLogin(email, password, setIsSending);
+		handleLogin(email, password).finally(() => {
+			setIsSending(false);
+		});
 		// TODO: MAKE ERROR MODAL
 	};
 
@@ -108,24 +110,30 @@ const LoginScreen = (props: Props) => {
 							}}
 						/>
 
-						{status && (
-							<Text
-								className={`text-base font-inter-medium ${
-									status.type === 'error'
-										? 'text-red-500'
-										: 'text-green-500'
-								}`}>
-								{status.message}
-							</Text>
-						)}
 						<AppButton
 							buttonProps={{
 								className: 'mt-4',
 								disabled: isSending,
+								style: {
+									opacity: isSending ? 0.5 : 1,
+								},
 							}}
 							title={'Login'}
 							onPress={() => logIn()}
 						/>
+						{status && (
+							<View
+								className={`w-full mt-2 p-2 rounded-full ${
+									status.type === 'error'
+										? 'bg-red-400'
+										: 'bg-green-400'
+								}`}>
+								<Text
+									className={`text-base text-center font-inter-medium text-white`}>
+									{status.message}
+								</Text>
+							</View>
+						)}
 					</View>
 
 					<View>

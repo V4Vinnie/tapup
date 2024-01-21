@@ -24,35 +24,10 @@ const HomeScreen = (props: Props) => {
 		outputRange: [0, -130],
 	});
 
-	const stories: InstagramStoryProps[] = [
-		{
-			id: 'user1',
-			name: 'User 1',
-			imgUrl: 'https://picsum.photos/200/300',
-			stories: [
-				{
-					id: 'story1',
-					sourceUrl: 'https://picsum.photos/720/1080',
-					mediaType: 'image',
-				},
-				{
-					id: 'story2',
-					sourceUrl: 'https://picsum.photos/720/1080',
-					mediaType: 'image',
-				},
-				{
-					id: 'story3',
-					sourceUrl: 'https://picsum.photos/720/1080',
-					mediaType: 'image',
-				},
-			],
-		},
-	];
-
 	return (
 		<SafeAreaView className='flex-1 items-center bg-dark-primaryBackground'>
 			<FocusAwareStatusBar translucent barStyle={'light-content'} />
-			<View className='flex w-11/12 mt-8'>
+			<View className='flex w-full mt-8'>
 				<SearchBar
 					containerProps={{
 						style: {
@@ -60,6 +35,7 @@ const HomeScreen = (props: Props) => {
 							top: 0,
 							left: 0,
 							zIndex: 100,
+							paddingHorizontal: 16,
 							transform: [{ translateY: translateY }],
 						},
 					}}

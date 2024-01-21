@@ -1,5 +1,5 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+// /** @type {import('tailwindcss').Config} */
+const settings = {
     content: [
         './src/screens/**/*.{js,jsx,ts,tsx}',
         './src/components/**/*.{js,jsx,ts,tsx}',
@@ -76,3 +76,5 @@ module.exports = {
         }
     },
 };
+
+module.exports = settings;
