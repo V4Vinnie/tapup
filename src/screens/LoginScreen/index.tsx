@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
 	Image,
 	StyleProp,
@@ -40,9 +40,12 @@ const LoginScreen = (props: Props) => {
 		// TODO: MAKE ERROR MODAL
 	};
 
+	const disabledState = useMemo(() => {
+		return isSending || email === '' || password.length < 6 ? 0.5 : 1;
+	}, [email, password, isSending]);
 	return (
 		<KeyboardAwareScrollView
-			keyboardShouldPersistTaps={'never'}
+			keyboardShouldPersistTaps={'handled'}
 			style={scrollViewContainer}
 			contentContainerStyle={scrollViewContentContainer}
 			showsVerticalScrollIndicator={false}>
@@ -115,7 +118,7 @@ const LoginScreen = (props: Props) => {
 								className: 'mt-4',
 								disabled: isSending,
 								style: {
-									opacity: isSending ? 0.5 : 1,
+									opacity: disabledState,
 								},
 							}}
 							title={'Login'}

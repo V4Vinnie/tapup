@@ -106,6 +106,14 @@ const MOCK_FRAMES: TFrame[] = [
 		creatorId: '0b57b80f-e3b5-4048-b8e7-73fe4b0b160a',
 		creationDate: new Timestamp(1, 1),
 	},
+	{
+		id: '7ff44400-6fec-4d4b-b522-8faaed011f28',
+		media: 'https://picsum.photos/800/1200',
+		mediaType: 'IMAGE',
+		chapterId: '9ac82149-f2c4-4d69-bf88-3bbf248080e7',
+		creatorId: '0b57b80f-e3b5-4048-b8e7-73fe4b0b160a',
+		creationDate: new Timestamp(1, 1),
+	},
 ];
 
 const MOCK_CHAPTERS: TChapter[] = [

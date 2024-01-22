@@ -5,6 +5,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
 import ContinueWatching from './ContinueWatching';
+import YourTopics from './YourTopics';
 
 type Props = {};
 
@@ -48,6 +49,9 @@ const HomeScreen = (props: Props) => {
 					}}>
 					<View className='w-full mt-8'>
 						<ContinueWatching />
+						<YourTopics />
+						{/* <Following /> */}
+						{/* <NewTaps /> */}
 					</View>
 				</ScrollView>
 			</View>

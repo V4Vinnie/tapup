@@ -12,7 +12,6 @@ type Props = {
 };
 
 const TapComponent = ({ data, containerProps }: Props) => {
-	console.log('🚀 ~ file: TapComponent.tsx:15 ~ TapComponent ~ data:', data);
 	const { user } = useAuth();
 
 	return (

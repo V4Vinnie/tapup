@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
@@ -6,7 +6,6 @@ import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
 import AppInput from '../../components/AppInput';
 import AppButton from '../../components/AppButton';
 import { useNavigation } from '@react-navigation/native';
-import { assets } from '../../../assets/Assets';
 import AppHeader from '../../components/AppHeader';
 import { useAuth } from '../../providers/AuthProvider';
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -30,13 +29,21 @@ const SignupScreen = (props: Props) => {
 
 	const signUp = async () => {
 		setIsSending(true);
-		handleSignup(username, email, password, setIsSending);
+		handleSignup(username, email, password).finally(() => {
+			setIsSending(false);
+		});
 		// TODO: MAKE STATUS MODAL
 	};
 
+	const disabledState = useMemo(() => {
+		return (!username && password.length < 6) || !email || isSending
+			? 0.5
+			: 1;
+	}, [username, password, email, isSending]);
+
 	return (
 		<KeyboardAwareScrollView
-			keyboardShouldPersistTaps={'never'}
+			keyboardShouldPersistTaps={'handled'}
 			style={scrollViewContainer}
 			contentContainerStyle={scrollViewContentContainer}
 			showsVerticalScrollIndicator={false}>
@@ -144,6 +151,9 @@ const SignupScreen = (props: Props) => {
 							buttonProps={{
 								disabled: !username && !password && !email,
 								className: 'mt-4',
+								style: {
+									opacity: disabledState,
+								},
 							}}
 							title={'Signup'}
 							onPress={() => signUp()}

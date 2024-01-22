@@ -20,6 +20,11 @@ export type TTopic = {
 	name: string;
 };
 
+export type TNotificationTopic = TTopic &
+	TTap & {
+		notificationCount: number;
+	};
+
 export type TTap = {
 	id: string;
 	name: string;
