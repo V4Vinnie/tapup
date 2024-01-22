@@ -22,7 +22,7 @@ const ContinueWatching = () => {
 	>([]);
 
 	useEffect(() => {
-		if (!user) return;
+		if (!user?.uid) return;
 		const userTaps = () => {
 			getUserTaps()
 				.then((taps) => {
@@ -33,7 +33,7 @@ const ContinueWatching = () => {
 				});
 		};
 		if (isFocused) userTaps();
-		onUser(user.uid, (_) => userTaps());
+		onUser(user.uid, userTaps);
 	}, [isFocused, user]);
 
 	return (

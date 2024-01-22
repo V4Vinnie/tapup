@@ -14,6 +14,7 @@ import {
 } from '@expo-google-fonts/inter';
 import { TapProvider } from './src/providers/TapProvider';
 import { TopicProvider } from './src/providers/TopicProvider';
+import { ProfileProvider } from './src/providers/ProfileProvider';
 
 SplashScreen.preventAutoHideAsync();
 export default function App() {
@@ -37,8 +38,10 @@ export default function App() {
         <AuthProvider>
           <TopicProvider>
             <TapProvider>
-              <StatusBar translucent />
-              <RootStack />
+              <ProfileProvider>
+                <StatusBar translucent />
+                <RootStack />
+              </ProfileProvider>
             </TapProvider>
           </TopicProvider>
         </AuthProvider>

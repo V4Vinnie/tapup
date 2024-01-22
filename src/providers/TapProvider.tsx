@@ -27,7 +27,7 @@ export const TapProvider = ({ children }: Props) => {
 
 	// User taps
 	const getUserTaps = async () => {
-		if (!user) return [];
+		if (!user?.uid) return [];
 		const _userTaps = await getTapsWithProgressForUser(user);
 		setLoadingInitial(typeof _userTaps === 'undefined');
 		return _userTaps ?? [];

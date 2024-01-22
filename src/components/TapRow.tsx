@@ -8,7 +8,7 @@ type Props = {
 	containerProps?: View['props'];
 };
 
-const SPACE_BETWEEN = 16;
+const SPACE_BETWEEN = 10;
 const TapRow = ({ tapData, containerProps }: Props) => {
 	return (
 		<View className='w-full' {...containerProps}>

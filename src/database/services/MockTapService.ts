@@ -79,7 +79,7 @@ export const getTapsWithProgressForUser = async (user: TUser) => {
 		}, [] as TContinueWatchingTap[]);
 
 		// wait for 1 second to simulate network delay
-		return new Promise<TContinueWatchingTap[]>((resolve) => {
+		return new Promise<TContinueWatchingTap[] | undefined>((resolve) => {
 			setTimeout(() => {
 				resolve(tapsWithProgress);
 			}, 1000);

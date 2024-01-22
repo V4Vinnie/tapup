@@ -5,12 +5,13 @@ import { auth } from '../database/Firebase';
 import {
 	getUser,
 	loginUser,
+	onUser,
 	registerUser,
 	sendForgotPasswordEmail,
 } from '../database/services/UserService';
 import { RootStackParamList } from '../navigation/Routes';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 const AuthContext = React.createContext<{
 	user: TUser | null;

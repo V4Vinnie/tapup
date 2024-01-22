@@ -6,6 +6,7 @@ import { RootStackParamList, Routes } from '../../navigation/Routes';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
 import ContinueWatching from './ContinueWatching';
 import YourTopics from './YourTopics';
+import Following from './Following';
 
 type Props = {};
 
@@ -47,10 +48,10 @@ const HomeScreen = (props: Props) => {
 					onScroll={(e) => {
 						scrollY.setValue(e.nativeEvent.contentOffset.y);
 					}}>
-					<View className='w-full mt-8'>
+					<View className='w-full mt-6'>
 						<ContinueWatching />
 						<YourTopics />
-						{/* <Following /> */}
+						<Following />
 						{/* <NewTaps /> */}
 					</View>
 				</ScrollView>

@@ -1,7 +1,8 @@
 import { User } from 'firebase/auth';
 import { Timestamp } from 'firebase/firestore';
 
-export interface TUser extends User {
+export type TProfile = {
+	uid: string;
 	name: string;
 	profilePic: string;
 	email: string;
@@ -13,7 +14,8 @@ export interface TUser extends User {
 	badges?: TBadge[];
 	companyId?: string;
 	companyRole?: 'EMPLOYER' | 'EMPLOYEE';
-}
+};
+export type TUser = User & TProfile;
 
 export type TTopic = {
 	id: string;
@@ -24,6 +26,10 @@ export type TNotificationTopic = TTopic &
 	TTap & {
 		notification: boolean;
 	};
+
+export type TNotificationProfile = TProfile & {
+	notification: boolean;
+};
 
 export type TTap = {
 	id: string;

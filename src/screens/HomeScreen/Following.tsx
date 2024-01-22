@@ -1,59 +1,59 @@
 import React, { useEffect } from 'react';
-import { useTopics } from '../../providers/TopicProvider';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
 import { useAuth } from '../../providers/AuthProvider';
-import { TNotificationTopic, TTopic } from '../../types';
+import { TNotificationProfile } from '../../types';
 import { onUser } from '../../database/services/UserService';
-import LoadingIndicator from '../../components/LoadingIndicator';
 import SectionHeader from '../../components/SectionHeader';
-import TagRow from '../../components/TagRow';
+import LoadingIndicator from '../../components/LoadingIndicator';
+import { useProfiles } from '../../providers/ProfileProvider';
+import ProfileRow from '../../components/ProfileRow';
 
-const YourTopics = () => {
+const Following = () => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const { user } = useAuth();
-	const { getUserTopics, loadingInitial } = useTopics();
+	const { getUserProfiles, loadingInitial } = useProfiles();
 	const isFocused = useIsFocused();
-	const [yourTopics, setYourTopics] = React.useState<TNotificationTopic[]>(
-		[]
-	);
+	const [followingProfiles, setFollowingProfiles] = React.useState<
+		TNotificationProfile[]
+	>([]);
 
 	useEffect(() => {
 		if (!user?.uid) return;
-		const userTopics = () => {
-			getUserTopics()
-				.then((topics) => {
-					setYourTopics(topics);
+		const userProfiles = () => {
+			getUserProfiles()
+				.then((profiles) => {
+					setFollowingProfiles(profiles);
 				})
 				.catch((err) => {
 					console.error(err);
 				});
 		};
-		if (isFocused) userTopics();
-		onUser(user.uid, userTopics);
+		if (isFocused) userProfiles();
+		onUser(user.uid, userProfiles);
 	}, [isFocused, user]);
 
 	return (
 		<>
 			<SectionHeader
-				title='Your topics'
+				title='Following'
 				onPress={() =>
 					navigate(Routes.GENERAL_SEE_MORE, {
-						title: 'Your topics',
-						data: yourTopics,
+						title: 'Following',
+						data: followingProfiles,
 					})
 				}
 			/>
 			{loadingInitial ? (
 				<LoadingIndicator /> // TODO: Add Skeleton Loading
 			) : // TODO: Fix onPress
-			yourTopics.length === 0 ? null : (
-				<TagRow data={yourTopics} />
+			followingProfiles.length === 0 ? null : (
+				<ProfileRow profiles={followingProfiles} />
 			)}
 		</>
 	);
 };
 
-export default YourTopics;
+export default Following;

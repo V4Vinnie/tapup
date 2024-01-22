@@ -1,4 +1,4 @@
-import { TTap, TTopic } from '../types';
+import { TProfile, TTap, TTopic } from '../types';
 
 export const Routes = {
 	WELCOME: 'Welcome',
@@ -21,6 +21,6 @@ export type RootStackParamList = {
 	SearchScreen: undefined;
 	GeneralSeeMore: {
 		title: string;
-		data: TTap[] | TTopic[];
+		data: TTap[] | TTopic[] | TProfile[];
 	};
 };
