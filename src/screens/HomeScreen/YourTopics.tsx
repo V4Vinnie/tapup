@@ -25,7 +25,10 @@ const YourTopics = () => {
 		const userTopics = () => {
 			getUserTopics()
 				.then((topics) => {
-					setYourTopics(topics);
+					const sortedTopics = topics.sort(
+						(a, b) => b.notification - a.notification
+					);
+					setYourTopics(sortedTopics);
 				})
 				.catch((err) => {
 					console.error(err);

@@ -9,6 +9,14 @@ import {
 } from '../../types';
 import { getUser } from './UserService';
 
+export const getAllTaps = async () => {
+	try {
+		return MOCK_TAPS;
+	} catch (error) {
+		console.log('getTaps in MockTapService ', error);
+	}
+};
+
 export const getUserDiscoverTaps = async (user: TUser) => {
 	try {
 		// taps that user doesn't have in their continue watching list
@@ -99,11 +107,7 @@ export const getTapsWithProgressForUser = async (user: TUser) => {
 
 export const getViewsForTap = async (tapId: string) => {
 	try {
-		return new Promise<number | undefined>((resolve) => {
-			setTimeout(() => {
-				resolve(Math.floor(Math.random() * 10000));
-			}, 1000);
-		});
+		return Math.floor(Math.random() * 1000);
 	} catch (error) {
 		console.log('getViewsForTap in MockTapService ', error);
 	}

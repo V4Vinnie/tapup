@@ -25,6 +25,9 @@ const Following = () => {
 		const userProfiles = () => {
 			getUserProfiles()
 				.then((profiles) => {
+					const sortedProfiles = profiles.sort(
+						(a, b) => b.notification - a.notification
+					);
 					setFollowingProfiles(profiles);
 				})
 				.catch((err) => {

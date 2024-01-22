@@ -16,7 +16,7 @@ export const getTopicsForUser = async (user: TUser) => {
 				if (!topic) return null;
 				return {
 					...topic,
-					notification: Math.random() > 0.5,
+					notification: Math.floor(Math.random() * 100),
 				};
 			}) as TNotificationTopic[]) ?? [];
 

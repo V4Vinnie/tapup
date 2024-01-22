@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { TTap } from '../types';
 import {
+	getAllTaps,
 	getTapsWithProgressForUser,
 	getUserDiscoverTaps,
 } from '../database/services/MockTapService';
@@ -8,10 +9,12 @@ import { useAuth } from './AuthProvider';
 
 const TapContext = React.createContext<{
 	loadingInitial: boolean;
+	taps: TTap[];
 	getDiscoverTaps: () => Promise<TTap[]>;
 	getUserTaps: () => Promise<TTap[]>;
 }>({
 	loadingInitial: true,
+	taps: [],
 	getDiscoverTaps: async () => [],
 	getUserTaps: async () => [],
 });
@@ -23,6 +26,7 @@ type Props = {
 export const TapProvider = ({ children }: Props) => {
 	const { user } = useAuth();
 	const [loadingInitial, setLoadingInitial] = useState<boolean>(true);
+	const [taps, setTaps] = useState<TTap[]>([]);
 
 	// User Taps
 	const getUserTaps = async () => {
@@ -39,13 +43,22 @@ export const TapProvider = ({ children }: Props) => {
 		return _allTaps ?? [];
 	};
 
+	useEffect(() => {
+		const getAll = async () => {
+			const _allTaps = await getAllTaps();
+			setTaps(_allTaps ?? []);
+		};
+		getAll();
+	}, []);
+
 	const tapProvProps = React.useMemo(
 		() => ({
 			loadingInitial,
+			taps,
 			getDiscoverTaps,
 			getUserTaps,
 		}),
-		[loadingInitial, getDiscoverTaps, getUserTaps]
+		[loadingInitial, taps, getDiscoverTaps, getUserTaps]
 	);
 
 	return (

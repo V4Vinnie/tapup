@@ -11,7 +11,10 @@ export const getFollowingProfiles = async (
 		(user.userSubscriptionIds?.map((id) => {
 			const profile = MOCK_USERS.find((user) => user.uid === id);
 			if (!profile) return null;
-			return { ...profile, notification: Math.random() > 0.5 };
+			return {
+				...profile,
+				notification: Math.floor(Math.random() * 100),
+			};
 		}) as TNotificationProfile[]) || [];
 	return new Promise<TNotificationProfile[] | undefined>((resolve) => {
 		setTimeout(() => {

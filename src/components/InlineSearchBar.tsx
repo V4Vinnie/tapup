@@ -16,7 +16,7 @@ const mode = themeColors.darkMode ? 'dark' : 'light';
 const InlineSearchBar = ({
 	onSearch,
 	containerProps,
-	waitDuration = 1000,
+	waitDuration = 200,
 }: Props) => {
 	const [search, setSearch] = useState('');
 

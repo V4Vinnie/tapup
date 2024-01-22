@@ -82,23 +82,16 @@ const FullInfoTap = ({ tap, containerProps, isNew }: Props) => {
 					className='text-dark-subTextColor text-[10px] font-inter-light'>
 					{tap.description}
 				</Text>
-				<View className='flex flex-row justify-between'>
-					<View className='flex flex-row items-center gap-3'>
-						<Text className='text-dark-subTextColor text-[10px] font-inter-light'>
-							{views} views
-						</Text>
-						<View className='w-1 h-2'>
-							<Logo scale={0.05} width={6} height={10} />
-						</View>
-						<Text className='text-dark-subTextColor text-[10px] font-inter-light'>
-							{timeAgo}
-						</Text>
+				<View className='flex flex-row items-center gap-3'>
+					<Text className='text-dark-subTextColor text-[10px] font-inter-light'>
+						{views} views
+					</Text>
+					<View className='w-1 h-2'>
+						<Logo scale={0.05} width={6} height={10} />
 					</View>
-					<AntIcon
-						name='arrowright'
-						size={20}
-						color={themeColors.primaryColor[100]}
-					/>
+					<Text className='text-dark-subTextColor text-[10px] font-inter-light'>
+						{timeAgo}
+					</Text>
 				</View>
 			</View>
 		</View>

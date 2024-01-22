@@ -23,18 +23,11 @@ const TapComponent = ({ data, containerProps }: Props) => {
 				className='absolute bottom-0 w-full h-1/2'
 				colors={['transparent', 'rgba(0,0,0,1)']}
 			/>
-			<View className='absolute bottom-0 w-full h-5 mb-2 px-2 flex flex-row justify-between items-center'>
-				<Text
-					numberOfLines={1}
-					className='w-4/5 text-white text-left text-xs font-inter-medium'>
-					{data.name}
-				</Text>
-				<AntIcon
-					name='arrowright'
-					size={20}
-					color={themeColors.primaryColor[100]}
-				/>
-			</View>
+			<Text
+				numberOfLines={1}
+				className='absolute bottom-0 w-full h-5 mb-2 px-2 flex flex-row justify-between items-center text-white text-left text-xs font-inter-medium'>
+				{data.name}
+			</Text>
 			{data.progress && (
 				<View className='absolute bottom-0 w-full h-1 bg-dark-secondaryBackground'>
 					<View

@@ -24,11 +24,11 @@ export type TTopic = {
 
 export type TNotificationTopic = TTopic &
 	TTap & {
-		notification: boolean;
+		notification: number;
 	};
 
 export type TNotificationProfile = TProfile & {
-	notification: boolean;
+	notification: number;
 };
 
 export type TTap = {

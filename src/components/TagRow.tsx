@@ -11,7 +11,7 @@ type Props = {
 const SPACE_BETWEEN = 16;
 const TagRow = ({ data, containerProps }: Props) => {
 	const hasNotification = useMemo(() => {
-		return data.some((topic) => topic.notification);
+		return data.some((topic) => topic.notification > 0);
 	}, [data]);
 	return (
 		<View className='w-full' {...containerProps}>
@@ -22,7 +22,7 @@ const TagRow = ({ data, containerProps }: Props) => {
 				keyExtractor={(item) => item.id}
 				contentContainerStyle={{
 					paddingHorizontal: 16,
-					paddingTop: hasNotification ? 5 : 0,
+					paddingTop: hasNotification ? 6 : 0,
 				}}
 				renderItem={({ item, index }) => (
 					<TagComponent
