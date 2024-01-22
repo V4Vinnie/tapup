@@ -144,7 +144,7 @@ const MOCK_CHAPTERS_2: TChapter[] = [
 const MOCK_TAPS: TTap[] = [
 	{
 		id: '97bbf6d3-8873-47e2-a6cf-5f535bb8e8e7',
-		name: 'Tap 1',
+		name: 'Student Entrepreneurship',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl nec sagittis dapibus, urna nisi ultricies mauris.',
 		thumbnail: 'https://picsum.photos/800/1200',
@@ -155,7 +155,7 @@ const MOCK_TAPS: TTap[] = [
 	},
 	{
 		id: '0b57b80f-e3b5-4048-b8e7-73fe4b0b160a',
-		name: 'Tap 2',
+		name: 'Designing for beginners',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl nec sagittis dapibus, urna nisi ultricies mauris, vitae lacinia eros orci id nisi. Nulla facilisi. Nulla facilisi.',
 		thumbnail: 'https://picsum.photos/800/1200',
@@ -166,7 +166,7 @@ const MOCK_TAPS: TTap[] = [
 	},
 	{
 		id: '2d82222f-86a0-41e5-b0a2-d5b66fa47529',
-		name: 'Tap 3',
+		name: 'Coding for dummies',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl nec sagittis dapibus, urna nisi ultricies mauris, vitae lacinia eros orci id nisi. Nulla facilisi. Nulla facilisi.',
 		thumbnail: 'https://picsum.photos/800/1200',
@@ -177,7 +177,7 @@ const MOCK_TAPS: TTap[] = [
 	},
 	{
 		id: 'fddcdd46-3d34-41db-ba4c-40bbf2c507f6',
-		name: 'Tap 4',
+		name: 'Marketing for beginners',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl nec sagittis dapibus, urna nisi ultricies mauris, vitae lacinia eros orci id nisi. Nulla facilisi. Nulla facilisi.',
 		thumbnail: 'https://picsum.photos/800/1200',

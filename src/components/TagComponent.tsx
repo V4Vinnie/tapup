@@ -8,32 +8,28 @@ type Props = {
 	data: TNotificationTopic;
 	containerProps?: TouchableHighlight['props'];
 	arrow?: boolean;
-	notificationAmount?: number;
 };
 
 const TagComponent = ({ data, containerProps, arrow = true }: Props) => {
-	const { notificationCount = 0 } = data;
+	const { notification = false } = data;
 	return (
 		<TouchableHighlight
 			{...containerProps}
 			onPress={() => {}} // TODO: Fix onPress
-			className={`w-fit px-6 py-1 bg-dark-secondaryBackground rounded-full ${arrow ? 'pl-7 pr-3' : 'px-8'}`}>
+			className={`w-fit px-6 py-1 bg-dark-secondaryBackground rounded-full ${arrow ? 'pl-5 pr-3' : 'px-4'}`}>
 			<View className='flex-row items-center gap-2'>
-				{notificationCount > 0 && (
+				{notification && (
 					<View
-						className={`absolute -left-6 -top-5 w-6 h-6 rounded-full bg-primaryColor-100 flex items-center justify-normal`}>
-						<Text className='text-[10px] font-inter-medium text-dark-primaryBackground text-center mt-[5px]'>
-							{notificationCount > 99 ? '99+' : notificationCount}
-						</Text>
-					</View>
+						className={`absolute -left-4 -top-2 w-3 aspect-square rounded-full bg-primaryColor-100 flex items-center justify-normal`}
+					/>
 				)}
-				<Text className='text-dark-textColor text-md font-inter-regular'>
+				<Text className='text-dark-textColor text-base font-inter-regular'>
 					{data.name}
 				</Text>
 				{arrow && (
 					<AntIcon
 						name='arrowright'
-						size={24}
+						size={16}
 						color={themeColors.primaryColor[100]}
 					/>
 				)}

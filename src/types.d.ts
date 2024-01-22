@@ -22,7 +22,7 @@ export type TTopic = {
 
 export type TNotificationTopic = TTopic &
 	TTap & {
-		notificationCount: number;
+		notification: boolean;
 	};
 
 export type TTap = {
