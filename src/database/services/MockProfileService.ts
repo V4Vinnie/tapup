@@ -20,6 +20,10 @@ export const getFollowingProfiles = async (
 	});
 };
 
+export const getCompanyName = (companyId: string) => {
+	return 'Remes';
+};
+
 const MOCK_USERS: TProfile[] = [
 	{
 		uid: 'f315e0a9-b435-4433-9027-17bce156ed5e',

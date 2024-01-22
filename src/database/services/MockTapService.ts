@@ -9,8 +9,16 @@ import {
 } from '../../types';
 import { getUser } from './UserService';
 
-export const getTaps = async () => {
-	return MOCK_TAPS;
+export const getUserDiscoverTaps = async (user: TUser) => {
+	try {
+		// taps that user doesn't have in their continue watching list
+		const watchedTaps = (await getTapsWithProgressForUser(user)) ?? [];
+		return MOCK_TAPS.filter(
+			(tap) => !watchedTaps.find((watchedTap) => watchedTap.id === tap.id)
+		);
+	} catch (error) {
+		console.log('getTaps in MockTapService ', error);
+	}
 };
 
 const createFrameToChapterMap = (frames: TFrame[]) => {
@@ -86,6 +94,18 @@ export const getTapsWithProgressForUser = async (user: TUser) => {
 		});
 	} catch (error) {
 		console.log('getTapsWithProgressForUser in MockTapService ', error);
+	}
+};
+
+export const getViewsForTap = async (tapId: string) => {
+	try {
+		return new Promise<number | undefined>((resolve) => {
+			setTimeout(() => {
+				resolve(Math.floor(Math.random() * 10000));
+			}, 1000);
+		});
+	} catch (error) {
+		console.log('getViewsForTap in MockTapService ', error);
 	}
 };
 
@@ -183,6 +203,17 @@ const MOCK_TAPS: TTap[] = [
 		thumbnail: 'https://picsum.photos/800/1200',
 		topicId: '97bbf6d3-8873-47e2-a6cf-5f535bb8e8e7',
 		chapters: MOCK_CHAPTERS,
+		companyId: '0b57b80f-e3b5-4048-b8e7-73fe4b0b160a',
+		createdAt: new Timestamp(1, 1),
+	},
+	{
+		id: 'aeb489fd-37a4-453d-8389-2827d7239c0f',
+		name: 'Marketing for beginners',
+		description:
+			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl nec sagittis dapibus, urna nisi ultricies mauris, vitae lacinia eros orci id nisi. Nulla facilisi. Nulla facilisi.',
+		thumbnail: 'https://picsum.photos/800/1200',
+		topicId: '97bbf6d3-8873-47e2-a6cf-5f535bb8e8e7',
+		chapters: [],
 		companyId: '0b57b80f-e3b5-4048-b8e7-73fe4b0b160a',
 		createdAt: new Timestamp(1, 1),
 	},

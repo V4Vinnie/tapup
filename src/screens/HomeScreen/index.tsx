@@ -7,6 +7,7 @@ import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
 import ContinueWatching from './ContinueWatching';
 import YourTopics from './YourTopics';
 import Following from './Following';
+import NewTaps from './NewTaps';
 
 type Props = {};
 
@@ -52,7 +53,7 @@ const HomeScreen = (props: Props) => {
 						<ContinueWatching />
 						<YourTopics />
 						<Following />
-						{/* <NewTaps /> */}
+						<NewTaps />
 					</View>
 				</ScrollView>
 			</View>
