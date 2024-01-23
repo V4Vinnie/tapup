@@ -4,16 +4,16 @@ import {
 	getProfiles,
 	getFollowingProfiles,
 } from '../database/services/MockProfileService';
-import { TNotificationProfile, TProfile } from '../types';
+import { TNotificationProfile, TProfile, TUser } from '../types';
 
 const ProfileContext = React.createContext<{
 	loadingInitial: boolean;
-	profiles: TProfile[];
-	getUserProfiles: () => Promise<TNotificationProfile[]>;
+	profiles: TNotificationProfile[];
+	getUserProfiles: (user: TUser) => Promise<TNotificationProfile[]>;
 }>({
 	loadingInitial: true,
 	profiles: [],
-	getUserProfiles: async () => [],
+	getUserProfiles: () => Promise.resolve([]),
 });
 
 type Props = {
@@ -21,12 +21,11 @@ type Props = {
 };
 
 export const ProfileProvider = ({ children }: Props) => {
-	const { user } = useAuth();
 	const [loadingInitial, setLoadingInitial] = useState<boolean>(true);
-	const [profiles, setProfiles] = useState<TProfile[]>([]);
+	const [profiles, setProfiles] = useState<TNotificationProfile[]>([]);
 
 	// User profiles
-	const getUserProfiles = async () => {
+	const getUserProfiles = async (user: TUser) => {
 		if (!user) return [];
 		const _userProfiles = await getFollowingProfiles(user);
 		setLoadingInitial(typeof _userProfiles === 'undefined');

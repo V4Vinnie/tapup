@@ -3,7 +3,7 @@ import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
 import { useAuth } from '../../providers/AuthProvider';
-import { TNotificationProfile } from '../../types';
+import { TNotificationProfile, TUser } from '../../types';
 import { onUser } from '../../database/services/UserService';
 import SectionHeader from '../../components/SectionHeader';
 import LoadingIndicator from '../../components/LoadingIndicator';
@@ -14,7 +14,7 @@ const Following = () => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const { user } = useAuth();
-	const { getUserProfiles, loadingInitial } = useProfiles();
+	const { getUserProfiles, profiles, loadingInitial } = useProfiles();
 	const isFocused = useIsFocused();
 	const [followingProfiles, setFollowingProfiles] = React.useState<
 		TNotificationProfile[]
@@ -22,37 +22,52 @@ const Following = () => {
 
 	useEffect(() => {
 		if (!user?.uid) return;
-		const userProfiles = () => {
-			getUserProfiles()
+		const userProfiles = (user: TUser) => {
+			getUserProfiles(user)
 				.then((profiles) => {
-					const sortedProfiles = profiles.sort(
+					const sortedProfiles = [...profiles].sort(
 						(a, b) => b.notification - a.notification
 					);
-					setFollowingProfiles(profiles);
+					setFollowingProfiles(sortedProfiles);
 				})
 				.catch((err) => {
 					console.error(err);
 				});
 		};
-		if (isFocused) userProfiles();
+		if (isFocused) userProfiles(user);
 		onUser(user.uid, userProfiles);
-	}, [isFocused, user]);
+	}, [isFocused, user?.userSubscriptionIds]);
 
+	if (followingProfiles.length === 0)
+		return (
+			<>
+				<SectionHeader
+					title='Discover Profiles'
+					onPress={() =>
+						navigate(Routes.SEE_MORE_PROFILES, {
+							title: 'Discover Profiles',
+							profiles,
+						})
+					}
+				/>
+				<ProfileRow profiles={profiles} />
+			</>
+		);
 	return (
 		<>
 			<SectionHeader
 				title='Following'
 				onPress={() =>
-					navigate(Routes.GENERAL_SEE_MORE, {
+					navigate(Routes.SEE_MORE_PROFILES, {
 						title: 'Following',
-						data: followingProfiles,
+						profiles: followingProfiles,
 					})
 				}
 			/>
 			{loadingInitial ? (
 				<LoadingIndicator /> // TODO: Add Skeleton Loading
-			) : // TODO: Fix onPress
-			followingProfiles.length === 0 ? null : (
+			) : (
+				// TODO: Fix onPress
 				<ProfileRow profiles={followingProfiles} />
 			)}
 		</>

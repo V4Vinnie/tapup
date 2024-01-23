@@ -4,7 +4,7 @@ import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
 import { useAuth } from '../../providers/AuthProvider';
-import { TNotificationTopic, TTopic } from '../../types';
+import { TNotificationTopic, TTopic, TUser } from '../../types';
 import { onUser } from '../../database/services/UserService';
 import LoadingIndicator from '../../components/LoadingIndicator';
 import SectionHeader from '../../components/SectionHeader';
@@ -14,7 +14,7 @@ const YourTopics = () => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const { user } = useAuth();
-	const { getUserTopics, loadingInitial } = useTopics();
+	const { getUserTopics, topics, loadingInitial } = useTopics();
 	const isFocused = useIsFocused();
 	const [yourTopics, setYourTopics] = React.useState<TNotificationTopic[]>(
 		[]
@@ -22,10 +22,10 @@ const YourTopics = () => {
 
 	useEffect(() => {
 		if (!user?.uid) return;
-		const userTopics = () => {
-			getUserTopics()
+		const userTopics = (user: TUser) => {
+			getUserTopics(user)
 				.then((topics) => {
-					const sortedTopics = topics.sort(
+					const sortedTopics = [...topics].sort(
 						(a, b) => b.notification - a.notification
 					);
 					setYourTopics(sortedTopics);
@@ -34,25 +34,40 @@ const YourTopics = () => {
 					console.error(err);
 				});
 		};
-		if (isFocused) userTopics();
+		if (isFocused) userTopics(user);
 		onUser(user.uid, userTopics);
-	}, [isFocused, user]);
+	}, [isFocused, user?.topicSubscriptionIds]);
 
+	if (yourTopics.length === 0)
+		return (
+			<>
+				<SectionHeader
+					title='Discover Topics'
+					onPress={() =>
+						navigate(Routes.SEE_MORE_TOPICS, {
+							title: 'Discover Topics',
+							topics,
+						})
+					}
+				/>
+				<TagRow data={topics} />
+			</>
+		);
 	return (
 		<>
 			<SectionHeader
 				title='Your topics'
 				onPress={() =>
-					navigate(Routes.GENERAL_SEE_MORE, {
+					navigate(Routes.SEE_MORE_TOPICS, {
 						title: 'Your topics',
-						data: yourTopics,
+						topics: yourTopics,
 					})
 				}
 			/>
 			{loadingInitial ? (
 				<LoadingIndicator /> // TODO: Add Skeleton Loading
-			) : // TODO: Fix onPress
-			yourTopics.length === 0 ? null : (
+			) : (
+				// TODO: Fix onPress
 				<TagRow data={yourTopics} />
 			)}
 		</>

@@ -3,13 +3,12 @@ import LoadingIndicator from '../../components/LoadingIndicator';
 import { useTaps } from '../../providers/TapProvider';
 import { useAuth } from '../../providers/AuthProvider';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { TContinueWatchingTap } from '../../types';
+import { TContinueWatchingTap, TUser } from '../../types';
 import { onUser } from '../../database/services/UserService';
 import SectionHeader from '../../components/SectionHeader';
 import TapRow from '../../components/TapRow';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Text } from 'react-native';
 
 const ContinueWatching = () => {
 	const { navigate } =
@@ -23,8 +22,8 @@ const ContinueWatching = () => {
 
 	useEffect(() => {
 		if (!user?.uid) return;
-		const userTaps = () => {
-			getUserTaps()
+		const userTaps = (user: TUser) => {
+			getUserTaps(user)
 				.then((taps) => {
 					setWatchingTaps(taps);
 				})
@@ -32,27 +31,26 @@ const ContinueWatching = () => {
 					console.error(err);
 				});
 		};
-		if (isFocused) userTaps();
+		if (isFocused) userTaps(user);
 		onUser(user.uid, userTaps);
-	}, [isFocused, user]);
+	}, [isFocused, user?.watchedFrameIds]);
 
+	if (watchingTaps.length === 0) {
+		return false;
+	}
 	return (
 		<>
 			<SectionHeader
 				title='Continue watching'
 				onPress={() =>
-					navigate(Routes.GENERAL_SEE_MORE, {
+					navigate(Routes.SEE_MORE_TAPS, {
 						title: 'Continue watching',
-						data: watchingTaps,
+						taps: watchingTaps,
 					})
 				}
 			/>
 			{loadingInitial ? (
 				<LoadingIndicator /> // TODO: Add Skeleton Loading
-			) : watchingTaps.length === 0 ? (
-				<Text className='text-dark-textColor text-center h-10'>
-					No taps to show
-				</Text> // TODO: Figure out what to show when there are no continue watching taps
 			) : (
 				<TapRow tapData={watchingTaps} />
 			)}

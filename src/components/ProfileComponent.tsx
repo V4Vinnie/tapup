@@ -1,22 +1,23 @@
 import { View, Text, Image } from 'react-native';
 import React from 'react';
-import { TNotificationProfile } from '../types';
+import { TNotificationProfile, TProfile } from '../types';
 
 type Props = {
-	profile: TNotificationProfile;
+	profile: TNotificationProfile | TProfile;
 	containerProps?: View['props'];
 	width?: number;
 };
 
 const ProfileComponent = ({ profile, containerProps, width = 85 }: Props) => {
+	const notification = 'notification' in profile ? profile.notification : 0;
 	return (
 		<View className='items-center' {...containerProps}>
 			<View
 				style={{
 					width,
 				}}
-				className={`aspect-square flex items-center justify-center border-2 rounded-full p-[3px] ${profile.notification ? 'border-primaryColor-100' : 'border-dark-secondaryBackground'}`}>
-				{profile.notification && (
+				className={`aspect-square flex items-center justify-center border-2 rounded-full p-[3px] ${notification ? 'border-primaryColor-100' : 'border-dark-secondaryBackground'}`}>
+				{notification > 0 && (
 					<View className='absolute w-4 h-4 rounded-full bg-primary top-0 right-0' />
 				)}
 				{profile.profilePic !== '' ? (

@@ -9,7 +9,7 @@ import TapRow from '../../components/TapRow';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Text, View } from 'react-native';
-import { TTap } from '../../types';
+import { TTap, TUser } from '../../types';
 import FullInfoTap from '../../components/FullInfoTap';
 
 const SPACE_BETWEEN = 16;
@@ -23,8 +23,8 @@ const NewTaps = () => {
 
 	useEffect(() => {
 		if (!user?.uid) return;
-		const discoverTaps = () => {
-			getDiscoverTaps()
+		const discoverTaps = (user: TUser) => {
+			getDiscoverTaps(user)
 				.then((taps) => {
 					setNewTaps(taps);
 				})
@@ -32,7 +32,7 @@ const NewTaps = () => {
 					console.error(err);
 				});
 		};
-		if (isFocused) discoverTaps();
+		if (isFocused) discoverTaps(user);
 		onUser(user.uid, discoverTaps);
 	}, [isFocused, user]);
 
@@ -41,9 +41,9 @@ const NewTaps = () => {
 			<SectionHeader
 				title='New Taps'
 				onPress={() =>
-					navigate(Routes.GENERAL_SEE_MORE, {
+					navigate(Routes.SEE_MORE_TAPS, {
 						title: 'New Taps',
-						data: newTaps,
+						taps: newTaps,
 					})
 				}
 			/>
@@ -55,7 +55,8 @@ const NewTaps = () => {
 				</Text> // TODO: Figure out what to show when there are no continue watching taps
 			) : (
 				<View className='px-4 mb-4'>
-					{newTaps.map((tap, index) => (
+					{/* Show only first 10 */}
+					{newTaps.slice(0, 10).map((tap, index) => (
 						<FullInfoTap
 							key={tap.id}
 							tap={tap}

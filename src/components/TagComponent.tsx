@@ -1,16 +1,16 @@
 import React from 'react';
 import { Text, TouchableHighlight, View } from 'react-native';
-import { TNotificationTopic } from '../types';
+import { TNotificationTopic, TTopic } from '../types';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import { themeColors } from '../utils/constants';
 
 type Props = {
-	data: TNotificationTopic;
+	data: TNotificationTopic | TTopic;
 	containerProps?: TouchableHighlight['props'];
 };
 
 const TagComponent = ({ data, containerProps }: Props) => {
-	const { notification = 0 } = data;
+	const notification = 'notification' in data ? data.notification : 0;
 	return (
 		<TouchableHighlight
 			{...containerProps}

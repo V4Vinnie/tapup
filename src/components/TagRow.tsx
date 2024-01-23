@@ -1,18 +1,23 @@
 import { FlatList, View } from 'react-native';
 import TagComponent from './TagComponent';
-import { TNotificationTopic, TTap } from '../types';
+import { TNotificationTopic, TTopic } from '../types';
 import { useMemo } from 'react';
 
 type Props = {
-	data: TNotificationTopic[];
+	data: TNotificationTopic[] | TTopic[];
 	containerProps?: View['props'];
 };
 
 const SPACE_BETWEEN = 16;
 const TagRow = ({ data, containerProps }: Props) => {
 	const hasNotification = useMemo(() => {
-		return data.some((topic) => topic.notification > 0);
+		if ((data[0] as TNotificationTopic)?.notification === undefined)
+			return false;
+		return data.some((topic) => {
+			return (topic as TNotificationTopic).notification > 0;
+		});
 	}, [data]);
+
 	return (
 		<View className='w-full' {...containerProps}>
 			<FlatList

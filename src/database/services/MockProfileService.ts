@@ -1,7 +1,10 @@
 import { TNotificationProfile, TProfile, TUser } from '../../types';
 
-export const getProfiles = async (): Promise<TProfile[]> => {
-	return MOCK_USERS;
+export const getProfiles = async (): Promise<TNotificationProfile[]> => {
+	return MOCK_USERS.map((user) => ({
+		...user,
+		notification: Math.floor(Math.random() * 100),
+	}));
 };
 
 export const getFollowingProfiles = async (

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TNotificationTopic, TTopic } from '../types';
+import { TNotificationTopic, TTopic, TUser } from '../types';
 import { useAuth } from './AuthProvider';
 import {
 	getTopics,
@@ -9,7 +9,7 @@ import {
 const TopicContext = React.createContext<{
 	loadingInitial: boolean;
 	topics: TTopic[];
-	getUserTopics: () => Promise<TNotificationTopic[]>;
+	getUserTopics: (user: TUser) => Promise<TNotificationTopic[]>;
 }>({
 	loadingInitial: true,
 	topics: [],
@@ -21,12 +21,11 @@ type Props = {
 };
 
 export const TopicProvider = ({ children }: Props) => {
-	const { user } = useAuth();
 	const [loadingInitial, setLoadingInitial] = useState<boolean>(true);
 	const [topics, setTopics] = useState<TTopic[]>([]);
 
 	// User topics
-	const getUserTopics = async () => {
+	const getUserTopics = async (user: TUser) => {
 		if (!user) return [];
 		const _userTopics = await getTopicsForUser(user);
 		setLoadingInitial(typeof _userTopics === 'undefined');
