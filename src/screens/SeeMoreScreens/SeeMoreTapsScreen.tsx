@@ -5,12 +5,12 @@ import FullInfoTap from '../../components/FullInfoTap';
 import { RootStackParamList } from '../../navigation/Routes';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-type GeneralSeeMoreScreenProps = NativeStackScreenProps<
+type SeeMoreTapsScreenProps = NativeStackScreenProps<
 	RootStackParamList,
 	'SeeMoreTaps'
 >;
 
-const SeeMoreTapsScreen = ({ route }: GeneralSeeMoreScreenProps) => {
+const SeeMoreTapsScreen = ({ route }: SeeMoreTapsScreenProps) => {
 	const { taps, title } = route.params;
 
 	return (

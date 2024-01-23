@@ -5,12 +5,12 @@ import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
 import AppHeader from '../../components/AppHeader';
 import ProfileComponent from '../../components/ProfileComponent';
 
-type GeneralSeeMoreScreenProps = NativeStackScreenProps<
+type SeeMoreProfilesScreenProps = NativeStackScreenProps<
 	RootStackParamList,
 	'SeeMoreProfiles'
 >;
 
-const SeeMoreProfilesScreen = ({ route }: GeneralSeeMoreScreenProps) => {
+const SeeMoreProfilesScreen = ({ route }: SeeMoreProfilesScreenProps) => {
 	const { profiles, title } = route.params;
 
 	return (

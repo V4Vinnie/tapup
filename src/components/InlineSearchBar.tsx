@@ -8,6 +8,8 @@ type Props = {
 	onSearch: (search: string) => void;
 	containerProps?: View['props'];
 	waitDuration?: number;
+	text?: string;
+	autoFocus?: boolean;
 };
 
 const { colors: themeColors } = settings.theme.extend;
@@ -17,6 +19,8 @@ const InlineSearchBar = ({
 	onSearch,
 	containerProps,
 	waitDuration = 200,
+	text = 'Search keywords...',
+	autoFocus = true,
 }: Props) => {
 	const [search, setSearch] = useState('');
 
@@ -30,15 +34,15 @@ const InlineSearchBar = ({
 	return (
 		<Animated.View {...containerProps} className='shrink'>
 			<AppInput
-				autoFocus={true}
+				autoFocus={autoFocus}
 				containerProps={{
 					className:
 						'relative w-full self-center h-10 rounded-standard bg-dark-secondaryBackground flex-row items-center mt-6 z-50',
 				}}
 				inputProps={{
 					onChangeText: setSearch,
-					placeholder: 'Search keywords...',
-					autoFocus: true,
+					placeholder: text,
+					autoFocus: autoFocus,
 				}}
 				leftIcon={{
 					component: (
