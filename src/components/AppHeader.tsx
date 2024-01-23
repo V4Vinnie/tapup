@@ -45,13 +45,6 @@ const AppHeader = ({
 	const navigation =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-	const foregroundColor = overrideTheme
-		? overrideTheme === 'dark'
-			? themeColors.dark.headerPrimaryColor
-			: themeColors.light.headerPrimaryColor
-		: darkIcons || headerWithBackground
-		? themeColors[mode].headerPrimaryColor
-		: themeColors.white;
 	return (
 		<Header
 			leftComponent={
@@ -64,7 +57,7 @@ const AppHeader = ({
 							<Icon
 								name='arrowleft'
 								size={24}
-								color={iconColor ?? foregroundColor}
+								color={themeColors[mode].textColor}
 							/>
 						</View>
 					) : (
@@ -77,11 +70,11 @@ const AppHeader = ({
 					? {
 							text: title,
 							style: {
-								color: foregroundColor,
+								color: themeColors[mode].textColor,
 								fontSize: FONTS.SIZE.XL,
-								// TODO: Add fontFamily here
+								fontFamily: FONTS.FAMILY.MEDIUM,
 							},
-					  }
+						}
 					: centerComponent
 			}
 			centerContainerStyle={centerContainerStyle}
@@ -97,11 +90,11 @@ const AppHeader = ({
 			}
 			statusBarProps={{ translucent: true }}
 			containerStyle={[
-				!transparentHeader && containerShadow,
 				headerWithBackground && containerStyle,
 				transparentHeader && transparentContainerStyle,
 				bottomMargin,
 			]}
+			backgroundColor='transparent'
 		/>
 	);
 };
@@ -114,19 +107,8 @@ const centerContainerStyle: StyleProp<ViewStyle> = {
 	zIndex: 1,
 	alignItems: 'center',
 };
-const containerShadow: StyleProp<ViewStyle> = {
-	shadowColor: themeColors[mode].secondaryBackground,
-	shadowOffset: {
-		width: 0,
-		height: 1,
-	},
-	shadowOpacity: 0.1,
-	shadowRadius: 2.22,
-
-	elevation: 3,
-};
 const containerStyle: StyleProp<ViewStyle> = {
-	backgroundColor: themeColors[mode].headerBackground,
+	backgroundColor: themeColors[mode].secondaryBackground,
 	zIndex: 2,
 	paddingTop: 20,
 	paddingBottom: 30,
