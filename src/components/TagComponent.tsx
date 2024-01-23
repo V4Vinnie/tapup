@@ -29,11 +29,6 @@ const TagComponent = ({ data, containerProps }: Props) => {
 				<Text className='text-dark-textColor text-base font-inter-regular'>
 					{data.name}
 				</Text>
-				{/* {notification > 0 && (
-					<Text className='text-primaryColor-100 text-sm font-inter-light'>
-						{notification}
-					</Text>
-				)} */}
 			</View>
 		</TouchableHighlight>
 	);

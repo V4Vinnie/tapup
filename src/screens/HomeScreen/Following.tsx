@@ -3,42 +3,36 @@ import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
 import { useAuth } from '../../providers/AuthProvider';
-import { TNotificationProfile, TUser } from '../../types';
 import { onUser } from '../../database/services/UserService';
 import SectionHeader from '../../components/SectionHeader';
 import LoadingIndicator from '../../components/LoadingIndicator';
 import { useProfiles } from '../../providers/ProfileProvider';
 import ProfileRow from '../../components/ProfileRow';
+import { TNotificationProfile } from '../../types';
 
 const Following = () => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const { user } = useAuth();
-	const { getUserProfiles, profiles, loadingInitial } = useProfiles();
+	const { getUserProfiles, userProfiles, profiles, loadingInitial } =
+		useProfiles();
 	const isFocused = useIsFocused();
-	const [followingProfiles, setFollowingProfiles] = React.useState<
-		TNotificationProfile[]
-	>([]);
+	const [following, setFollowing] = React.useState<TNotificationProfile[]>(
+		[]
+	);
 
 	useEffect(() => {
 		if (!user?.uid) return;
-		const userProfiles = (user: TUser) => {
-			getUserProfiles(user)
-				.then((profiles) => {
-					const sortedProfiles = [...profiles].sort(
-						(a, b) => b.notification - a.notification
-					);
-					setFollowingProfiles(sortedProfiles);
-				})
-				.catch((err) => {
-					console.error(err);
-				});
-		};
-		if (isFocused) userProfiles(user);
-		onUser(user.uid, userProfiles);
-	}, [isFocused, user?.userSubscriptionIds]);
+		if (isFocused) getUserProfiles(user);
+		onUser(user.uid, getUserProfiles);
+	}, [isFocused, user]);
 
-	if (followingProfiles.length === 0)
+	useEffect(() => {
+		if (!userProfiles) return;
+		setFollowing(userProfiles);
+	}, [userProfiles]);
+
+	if (following.length === 0)
 		return (
 			<>
 				<SectionHeader
@@ -60,7 +54,7 @@ const Following = () => {
 				onPress={() =>
 					navigate(Routes.SEE_MORE_PROFILES, {
 						title: 'Following',
-						profiles: followingProfiles,
+						profiles: following,
 					})
 				}
 			/>
@@ -68,7 +62,7 @@ const Following = () => {
 				<LoadingIndicator /> // TODO: Add Skeleton Loading
 			) : (
 				// TODO: Fix onPress
-				<ProfileRow profiles={followingProfiles} />
+				<ProfileRow profiles={following} />
 			)}
 		</>
 	);

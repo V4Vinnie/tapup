@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { TTap, TUser } from '../types';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { TContinueWatchingTap, TTap, TUser } from '../types';
 import {
 	getAllTaps,
 	getTapsWithProgressForUser,
@@ -9,13 +9,17 @@ import {
 const TapContext = React.createContext<{
 	loadingInitial: boolean;
 	taps: TTap[];
-	getDiscoverTaps: (user: TUser) => Promise<TTap[]>;
-	getUserTaps: (user: TUser) => Promise<TTap[]>;
+	discoverTaps: TTap[];
+	userTaps: TContinueWatchingTap[];
+	getDiscoverTaps: (user: TUser) => void;
+	getUserTaps: (user: TUser) => void;
 }>({
 	loadingInitial: true,
 	taps: [],
-	getDiscoverTaps: async () => [],
-	getUserTaps: async () => [],
+	discoverTaps: [],
+	userTaps: [],
+	getDiscoverTaps: () => {},
+	getUserTaps: () => {},
 });
 
 type Props = {
@@ -23,40 +27,67 @@ type Props = {
 };
 
 export const TapProvider = ({ children }: Props) => {
-	const [loadingInitial, setLoadingInitial] = useState<boolean>(true);
 	const [taps, setTaps] = useState<TTap[]>([]);
+	const [userTaps, setUserTaps] = useState<TContinueWatchingTap[]>([]);
+	const [discoverTaps, setDiscoverTaps] = useState<TTap[]>([]);
 
 	// User Taps
-	const getUserTaps = async (user: TUser) => {
+	const userTapsDone = useRef<boolean>(false);
+	const getUserTaps = (user: TUser) => {
 		if (!user?.uid) return [];
-		const _userTaps = await getTapsWithProgressForUser(user);
-		setLoadingInitial(typeof _userTaps === 'undefined');
-		return _userTaps ?? [];
+		getTapsWithProgressForUser(user).then((taps) => {
+			setUserTaps(taps ?? []);
+			userTapsDone.current = true;
+		});
 	};
 
-	const getDiscoverTaps = async (user: TUser) => {
+	// Discover Taps
+	const discoverTapsDone = useRef<boolean>(false);
+	const getDiscoverTaps = (user: TUser) => {
 		if (!user?.uid) return [];
-		const _allTaps = await getUserDiscoverTaps(user);
-		setLoadingInitial(typeof _allTaps === 'undefined');
-		return _allTaps ?? [];
+		getUserDiscoverTaps(user).then((taps) => {
+			setDiscoverTaps(taps ?? []);
+			discoverTapsDone.current = true;
+		});
 	};
 
+	// All Taps
+	const allTapsDone = useRef<boolean>(false);
 	useEffect(() => {
-		const getAll = async () => {
-			const _allTaps = await getAllTaps();
-			setTaps(_allTaps ?? []);
+		const getAll = () => {
+			getAllTaps().then((taps) => {
+				allTapsDone.current = true;
+				setTaps(taps ?? []);
+			});
 		};
 		getAll();
 	}, []);
+
+	const loadingInitial = useMemo(() => {
+		return (
+			userTapsDone.current &&
+			discoverTapsDone.current &&
+			allTapsDone.current
+		);
+	}, [userTapsDone, discoverTapsDone, allTapsDone]);
 
 	const tapProvProps = React.useMemo(
 		() => ({
 			loadingInitial,
 			taps,
+			discoverTaps,
+			userTaps,
 			getDiscoverTaps,
 			getUserTaps,
 		}),
-		[loadingInitial, taps, getDiscoverTaps, getUserTaps]
+		[
+			loadingInitial,
+			taps,
+			discoverTaps,
+			userTaps,
+			getDiscoverTaps,
+			getUserTaps,
+		]
 	);
 
 	return (

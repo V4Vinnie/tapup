@@ -1,19 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { useAuth } from './AuthProvider';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
 	getProfiles,
 	getFollowingProfiles,
 } from '../database/services/MockProfileService';
-import { TNotificationProfile, TProfile, TUser } from '../types';
+import { TNotificationProfile, TUser } from '../types';
 
 const ProfileContext = React.createContext<{
 	loadingInitial: boolean;
 	profiles: TNotificationProfile[];
-	getUserProfiles: (user: TUser) => Promise<TNotificationProfile[]>;
+	getUserProfiles: (user: TUser) => void;
+	userProfiles: TNotificationProfile[];
 }>({
 	loadingInitial: true,
 	profiles: [],
-	getUserProfiles: () => Promise.resolve([]),
+	getUserProfiles: () => {},
+	userProfiles: [],
 });
 
 type Props = {
@@ -21,33 +22,46 @@ type Props = {
 };
 
 export const ProfileProvider = ({ children }: Props) => {
-	const [loadingInitial, setLoadingInitial] = useState<boolean>(true);
 	const [profiles, setProfiles] = useState<TNotificationProfile[]>([]);
+	const [userProfiles, setUserProfiles] = useState<TNotificationProfile[]>(
+		[]
+	);
 
 	// User profiles
-	const getUserProfiles = async (user: TUser) => {
+	const userProfilesDone = useRef<boolean>(false);
+	const getUserProfiles = (user: TUser) => {
 		if (!user) return [];
-		const _userProfiles = await getFollowingProfiles(user);
-		setLoadingInitial(typeof _userProfiles === 'undefined');
-		return _userProfiles ?? [];
+		getFollowingProfiles(user).then((profiles) => {
+			userProfilesDone.current = true;
+			setUserProfiles(profiles ?? []);
+		});
 	};
 
 	// All profiles
+	const allProfilesDone = useRef<boolean>(false);
 	useEffect(() => {
-		const getAllProfiles = async () => {
-			const _allProfiles = await getProfiles();
-			setProfiles(_allProfiles ?? []);
+		const getAllProfiles = () => {
+			getProfiles().then((profiles) => {
+				allProfilesDone.current = true;
+				setProfiles(profiles ?? []);
+			});
 		};
 		getAllProfiles();
 	}, []);
+
+	const loadingInitial = useMemo(
+		() => userProfilesDone.current && allProfilesDone.current,
+		[userProfilesDone, allProfilesDone]
+	);
 
 	const profileProvProps = React.useMemo(
 		() => ({
 			loadingInitial,
 			profiles,
 			getUserProfiles,
+			userProfiles,
 		}),
-		[loadingInitial, profiles, getUserProfiles]
+		[loadingInitial, profiles, getUserProfiles, userProfiles]
 	);
 
 	return (

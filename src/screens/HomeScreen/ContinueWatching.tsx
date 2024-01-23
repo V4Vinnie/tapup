@@ -3,41 +3,38 @@ import LoadingIndicator from '../../components/LoadingIndicator';
 import { useTaps } from '../../providers/TapProvider';
 import { useAuth } from '../../providers/AuthProvider';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { TContinueWatchingTap, TUser } from '../../types';
 import { onUser } from '../../database/services/UserService';
 import SectionHeader from '../../components/SectionHeader';
 import TapRow from '../../components/TapRow';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { TContinueWatchingTap } from '../../types';
 
 const ContinueWatching = () => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-	const { getUserTaps, loadingInitial } = useTaps();
+	const { getUserTaps, userTaps, loadingInitial } = useTaps();
 	const { user } = useAuth();
 	const isFocused = useIsFocused();
-	const [watchingTaps, setWatchingTaps] = React.useState<
+	const [continueWatching, setContinueWatching] = React.useState<
 		TContinueWatchingTap[]
 	>([]);
 
 	useEffect(() => {
 		if (!user?.uid) return;
-		const userTaps = (user: TUser) => {
-			getUserTaps(user)
-				.then((taps) => {
-					setWatchingTaps(taps);
-				})
-				.catch((err) => {
-					console.error(err);
-				});
-		};
-		if (isFocused) userTaps(user);
-		onUser(user.uid, userTaps);
-	}, [isFocused, user?.watchedFrameIds]);
+		if (isFocused) getUserTaps(user);
+		onUser(user.uid, getUserTaps);
+	}, [isFocused, user]);
 
-	if (watchingTaps.length === 0) {
+	useEffect(() => {
+		if (!userTaps) return;
+		setContinueWatching(userTaps);
+	}, [userTaps]);
+
+	if (continueWatching.length === 0) {
 		return false;
 	}
+
 	return (
 		<>
 			<SectionHeader
@@ -45,14 +42,14 @@ const ContinueWatching = () => {
 				onPress={() =>
 					navigate(Routes.SEE_MORE_TAPS, {
 						title: 'Continue watching',
-						taps: watchingTaps,
+						taps: continueWatching,
 					})
 				}
 			/>
 			{loadingInitial ? (
 				<LoadingIndicator /> // TODO: Add Skeleton Loading
 			) : (
-				<TapRow tapData={watchingTaps} />
+				<TapRow tapData={continueWatching} />
 			)}
 		</>
 	);

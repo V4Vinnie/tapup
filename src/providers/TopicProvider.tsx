@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { TNotificationTopic, TTopic, TUser } from '../types';
-import { useAuth } from './AuthProvider';
 import {
 	getTopics,
 	getTopicsForUser,
@@ -9,11 +8,13 @@ import {
 const TopicContext = React.createContext<{
 	loadingInitial: boolean;
 	topics: TTopic[];
-	getUserTopics: (user: TUser) => Promise<TNotificationTopic[]>;
+	getUserTopics: (user: TUser) => void;
+	userTopics: TNotificationTopic[];
 }>({
 	loadingInitial: true,
 	topics: [],
-	getUserTopics: async () => [],
+	getUserTopics: () => {},
+	userTopics: [],
 });
 
 type Props = {
@@ -21,33 +22,44 @@ type Props = {
 };
 
 export const TopicProvider = ({ children }: Props) => {
-	const [loadingInitial, setLoadingInitial] = useState<boolean>(true);
 	const [topics, setTopics] = useState<TTopic[]>([]);
+	const [userTopics, setUserTopics] = useState<TNotificationTopic[]>([]);
 
 	// User topics
-	const getUserTopics = async (user: TUser) => {
+	const userTopicsDone = useRef<boolean>(false);
+	const getUserTopics = (user: TUser) => {
 		if (!user) return [];
-		const _userTopics = await getTopicsForUser(user);
-		setLoadingInitial(typeof _userTopics === 'undefined');
-		return _userTopics ?? [];
+		getTopicsForUser(user).then((topics) => {
+			userTopicsDone.current = true;
+			setUserTopics(topics ?? []);
+		});
 	};
 
 	// All topics
+	const allTopicsDone = useRef<boolean>(false);
 	useEffect(() => {
-		const getAllTopics = async () => {
-			const _allTopics = await getTopics();
-			setTopics(_allTopics ?? []);
+		const getAllTopics = () => {
+			getTopics().then((topics) => {
+				allTopicsDone.current = true;
+				setTopics(topics ?? []);
+			});
 		};
 		getAllTopics();
 	}, []);
+
+	const loadingInitial = useMemo(
+		() => userTopicsDone.current && allTopicsDone.current,
+		[userTopicsDone, allTopicsDone]
+	);
 
 	const topicProvProps = React.useMemo(
 		() => ({
 			loadingInitial,
 			topics,
 			getUserTopics,
+			userTopics,
 		}),
-		[loadingInitial, topics, getUserTopics]
+		[loadingInitial, topics, getUserTopics, userTopics]
 	);
 
 	return (

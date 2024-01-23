@@ -14,31 +14,16 @@ const YourTopics = () => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const { user } = useAuth();
-	const { getUserTopics, topics, loadingInitial } = useTopics();
+	const { getUserTopics, userTopics, topics, loadingInitial } = useTopics();
 	const isFocused = useIsFocused();
-	const [yourTopics, setYourTopics] = React.useState<TNotificationTopic[]>(
-		[]
-	);
 
 	useEffect(() => {
 		if (!user?.uid) return;
-		const userTopics = (user: TUser) => {
-			getUserTopics(user)
-				.then((topics) => {
-					const sortedTopics = [...topics].sort(
-						(a, b) => b.notification - a.notification
-					);
-					setYourTopics(sortedTopics);
-				})
-				.catch((err) => {
-					console.error(err);
-				});
-		};
-		if (isFocused) userTopics(user);
-		onUser(user.uid, userTopics);
-	}, [isFocused, user?.topicSubscriptionIds]);
+		if (isFocused) getUserTopics(user);
+		onUser(user.uid, getUserTopics);
+	}, [isFocused, user]);
 
-	if (yourTopics.length === 0)
+	if (userTopics.length === 0)
 		return (
 			<>
 				<SectionHeader
@@ -60,7 +45,7 @@ const YourTopics = () => {
 				onPress={() =>
 					navigate(Routes.SEE_MORE_TOPICS, {
 						title: 'Your topics',
-						topics: yourTopics,
+						topics: userTopics,
 					})
 				}
 			/>
@@ -68,7 +53,7 @@ const YourTopics = () => {
 				<LoadingIndicator /> // TODO: Add Skeleton Loading
 			) : (
 				// TODO: Fix onPress
-				<TagRow data={yourTopics} />
+				<TagRow data={userTopics} />
 			)}
 		</>
 	);

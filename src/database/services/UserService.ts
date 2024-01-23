@@ -80,7 +80,7 @@ export function onUser(userId: string, callback: (user: TUser) => void) {
 	try {
 		const userRef = doc(DB, COLLECTIONS.USERS, userId);
 		return onSnapshot(userRef, (userDoc) => {
-			callback(userDoc.data() as TUser);
+			callback({ ...userDoc.data(), uid: userDoc.id } as TUser);
 		});
 	} catch (error) {
 		console.error('onUser in UserService ', error);

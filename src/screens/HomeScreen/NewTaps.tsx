@@ -5,36 +5,31 @@ import { useAuth } from '../../providers/AuthProvider';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { onUser } from '../../database/services/UserService';
 import SectionHeader from '../../components/SectionHeader';
-import TapRow from '../../components/TapRow';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Text, View } from 'react-native';
-import { TTap, TUser } from '../../types';
 import FullInfoTap from '../../components/FullInfoTap';
+import { TTap } from '../../types';
 
 const SPACE_BETWEEN = 16;
 const NewTaps = () => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-	const { getDiscoverTaps, loadingInitial } = useTaps();
+	const { getDiscoverTaps, discoverTaps, loadingInitial } = useTaps();
 	const { user } = useAuth();
 	const isFocused = useIsFocused();
 	const [newTaps, setNewTaps] = React.useState<TTap[]>([]);
 
 	useEffect(() => {
 		if (!user?.uid) return;
-		const discoverTaps = (user: TUser) => {
-			getDiscoverTaps(user)
-				.then((taps) => {
-					setNewTaps(taps);
-				})
-				.catch((err) => {
-					console.error(err);
-				});
-		};
-		if (isFocused) discoverTaps(user);
-		onUser(user.uid, discoverTaps);
+		if (isFocused) getDiscoverTaps(user);
+		onUser(user.uid, getDiscoverTaps);
 	}, [isFocused, user]);
+
+	useEffect(() => {
+		if (!discoverTaps) return;
+		setNewTaps(discoverTaps);
+	}, [discoverTaps]);
 
 	return (
 		<>
