@@ -1,30 +1,29 @@
 import { TUser } from '../types';
 import { useNavigation } from '@react-navigation/native';
-import { onAuthStateChanged } from 'firebase/auth';
+import { UserCredential, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../database/Firebase';
 import {
 	getUser,
 	loginUser,
+	onUser,
 	registerUser,
 	sendForgotPasswordEmail,
 } from '../database/services/UserService';
 import { RootStackParamList } from '../navigation/Routes';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 const AuthContext = React.createContext<{
 	user: TUser | null;
 	handleLogin: (
 		email: string,
-		password: string,
-		setLoading: React.Dispatch<React.SetStateAction<boolean>>
-	) => void;
+		password: string
+	) => Promise<UserCredential | void>;
 	handleSignup: (
 		name: string,
 		email: string,
-		password: string,
-		setLoading: React.Dispatch<React.SetStateAction<boolean>>
-	) => void;
+		password: string
+	) => Promise<UserCredential | void>;
 	handleLogout: () => void;
 	status: {
 		type: 'error' | 'success';
@@ -36,17 +35,9 @@ const AuthContext = React.createContext<{
 	) => void;
 }>({
 	user: null,
-	handleLogin: (
-		email: string,
-		password: string,
-		setLoading: React.Dispatch<React.SetStateAction<boolean>>
-	) => {},
-	handleSignup: (
-		name: string,
-		email: string,
-		password: string,
-		setLoading: React.Dispatch<React.SetStateAction<boolean>>
-	) => {},
+	handleLogin: (email: string, password: string) => Promise.resolve(),
+	handleSignup: (name: string, email: string, password: string) =>
+		Promise.resolve(),
 	handleLogout: () => {},
 	status: null,
 	handleForgotPassword: (
@@ -70,11 +61,7 @@ export const AuthProvider = ({ children }: Props) => {
 		message: string;
 	} | null>(null);
 
-	const handleLogin = (
-		email: string,
-		password: string,
-		setLoading: React.Dispatch<React.SetStateAction<boolean>>
-	) => {
+	const handleLogin = async (email: string, password: string) => {
 		if (email == '' || password == '') {
 			setStatus({
 				type: 'error',
@@ -82,31 +69,26 @@ export const AuthProvider = ({ children }: Props) => {
 			});
 			return;
 		}
-		loginUser(email, password)
-			.catch(() =>
-				setStatus({
-					type: 'error',
-					message: 'Invalid email or password',
-				})
-			)
-			.finally(() => setLoading(false));
+		return await loginUser(email, password).catch(() =>
+			setStatus({
+				type: 'error',
+				message: 'Invalid email or password',
+			})
+		);
 	};
 
-	const handleSignup = (
+	const handleSignup = async (
 		name: string,
 		email: string,
-		password: string,
-		setLoading: React.Dispatch<React.SetStateAction<boolean>>
+		password: string
 	) => {
 		setStatus(null);
-		registerUser(name, email, password)
-			.catch(() =>
-				setStatus({
-					type: 'error',
-					message: 'Invalid email or password',
-				})
-			)
-			.finally(() => setLoading(false));
+		return registerUser(name, email, password).catch(() =>
+			setStatus({
+				type: 'error',
+				message: 'Invalid email or password',
+			})
+		);
 	};
 
 	const handleLogout = () => {

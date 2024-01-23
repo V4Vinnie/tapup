@@ -1,7 +1,13 @@
 import settings from '../../tailwind.config';
 
 export const FONTS = {
-	FAMILY: {},
+	FAMILY: {
+		LIGHT: 'Inter-Light',
+		REGULAR: 'Inter-Regular',
+		MEDIUM: 'Inter-Medium',
+		SEMIBOLD: 'Inter-SemiBold',
+		BOLD: 'Inter-Bold',
+	},
 	SIZE: {
 		XXS: 10,
 		XS: 12,

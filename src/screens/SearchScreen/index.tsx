@@ -16,6 +16,8 @@ import IonIcon from 'react-native-vector-icons/Ionicons';
 import { useTaps } from '../../providers/TapProvider';
 import { useState } from 'react';
 import { TTap } from '../../types';
+import { FlatList } from 'react-native';
+import FullInfoTap from '../../components/FullInfoTap';
 
 type Props = {};
 
@@ -52,19 +54,24 @@ const SearchScreen = (props: Props) => {
 					</TouchableOpacity>
 					<InlineSearchBar onSearch={searchTaps} />
 				</View>
-				<ScrollView
-					className='w-full'
+				<FlatList
+					data={filteredTaps}
+					numColumns={2}
 					contentContainerStyle={{
-						alignItems: 'center',
-						justifyContent: 'center',
+						paddingTop: 16,
 					}}
-					showsVerticalScrollIndicator={false}>
-					<View className='w-full'>
-						<Text className='text-2xl font-bold text-center text-dark-textColor'>
-							Search Screen
-						</Text>
-					</View>
-				</ScrollView>
+					renderItem={({ item }) => (
+						<FullInfoTap
+							tap={item}
+							containerProps={{
+								style: {
+									paddingVertical: 8,
+								},
+							}}
+						/>
+					)}
+					keyExtractor={(item) => item.id}
+				/>
 			</View>
 		</SafeAreaView>
 	);

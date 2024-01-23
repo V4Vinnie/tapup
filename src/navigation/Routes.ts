@@ -1,4 +1,4 @@
-import { TTap, TTopic } from '../types';
+import { TProfile, TTap, TTopic } from '../types';
 
 export const Routes = {
 	WELCOME: 'Welcome',
@@ -8,7 +8,9 @@ export const Routes = {
 	SIGNUP: 'Signup',
 	FORGOT_PASSWORD: 'ForgotPassword',
 	SEARCH_SCREEN: 'SearchScreen',
-	GENERAL_SEE_MORE: 'GeneralSeeMore',
+	SEE_MORE_TAPS: 'SeeMoreTaps',
+	SEE_MORE_TOPICS: 'SeeMoreTopics',
+	SEE_MORE_PROFILES: 'SeeMoreProfiles',
 } as const;
 
 export type RootStackParamList = {
@@ -19,8 +21,16 @@ export type RootStackParamList = {
 	Home: undefined;
 	HomeLanding: undefined;
 	SearchScreen: undefined;
-	GeneralSeeMore: {
+	SeeMoreTaps: {
 		title: string;
-		data: TTap[] | TTopic[];
+		taps: TTap[];
+	};
+	SeeMoreTopics: {
+		title: string;
+		topics: TTopic[];
+	};
+	SeeMoreProfiles: {
+		title: string;
+		profiles: TProfile[];
 	};
 };

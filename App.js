@@ -13,6 +13,8 @@ import {
   Inter_700Bold,
 } from '@expo-google-fonts/inter';
 import { TapProvider } from './src/providers/TapProvider';
+import { TopicProvider } from './src/providers/TopicProvider';
+import { ProfileProvider } from './src/providers/ProfileProvider';
 
 SplashScreen.preventAutoHideAsync();
 export default function App() {
@@ -34,10 +36,14 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <NavigationContainer>
         <AuthProvider>
-          <TapProvider>
-            <StatusBar translucent />
-            <RootStack />
-          </TapProvider>
+          <TopicProvider>
+            <TapProvider>
+              <ProfileProvider>
+                <StatusBar translucent />
+                <RootStack />
+              </ProfileProvider>
+            </TapProvider>
+          </TopicProvider>
         </AuthProvider>
       </NavigationContainer>
     </GestureHandlerRootView>

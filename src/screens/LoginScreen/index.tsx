@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
 	Image,
 	StyleProp,
@@ -34,13 +34,18 @@ const LoginScreen = (props: Props) => {
 
 	const logIn = async () => {
 		setIsSending(true);
-		handleLogin(email, password, setIsSending);
+		handleLogin(email, password).finally(() => {
+			setIsSending(false);
+		});
 		// TODO: MAKE ERROR MODAL
 	};
 
+	const disabledState = useMemo(() => {
+		return isSending || email === '' || password.length < 6 ? 0.5 : 1;
+	}, [email, password, isSending]);
 	return (
 		<KeyboardAwareScrollView
-			keyboardShouldPersistTaps={'never'}
+			keyboardShouldPersistTaps={'handled'}
 			style={scrollViewContainer}
 			contentContainerStyle={scrollViewContentContainer}
 			showsVerticalScrollIndicator={false}>
@@ -108,24 +113,30 @@ const LoginScreen = (props: Props) => {
 							}}
 						/>
 
-						{status && (
-							<Text
-								className={`text-base font-inter-medium ${
-									status.type === 'error'
-										? 'text-red-500'
-										: 'text-green-500'
-								}`}>
-								{status.message}
-							</Text>
-						)}
 						<AppButton
 							buttonProps={{
 								className: 'mt-4',
 								disabled: isSending,
+								style: {
+									opacity: disabledState,
+								},
 							}}
 							title={'Login'}
 							onPress={() => logIn()}
 						/>
+						{status && (
+							<View
+								className={`w-full mt-2 p-2 rounded-full ${
+									status.type === 'error'
+										? 'bg-red-400'
+										: 'bg-green-400'
+								}`}>
+								<Text
+									className={`text-base text-center font-inter-medium text-white`}>
+									{status.message}
+								</Text>
+							</View>
+						)}
 					</View>
 
 					<View>

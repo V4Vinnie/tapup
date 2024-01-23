@@ -9,7 +9,7 @@ const LoadingIndicator = (props: Props) => {
 		<View className='flex-1 justify-center items-center'>
 			<ActivityIndicator
 				size='large'
-				color={themeColors[mode].activeColor}
+				color={themeColors[mode].textColor}
 			/>
 		</View>
 	);

@@ -1,17 +1,25 @@
-import { useNavigation } from '@react-navigation/native';
-import { RootStackParamList } from '../navigation/Routes';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React, { useEffect, useState } from 'react';
-import { TTap } from '../types';
-import { getTaps } from '../database/services/MockTapService';
-import { useAuth } from './AuthProvider';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { TContinueWatchingTap, TTap, TUser } from '../types';
+import {
+	getAllTaps,
+	getTapsWithProgressForUser,
+	getUserDiscoverTaps,
+} from '../database/services/MockTapService';
 
 const TapContext = React.createContext<{
+	loadingInitial: boolean;
 	taps: TTap[];
-	setTaps: React.Dispatch<React.SetStateAction<TTap[]>>;
+	discoverTaps: TTap[];
+	userTaps: TContinueWatchingTap[];
+	getDiscoverTaps: (user: TUser) => void;
+	getUserTaps: (user: TUser) => void;
 }>({
+	loadingInitial: true,
 	taps: [],
-	setTaps: () => {},
+	discoverTaps: [],
+	userTaps: [],
+	getDiscoverTaps: () => {},
+	getUserTaps: () => {},
 });
 
 type Props = {
@@ -19,28 +27,67 @@ type Props = {
 };
 
 export const TapProvider = ({ children }: Props) => {
-	const { user } = useAuth();
-	const navigator =
-		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const [taps, setTaps] = useState<TTap[]>([]);
+	const [userTaps, setUserTaps] = useState<TContinueWatchingTap[]>([]);
+	const [discoverTaps, setDiscoverTaps] = useState<TTap[]>([]);
 
+	// User Taps
+	const userTapsDone = useRef<boolean>(false);
+	const getUserTaps = (user: TUser) => {
+		if (!user?.uid) return [];
+		getTapsWithProgressForUser(user).then((taps) => {
+			setUserTaps(taps ?? []);
+			userTapsDone.current = true;
+		});
+	};
+
+	// Discover Taps
+	const discoverTapsDone = useRef<boolean>(false);
+	const getDiscoverTaps = (user: TUser) => {
+		if (!user?.uid) return [];
+		getUserDiscoverTaps(user).then((taps) => {
+			setDiscoverTaps(taps ?? []);
+			discoverTapsDone.current = true;
+		});
+	};
+
+	// All Taps
+	const allTapsDone = useRef<boolean>(false);
 	useEffect(() => {
-		const getAllTaps = async () => {
-			const _allTaps = await getTaps();
-
-			setTaps(_allTaps);
+		const getAll = () => {
+			getAllTaps().then((taps) => {
+				allTapsDone.current = true;
+				setTaps(taps ?? []);
+			});
 		};
-		if (user) {
-			getAllTaps();
-		}
-	}, [user]);
+		getAll();
+	}, []);
+
+	const loadingInitial = useMemo(() => {
+		return (
+			userTapsDone.current &&
+			discoverTapsDone.current &&
+			allTapsDone.current
+		);
+	}, [userTapsDone, discoverTapsDone, allTapsDone]);
 
 	const tapProvProps = React.useMemo(
 		() => ({
+			loadingInitial,
 			taps,
-			setTaps,
+			discoverTaps,
+			userTaps,
+			getDiscoverTaps,
+			getUserTaps,
 		}),
-		[taps, setTaps]
+		[
+			loadingInitial,
+			taps,
+			discoverTaps,
+			userTaps,
+			getDiscoverTaps,
+			getUserTaps,
+		]
 	);
 
 	return (

@@ -1,4 +1,5 @@
 import {
+	UserCredential,
 	createUserWithEmailAndPassword,
 	sendPasswordResetEmail,
 	signInWithEmailAndPassword,
@@ -9,7 +10,10 @@ import { DB, auth } from '../Firebase';
 import { COLLECTIONS } from '../../utils/constants';
 import { TUser } from '../../types';
 
-export async function loginUser(email: string, password: string) {
+export async function loginUser(
+	email: string,
+	password: string
+): Promise<UserCredential> {
 	return new Promise(async (resolve, reject) => {
 		try {
 			const userCredential = await signInWithEmailAndPassword(
@@ -28,7 +32,7 @@ export async function registerUser(
 	name: string,
 	email: string,
 	password: string
-) {
+): Promise<UserCredential> {
 	return new Promise(async (resolve, reject) => {
 		if (name == '' || name.length < 2 || email == '' || password == '') {
 			reject('Please fill all the fields');
@@ -45,7 +49,11 @@ export async function registerUser(
 			});
 			await setDoc(doc(DB, COLLECTIONS.USERS, userCredential.user.uid), {
 				name: name,
+				profilePic: '',
 				email: email,
+				role: 'USER',
+
+				watchedFrames: [],
 			});
 			resolve(userCredential);
 		} catch (error) {
@@ -58,19 +66,23 @@ export async function sendForgotPasswordEmail(email: string) {
 	return sendPasswordResetEmail(auth, email);
 }
 
-export async function getUser(id: string) {
+export async function getUser(uid: string) {
 	try {
-		const user = await getDoc(doc(DB, COLLECTIONS.USERS, id));
+		const user = await getDoc(doc(DB, COLLECTIONS.USERS, uid));
 		return user.data() as TUser;
 	} catch (error) {
-		console.error(error);
+		console.error('getUser in UserService ', error);
 		return null;
 	}
 }
 
 export function onUser(userId: string, callback: (user: TUser) => void) {
-	const userRef = doc(DB, COLLECTIONS.USERS, userId);
-	return onSnapshot(userRef, (userDoc) => {
-		callback(userDoc.data() as TUser);
-	});
+	try {
+		const userRef = doc(DB, COLLECTIONS.USERS, userId);
+		return onSnapshot(userRef, (userDoc) => {
+			callback({ ...userDoc.data(), uid: userDoc.id } as TUser);
+		});
+	} catch (error) {
+		console.error('onUser in UserService ', error);
+	}
 }

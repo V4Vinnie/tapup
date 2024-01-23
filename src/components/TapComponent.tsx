@@ -1,0 +1,46 @@
+import { Image, Text, View } from 'react-native';
+import React, { useEffect } from 'react';
+import { TContinueWatchingTap, TTap } from '../types';
+import { themeColors } from '../utils/constants';
+import AntIcon from 'react-native-vector-icons/AntDesign';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useAuth } from '../providers/AuthProvider';
+
+type Props = {
+	data: TContinueWatchingTap;
+	containerProps?: View['props'];
+};
+
+const TapComponent = ({ data, containerProps }: Props) => {
+	const { user } = useAuth();
+
+	return (
+		<View
+			className='w-32 h-44 rounded-lg overflow-hidden'
+			{...containerProps}>
+			<Image source={{ uri: data.thumbnail }} className='w-full h-full' />
+			<LinearGradient
+				className='absolute bottom-0 w-full h-1/2'
+				colors={['transparent', 'rgba(0,0,0,1)']}
+			/>
+			<Text
+				numberOfLines={1}
+				className='absolute bottom-0 w-full h-5 mb-2 px-2 flex flex-row justify-between items-center text-white text-left text-xs font-inter-medium'>
+				{data.name}
+			</Text>
+			{data.progress && (
+				<View className='absolute bottom-0 w-full h-1 bg-dark-secondaryBackground'>
+					<View
+						className='h-full'
+						style={{
+							width: `${data.progress}%`,
+							backgroundColor: themeColors.primaryColor[100],
+						}}
+					/>
+				</View>
+			)}
+		</View>
+	);
+};
+
+export default TapComponent;
