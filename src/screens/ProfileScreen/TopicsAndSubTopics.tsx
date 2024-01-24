@@ -4,7 +4,7 @@ import { TProfile, TTap, TTopic } from '../../types';
 import { getTopicsFromProfile } from '../../database/services/MockTopicService';
 import TagRow from '../../components/TagRow';
 import { FlatList } from 'react-native-gesture-handler';
-import { getTapsFromProfile } from '../../database/services/MockTapService';
+import { getTapsPerTopicFromProfile } from '../../database/services/MockTapService';
 import SectionHeader from '../../components/SectionHeader';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -36,12 +36,7 @@ const TopicsAndSubTopics = ({ profile }: Props) => {
 	useEffect(() => {
 		const getTaps = async () => {
 			if (selectedTopic) {
-				const _tapsPerTopic = await getTapsFromProfile(profile);
-				if (_tapsPerTopic)
-					console.log(
-						selectedTopic.id,
-						_tapsPerTopic[selectedTopic.id]
-					);
+				const _tapsPerTopic = await getTapsPerTopicFromProfile(profile);
 				setTapsPerTopic(_tapsPerTopic ?? {});
 			}
 		};
@@ -63,10 +58,11 @@ const TopicsAndSubTopics = ({ profile }: Props) => {
 						<SectionHeader
 							title={tap.name}
 							onPress={() => {
-								navigate(Routes.SEE_MORE_TAPS, {
-									taps: tapsPerTopic[selectedTopic.id],
-									title: tap.name,
-								}); // TODO: Add tap screen
+								navigate(Routes.TAP_SCREEN, {
+									topic: selectedTopic,
+									tap,
+									profile,
+								});
 							}}
 						/>
 						<ChapterRow chapters={tap.chapters} />

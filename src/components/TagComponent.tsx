@@ -1,11 +1,11 @@
 import React from 'react';
 import { Text, TouchableHighlight, View } from 'react-native';
-import { TNotificationTopic, TTopic } from '../types';
+import { TNotificationTopic, TTap, TTopic } from '../types';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import { themeColors } from '../utils/constants';
 
 type Props = {
-	data: TNotificationTopic | TTopic;
+	data: TNotificationTopic | TTopic | TTap;
 	containerProps?: TouchableHighlight['props'];
 	onPress?: () => void;
 };

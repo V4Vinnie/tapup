@@ -35,6 +35,7 @@ export type TNotificationProfile = TProfile & {
 export type TTap = {
 	id: string;
 	name: string;
+	fullName: string;
 	description: string;
 	thumbnail: string;
 	chapters: TChapter[];
@@ -66,6 +67,7 @@ export type TFrame = {
 	chapterId: string;
 	creatorId: string;
 	creationDate: Timestamp;
+	watchedBy?: string[];
 };
 
 export type TBadge = {

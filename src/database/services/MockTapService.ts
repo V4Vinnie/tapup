@@ -114,7 +114,7 @@ export const getViewsForTap = async (tapId: string) => {
 	}
 };
 
-export const getTapsFromProfile = async (profile: TProfile) => {
+export const getTapsPerTopicFromProfile = async (profile: TProfile) => {
 	try {
 		const tapsPerTopic = {} as Record<string, TTap[]>;
 		const frames = profile.madeFrames ?? [];
@@ -136,7 +136,10 @@ export const getTapsFromProfile = async (profile: TProfile) => {
 			}, 1000);
 		});
 	} catch (error) {
-		console.log('getTapsFromProfileAndTopic in MockTapService ', error);
+		console.log(
+			'getTapsPerTopicFromProfileAndTopic in MockTapService ',
+			error
+		);
 	}
 };
 
@@ -247,7 +250,8 @@ const MOCK_CHAPTERS_2: TChapter[] = [
 export const MOCK_TAPS: TTap[] = [
 	{
 		id: 'ef1f2e34-bad7-4497-a4d7-7f32d128fbc3',
-		name: 'Student Entrepreneurship',
+		fullName: 'Student Entrepreneurship',
+		name: 'For students',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl nec sagittis dapibus, urna nisi ultricies mauris.',
 		thumbnail: 'https://picsum.photos/800/1200',
@@ -258,7 +262,8 @@ export const MOCK_TAPS: TTap[] = [
 	},
 	{
 		id: '0b57b80f-e3b5-4048-b8e7-73fe4b0b160a',
-		name: 'Designing for beginners',
+		fullName: 'Designing for beginners',
+		name: 'For beginners',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl nec sagittis dapibus, urna nisi ultricies mauris, vitae lacinia eros orci id nisi. Nulla facilisi. Nulla facilisi.',
 		thumbnail: 'https://picsum.photos/800/1200',
@@ -269,7 +274,8 @@ export const MOCK_TAPS: TTap[] = [
 	},
 	{
 		id: '2d82222f-86a0-41e5-b0a2-d5b66fa47529',
-		name: 'Coding for dummies',
+		fullName: 'Coding for dummies',
+		name: 'For dummies',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl nec sagittis dapibus, urna nisi ultricies mauris, vitae lacinia eros orci id nisi. Nulla facilisi. Nulla facilisi.',
 		thumbnail: 'https://picsum.photos/800/1200',
@@ -280,7 +286,8 @@ export const MOCK_TAPS: TTap[] = [
 	},
 	{
 		id: 'fddcdd46-3d34-41db-ba4c-40bbf2c507f6',
-		name: 'Marketing for beginners',
+		fullName: 'Marketing for beginners',
+		name: 'For beginners',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl nec sagittis dapibus, urna nisi ultricies mauris, vitae lacinia eros orci id nisi. Nulla facilisi. Nulla facilisi.',
 		thumbnail: 'https://picsum.photos/800/1200',
@@ -291,7 +298,8 @@ export const MOCK_TAPS: TTap[] = [
 	},
 	{
 		id: 'aeb489fd-37a4-453d-8389-2827d7239c0f',
-		name: 'Marketing for beginners',
+		fullName: 'Marketing for beginners',
+		name: 'For beginners',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl nec sagittis dapibus, urna nisi ultricies mauris, vitae lacinia eros orci id nisi. Nulla facilisi. Nulla facilisi.',
 		thumbnail: 'https://picsum.photos/800/1200',

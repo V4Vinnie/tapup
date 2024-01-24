@@ -8,6 +8,7 @@ type Props = {
 	thumbnail?: string;
 	video?: string;
 	text: string;
+	showProgress?: boolean;
 	progress?: number;
 	containerProps?: View['props'];
 };
@@ -16,7 +17,8 @@ const PreviewComponent = ({
 	thumbnail,
 	video,
 	text,
-	progress,
+	showProgress = true,
+	progress = 0,
 	containerProps,
 }: Props) => {
 	const { user } = useAuth();
@@ -25,8 +27,13 @@ const PreviewComponent = ({
 		<View
 			className='w-32 h-44 rounded-lg overflow-hidden'
 			{...containerProps}>
-			{thumbnail && (
-				<Image source={{ uri: thumbnail }} className='w-full h-full' />
+			{thumbnail === '' ? (
+				<View className='w-full h-full bg-dark-secondaryBackground' />
+			) : (
+				<Image
+					source={{ uri: thumbnail }}
+					className='w-full h-full bg-dark-secondaryBackground'
+				/>
 			)}
 			{!thumbnail && video && (
 				<Video
@@ -44,13 +51,12 @@ const PreviewComponent = ({
 				className='absolute bottom-0 w-full h-5 mb-2 px-2 flex flex-row justify-between items-center text-white text-left text-xs font-inter-medium'>
 				{text}
 			</Text>
-			{progress && (
+			{showProgress && (
 				<View className='absolute bottom-0 w-full h-1 bg-dark-secondaryBackground'>
 					<View
-						className='h-full'
+						className='h-full w-full bg-primaryColor-100'
 						style={{
 							width: `${progress}%`,
-							backgroundColor: themeColors.primaryColor[100],
 						}}
 					/>
 				</View>
