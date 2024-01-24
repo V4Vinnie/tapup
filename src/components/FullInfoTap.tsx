@@ -17,7 +17,7 @@ type Props = {
 const FullInfoTap = ({ tap, containerProps, isNew }: Props) => {
 	const [views, setViews] = React.useState<string>('0');
 	const companyName = useMemo(() => {
-		return getCompanyName(tap.companyId);
+		return getCompanyName(tap.creatorId);
 	}, [tap]);
 
 	const timeAgo = useMemo(() => {

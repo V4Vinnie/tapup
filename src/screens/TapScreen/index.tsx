@@ -1,5 +1,5 @@
-import { View, Text, SafeAreaView, ScrollView } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import { View, Text, SafeAreaView, ScrollView, FlatList } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
 import SearchbarHeader from '../../components/SearchbarHeader';
 import ProfileHeader from '../../components/ProfileHeader';
@@ -12,13 +12,14 @@ import { useTaps } from '../../providers/TapProvider';
 import AppHeader from '../../components/AppHeader';
 import TagRow from '../../components/TagRow';
 import { useNavigation } from '@react-navigation/native';
-import { TTap } from '../../types';
+import { TChapter, TTap } from '../../types';
 import { getTapsPerTopicFromProfile } from '../../database/services/MockTapService';
 import ChapterRow from '../../components/ChapterRow';
 import SectionHeader from '../../components/SectionHeader';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { mode, themeColors } from '../../utils/constants';
+import ChapterList from '../../components/ChapterList';
 
 type ProfileScreenProps = NativeStackScreenProps<
 	RootStackParamList,
@@ -40,6 +41,12 @@ const TapScreen = ({ route }: ProfileScreenProps) => {
 		};
 		getTaps();
 	}, [profile]);
+
+	const sortedChapters = useMemo(() => {
+		return (selectedTap?.chapters ?? tap.chapters).sort(
+			(a, b) => a.creationDate.seconds - b.creationDate.seconds
+		);
+	}, [selectedTap, tap]);
 
 	const toggleListView = () => {
 		setListView(!listView);
@@ -92,14 +99,10 @@ const TapScreen = ({ route }: ProfileScreenProps) => {
 						}
 					/>
 					{listView ? (
-						<ChapterRow
-							chapters={selectedTap?.chapters ?? tap.chapters}
-						/>
+						<ChapterList chapters={sortedChapters} />
 					) : (
 						<>
-							<ChapterRow
-								chapters={selectedTap?.chapters ?? tap.chapters}
-							/>
+							<ChapterRow chapters={sortedChapters} />
 							<View className='w-full px-4 mt-10 mb-8'>
 								<Text
 									numberOfLines={1}

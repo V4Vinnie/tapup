@@ -67,6 +67,7 @@ export type TFrame = {
 	chapterId: string;
 	creatorId: string;
 	creationDate: Timestamp;
+	watchedBy?: string[];
 };
 
 export type TBadge = {
