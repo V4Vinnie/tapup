@@ -12,6 +12,7 @@ import SearchScreen from '../screens/SearchScreen';
 import SeeMoreTapsScreen from '../screens/SeeMoreScreens/SeeMoreTapsScreen';
 import SeeMoreProfilesScreen from '../screens/SeeMoreScreens/SeeMoreProfilesScreen';
 import SeeMoreTopicsScreen from '../screens/SeeMoreScreens/SeeMoreTopicsScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 
 type Props = {};
 
@@ -64,6 +65,10 @@ const HomeStack = () => {
 			<Stack.Screen
 				name={Routes.SEE_MORE_TOPICS}
 				component={SeeMoreTopicsScreen}
+			/>
+			<Stack.Screen
+				name={Routes.PROFILE_SCREEN}
+				component={ProfileScreen}
 			/>
 		</Stack.Navigator>
 	);

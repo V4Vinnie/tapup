@@ -1,7 +1,7 @@
 import { FlatList, View } from 'react-native';
 import React from 'react';
 import { TContinueWatchingTap, TTap } from '../types';
-import TapComponent from './TapComponent';
+import PreviewComponent from './PreviewComponent';
 
 type Props = {
 	tapData: TTap[] | TContinueWatchingTap[];
@@ -21,8 +21,14 @@ const TapRow = ({ tapData, containerProps }: Props) => {
 					paddingHorizontal: 16,
 				}}
 				renderItem={({ item, index }) => (
-					<TapComponent
-						data={item}
+					<PreviewComponent
+						thumbnail={item.thumbnail}
+						text={item.name}
+						progress={
+							'progress' in item
+								? (item as TContinueWatchingTap).progress
+								: undefined
+						}
 						containerProps={{
 							style: {
 								marginRight:

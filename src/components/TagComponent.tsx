@@ -7,14 +7,15 @@ import { themeColors } from '../utils/constants';
 type Props = {
 	data: TNotificationTopic | TTopic;
 	containerProps?: TouchableHighlight['props'];
+	onPress?: () => void;
 };
 
-const TagComponent = ({ data, containerProps }: Props) => {
+const TagComponent = ({ data, containerProps, onPress }: Props) => {
 	const notification = 'notification' in data ? data.notification : 0;
 	return (
 		<TouchableHighlight
 			{...containerProps}
-			onPress={() => {}} // TODO: Fix onPress
+			onPress={onPress} // TODO: Fix onPress
 			className='w-fit px-5 py-1 bg-dark-secondaryBackground rounded-full'>
 			<View className='flex-row items-center gap-2'>
 				{notification > 0 && (

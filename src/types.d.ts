@@ -11,6 +11,7 @@ export type TProfile = {
 	watchedFrameIds: string[];
 	topicSubscriptionIds?: string[];
 	userSubscriptionIds?: string[];
+	madeFrames?: TFrame[];
 	badges?: TBadge[];
 	companyId?: string;
 	companyRole?: 'EMPLOYER' | 'EMPLOYEE';
@@ -38,7 +39,7 @@ export type TTap = {
 	thumbnail: string;
 	chapters: TChapter[];
 	topicId: string;
-	companyId: string;
+	creatorId: string;
 	createdAt: Timestamp;
 };
 
@@ -60,6 +61,8 @@ export type TFrame = {
 	id: string;
 	media: string;
 	mediaType: 'IMAGE' | 'VIDEO';
+	topicId: string;
+	tapId: string;
 	chapterId: string;
 	creatorId: string;
 	creationDate: Timestamp;

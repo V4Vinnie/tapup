@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
 	getProfiles,
 	getFollowingProfiles,
@@ -26,31 +26,31 @@ export const ProfileProvider = ({ children }: Props) => {
 	const [userProfiles, setUserProfiles] = useState<TNotificationProfile[]>(
 		[]
 	);
+	const [userProfilesDone, setUserProfilesDone] = useState<boolean>(false);
+	const [allProfilesDone, setAllProfilesDone] = useState<boolean>(false);
 
 	// User profiles
-	const userProfilesDone = useRef<boolean>(false);
 	const getUserProfiles = (user: TUser) => {
 		if (!user) return [];
 		getFollowingProfiles(user).then((profiles) => {
-			userProfilesDone.current = true;
 			setUserProfiles(profiles ?? []);
+			setUserProfilesDone(true);
 		});
 	};
 
 	// All profiles
-	const allProfilesDone = useRef<boolean>(false);
 	useEffect(() => {
 		const getAllProfiles = () => {
 			getProfiles().then((profiles) => {
-				allProfilesDone.current = true;
 				setProfiles(profiles ?? []);
+				setAllProfilesDone(true);
 			});
 		};
 		getAllProfiles();
 	}, []);
 
 	const loadingInitial = useMemo(
-		() => userProfilesDone.current && allProfilesDone.current,
+		() => !(userProfilesDone && allProfilesDone),
 		[userProfilesDone, allProfilesDone]
 	);
 

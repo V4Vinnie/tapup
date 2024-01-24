@@ -24,31 +24,31 @@ type Props = {
 export const TopicProvider = ({ children }: Props) => {
 	const [topics, setTopics] = useState<TTopic[]>([]);
 	const [userTopics, setUserTopics] = useState<TNotificationTopic[]>([]);
+	const [userTopicsDone, setUserTopicsDone] = useState<boolean>(false);
+	const [allTopicsDone, setAllTopicsDone] = useState<boolean>(false);
 
 	// User topics
-	const userTopicsDone = useRef<boolean>(false);
 	const getUserTopics = (user: TUser) => {
 		if (!user) return [];
 		getTopicsForUser(user).then((topics) => {
-			userTopicsDone.current = true;
 			setUserTopics(topics ?? []);
+			setUserTopicsDone(true);
 		});
 	};
 
 	// All topics
-	const allTopicsDone = useRef<boolean>(false);
 	useEffect(() => {
 		const getAllTopics = () => {
 			getTopics().then((topics) => {
-				allTopicsDone.current = true;
 				setTopics(topics ?? []);
+				setAllTopicsDone(true);
 			});
 		};
 		getAllTopics();
 	}, []);
 
 	const loadingInitial = useMemo(
-		() => userTopicsDone.current && allTopicsDone.current,
+		() => !(userTopicsDone && allTopicsDone),
 		[userTopicsDone, allTopicsDone]
 	);
 

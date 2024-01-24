@@ -18,6 +18,7 @@ import { useState } from 'react';
 import { TTap } from '../../types';
 import { FlatList } from 'react-native';
 import FullInfoTap from '../../components/FullInfoTap';
+import SearchbarHeader from '../../components/SearchbarHeader';
 
 type Props = {};
 
@@ -42,18 +43,7 @@ const SearchScreen = (props: Props) => {
 		<SafeAreaView className='flex-1 items-center bg-dark-primaryBackground'>
 			<FocusAwareStatusBar translucent barStyle={'light-content'} />
 			<View className='flex-1 flex w-11/12 self-center'>
-				<View className='w-full flex flex-row justify-between items-center mt-8'>
-					<TouchableOpacity
-						className='mr-4 mt-5'
-						onPress={() => goBack()}>
-						<IonIcon
-							name='arrow-back'
-							size={24}
-							color={themeColors[mode].headerPrimaryColor}
-						/>
-					</TouchableOpacity>
-					<InlineSearchBar onSearch={searchTaps} />
-				</View>
+				<SearchbarHeader onSearch={searchTaps} />
 				<FlatList
 					data={filteredTaps}
 					numColumns={2}

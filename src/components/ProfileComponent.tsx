@@ -1,17 +1,35 @@
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { TNotificationProfile, TProfile } from '../types';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList, Routes } from '../navigation/Routes';
 
 type Props = {
 	profile: TNotificationProfile | TProfile;
 	containerProps?: View['props'];
 	width?: number;
+	showName?: boolean;
 };
 
-const ProfileComponent = ({ profile, containerProps, width = 85 }: Props) => {
+const ProfileComponent = ({
+	profile,
+	containerProps,
+	width = 85,
+	showName = true,
+}: Props) => {
+	const { navigate } =
+		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const notification = 'notification' in profile ? profile.notification : 0;
 	return (
-		<View className='items-center' {...containerProps}>
+		<TouchableOpacity
+			onPress={() =>
+				navigate(Routes.PROFILE_SCREEN, {
+					profile,
+				})
+			}
+			className='items-center'
+			{...containerProps}>
 			<View
 				style={{
 					width,
@@ -33,15 +51,17 @@ const ProfileComponent = ({ profile, containerProps, width = 85 }: Props) => {
 					</View>
 				)}
 			</View>
-			<Text
-				style={{
-					width,
-				}}
-				numberOfLines={1}
-				className='text-dark-textColor text-xs font-inter-regular text-center mt-1'>
-				{profile.name}
-			</Text>
-		</View>
+			{showName && (
+				<Text
+					style={{
+						width,
+					}}
+					numberOfLines={1}
+					className='text-dark-textColor text-xs font-inter-regular text-center mt-1'>
+					{profile.name}
+				</Text>
+			)}
+		</TouchableOpacity>
 	);
 };
 
