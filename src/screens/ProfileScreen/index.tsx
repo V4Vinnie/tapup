@@ -5,6 +5,8 @@ import SearchbarHeader from '../../components/SearchbarHeader';
 import ProfileHeader from '../../components/ProfileHeader';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/Routes';
+import TopicsAndSubTopics from './TopicsAndSubTopics';
+import { useTaps } from '../../providers/TapProvider';
 
 type ProfileScreenProps = NativeStackScreenProps<
 	RootStackParamList,
@@ -13,6 +15,7 @@ type ProfileScreenProps = NativeStackScreenProps<
 
 const ProfileScreen = ({ route }: ProfileScreenProps) => {
 	const { profile } = route.params;
+	const { taps } = useTaps();
 
 	return (
 		<SafeAreaView className='flex-1 items-center bg-dark-primaryBackground'>
@@ -33,7 +36,7 @@ const ProfileScreen = ({ route }: ProfileScreenProps) => {
 				showsVerticalScrollIndicator={false}>
 				<View className='w-full'>
 					<ProfileHeader profile={profile} />
-					{/* TOPICS and SUBTOPICS */}
+					<TopicsAndSubTopics profile={profile} />
 				</View>
 			</ScrollView>
 			{/* TODO: Add search in profile functionality */}

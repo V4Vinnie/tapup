@@ -12,7 +12,9 @@ const SectionHeader = ({ title, onPress }: Props) => {
 	return (
 		<TouchableOpacity onPress={onPress} className='w-full px-4'>
 			<View className='w-full flex-row items-center justify-between pt-5 pb-3 mt-4'>
-				<Text className='font-inter-semiBold text-xl text-dark-headerPrimaryColor'>
+				<Text
+					numberOfLines={1}
+					className='font-inter-semiBold text-xl text-dark-headerPrimaryColor w-11/12'>
 					{title}
 				</Text>
 

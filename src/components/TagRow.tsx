@@ -1,15 +1,37 @@
 import { FlatList, View } from 'react-native';
 import TagComponent from './TagComponent';
 import { TNotificationTopic, TTopic } from '../types';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 type Props = {
 	data: TNotificationTopic[] | TTopic[];
 	containerProps?: View['props'];
+	selectable?: boolean;
+	setSelected?: React.Dispatch<React.SetStateAction<TTopic | null>>;
 };
 
 const SPACE_BETWEEN = 16;
-const TagRow = ({ data, containerProps }: Props) => {
+const TagRow = ({
+	data,
+	containerProps,
+	selectable = false,
+	setSelected,
+}: Props) => {
+	const flatListRef = useRef<FlatList>(null);
+	const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
+
+	useEffect(() => {
+		if (selectable) {
+			setSelectedTopic(0);
+		}
+	}, [data, selectable]);
+
+	useEffect(() => {
+		if (selectable && setSelected) {
+			setSelected(data[selectedTopic ?? 0] as TTopic);
+		}
+	}, [selectedTopic]);
+
 	const hasNotification = useMemo(() => {
 		if ((data[0] as TNotificationTopic)?.notification === undefined)
 			return false;
@@ -21,6 +43,7 @@ const TagRow = ({ data, containerProps }: Props) => {
 	return (
 		<View className='w-full' {...containerProps}>
 			<FlatList
+				ref={flatListRef}
 				horizontal
 				data={data}
 				showsHorizontalScrollIndicator={false}
@@ -29,6 +52,7 @@ const TagRow = ({ data, containerProps }: Props) => {
 					paddingHorizontal: 16,
 					paddingTop: hasNotification ? 6 : 0,
 				}}
+				snapToAlignment='center'
 				renderItem={({ item, index }) => (
 					<TagComponent
 						data={item}
@@ -38,7 +62,22 @@ const TagRow = ({ data, containerProps }: Props) => {
 									index === data.length - 1
 										? 0
 										: SPACE_BETWEEN,
+								opacity: !selectable
+									? 1
+									: index === selectedTopic
+										? 1
+										: 0.4,
 							},
+						}}
+						onPress={() => {
+							if (selectable) {
+								flatListRef.current?.scrollToIndex({
+									index,
+									animated: true,
+									viewPosition: 0.5,
+								});
+								setSelectedTopic(index);
+							}
 						}}
 					/>
 				)}

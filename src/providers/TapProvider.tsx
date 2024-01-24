@@ -30,45 +30,41 @@ export const TapProvider = ({ children }: Props) => {
 	const [taps, setTaps] = useState<TTap[]>([]);
 	const [userTaps, setUserTaps] = useState<TContinueWatchingTap[]>([]);
 	const [discoverTaps, setDiscoverTaps] = useState<TTap[]>([]);
+	const [userTapsDone, setUserTapsDone] = useState<boolean>(false);
+	const [discoverTapsDone, setDiscoverTapsDone] = useState<boolean>(false);
+	const [allTapsDone, setAllTapsDone] = useState<boolean>(false);
 
 	// User Taps
-	const userTapsDone = useRef<boolean>(false);
 	const getUserTaps = (user: TUser) => {
 		if (!user?.uid) return [];
 		getTapsWithProgressForUser(user).then((taps) => {
 			setUserTaps(taps ?? []);
-			userTapsDone.current = true;
+			setUserTapsDone(true);
 		});
 	};
 
 	// Discover Taps
-	const discoverTapsDone = useRef<boolean>(false);
 	const getDiscoverTaps = (user: TUser) => {
 		if (!user?.uid) return [];
 		getUserDiscoverTaps(user).then((taps) => {
 			setDiscoverTaps(taps ?? []);
-			discoverTapsDone.current = true;
+			setDiscoverTapsDone(true);
 		});
 	};
 
 	// All Taps
-	const allTapsDone = useRef<boolean>(false);
 	useEffect(() => {
 		const getAll = () => {
 			getAllTaps().then((taps) => {
-				allTapsDone.current = true;
 				setTaps(taps ?? []);
+				setAllTapsDone(true);
 			});
 		};
 		getAll();
 	}, []);
 
 	const loadingInitial = useMemo(() => {
-		return (
-			userTapsDone.current &&
-			discoverTapsDone.current &&
-			allTapsDone.current
-		);
+		return !(userTapsDone && discoverTapsDone && allTapsDone);
 	}, [userTapsDone, discoverTapsDone, allTapsDone]);
 
 	const tapProvProps = React.useMemo(
