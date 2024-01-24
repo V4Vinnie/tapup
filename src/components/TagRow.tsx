@@ -1,13 +1,13 @@
 import { FlatList, View } from 'react-native';
 import TagComponent from './TagComponent';
-import { TNotificationTopic, TTopic } from '../types';
+import { TNotificationTopic, TTap, TTopic } from '../types';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 type Props = {
-	data: TNotificationTopic[] | TTopic[];
+	data: TNotificationTopic[] | TTopic[] | TTap[];
 	containerProps?: View['props'];
 	selectable?: boolean;
-	setSelected?: React.Dispatch<React.SetStateAction<TTopic | null>>;
+	setSelected?: React.Dispatch<React.SetStateAction<any>>;
 };
 
 const SPACE_BETWEEN = 16;
@@ -28,7 +28,7 @@ const TagRow = ({
 
 	useEffect(() => {
 		if (selectable && setSelected) {
-			setSelected(data[selectedTopic ?? 0] as TTopic);
+			setSelected(data[selectedTopic ?? 0]);
 		}
 	}, [selectedTopic]);
 

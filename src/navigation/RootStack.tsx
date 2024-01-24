@@ -13,6 +13,7 @@ import SeeMoreTapsScreen from '../screens/SeeMoreScreens/SeeMoreTapsScreen';
 import SeeMoreProfilesScreen from '../screens/SeeMoreScreens/SeeMoreProfilesScreen';
 import SeeMoreTopicsScreen from '../screens/SeeMoreScreens/SeeMoreTopicsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import TapScreen from '../screens/TapScreen';
 
 type Props = {};
 
@@ -70,6 +71,7 @@ const HomeStack = () => {
 				name={Routes.PROFILE_SCREEN}
 				component={ProfileScreen}
 			/>
+			<Stack.Screen name={Routes.TAP_SCREEN} component={TapScreen} />
 		</Stack.Navigator>
 	);
 };

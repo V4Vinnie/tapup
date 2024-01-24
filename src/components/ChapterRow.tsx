@@ -31,7 +31,7 @@ const ChapterRow = ({ chapters, containerProps }: Props) => {
 		};
 		if (isFocused) getProgress(user);
 		onUser(user.uid, getProgress);
-	}, [isFocused, user]);
+	}, [isFocused, user, chapters]);
 
 	return !loaded ? (
 		<LoadingIndicator /> // TODO: Add Skeleton Loading
