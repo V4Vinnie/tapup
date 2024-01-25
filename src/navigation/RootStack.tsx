@@ -14,6 +14,7 @@ import SeeMoreProfilesScreen from '../screens/SeeMoreScreens/SeeMoreProfilesScre
 import SeeMoreTopicsScreen from '../screens/SeeMoreScreens/SeeMoreTopicsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import TapScreen from '../screens/TapScreen';
+import { mode, themeColors } from '../utils/constants';
 
 type Props = {};
 
@@ -25,6 +26,9 @@ const RootStack = (props: Props) => {
 
 	return user ? (
 		<Tab.Navigator
+			sceneContainerStyle={{
+				backgroundColor: themeColors[mode].primaryBackground,
+			}}
 			screenOptions={{
 				headerShown: false,
 			}}

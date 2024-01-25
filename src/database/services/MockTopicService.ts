@@ -11,7 +11,7 @@ export const getTopics = async () => {
 
 export const getTopicsForUser = async (user: TUser) => {
 	try {
-		const _topics =
+		const topics =
 			(user.topicSubscriptionIds?.map((topicId) => {
 				const topic = MOCK_TOPICS.find((topic) => topic.id === topicId);
 				if (!topic) return null;
@@ -22,11 +22,7 @@ export const getTopicsForUser = async (user: TUser) => {
 			}) as TNotificationTopic[]) ?? [];
 
 		// wait for 1 second to simulate network latency
-		return new Promise<TNotificationTopic[]>((resolve) => {
-			setTimeout(() => {
-				resolve(_topics);
-			}, 1000);
-		});
+		return topics;
 	} catch (error) {
 		console.log('getTopicsForUser in MockTopicService ', error);
 	}
@@ -45,11 +41,7 @@ export const getTopicsFromProfile = async (profile: TProfile) => {
 				if (topic) topics.add(topic);
 			}
 		});
-		return new Promise<TTopic[]>((resolve) => {
-			setTimeout(() => {
-				resolve(Array.from(topics));
-			}, 1000);
-		});
+		return Array.from(topics);
 	} catch (error) {
 		console.log('getTopicsFromProfile in MockTopicService ', error);
 	}

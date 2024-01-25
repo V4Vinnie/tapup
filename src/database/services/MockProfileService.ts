@@ -20,11 +20,7 @@ export const getFollowingProfiles = async (
 				notification: Math.floor(Math.random() * 100),
 			};
 		}) as TNotificationProfile[]) || [];
-	return new Promise<TNotificationProfile[] | undefined>((resolve) => {
-		setTimeout(() => {
-			resolve(profiles);
-		}, 1000);
-	});
+	return profiles;
 };
 
 export const getCompanyName = (companyId: string) => {
