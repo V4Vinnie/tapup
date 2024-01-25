@@ -1,26 +1,29 @@
 import { View, Text, Image } from 'react-native';
 import React, { useEffect, useMemo } from 'react';
 import { TTap } from '../types';
-import AntIcon from 'react-native-vector-icons/AntDesign';
-import { themeColors } from '../utils/constants';
+import { mode, themeColors } from '../utils/constants';
 import { getCompanyName } from '../database/services/MockProfileService';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Logo from '../../assets/images/Logo';
 import { getViewsForTap } from '../database/services/MockTapService';
+import { Skeleton } from '@rneui/themed';
 
 type Props = {
-	tap: TTap;
+	tap?: TTap;
 	isNew?: boolean;
 	containerProps?: View['props'];
+	loading?: boolean;
 };
 
-const FullInfoTap = ({ tap, containerProps, isNew }: Props) => {
+const FullInfoTap = ({ tap, containerProps, isNew, loading }: Props) => {
 	const [views, setViews] = React.useState<string>('0');
 	const companyName = useMemo(() => {
+		if (!tap) return '';
 		return getCompanyName(tap.creatorId);
 	}, [tap]);
 
 	const timeAgo = useMemo(() => {
+		if (!tap) return '';
 		const dateInSeconds = Math.floor(
 			(new Date().valueOf() -
 				new Date(tap.createdAt.toDate()).valueOf()) /
@@ -37,6 +40,7 @@ const FullInfoTap = ({ tap, containerProps, isNew }: Props) => {
 	}, [tap]);
 
 	useEffect(() => {
+		if (!tap) return;
 		getViewsForTap(tap.id).then((views) => {
 			if (!views) return;
 			const viewsString = views.toString();
@@ -48,7 +52,9 @@ const FullInfoTap = ({ tap, containerProps, isNew }: Props) => {
 		});
 	}, [tap]);
 
-	return (
+	return loading || !tap ? (
+		<FullInfoTapSkeleton />
+	) : (
 		<View className='w-full flex flex-row' {...containerProps}>
 			{isNew && (
 				<Text className='absolute right-0 top-0 px-2 py-[2px] bg-primaryColor-100 rounded-sm text-white text-xs font-inter-medium'>
@@ -93,6 +99,101 @@ const FullInfoTap = ({ tap, containerProps, isNew }: Props) => {
 						{timeAgo}
 					</Text>
 				</View>
+			</View>
+		</View>
+	);
+};
+
+const FullInfoTapSkeleton = () => {
+	return (
+		<View className='w-full flex flex-row mb-4'>
+			<Skeleton
+				animation='wave'
+				width={80}
+				height={112}
+				style={{
+					borderRadius: 8,
+					marginRight: 8,
+					backgroundColor: themeColors[mode].secondaryBackground,
+				}}
+				skeletonStyle={{
+					backgroundColor: themeColors[mode].subTextColor,
+					opacity: 0.05,
+				}}
+			/>
+			<View className='flex justify-between shrink'>
+				<View className='flex flex-col'>
+					<Skeleton
+						animation='wave'
+						width={250}
+						height={16}
+						style={{
+							backgroundColor:
+								themeColors[mode].secondaryBackground,
+						}}
+						skeletonStyle={{
+							backgroundColor: themeColors[mode].subTextColor,
+							opacity: 0.05,
+						}}
+					/>
+					<Skeleton
+						animation='wave'
+						width={100}
+						height={12}
+						style={{
+							backgroundColor:
+								themeColors[mode].secondaryBackground,
+							marginTop: 4,
+						}}
+						skeletonStyle={{
+							backgroundColor: themeColors[mode].subTextColor,
+							opacity: 0.05,
+						}}
+					/>
+				</View>
+				<View className='flex flex-col space-y-1'>
+					<Skeleton
+						animation='wave'
+						width={250}
+						height={10}
+						style={{
+							backgroundColor:
+								themeColors[mode].secondaryBackground,
+						}}
+						skeletonStyle={{
+							backgroundColor: themeColors[mode].subTextColor,
+							opacity: 0.05,
+							marginTop: 4,
+						}}
+					/>
+					<Skeleton
+						animation='wave'
+						width={220}
+						height={10}
+						style={{
+							backgroundColor:
+								themeColors[mode].secondaryBackground,
+						}}
+						skeletonStyle={{
+							backgroundColor: themeColors[mode].subTextColor,
+							opacity: 0.05,
+							marginTop: 2,
+						}}
+					/>
+				</View>
+				<Skeleton
+					animation='wave'
+					width={250}
+					height={12}
+					style={{
+						backgroundColor: themeColors[mode].secondaryBackground,
+					}}
+					skeletonStyle={{
+						backgroundColor: themeColors[mode].subTextColor,
+						opacity: 0.05,
+						marginTop: 6,
+					}}
+				/>
 			</View>
 		</View>
 	);
