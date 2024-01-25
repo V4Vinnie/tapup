@@ -1,14 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
 import { useAuth } from '../../providers/AuthProvider';
 import { onUser } from '../../database/services/UserService';
 import SectionHeader from '../../components/SectionHeader';
-import LoadingIndicator from '../../components/LoadingIndicator';
 import { useProfiles } from '../../providers/ProfileProvider';
-import ProfileRow from '../../components/ProfileRow';
 import { TNotificationProfile } from '../../types';
+import { Image } from 'react-native';
+import ProfileRow from '../../components/ProfileRow';
 
 const Following = () => {
 	const { navigate } =
@@ -32,7 +32,7 @@ const Following = () => {
 		setFollowing(userProfiles);
 	}, [userProfiles]);
 
-	if (following.length === 0)
+	if (!loadingInitial && following.length === 0)
 		return (
 			<>
 				<SectionHeader
@@ -58,12 +58,8 @@ const Following = () => {
 					})
 				}
 			/>
-			{loadingInitial ? (
-				<LoadingIndicator /> // TODO: Add Skeleton Loading
-			) : (
-				// TODO: Fix onPress
-				<ProfileRow profiles={following} />
-			)}
+			{/* TODO: Fix onPress */}
+			<ProfileRow profiles={following} loading={loadingInitial} />
 		</>
 	);
 };

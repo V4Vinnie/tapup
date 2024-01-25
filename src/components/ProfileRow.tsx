@@ -1,19 +1,38 @@
-import { FlatList, View } from 'react-native';
+import { FlatList, Image, View } from 'react-native';
 import { TNotificationProfile } from '../types';
-import { useMemo } from 'react';
-import ProfileComponent from './ProfileComponent';
+import { useEffect, useMemo, useState } from 'react';
+import ProfileComponent, { ProfileComponentSkeleton } from './ProfileComponent';
 
 type Props = {
-	profiles: TNotificationProfile[];
+	profiles?: TNotificationProfile[];
 	containerProps?: View['props'];
+	loading?: boolean;
 };
 
 const SPACE_BETWEEN = 16;
-const ProfileRow = ({ profiles, containerProps }: Props) => {
+const ProfileRow = ({ profiles, containerProps, loading }: Props) => {
+	const [imagesLoading, setImagesLoading] = useState<boolean>(true);
+
 	const hasNotification = useMemo(() => {
+		if (!profiles) return false;
 		return profiles.some((profile) => profile.notification);
 	}, [profiles]);
-	return (
+
+	useEffect(() => {
+		if (!profiles) return;
+		const imageUrls = profiles
+			.filter((profile) => profile.profilePic !== '')
+			.map((profiles) => Image.prefetch(profiles.profilePic));
+		Promise.all(imageUrls).then(() => setImagesLoading(false));
+	}, [profiles]);
+
+	const dataLoading = useMemo(() => {
+		return imagesLoading || loading;
+	}, [imagesLoading, loading]);
+
+	return dataLoading || !profiles ? (
+		<ProfileRowSkeleton />
+	) : (
 		<View className='w-full' {...containerProps}>
 			<FlatList
 				horizontal
@@ -36,6 +55,25 @@ const ProfileRow = ({ profiles, containerProps }: Props) => {
 							},
 						}}
 					/>
+				)}
+			/>
+		</View>
+	);
+};
+
+const ProfileRowSkeleton = () => {
+	return (
+		<View className='w-full px-4'>
+			<FlatList
+				horizontal
+				data={[1, 2, 3, 4, 5]}
+				showsHorizontalScrollIndicator={false}
+				keyExtractor={(item) => item.toString()}
+				contentContainerStyle={{
+					columnGap: SPACE_BETWEEN,
+				}}
+				renderItem={({ item, index }) => (
+					<ProfileComponentSkeleton width={85} />
 				)}
 			/>
 		</View>
