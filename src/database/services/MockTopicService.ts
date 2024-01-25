@@ -21,8 +21,11 @@ export const getTopicsForUser = async (user: TUser) => {
 				};
 			}) as TNotificationTopic[]) ?? [];
 
-		// wait for 1 second to simulate network latency
-		return topics;
+		return new Promise<TNotificationTopic[]>((resolve) => {
+			setTimeout(() => {
+				resolve(topics);
+			}, 10000);
+		});
 	} catch (error) {
 		console.log('getTopicsForUser in MockTopicService ', error);
 	}
@@ -41,7 +44,11 @@ export const getTopicsFromProfile = async (profile: TProfile) => {
 				if (topic) topics.add(topic);
 			}
 		});
-		return Array.from(topics);
+		return new Promise<TTopic[]>((resolve) => {
+			setTimeout(() => {
+				resolve(Array.from(topics));
+			}, 10000);
+		});
 	} catch (error) {
 		console.log('getTopicsFromProfile in MockTopicService ', error);
 	}

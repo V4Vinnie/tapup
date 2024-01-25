@@ -1,5 +1,5 @@
 import { FlatList, View } from 'react-native';
-import TagComponent from './TagComponent';
+import TagComponent, { TagComponentSkeleton } from './TagComponent';
 import { TNotificationTopic, TTap, TTopic } from '../types';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
@@ -8,6 +8,7 @@ type Props = {
 	containerProps?: View['props'];
 	selectable?: boolean;
 	setSelected?: React.Dispatch<React.SetStateAction<any>>;
+	loading?: boolean;
 };
 
 const SPACE_BETWEEN = 16;
@@ -81,6 +82,24 @@ const TagRow = ({
 						}}
 					/>
 				)}
+			/>
+		</View>
+	);
+};
+
+export const TagRowSkeleton = () => {
+	return (
+		<View className='w-full'>
+			<FlatList
+				horizontal
+				data={[1, 2, 3, 4, 5]}
+				showsHorizontalScrollIndicator={false}
+				keyExtractor={(item) => item.toString()}
+				contentContainerStyle={{
+					paddingHorizontal: 16,
+					columnGap: SPACE_BETWEEN,
+				}}
+				renderItem={({ item, index }) => <TagComponentSkeleton />}
 			/>
 		</View>
 	);
