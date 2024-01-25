@@ -95,7 +95,9 @@ export const getTapsWithProgressForUser = async (user: TUser) => {
 			return acc;
 		}, [] as TContinueWatchingTap[]);
 
-		return tapsWithProgress;
+		return new Promise<TContinueWatchingTap[]>((resolve) =>
+			setTimeout(() => resolve(tapsWithProgress), 10000)
+		);
 	} catch (error) {
 		console.log('getTapsWithProgressForUser in MockTapService ', error);
 	}
@@ -123,7 +125,9 @@ export const getTapsPerTopicFromProfile = async (profile: TProfile) => {
 			}
 		});
 
-		return tapsPerTopic;
+		return new Promise<Record<string, TTap[]>>((resolve) =>
+			setTimeout(() => resolve(tapsPerTopic), 10000)
+		);
 	} catch (error) {
 		console.log(
 			'getTapsPerTopicFromProfileAndTopic in MockTapService ',
@@ -146,7 +150,9 @@ export const getProgessForChapters = async (
 		const progress = (chapterFrames.length / chapter.frames.length) * 100;
 		result.set(chapter.id, progress);
 	});
-	return result;
+	return new Promise<Map<string, number>>((resolve) =>
+		setTimeout(() => resolve(result), 10000)
+	);
 };
 
 export const MOCK_FRAMES: TFrame[] = [
