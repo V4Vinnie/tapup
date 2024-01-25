@@ -20,7 +20,7 @@ const PreviewComponent: React.FC<Props> = ({
 	video,
 	text,
 	showProgress = true,
-	progress = 0,
+	progress,
 	containerProps,
 	loading,
 }: Props) => {
@@ -56,12 +56,27 @@ const PreviewComponent: React.FC<Props> = ({
 			</Text>
 			{showProgress && (
 				<View className='absolute bottom-0 w-full h-1 bg-dark-secondaryBackground'>
-					<View
-						className='h-full w-full bg-primaryColor-100'
-						style={{
-							width: `${progress}%`,
-						}}
-					/>
+					{!progress ? (
+						<Skeleton
+							animation='wave'
+							style={{
+								width: `100%`,
+								backgroundColor:
+									themeColors[mode].secondaryBackground,
+							}}
+							skeletonStyle={{
+								backgroundColor: themeColors[mode].subTextColor,
+								opacity: 0.1,
+							}}
+						/>
+					) : (
+						<View
+							className='h-full w-full bg-primaryColor-100'
+							style={{
+								width: `${progress}%`,
+							}}
+						/>
+					)}
 				</View>
 			)}
 		</View>

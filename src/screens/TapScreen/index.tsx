@@ -13,7 +13,6 @@ import AppHeader from '../../components/AppHeader';
 import TagRow from '../../components/TagRow';
 import { useNavigation } from '@react-navigation/native';
 import { TChapter, TTap } from '../../types';
-import { getTapsPerTopicFromProfile } from '../../database/services/MockTapService';
 import ChapterRow from '../../components/ChapterRow';
 import SectionHeader from '../../components/SectionHeader';
 import IonIcon from 'react-native-vector-icons/Ionicons';
@@ -27,26 +26,17 @@ type ProfileScreenProps = NativeStackScreenProps<
 >;
 
 const TapScreen = ({ route }: ProfileScreenProps) => {
-	const { tap, topic, profile } = route.params;
+	const { initialTap, selectedTopic, taps, profile } = route.params;
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-	const [taps, setTaps] = useState<TTap[]>([]);
 	const [selectedTap, setSelectedTap] = useState<TTap | null>(null);
 	const [listView, setListView] = useState(false);
 
-	useEffect(() => {
-		const getTaps = async () => {
-			const _taps = await getTapsPerTopicFromProfile(profile);
-			if (_taps) setTaps(_taps[topic.id] ?? []);
-		};
-		getTaps();
-	}, [profile]);
-
 	const sortedChapters = useMemo(() => {
-		return (selectedTap?.chapters ?? tap.chapters).sort(
+		return (selectedTap?.chapters ?? initialTap.chapters).sort(
 			(a, b) => a.creationDate.seconds - b.creationDate.seconds
 		);
-	}, [selectedTap, tap]);
+	}, [selectedTap, initialTap]);
 
 	const toggleListView = () => {
 		setListView(!listView);
@@ -55,7 +45,7 @@ const TapScreen = ({ route }: ProfileScreenProps) => {
 	return (
 		<SafeAreaView className='flex-1 items-center bg-dark-primaryBackground'>
 			<FocusAwareStatusBar translucent barStyle={'light-content'} />
-			<AppHeader headerWithBack title={topic.name} />
+			<AppHeader headerWithBack title={selectedTopic.name} />
 			<ScrollView
 				className='w-full'
 				contentContainerStyle={{
@@ -74,7 +64,7 @@ const TapScreen = ({ route }: ProfileScreenProps) => {
 							}}
 							selectable
 							data={taps.sort((a, b) =>
-								a.id === tap.id ? -1 : 1
+								a.id === initialTap.id ? -1 : 1
 							)}
 							setSelected={setSelectedTap}
 						/>
@@ -112,7 +102,7 @@ const TapScreen = ({ route }: ProfileScreenProps) => {
 								<Text
 									numberOfLines={5}
 									className='font-inter-regular text-xs text-dark-subTextColor mt-3'>
-									{tap.description}
+									{initialTap.description}
 								</Text>
 							</View>
 						</>
