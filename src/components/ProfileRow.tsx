@@ -63,13 +63,14 @@ const ProfileRow = ({ profiles, containerProps, loading }: Props) => {
 
 const ProfileRowSkeleton = () => {
 	return (
-		<View className='w-full px-4'>
+		<View className='w-full'>
 			<FlatList
 				horizontal
 				data={[1, 2, 3, 4, 5]}
 				showsHorizontalScrollIndicator={false}
 				keyExtractor={(item) => item.toString()}
 				contentContainerStyle={{
+					paddingHorizontal: 16,
 					columnGap: SPACE_BETWEEN,
 				}}
 				renderItem={({ item, index }) => (

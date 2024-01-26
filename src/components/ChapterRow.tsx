@@ -11,13 +11,21 @@ type Props = {
 	chapters?: TChapter[];
 	containerProps?: View['props'];
 	loading?: boolean;
+	chapterProgress?: Map<string, number>;
 };
 
 const SPACE_BETWEEN = 10;
-const ChapterRow = ({ chapters, containerProps, loading }: Props) => {
+const ChapterRow = ({
+	chapters,
+	containerProps,
+	loading,
+	chapterProgress,
+}: Props) => {
 	const { user } = useAuth();
 	const isFocused = useIsFocused();
-	const [progress, setProgress] = useState<Map<string, number>>(new Map());
+	const [progress, setProgress] = useState<Map<string, number>>(
+		chapterProgress ?? new Map()
+	);
 	const [imagesLoading, setImagesLoading] = useState<boolean>(true);
 
 	useEffect(() => {

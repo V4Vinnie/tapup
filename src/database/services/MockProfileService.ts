@@ -9,7 +9,7 @@ export const getProfiles = async (): Promise<TNotificationProfile[]> => {
 	return new Promise<TNotificationProfile[]>((resolve) => {
 		setTimeout(() => {
 			resolve(profiles);
-		}, 10000);
+		}, 1000);
 	});
 };
 
@@ -28,7 +28,7 @@ export const getFollowingProfiles = async (
 	return new Promise<TNotificationProfile[]>((resolve) => {
 		setTimeout(() => {
 			resolve(profiles);
-		}, 10000);
+		}, 1000);
 	});
 };
 

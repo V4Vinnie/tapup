@@ -1,10 +1,11 @@
 import { Image, Text, View } from 'react-native';
-import { themeColors } from '../utils/constants';
+import { mode, themeColors } from '../utils/constants';
 import { useAuth } from '../providers/AuthProvider';
 import Video from 'react-native-video';
 import { useEffect, useMemo, useState } from 'react';
 import { TChapter } from '../types';
 import AntIcon from 'react-native-vector-icons/AntDesign';
+import { Skeleton } from '@rneui/themed';
 
 type Props = {
 	episodeNumber: number;
@@ -15,6 +16,7 @@ type Props = {
 	progress?: number;
 	containerProps?: View['props'];
 	fullChapter: TChapter;
+	loading?: boolean;
 };
 
 const ChapterComponent = ({
@@ -117,6 +119,92 @@ const ChapterComponent = ({
 						name='arrowright'
 						size={20}
 						color={themeColors.primaryColor[100]}
+					/>
+				</View>
+			</View>
+		</View>
+	);
+};
+
+export const ChapterComponentSkeleton = () => {
+	return (
+		<View className='w-full flex-row space-x-4'>
+			<View className='w-24 h-16 rounded-lg overflow-hidden'>
+				<Skeleton
+					animation='wave'
+					width={96}
+					height={64}
+					style={{
+						borderRadius: 8,
+						backgroundColor: themeColors[mode].secondaryBackground,
+					}}
+					skeletonStyle={{
+						backgroundColor: themeColors[mode].subTextColor,
+						opacity: 0.05,
+					}}
+				/>
+			</View>
+			<View className='flex grow justify-between'>
+				<View className='flex flex-col space-y-1 grow'>
+					<View className='flex flex-row justify-between'>
+						<Skeleton
+							animation='wave'
+							width={96}
+							height={16}
+							style={{
+								borderRadius: 2,
+								backgroundColor:
+									themeColors[mode].secondaryBackground,
+							}}
+							skeletonStyle={{
+								backgroundColor: themeColors[mode].subTextColor,
+								opacity: 0.05,
+							}}
+						/>
+						<Skeleton
+							animation='wave'
+							width={40}
+							height={16}
+							style={{
+								borderRadius: 2,
+								backgroundColor:
+									themeColors[mode].secondaryBackground,
+							}}
+							skeletonStyle={{
+								backgroundColor: themeColors[mode].subTextColor,
+								opacity: 0.05,
+							}}
+						/>
+					</View>
+					<Skeleton
+						animation='wave'
+						width={40}
+						height={10}
+						style={{
+							borderRadius: 2,
+							backgroundColor:
+								themeColors[mode].secondaryBackground,
+						}}
+						skeletonStyle={{
+							backgroundColor: themeColors[mode].subTextColor,
+							opacity: 0.05,
+						}}
+					/>
+				</View>
+				<View className='flex self-end mb-3'>
+					<Skeleton
+						animation='wave'
+						width={24}
+						height={20}
+						style={{
+							borderRadius: 2,
+							backgroundColor:
+								themeColors[mode].secondaryBackground,
+						}}
+						skeletonStyle={{
+							backgroundColor: themeColors[mode].subTextColor,
+							opacity: 0.05,
+						}}
 					/>
 				</View>
 			</View>

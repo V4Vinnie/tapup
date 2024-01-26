@@ -11,14 +11,17 @@ import { RootStackParamList } from '../../navigation/Routes';
 import { useTaps } from '../../providers/TapProvider';
 import AppHeader from '../../components/AppHeader';
 import TagRow from '../../components/TagRow';
-import { useNavigation } from '@react-navigation/native';
-import { TChapter, TTap } from '../../types';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { TChapter, TTap, TUser } from '../../types';
 import ChapterRow from '../../components/ChapterRow';
 import SectionHeader from '../../components/SectionHeader';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { mode, themeColors } from '../../utils/constants';
 import ChapterList from '../../components/ChapterList';
+import { useAuth } from '../../providers/AuthProvider';
+import { getProgessForChapters } from '../../database/services/MockTapService';
+import { onUser } from '../../database/services/UserService';
 
 type ProfileScreenProps = NativeStackScreenProps<
 	RootStackParamList,
@@ -26,17 +29,33 @@ type ProfileScreenProps = NativeStackScreenProps<
 >;
 
 const TapScreen = ({ route }: ProfileScreenProps) => {
+	const { user } = useAuth();
 	const { initialTap, selectedTopic, taps, profile } = route.params;
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+	const isFocused = useIsFocused();
 	const [selectedTap, setSelectedTap] = useState<TTap | null>(null);
+	const [progress, setProgress] = useState<Map<string, number>>(new Map());
 	const [listView, setListView] = useState(false);
+	const [loading, setLoading] = useState(true);
 
 	const sortedChapters = useMemo(() => {
 		return (selectedTap?.chapters ?? initialTap.chapters).sort(
 			(a, b) => a.creationDate.seconds - b.creationDate.seconds
 		);
 	}, [selectedTap, initialTap]);
+
+	useEffect(() => {
+		if (!user?.uid || !sortedChapters) return;
+		const getProgress = (user: TUser) => {
+			getProgessForChapters(user, sortedChapters).then((progress) => {
+				if (progress) setProgress(progress);
+				setLoading(false);
+			});
+		};
+		if (isFocused) getProgress(user);
+		onUser(user.uid, getProgress);
+	}, [isFocused, user, sortedChapters]);
 
 	const toggleListView = () => {
 		setListView(!listView);
@@ -89,10 +108,18 @@ const TapScreen = ({ route }: ProfileScreenProps) => {
 						}
 					/>
 					{listView ? (
-						<ChapterList chapters={sortedChapters} />
+						<ChapterList
+							chapterProgress={progress}
+							chapters={sortedChapters}
+							loading={loading}
+						/>
 					) : (
 						<>
-							<ChapterRow chapters={sortedChapters} />
+							<ChapterRow
+								chapterProgress={progress}
+								chapters={sortedChapters}
+								loading={loading}
+							/>
 							<View className='w-full px-4 mt-10 mb-8'>
 								<Text
 									numberOfLines={1}

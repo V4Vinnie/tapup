@@ -24,7 +24,7 @@ export const getTopicsForUser = async (user: TUser) => {
 		return new Promise<TNotificationTopic[]>((resolve) => {
 			setTimeout(() => {
 				resolve(topics);
-			}, 10000);
+			}, 1000);
 		});
 	} catch (error) {
 		console.log('getTopicsForUser in MockTopicService ', error);
@@ -47,7 +47,7 @@ export const getTopicsFromProfile = async (profile: TProfile) => {
 		return new Promise<TTopic[]>((resolve) => {
 			setTimeout(() => {
 				resolve(Array.from(topics));
-			}, 10000);
+			}, 1000);
 		});
 	} catch (error) {
 		console.log('getTopicsFromProfile in MockTopicService ', error);
