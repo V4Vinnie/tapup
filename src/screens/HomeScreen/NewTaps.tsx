@@ -45,12 +45,13 @@ const NewTaps = () => {
 		<>
 			<SectionHeader
 				title='New Taps'
-				onPress={() =>
+				onPress={() => {
+					if (loadingInitial) return;
 					navigate(Routes.SEE_MORE_TAPS, {
 						title: 'New Taps',
 						taps: newTaps,
-					})
-				}
+					});
+				}}
 			/>
 			{dataLoading ? (
 				<NewTapsSkeleton />

@@ -37,12 +37,13 @@ const Following = () => {
 			<>
 				<SectionHeader
 					title='Discover Profiles'
-					onPress={() =>
+					onPress={() => {
+						if (loadingInitial) return;
 						navigate(Routes.SEE_MORE_PROFILES, {
 							title: 'Discover Profiles',
 							profiles,
-						})
-					}
+						});
+					}}
 				/>
 				<ProfileRow profiles={profiles} />
 			</>

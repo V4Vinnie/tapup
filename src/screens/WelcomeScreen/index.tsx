@@ -13,10 +13,9 @@ type Props = {};
 const WelcomeScreen = (props: Props) => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-	const StyledView = styled(View);
 
 	return (
-		<StyledView className='flex-1 flex justify-end py-8 items-center bg-dark-primaryBackground'>
+		<View className='flex-1 flex justify-end py-8 items-center bg-dark-primaryBackground'>
 			<FocusAwareStatusBar
 				translucent
 				backgroundColor={'transparent'}
@@ -41,7 +40,7 @@ const WelcomeScreen = (props: Props) => {
 					onPress={() => navigate(Routes.LOGIN)}
 				/>
 			</View>
-		</StyledView>
+		</View>
 	);
 };
 

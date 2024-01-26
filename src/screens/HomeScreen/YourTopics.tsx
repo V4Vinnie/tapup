@@ -26,12 +26,13 @@ const YourTopics = () => {
 			<>
 				<SectionHeader
 					title='Discover Topics'
-					onPress={() =>
+					onPress={() => {
+						if (loadingInitial) return;
 						navigate(Routes.SEE_MORE_TOPICS, {
 							title: 'Discover Topics',
 							topics,
-						})
-					}
+						});
+					}}
 				/>
 				<TagRow data={topics} />
 			</>

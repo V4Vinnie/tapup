@@ -39,12 +39,13 @@ const ContinueWatching = () => {
 		<>
 			<SectionHeader
 				title='Continue watching'
-				onPress={() =>
+				onPress={() => {
+					if (loadingInitial) return;
 					navigate(Routes.SEE_MORE_TAPS, {
 						title: 'Continue watching',
 						taps: continueWatching,
-					})
-				}
+					});
+				}}
 			/>
 			<TapRow tapData={continueWatching} loading={loadingInitial} />
 		</>
