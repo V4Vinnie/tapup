@@ -39,8 +39,9 @@ export type RootStackParamList = {
 		profile: TProfile;
 	};
 	TapScreen: {
-		tap: TTap;
-		topic: TTopic;
+		selectedTopic: TTopic;
+		initialTap: TTap;
+		taps: TTap[];
 		profile: TProfile;
 	};
 };

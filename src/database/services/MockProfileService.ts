@@ -2,10 +2,15 @@ import { TNotificationProfile, TProfile, TUser } from '../../types';
 import { MOCK_FRAMES } from './MockTapService';
 
 export const getProfiles = async (): Promise<TNotificationProfile[]> => {
-	return MOCK_USERS.map((user) => ({
+	const profiles = MOCK_USERS.map((user) => ({
 		...user,
 		notification: Math.floor(Math.random() * 100),
 	}));
+	return new Promise<TNotificationProfile[]>((resolve) => {
+		setTimeout(() => {
+			resolve(profiles);
+		}, 1000);
+	});
 };
 
 export const getFollowingProfiles = async (
@@ -20,7 +25,7 @@ export const getFollowingProfiles = async (
 				notification: Math.floor(Math.random() * 100),
 			};
 		}) as TNotificationProfile[]) || [];
-	return new Promise<TNotificationProfile[] | undefined>((resolve) => {
+	return new Promise<TNotificationProfile[]>((resolve) => {
 		setTimeout(() => {
 			resolve(profiles);
 		}, 1000);

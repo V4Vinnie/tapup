@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import { mode, themeColors } from '../utils/constants';
+import { Skeleton } from '@rneui/themed';
 
 type Props = {
 	title: string;
@@ -28,6 +29,27 @@ const SectionHeader = ({ title, onPress, icon }: Props) => {
 				)}
 			</View>
 		</TouchableOpacity>
+	);
+};
+
+export const SectionHeaderSkeleton = () => {
+	return (
+		<View className='w-full px-4'>
+			<View className='w-full flex-row items-center justify-between pt-5 pb-3 mt-4'>
+				<Skeleton
+					width={200}
+					height={24}
+					animation='wave'
+					style={{
+						backgroundColor: themeColors[mode].secondaryBackground,
+					}}
+					skeletonStyle={{
+						backgroundColor: themeColors[mode].subTextColor,
+						opacity: 0.05,
+					}}
+				/>
+			</View>
+		</View>
 	);
 };
 

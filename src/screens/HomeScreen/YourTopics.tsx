@@ -4,11 +4,9 @@ import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
 import { useAuth } from '../../providers/AuthProvider';
-import { TNotificationTopic, TTopic, TUser } from '../../types';
 import { onUser } from '../../database/services/UserService';
-import LoadingIndicator from '../../components/LoadingIndicator';
 import SectionHeader from '../../components/SectionHeader';
-import TagRow from '../../components/TagRow';
+import TagRow, { TagRowSkeleton } from '../../components/TagRow';
 
 const YourTopics = () => {
 	const { navigate } =
@@ -23,17 +21,18 @@ const YourTopics = () => {
 		onUser(user.uid, getUserTopics);
 	}, [isFocused, user]);
 
-	if (userTopics.length === 0)
+	if (!loadingInitial && userTopics.length === 0)
 		return (
 			<>
 				<SectionHeader
 					title='Discover Topics'
-					onPress={() =>
+					onPress={() => {
+						if (loadingInitial) return;
 						navigate(Routes.SEE_MORE_TOPICS, {
 							title: 'Discover Topics',
 							topics,
-						})
-					}
+						});
+					}}
 				/>
 				<TagRow data={topics} />
 			</>
@@ -50,7 +49,7 @@ const YourTopics = () => {
 				}
 			/>
 			{loadingInitial ? (
-				<LoadingIndicator /> // TODO: Add Skeleton Loading
+				<TagRowSkeleton />
 			) : (
 				// TODO: Fix onPress
 				<TagRow data={userTopics} />

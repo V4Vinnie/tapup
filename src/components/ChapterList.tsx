@@ -1,4 +1,4 @@
-import { FlatList, View } from 'react-native';
+import { FlatList, Image, View } from 'react-native';
 import { TChapter, TUser } from '../types';
 import PreviewComponent from './PreviewComponent';
 import { useAuth } from '../providers/AuthProvider';
@@ -8,19 +8,40 @@ import { useTaps } from '../providers/TapProvider';
 import { useIsFocused } from '@react-navigation/native';
 import { getProgessForChapters } from '../database/services/MockTapService';
 import LoadingIndicator from './LoadingIndicator';
-import ChapterComponent from './ChapterComponent';
+import ChapterComponent, { ChapterComponentSkeleton } from './ChapterComponent';
 
 type Props = {
 	chapters: TChapter[];
 	containerProps?: View['props'];
+	loading?: boolean;
+	chapterProgress?: Map<string, number>;
 };
 
 const SPACE_BETWEEN = 10;
-const ChapterList = ({ chapters, containerProps }: Props) => {
+const ChapterList = ({
+	chapters,
+	containerProps,
+	loading,
+	chapterProgress,
+}: Props) => {
 	const { user } = useAuth();
 	const isFocused = useIsFocused();
-	const [progress, setProgress] = useState<Map<string, number>>(new Map());
+	const [progress, setProgress] = useState<Map<string, number>>(
+		chapterProgress ?? new Map()
+	);
 	const [loaded, setLoaded] = useState(false);
+	const [imagesLoading, setImagesLoading] = useState<boolean>(true);
+
+	useEffect(() => {
+		const imageUrls = chapters.map((chapter) =>
+			Image.prefetch(chapter.frames[0].media)
+		);
+		Promise.all(imageUrls).then(() => setImagesLoading(false));
+	}, [chapters]);
+
+	const dataLoading = useMemo(() => {
+		return imagesLoading || !loaded || loading;
+	}, [imagesLoading, loaded, loading]);
 
 	useEffect(() => {
 		if (!user?.uid) return;
@@ -34,8 +55,8 @@ const ChapterList = ({ chapters, containerProps }: Props) => {
 		onUser(user.uid, getProgress);
 	}, [isFocused, user, chapters]);
 
-	return !loaded ? (
-		<LoadingIndicator /> // TODO: Add Skeleton Loading
+	return dataLoading ? (
+		<ChapterRowSkeleton />
 	) : (
 		<View className='w-full px-4' {...containerProps}>
 			{chapters.map((chapter, index) => {
@@ -66,6 +87,27 @@ const ChapterList = ({ chapters, containerProps }: Props) => {
 							},
 						}}
 					/>
+				);
+			})}
+		</View>
+	);
+};
+
+const ChapterRowSkeleton = () => {
+	return (
+		<View className='w-full px-4'>
+			{[1, 2].map((chapter, index) => {
+				if (!chapter) return null;
+
+				return (
+					<View
+						key={chapter}
+						className='pr-4'
+						style={{
+							marginBottom: index === 4 ? 0 : SPACE_BETWEEN,
+						}}>
+						<ChapterComponentSkeleton />
+					</View>
 				);
 			})}
 		</View>

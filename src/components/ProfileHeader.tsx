@@ -2,12 +2,30 @@ import { View, Text } from 'react-native';
 import React from 'react';
 import { TProfile } from '../types';
 import ProfileComponent from './ProfileComponent';
+import { Skeleton } from '@rneui/themed';
+import { mode, themeColors } from '../utils/constants';
 
 type Props = {
 	profile: TProfile;
 };
 
 const ProfileHeader = ({ profile }: Props) => {
+	const [loading, setLoading] = React.useState<boolean>(true);
+	const [followerAmount, setFollowerAmount] = React.useState<string>('');
+	const [followingAmount, setFollowingAmount] = React.useState<string>('');
+	const [likesAmount, setLikesAmount] = React.useState<string>('');
+
+	// TODO: Fetch data
+	React.useEffect(() => {
+		setLoading(true);
+		setTimeout(() => {
+			setFollowerAmount('400');
+			setFollowingAmount('100');
+			setLikesAmount('180K');
+			setLoading(false);
+		}, 1000);
+	}, [profile]);
+
 	return (
 		<View className='flex flex-col items-center w-full space-y-2'>
 			<ProfileComponent profile={profile} showName={false} />
@@ -16,11 +34,47 @@ const ProfileHeader = ({ profile }: Props) => {
 				className='text-dark-textColor text-2xl font-inter-semiBold mt-2'>
 				{profile.name}
 			</Text>
-			<View className='flex flex-row pr-6 mr-px'>
-				<ProfileDetail topText='400' bottomText='Followers' />
-				<ProfileDetail topText='100' bottomText='Following' />
-				<ProfileDetail topText='180K' bottomText='Likes' last />
-			</View>
+			<ProfileDetails
+				followerAmount={followerAmount}
+				followingAmount={followingAmount}
+				likesAmount={likesAmount}
+				loading={loading}
+			/>
+		</View>
+	);
+};
+
+type ProfileDetailsProps = {
+	followerAmount: string;
+	followingAmount: string;
+	likesAmount: string;
+	loading?: boolean;
+};
+
+const ProfileDetails = ({
+	followerAmount,
+	followingAmount,
+	likesAmount,
+	loading,
+}: ProfileDetailsProps) => {
+	return (
+		<View className='flex flex-row space-x-6'>
+			<ProfileDetail
+				topText={followerAmount}
+				bottomText='Followers'
+				loading={loading}
+			/>
+			<ProfileDetail
+				topText={followingAmount}
+				bottomText='Following'
+				loading={loading}
+			/>
+			<ProfileDetail
+				topText={likesAmount}
+				bottomText='Likes'
+				loading={loading}
+				last
+			/>
 		</View>
 	);
 };
@@ -29,14 +83,48 @@ type ProfileDetailProps = {
 	topText: string;
 	bottomText: string;
 	last?: boolean;
+	loading?: boolean;
 };
 
 const ProfileDetail = ({
 	topText,
 	bottomText,
 	last = false,
+	loading,
 }: ProfileDetailProps) => {
-	return (
+	return loading ? (
+		<View className='flex flex-row items-center mt-1 -mr-1'>
+			<View className={`flex flex-col items-center px-6`}>
+				<Skeleton
+					width={32}
+					height={16}
+					animation='wave'
+					style={{
+						backgroundColor: themeColors[mode].secondaryBackground,
+					}}
+					skeletonStyle={{
+						backgroundColor: themeColors[mode].subTextColor,
+						opacity: 0.05,
+						marginTop: 10,
+					}}
+				/>
+				<Skeleton
+					width={50}
+					height={10}
+					animation='wave'
+					style={{
+						backgroundColor: themeColors[mode].secondaryBackground,
+						marginTop: 4,
+					}}
+					skeletonStyle={{
+						backgroundColor: themeColors[mode].subTextColor,
+						opacity: 0.05,
+					}}
+				/>
+			</View>
+			{!last && <View className='w-px h-6 bg-dark-textColor/30' />}
+		</View>
+	) : (
 		<View className='flex flex-row items-center'>
 			<View className={`flex flex-col items-center px-6`}>
 				<Text className='text-dark-textColor text-sm font-inter-semiBold'>

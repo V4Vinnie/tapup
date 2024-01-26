@@ -1,40 +1,59 @@
-import { FlatList, View } from 'react-native';
+import { FlatList, Image, View } from 'react-native';
 import { TChapter, TUser } from '../types';
 import PreviewComponent from './PreviewComponent';
 import { useAuth } from '../providers/AuthProvider';
 import { useEffect, useMemo, useState } from 'react';
 import { onUser } from '../database/services/UserService';
-import { useTaps } from '../providers/TapProvider';
 import { useIsFocused } from '@react-navigation/native';
 import { getProgessForChapters } from '../database/services/MockTapService';
-import LoadingIndicator from './LoadingIndicator';
 
 type Props = {
-	chapters: TChapter[];
+	chapters?: TChapter[];
 	containerProps?: View['props'];
+	loading?: boolean;
+	chapterProgress?: Map<string, number>;
 };
 
 const SPACE_BETWEEN = 10;
-const ChapterRow = ({ chapters, containerProps }: Props) => {
+const ChapterRow = ({
+	chapters,
+	containerProps,
+	loading,
+	chapterProgress,
+}: Props) => {
 	const { user } = useAuth();
 	const isFocused = useIsFocused();
-	const [progress, setProgress] = useState<Map<string, number>>(new Map());
-	const [loaded, setLoaded] = useState(false);
+	const [progress, setProgress] = useState<Map<string, number>>(
+		chapterProgress ?? new Map()
+	);
+	const [imagesLoading, setImagesLoading] = useState<boolean>(true);
 
 	useEffect(() => {
 		if (!user?.uid) return;
 		const getProgress = (user: TUser) => {
+			if (!chapters) return;
 			getProgessForChapters(user, chapters).then((progress) => {
 				if (progress) setProgress(progress);
-				setLoaded(true);
 			});
 		};
 		if (isFocused) getProgress(user);
 		onUser(user.uid, getProgress);
 	}, [isFocused, user, chapters]);
 
-	return !loaded ? (
-		<LoadingIndicator /> // TODO: Add Skeleton Loading
+	useEffect(() => {
+		if (!chapters) return;
+		const imageUrls = chapters.map((chapter) =>
+			Image.prefetch(chapter.frames[0].media)
+		);
+		Promise.all(imageUrls).then(() => setImagesLoading(false));
+	}, [chapters]);
+
+	const dataLoading = useMemo(() => {
+		return imagesLoading || loading;
+	}, [imagesLoading, loading]);
+
+	return dataLoading || !chapters ? (
+		<ChapterRowSkeleton />
 	) : (
 		<View className='w-full' {...containerProps}>
 			<FlatList
@@ -71,6 +90,24 @@ const ChapterRow = ({ chapters, containerProps }: Props) => {
 						/>
 					);
 				}}
+			/>
+		</View>
+	);
+};
+
+const ChapterRowSkeleton = () => {
+	return (
+		<View className='w-full'>
+			<FlatList
+				horizontal
+				data={[1, 2, 3, 4, 5]}
+				showsHorizontalScrollIndicator={false}
+				keyExtractor={(item) => item.toString()}
+				contentContainerStyle={{
+					paddingHorizontal: 16,
+					columnGap: SPACE_BETWEEN,
+				}}
+				renderItem={({ item, index }) => <PreviewComponent loading />}
 			/>
 		</View>
 	);

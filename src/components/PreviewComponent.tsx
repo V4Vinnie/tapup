@@ -1,29 +1,32 @@
 import { Image, Text, View } from 'react-native';
-import { themeColors } from '../utils/constants';
+import { mode, themeColors } from '../utils/constants';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../providers/AuthProvider';
 import Video from 'react-native-video';
+import { Skeleton } from '@rneui/themed';
 
 type Props = {
 	thumbnail?: string;
 	video?: string;
-	text: string;
+	text?: string;
 	showProgress?: boolean;
 	progress?: number;
 	containerProps?: View['props'];
+	loading?: boolean;
 };
 
-const PreviewComponent = ({
+const PreviewComponent: React.FC<Props> = ({
 	thumbnail,
 	video,
 	text,
 	showProgress = true,
-	progress = 0,
+	progress,
 	containerProps,
+	loading,
 }: Props) => {
-	const { user } = useAuth();
-
-	return (
+	return loading ? (
+		<PreviewComponentSkeleton />
+	) : (
 		<View
 			className='w-32 h-44 rounded-lg overflow-hidden'
 			{...containerProps}>
@@ -49,19 +52,52 @@ const PreviewComponent = ({
 			<Text
 				numberOfLines={1}
 				className='absolute bottom-0 w-full h-5 mb-2 px-2 flex flex-row justify-between items-center text-white text-left text-xs font-inter-medium'>
-				{text}
+				{text ?? 'Loading...'}
 			</Text>
 			{showProgress && (
 				<View className='absolute bottom-0 w-full h-1 bg-dark-secondaryBackground'>
-					<View
-						className='h-full w-full bg-primaryColor-100'
-						style={{
-							width: `${progress}%`,
-						}}
-					/>
+					{!progress ? (
+						<Skeleton
+							animation='wave'
+							style={{
+								width: `100%`,
+								backgroundColor:
+									themeColors[mode].secondaryBackground,
+							}}
+							skeletonStyle={{
+								backgroundColor: themeColors[mode].subTextColor,
+								opacity: 0.1,
+							}}
+						/>
+					) : (
+						<View
+							className='h-full w-full bg-primaryColor-100'
+							style={{
+								width: `${progress}%`,
+							}}
+						/>
+					)}
 				</View>
 			)}
 		</View>
+	);
+};
+
+const PreviewComponentSkeleton = () => {
+	return (
+		<Skeleton
+			width={128}
+			height={176}
+			animation='wave'
+			style={{
+				borderRadius: 8,
+				backgroundColor: themeColors[mode].secondaryBackground,
+			}}
+			skeletonStyle={{
+				backgroundColor: themeColors[mode].subTextColor,
+				opacity: 0.05,
+			}}
+		/>
 	);
 };
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import LoadingIndicator from '../../components/LoadingIndicator';
 import { useTaps } from '../../providers/TapProvider';
 import { useAuth } from '../../providers/AuthProvider';
@@ -7,7 +7,7 @@ import { onUser } from '../../database/services/UserService';
 import SectionHeader from '../../components/SectionHeader';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Text, View } from 'react-native';
+import { Image, Text, View } from 'react-native';
 import FullInfoTap from '../../components/FullInfoTap';
 import { TTap } from '../../types';
 
@@ -19,6 +19,7 @@ const NewTaps = () => {
 	const { user } = useAuth();
 	const isFocused = useIsFocused();
 	const [newTaps, setNewTaps] = React.useState<TTap[]>([]);
+	const [imagesLoading, setImagesLoading] = React.useState<boolean>(true);
 
 	useEffect(() => {
 		if (!user?.uid) return;
@@ -31,19 +32,29 @@ const NewTaps = () => {
 		setNewTaps(discoverTaps);
 	}, [discoverTaps]);
 
+	useEffect(() => {
+		const imageUrls = newTaps.map((tap) => Image.prefetch(tap.thumbnail));
+		Promise.all(imageUrls).then(() => setImagesLoading(false));
+	}, [newTaps]);
+
+	const dataLoading = useMemo(() => {
+		return imagesLoading || loadingInitial;
+	}, [imagesLoading, loadingInitial]);
+
 	return (
 		<>
 			<SectionHeader
 				title='New Taps'
-				onPress={() =>
+				onPress={() => {
+					if (loadingInitial) return;
 					navigate(Routes.SEE_MORE_TAPS, {
 						title: 'New Taps',
 						taps: newTaps,
-					})
-				}
+					});
+				}}
 			/>
-			{loadingInitial ? (
-				<LoadingIndicator /> // TODO: Add Skeleton Loading
+			{dataLoading ? (
+				<NewTapsSkeleton />
 			) : newTaps.length === 0 ? (
 				<Text className='text-dark-textColor text-center h-10'>
 					No new taps
@@ -52,23 +63,24 @@ const NewTaps = () => {
 				<View className='px-4 mb-4'>
 					{/* Show only first 10 */}
 					{newTaps.slice(0, 10).map((tap, index) => (
-						<FullInfoTap
-							key={tap.id}
-							tap={tap}
-							isNew={true}
-							containerProps={{
-								style: {
-									marginBottom:
-										index === newTaps.length - 1
-											? 0
-											: SPACE_BETWEEN,
-								},
-							}}
-						/>
+						<View className='mb-4' key={tap.id}>
+							<FullInfoTap tap={tap} isNew={true} />
+						</View>
 					))}
 				</View>
 			)}
 		</>
+	);
+};
+
+const NewTapsSkeleton = () => {
+	return (
+		<View className='px-4 mb-4'>
+			{/* Show only first 10 */}
+			{[1, 2, 3, 4, 5].map((item) => (
+				<FullInfoTap key={item} loading />
+			))}
+		</View>
 	);
 };
 

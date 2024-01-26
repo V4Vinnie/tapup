@@ -6,7 +6,6 @@ import ProfileHeader from '../../components/ProfileHeader';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/Routes';
 import TopicsAndSubTopics from './TopicsAndSubTopics';
-import { useTaps } from '../../providers/TapProvider';
 
 type ProfileScreenProps = NativeStackScreenProps<
 	RootStackParamList,
@@ -15,7 +14,6 @@ type ProfileScreenProps = NativeStackScreenProps<
 
 const ProfileScreen = ({ route }: ProfileScreenProps) => {
 	const { profile } = route.params;
-	const { taps } = useTaps();
 
 	return (
 		<SafeAreaView className='flex-1 items-center bg-dark-primaryBackground'>
@@ -25,6 +23,7 @@ const ProfileScreen = ({ route }: ProfileScreenProps) => {
 					autoFocus={false}
 					text='Search in profile...'
 					onSearch={() => {}}
+					// TODO: Add search in profile functionality
 				/>
 			</View>
 			<ScrollView
@@ -39,7 +38,6 @@ const ProfileScreen = ({ route }: ProfileScreenProps) => {
 					<TopicsAndSubTopics profile={profile} />
 				</View>
 			</ScrollView>
-			{/* TODO: Add search in profile functionality */}
 		</SafeAreaView>
 	);
 };

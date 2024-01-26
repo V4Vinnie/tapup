@@ -1,16 +1,30 @@
-import { FlatList, View } from 'react-native';
-import React from 'react';
+import { FlatList, Image, View } from 'react-native';
+import React, { useEffect, useMemo } from 'react';
 import { TContinueWatchingTap, TTap } from '../types';
 import PreviewComponent from './PreviewComponent';
 
 type Props = {
 	tapData: TTap[] | TContinueWatchingTap[];
 	containerProps?: View['props'];
+	loading?: boolean;
 };
 
 const SPACE_BETWEEN = 10;
-const TapRow = ({ tapData, containerProps }: Props) => {
-	return (
+const TapRow = ({ tapData, containerProps, loading }: Props) => {
+	const [imagesLoading, setImagesLoading] = React.useState<boolean>(true);
+
+	useEffect(() => {
+		const imageUrls = tapData.map((tap) => Image.prefetch(tap.thumbnail));
+		Promise.all(imageUrls).then(() => setImagesLoading(false));
+	}, [tapData]);
+
+	const dataLoading = useMemo(() => {
+		return imagesLoading || loading;
+	}, [imagesLoading, loading]);
+
+	return dataLoading ? (
+		<TapRowSkeleton />
+	) : (
 		<View className='w-full' {...containerProps}>
 			<FlatList
 				horizontal
@@ -19,6 +33,7 @@ const TapRow = ({ tapData, containerProps }: Props) => {
 				keyExtractor={(item) => item.id}
 				contentContainerStyle={{
 					paddingHorizontal: 16,
+					columnGap: SPACE_BETWEEN,
 				}}
 				renderItem={({ item, index }) => (
 					<PreviewComponent
@@ -29,16 +44,26 @@ const TapRow = ({ tapData, containerProps }: Props) => {
 								? (item as TContinueWatchingTap).progress
 								: undefined
 						}
-						containerProps={{
-							style: {
-								marginRight:
-									index === tapData.length - 1
-										? 0
-										: SPACE_BETWEEN,
-							},
-						}}
 					/>
 				)}
+			/>
+		</View>
+	);
+};
+
+const TapRowSkeleton = () => {
+	return (
+		<View className='w-full'>
+			<FlatList
+				horizontal
+				data={[1, 2, 3, 4, 5]}
+				showsHorizontalScrollIndicator={false}
+				keyExtractor={(item) => item.toString()}
+				contentContainerStyle={{
+					paddingHorizontal: 16,
+					columnGap: SPACE_BETWEEN,
+				}}
+				renderItem={({ item, index }) => <PreviewComponent loading />}
 			/>
 		</View>
 	);

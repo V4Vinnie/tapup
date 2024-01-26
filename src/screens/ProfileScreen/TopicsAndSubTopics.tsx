@@ -2,10 +2,12 @@ import { View, Text } from 'react-native';
 import React, { useEffect, useMemo, useState } from 'react';
 import { TProfile, TTap, TTopic } from '../../types';
 import { getTopicsFromProfile } from '../../database/services/MockTopicService';
-import TagRow from '../../components/TagRow';
+import TagRow, { TagRowSkeleton } from '../../components/TagRow';
 import { FlatList } from 'react-native-gesture-handler';
 import { getTapsPerTopicFromProfile } from '../../database/services/MockTapService';
-import SectionHeader from '../../components/SectionHeader';
+import SectionHeader, {
+	SectionHeaderSkeleton,
+} from '../../components/SectionHeader';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
@@ -19,18 +21,17 @@ type Props = {
 const TopicsAndSubTopics = ({ profile }: Props) => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-	const [topics, setTopics] = useState<TTopic[]>([]);
+	const [topics, setTopics] = useState<TTopic[] | null>(null);
 	const [selectedTopic, setSelectedTopic] = useState<TTopic | null>(null);
-	const [tapsPerTopic, setTapsPerTopic] = useState<{ [key: string]: TTap[] }>(
-		{}
-	);
+	const [tapsPerTopic, setTapsPerTopic] = useState<{
+		[key: string]: TTap[];
+	} | null>(null);
 
 	useEffect(() => {
-		const getTopics = async () => {
-			const _topics = await getTopicsFromProfile(profile);
+		getTopicsFromProfile(profile).then((_topics) => {
 			setTopics(_topics ?? []);
-		};
-		getTopics();
+			setSelectedTopic(_topics?.[0] ?? null);
+		});
 	}, [profile]);
 
 	useEffect(() => {
@@ -43,13 +44,22 @@ const TopicsAndSubTopics = ({ profile }: Props) => {
 		getTaps();
 	}, [selectedTopic]);
 
-	return topics.length === 0 ? (
-		<View className='flex-1 items-center justify-center'>
-			<Text className='text-dark-textColor font-inter-medium text-xl w-1/2 text-center mt-16'>
-				This person has not added any taps yet.
-			</Text>
-		</View>
-	) : (
+	const dataLoading = useMemo(() => {
+		return topics === null || tapsPerTopic === null;
+	}, [topics, tapsPerTopic]);
+
+	if (dataLoading && topics?.length === 0)
+		return (
+			<View className='flex-1 items-center justify-center'>
+				<Text className='text-dark-textColor font-inter-medium text-xl w-1/2 text-center mt-16'>
+					This person has not added any taps yet.
+				</Text>
+			</View>
+		);
+
+	if (dataLoading) return <TopicsAndSubTopicsSkeleton />;
+	if (!topics || !tapsPerTopic) return null;
+	return (
 		<View className='w-full mt-6 mb-8'>
 			<TagRow selectable data={topics} setSelected={setSelectedTopic} />
 			{selectedTopic &&
@@ -59,8 +69,9 @@ const TopicsAndSubTopics = ({ profile }: Props) => {
 							title={tap.name}
 							onPress={() => {
 								navigate(Routes.TAP_SCREEN, {
-									topic: selectedTopic,
-									tap,
+									selectedTopic,
+									initialTap: tap,
+									taps: tapsPerTopic[selectedTopic.id] ?? [],
 									profile,
 								});
 							}}
@@ -68,6 +79,20 @@ const TopicsAndSubTopics = ({ profile }: Props) => {
 						<ChapterRow chapters={tap.chapters} />
 					</View>
 				))}
+		</View>
+	);
+};
+
+const TopicsAndSubTopicsSkeleton = () => {
+	return (
+		<View className='w-full mt-6 mb-8'>
+			<TagRowSkeleton />
+			{[1, 2, 3, 4, 5].map((item) => (
+				<View key={item}>
+					<SectionHeaderSkeleton />
+					<ChapterRow loading />
+				</View>
+			))}
 		</View>
 	);
 };

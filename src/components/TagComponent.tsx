@@ -2,7 +2,8 @@ import React from 'react';
 import { Text, TouchableHighlight, View } from 'react-native';
 import { TNotificationTopic, TTap, TTopic } from '../types';
 import IonIcon from 'react-native-vector-icons/Ionicons';
-import { themeColors } from '../utils/constants';
+import { mode, themeColors } from '../utils/constants';
+import { Skeleton } from '@rneui/themed';
 
 type Props = {
 	data: TNotificationTopic | TTopic | TTap;
@@ -32,6 +33,24 @@ const TagComponent = ({ data, containerProps, onPress }: Props) => {
 				</Text>
 			</View>
 		</TouchableHighlight>
+	);
+};
+
+export const TagComponentSkeleton = () => {
+	return (
+		<Skeleton
+			width={Math.floor(Math.random() * 60) + 80}
+			height={30}
+			animation='wave'
+			style={{
+				borderRadius: 100,
+				backgroundColor: themeColors[mode].secondaryBackground,
+			}}
+			skeletonStyle={{
+				backgroundColor: themeColors[mode].subTextColor,
+				opacity: 0.05,
+			}}
+		/>
 	);
 };
 

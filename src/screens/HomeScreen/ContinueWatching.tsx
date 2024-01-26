@@ -31,7 +31,7 @@ const ContinueWatching = () => {
 		setContinueWatching(userTaps);
 	}, [userTaps]);
 
-	if (continueWatching.length === 0) {
+	if (!loadingInitial && continueWatching.length === 0) {
 		return false;
 	}
 
@@ -39,18 +39,15 @@ const ContinueWatching = () => {
 		<>
 			<SectionHeader
 				title='Continue watching'
-				onPress={() =>
+				onPress={() => {
+					if (loadingInitial) return;
 					navigate(Routes.SEE_MORE_TAPS, {
 						title: 'Continue watching',
 						taps: continueWatching,
-					})
-				}
+					});
+				}}
 			/>
-			{loadingInitial ? (
-				<LoadingIndicator /> // TODO: Add Skeleton Loading
-			) : (
-				<TapRow tapData={continueWatching} />
-			)}
+			<TapRow tapData={continueWatching} loading={loadingInitial} />
 		</>
 	);
 };

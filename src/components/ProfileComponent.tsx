@@ -4,6 +4,8 @@ import { TNotificationProfile, TProfile } from '../types';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../navigation/Routes';
+import { Skeleton } from '@rneui/themed';
+import { mode, themeColors } from '../utils/constants';
 
 type Props = {
 	profile: TNotificationProfile | TProfile;
@@ -62,6 +64,45 @@ const ProfileComponent = ({
 				</Text>
 			)}
 		</TouchableOpacity>
+	);
+};
+
+type ProfileComponentSkeletonProps = {
+	width: number;
+};
+
+export const ProfileComponentSkeleton = ({
+	width,
+}: ProfileComponentSkeletonProps) => {
+	return (
+		<View className='items-center'>
+			<Skeleton
+				width={width}
+				height={width}
+				animation='wave'
+				circle
+				style={{
+					backgroundColor: themeColors[mode].secondaryBackground,
+					marginBottom: 4,
+				}}
+				skeletonStyle={{
+					backgroundColor: themeColors[mode].subTextColor,
+					opacity: 0.05,
+				}}
+			/>
+			<Skeleton
+				width={width}
+				height={12}
+				animation='wave'
+				style={{
+					backgroundColor: themeColors[mode].secondaryBackground,
+				}}
+				skeletonStyle={{
+					backgroundColor: themeColors[mode].subTextColor,
+					opacity: 0.05,
+				}}
+			/>
+		</View>
 	);
 };
 
