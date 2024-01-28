@@ -1,5 +1,5 @@
 import { TNotificationTopic, TProfile, TTopic, TUser } from '../../types';
-import { MOCK_TAPS } from './MockTapService';
+import { MOCK_TAPS, MOCK_TOPICS } from './MockData';
 
 export const getTopics = async () => {
 	try {
@@ -53,26 +53,3 @@ export const getTopicsFromProfile = async (profile: TProfile) => {
 		console.log('getTopicsFromProfile in MockTopicService ', error);
 	}
 };
-
-const MOCK_TOPICS: TTopic[] = [
-	{
-		id: '25b5f4be-bff4-4d5a-a734-b38e3fc1d40b',
-		name: 'Coding',
-	},
-	{
-		id: 'f0c18c4a-e789-4480-b317-4981f77c22d5',
-		name: 'Entrepreneurship',
-	},
-	{
-		id: '8a415c6b-d8e1-43dd-bbb4-89ac0158caee',
-		name: 'Design',
-	},
-	{
-		id: 'fd6d97b5-849b-4b6a-9059-bfb2bb34de6c',
-		name: 'Marketing',
-	},
-	{
-		id: 'd5b48269-a55c-4524-b473-c19ccf563196',
-		name: 'Productivity',
-	},
-];

@@ -2,7 +2,9 @@ import { View, Text, SafeAreaView, ScrollView, FlatList } from 'react-native';
 import React, { useEffect, useMemo, useState } from 'react';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
 import SearchbarHeader from '../../components/SearchbarHeader';
-import ProfileHeader from '../../components/ProfileHeader';
+import ProfileHeader, {
+	ProfileHeaderSkeleton,
+} from '../../components/ProfileHeader';
 import {
 	NativeStackNavigationProp,
 	NativeStackScreenProps,
@@ -12,7 +14,7 @@ import { useTaps } from '../../providers/TapProvider';
 import AppHeader from '../../components/AppHeader';
 import TagRow from '../../components/TagRow';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { TChapter, TTap, TUser } from '../../types';
+import { TChapter, TProfile, TTap, TUser } from '../../types';
 import ChapterRow from '../../components/ChapterRow';
 import SectionHeader from '../../components/SectionHeader';
 import IonIcon from 'react-native-vector-icons/Ionicons';
@@ -20,7 +22,10 @@ import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { mode, themeColors } from '../../utils/constants';
 import ChapterList from '../../components/ChapterList';
 import { useAuth } from '../../providers/AuthProvider';
-import { getProgessForChapters } from '../../database/services/MockTapService';
+import {
+	getProfileForTap,
+	getProgessForChapters,
+} from '../../database/services/MockTapService';
 import { onUser } from '../../database/services/UserService';
 
 type ProfileScreenProps = NativeStackScreenProps<
@@ -34,6 +39,7 @@ const TapScreen = ({ route }: ProfileScreenProps) => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const isFocused = useIsFocused();
+	const [tapProfile, setTapProfile] = useState<TProfile | null>(null);
 	const [selectedTap, setSelectedTap] = useState<TTap | null>(null);
 	const [progress, setProgress] = useState<Map<string, number>>(new Map());
 	const [listView, setListView] = useState(false);
@@ -57,6 +63,22 @@ const TapScreen = ({ route }: ProfileScreenProps) => {
 		onUser(user.uid, getProgress);
 	}, [isFocused, user, sortedChapters]);
 
+	useEffect(() => {
+		const getTapProfile = async () => {
+			if (!profile) {
+				const _tapProfile = await getProfileForTap(
+					selectedTap ?? initialTap
+				);
+				if (_tapProfile) {
+					setTapProfile(_tapProfile);
+				}
+			} else {
+				setTapProfile(profile);
+			}
+		};
+		getTapProfile();
+	}, [profile, selectedTap]);
+
 	const toggleListView = () => {
 		setListView(!listView);
 	};
@@ -73,7 +95,11 @@ const TapScreen = ({ route }: ProfileScreenProps) => {
 				}}
 				showsVerticalScrollIndicator={false}>
 				<View className='w-full flex items-center'>
-					<ProfileHeader profile={profile} />
+					{tapProfile ? (
+						<ProfileHeader profile={tapProfile} />
+					) : (
+						<ProfileHeaderSkeleton />
+					)}
 					<View className='mt-6 -mb-2'>
 						<TagRow
 							containerProps={{

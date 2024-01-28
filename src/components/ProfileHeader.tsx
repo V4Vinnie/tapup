@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native';
 import React from 'react';
 import { TProfile } from '../types';
-import ProfileComponent from './ProfileComponent';
+import ProfileComponent, { ProfileComponentSkeleton } from './ProfileComponent';
 import { Skeleton } from '@rneui/themed';
 import { mode, themeColors } from '../utils/constants';
 
@@ -135,6 +135,31 @@ const ProfileDetail = ({
 				</Text>
 			</View>
 			{!last && <View className='w-px h-6 bg-dark-textColor/30' />}
+		</View>
+	);
+};
+
+export const ProfileHeaderSkeleton = () => {
+	return (
+		<View className='flex flex-col items-center w-full space-y-2'>
+			<ProfileComponentSkeleton width={64} />
+			<Skeleton
+				width={200}
+				height={24}
+				animation='wave'
+				style={{
+					backgroundColor: themeColors[mode].secondaryBackground,
+				}}
+				skeletonStyle={{
+					backgroundColor: themeColors[mode].subTextColor,
+					opacity: 0.05,
+				}}
+			/>
+			<View className='flex flex-row space-x-6'>
+				<ProfileDetail bottomText='' topText='' loading />
+				<ProfileDetail bottomText='' topText='' loading />
+				<ProfileDetail bottomText='' topText='' loading last />
+			</View>
 		</View>
 	);
 };

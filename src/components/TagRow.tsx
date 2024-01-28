@@ -2,22 +2,31 @@ import { FlatList, View } from 'react-native';
 import TagComponent, { TagComponentSkeleton } from './TagComponent';
 import { TNotificationTopic, TTap, TTopic } from '../types';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList, Routes } from '../navigation/Routes';
 
 type Props = {
 	data: TNotificationTopic[] | TTopic[] | TTap[];
+	dataType?: 'topic' | 'tap';
 	containerProps?: View['props'];
 	selectable?: boolean;
 	setSelected?: React.Dispatch<React.SetStateAction<any>>;
 	loading?: boolean;
+	initialSelected?: TTopic | null;
 };
 
 const SPACE_BETWEEN = 16;
 const TagRow = ({
 	data,
+	dataType,
 	containerProps,
 	selectable = false,
 	setSelected,
+	initialSelected,
 }: Props) => {
+	const { navigate } =
+		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const flatListRef = useRef<FlatList>(null);
 	const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
 
@@ -30,8 +39,24 @@ const TagRow = ({
 	useEffect(() => {
 		if (selectable && setSelected) {
 			setSelected(data[selectedTopic ?? 0]);
+			flatListRef.current?.scrollToIndex({
+				index: selectedTopic ?? 0,
+				animated: true,
+				viewPosition: 0.5,
+			});
 		}
 	}, [selectedTopic]);
+
+	useEffect(() => {
+		if (initialSelected) {
+			const index = data.findIndex(
+				(topic) => topic.id === initialSelected?.id
+			);
+			if (index !== -1) {
+				setSelectedTopic(index);
+			}
+		}
+	}, [initialSelected]);
 
 	const hasNotification = useMemo(() => {
 		if ((data[0] as TNotificationTopic)?.notification === undefined)
@@ -40,6 +65,21 @@ const TagRow = ({
 			return (topic as TNotificationTopic).notification > 0;
 		});
 	}, [data]);
+
+	const onScrollToIndexFailed = (info: {
+		index: number;
+		highestMeasuredFrameIndex: number;
+		averageItemLength: number;
+	}) => {
+		const wait = new Promise((resolve) => setTimeout(resolve, 200));
+		wait.then(() => {
+			flatListRef.current?.scrollToIndex({
+				index: info.index,
+				animated: true,
+				viewPosition: 0.5,
+			});
+		});
+	};
 
 	return (
 		<View className='w-full' {...containerProps}>
@@ -53,7 +93,8 @@ const TagRow = ({
 					paddingHorizontal: 16,
 					paddingTop: hasNotification ? 6 : 0,
 				}}
-				snapToAlignment='center'
+				decelerationRate='fast'
+				onScrollToIndexFailed={onScrollToIndexFailed}
 				renderItem={({ item, index }) => (
 					<TagComponent
 						data={item}
@@ -78,6 +119,11 @@ const TagRow = ({
 									viewPosition: 0.5,
 								});
 								setSelectedTopic(index);
+							}
+							if (dataType === 'topic') {
+								navigate(Routes.TOPIC_SCREEN, {
+									topic: item as TTopic,
+								});
 							}
 						}}
 					/>

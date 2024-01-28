@@ -1,5 +1,5 @@
-import { TNotificationProfile, TProfile, TUser } from '../../types';
-import { MOCK_FRAMES } from './MockTapService';
+import { TNotificationProfile, TUser } from '../../types';
+import { MOCK_USERS } from './MockData';
 
 export const getProfiles = async (): Promise<TNotificationProfile[]> => {
 	const profiles = MOCK_USERS.map((user) => ({
@@ -35,29 +35,3 @@ export const getFollowingProfiles = async (
 export const getCompanyName = (companyId: string) => {
 	return 'Remes';
 };
-
-const MOCK_USERS: TProfile[] = [
-	{
-		uid: 'f315e0a9-b435-4433-9027-17bce156ed5e',
-		name: 'John Doe',
-		email: 'jhon.doe@gmail.com',
-		profilePic: 'https://i.pravatar.cc/300',
-		role: 'USER',
-		watchedFrameIds: [],
-		madeFrames: [
-			...MOCK_FRAMES,
-			{
-				...MOCK_FRAMES[0],
-				tapId: '0b57b80f-e3b5-4048-b8e7-73fe4b0b160a',
-			},
-		],
-	},
-	{
-		uid: 'aaf8197b-e091-4575-9aba-b99a57ec6d2e',
-		name: 'Other Doe',
-		email: 'other.doe@gmail.com',
-		profilePic: '',
-		role: 'USER',
-		watchedFrameIds: [],
-	},
-];
