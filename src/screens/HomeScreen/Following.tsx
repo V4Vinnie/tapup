@@ -6,7 +6,7 @@ import { useAuth } from '../../providers/AuthProvider';
 import { onUser } from '../../database/services/UserService';
 import SectionHeader from '../../components/SectionHeader';
 import { useProfiles } from '../../providers/ProfileProvider';
-import { TNotificationProfile } from '../../types';
+import { TNotificationProfile, TProfile } from '../../types';
 import { Image } from 'react-native';
 import ProfileRow from '../../components/ProfileRow';
 
@@ -21,6 +21,10 @@ const Following = () => {
 		[]
 	);
 
+	const sortProfilesByNotifications = (profiles: TNotificationProfile[]) => {
+		return profiles.sort((a, b) => b.notification - a.notification);
+	};
+
 	useEffect(() => {
 		if (!user?.uid) return;
 		if (isFocused) getUserProfiles(user);
@@ -29,8 +33,12 @@ const Following = () => {
 
 	useEffect(() => {
 		if (!userProfiles) return;
-		setFollowing(userProfiles);
+		setFollowing(sortProfilesByNotifications(userProfiles));
 	}, [userProfiles]);
+
+	const sortedProfiles = useMemo(() => {
+		return sortProfilesByNotifications(profiles);
+	}, [profiles]);
 
 	if (!loadingInitial && following.length === 0)
 		return (
@@ -45,7 +53,7 @@ const Following = () => {
 						});
 					}}
 				/>
-				<ProfileRow profiles={profiles} />
+				<ProfileRow profiles={sortedProfiles} />
 			</>
 		);
 	return (

@@ -31,7 +31,7 @@ const TagRow = ({
 	const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
 
 	useEffect(() => {
-		if (selectable) {
+		if (selectable && !initialSelected) {
 			setSelectedTopic(0);
 		}
 	}, [data, selectable]);

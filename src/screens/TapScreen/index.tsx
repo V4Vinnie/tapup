@@ -1,7 +1,6 @@
 import { View, Text, SafeAreaView, ScrollView, FlatList } from 'react-native';
 import React, { useEffect, useMemo, useState } from 'react';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
-import SearchbarHeader from '../../components/SearchbarHeader';
 import ProfileHeader, {
 	ProfileHeaderSkeleton,
 } from '../../components/ProfileHeader';
@@ -10,9 +9,8 @@ import {
 	NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/Routes';
-import { useTaps } from '../../providers/TapProvider';
 import AppHeader from '../../components/AppHeader';
-import TagRow from '../../components/TagRow';
+import TagRow, { TagRowSkeleton } from '../../components/TagRow';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { TChapter, TProfile, TTap, TUser } from '../../types';
 import ChapterRow from '../../components/ChapterRow';
@@ -23,6 +21,7 @@ import { mode, themeColors } from '../../utils/constants';
 import ChapterList from '../../components/ChapterList';
 import { useAuth } from '../../providers/AuthProvider';
 import {
+	getAllTapsForTopic,
 	getProfileForTap,
 	getProgessForChapters,
 } from '../../database/services/MockTapService';
@@ -42,6 +41,7 @@ const TapScreen = ({ route }: ProfileScreenProps) => {
 	const [tapProfile, setTapProfile] = useState<TProfile | null>(null);
 	const [selectedTap, setSelectedTap] = useState<TTap | null>(null);
 	const [progress, setProgress] = useState<Map<string, number>>(new Map());
+	const [allTaps, setAllTaps] = useState<TTap[] | null>(null);
 	const [listView, setListView] = useState(false);
 	const [loading, setLoading] = useState(true);
 
@@ -79,6 +79,18 @@ const TapScreen = ({ route }: ProfileScreenProps) => {
 		getTapProfile();
 	}, [profile, selectedTap]);
 
+	useEffect(() => {
+		const getAllTaps = async () => {
+			if (taps) {
+				setAllTaps(taps);
+			} else {
+				const _allTaps = await getAllTapsForTopic(selectedTopic.id);
+				if (_allTaps) setAllTaps(_allTaps);
+			}
+		};
+		getAllTaps();
+	}, [taps, tapProfile, selectedTopic]);
+
 	const toggleListView = () => {
 		setListView(!listView);
 	};
@@ -101,18 +113,21 @@ const TapScreen = ({ route }: ProfileScreenProps) => {
 						<ProfileHeaderSkeleton />
 					)}
 					<View className='mt-6 -mb-2'>
-						<TagRow
-							containerProps={{
-								style: {
-									marginTop: 0,
-								},
-							}}
-							selectable
-							data={taps.sort((a, b) =>
-								a.id === initialTap.id ? -1 : 1
-							)}
-							setSelected={setSelectedTap}
-						/>
+						{allTaps ? (
+							<TagRow
+								containerProps={{
+									style: {
+										marginTop: 0,
+									},
+								}}
+								selectable
+								data={allTaps}
+								setSelected={setSelectedTap}
+								initialSelected={initialTap}
+							/>
+						) : (
+							<TagRowSkeleton />
+						)}
 					</View>
 					<SectionHeader
 						title={'Chapters'}
@@ -162,7 +177,6 @@ const TapScreen = ({ route }: ProfileScreenProps) => {
 					)}
 				</View>
 			</ScrollView>
-			{/* TODO: Add search in profile functionality */}
 		</SafeAreaView>
 	);
 };

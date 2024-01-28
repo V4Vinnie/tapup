@@ -42,7 +42,7 @@ export type RootStackParamList = {
 	TapScreen: {
 		selectedTopic: TTopic;
 		initialTap: TTap;
-		taps: TTap[];
+		taps?: TTap[];
 		profile?: TProfile;
 	};
 	TopicScreen: {

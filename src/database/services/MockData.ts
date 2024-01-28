@@ -161,7 +161,7 @@ export const MOCK_TOPICS: TTopic[] = [
 		name: 'Design',
 	},
 	{
-		id: 'fd6d97b5-849b-4b6a-9059-bfb2bb34de6c',
+		id: '97bbf6d3-8873-47e2-a6cf-5f535bb8e8e7',
 		name: 'Marketing',
 	},
 	{

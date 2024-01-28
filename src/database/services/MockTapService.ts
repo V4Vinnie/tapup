@@ -8,7 +8,7 @@ import {
 	TUser,
 } from '../../types';
 import { getUser } from './UserService';
-import { MOCK_FRAMES, MOCK_TAPS, MOCK_USERS } from './MockData';
+import { MOCK_FRAMES, MOCK_TAPS, MOCK_TOPICS, MOCK_USERS } from './MockData';
 
 export const getAllTaps = async () => {
 	try {
@@ -186,5 +186,13 @@ export const getProfileForTap = async (tap: TTap) => {
 		);
 	} catch (error) {
 		console.log('getProfileForTap in MockTapService ', error);
+	}
+};
+
+export const getTopicFromTap = async (tap: TTap) => {
+	try {
+		return MOCK_TOPICS.find((topic) => topic.id === tap.topicId);
+	} catch (error) {
+		console.log('getTopicFromTap in MockTapService ', error);
 	}
 };
