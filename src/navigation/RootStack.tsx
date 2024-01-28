@@ -15,6 +15,7 @@ import SeeMoreTopicsScreen from '../screens/SeeMoreScreens/SeeMoreTopicsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import TapScreen from '../screens/TapScreen';
 import { mode, themeColors } from '../utils/constants';
+import TopicScreen from '../screens/TopicScreen';
 
 type Props = {};
 
@@ -76,6 +77,7 @@ const HomeStack = () => {
 				component={ProfileScreen}
 			/>
 			<Stack.Screen name={Routes.TAP_SCREEN} component={TapScreen} />
+			<Stack.Screen name={Routes.TOPIC_SCREEN} component={TopicScreen} />
 		</Stack.Navigator>
 	);
 };

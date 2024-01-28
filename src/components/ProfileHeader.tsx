@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native';
 import React from 'react';
 import { TProfile } from '../types';
-import ProfileComponent from './ProfileComponent';
+import ProfileComponent, { ProfileComponentSkeleton } from './ProfileComponent';
 import { Skeleton } from '@rneui/themed';
 import { mode, themeColors } from '../utils/constants';
 
@@ -95,46 +95,75 @@ const ProfileDetail = ({
 	return loading ? (
 		<View className='flex flex-row items-center mt-1 -mr-1'>
 			<View className={`flex flex-col items-center px-6`}>
-				<Skeleton
-					width={32}
-					height={16}
-					animation='wave'
-					style={{
-						backgroundColor: themeColors[mode].secondaryBackground,
-					}}
-					skeletonStyle={{
-						backgroundColor: themeColors[mode].subTextColor,
-						opacity: 0.05,
-						marginTop: 10,
-					}}
-				/>
-				<Skeleton
-					width={50}
-					height={10}
-					animation='wave'
-					style={{
-						backgroundColor: themeColors[mode].secondaryBackground,
-						marginTop: 4,
-					}}
-					skeletonStyle={{
-						backgroundColor: themeColors[mode].subTextColor,
-						opacity: 0.05,
-					}}
-				/>
+				<View className='flex flex-col items-center w-16'>
+					<Skeleton
+						width={32}
+						height={16}
+						animation='wave'
+						style={{
+							backgroundColor:
+								themeColors[mode].secondaryBackground,
+						}}
+						skeletonStyle={{
+							backgroundColor: themeColors[mode].subTextColor,
+							opacity: 0.05,
+							marginTop: 10,
+						}}
+					/>
+					<Skeleton
+						width={50}
+						height={10}
+						animation='wave'
+						style={{
+							backgroundColor:
+								themeColors[mode].secondaryBackground,
+							marginTop: 4,
+						}}
+						skeletonStyle={{
+							backgroundColor: themeColors[mode].subTextColor,
+							opacity: 0.05,
+						}}
+					/>
+				</View>
 			</View>
 			{!last && <View className='w-px h-6 bg-dark-textColor/30' />}
 		</View>
 	) : (
 		<View className='flex flex-row items-center'>
 			<View className={`flex flex-col items-center px-6`}>
-				<Text className='text-dark-textColor text-sm font-inter-semiBold'>
+				<Text className='text-dark-textColor text-center text-sm font-inter-semiBold w-14'>
 					{topText}
 				</Text>
-				<Text className='text-dark-subTextColor text-xs font-inter-regular'>
+				<Text className='text-dark-subTextColor text-center text-xs font-inter-regular w-14'>
 					{bottomText}
 				</Text>
 			</View>
 			{!last && <View className='w-px h-6 bg-dark-textColor/30' />}
+		</View>
+	);
+};
+
+export const ProfileHeaderSkeleton = () => {
+	return (
+		<View className='flex flex-col items-center w-full space-y-2'>
+			<ProfileComponentSkeleton width={64} />
+			<Skeleton
+				width={200}
+				height={24}
+				animation='wave'
+				style={{
+					backgroundColor: themeColors[mode].secondaryBackground,
+				}}
+				skeletonStyle={{
+					backgroundColor: themeColors[mode].subTextColor,
+					opacity: 0.05,
+				}}
+			/>
+			<View className='flex flex-row space-x-6'>
+				<ProfileDetail bottomText='' topText='' loading />
+				<ProfileDetail bottomText='' topText='' loading />
+				<ProfileDetail bottomText='' topText='' loading last />
+			</View>
 		</View>
 	);
 };

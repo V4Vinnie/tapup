@@ -53,7 +53,7 @@ const AppHeader = ({
 						headerWithBack ? navigation.goBack() : null;
 					}}>
 					{headerWithBack ? (
-						<View className='pr-4'>
+						<View className='pr-4 pl-2 py-2'>
 							<Icon
 								name='arrowleft'
 								size={24}

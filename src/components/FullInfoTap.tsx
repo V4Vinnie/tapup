@@ -1,12 +1,19 @@
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 import React, { useEffect, useMemo } from 'react';
-import { TTap } from '../types';
+import { TTap, TTopic } from '../types';
 import { mode, themeColors } from '../utils/constants';
 import { getCompanyName } from '../database/services/MockProfileService';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Logo from '../../assets/images/Logo';
-import { getViewsForTap } from '../database/services/MockTapService';
+import {
+	getTopicFromTap,
+	getViewsForTap,
+} from '../database/services/MockTapService';
 import { Skeleton } from '@rneui/themed';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList, Routes } from '../navigation/Routes';
+import { useTaps } from '../providers/TapProvider';
 
 type Props = {
 	tap?: TTap;
@@ -16,7 +23,11 @@ type Props = {
 };
 
 const FullInfoTap = ({ tap, containerProps, isNew, loading }: Props) => {
+	const { navigate } =
+		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+	const { taps } = useTaps();
 	const [views, setViews] = React.useState<string>('0');
+	const [topic, setTopic] = React.useState<TTopic | null>(null);
 	const companyName = useMemo(() => {
 		if (!tap) return '';
 		return getCompanyName(tap.creatorId);
@@ -50,12 +61,24 @@ const FullInfoTap = ({ tap, containerProps, isNew, loading }: Props) => {
 					: viewsString
 			);
 		});
+		getTopicFromTap(tap).then((topic) => {
+			if (!topic) return;
+			setTopic(topic);
+		});
 	}, [tap]);
 
-	return loading || !tap ? (
+	return loading || !tap || !topic ? (
 		<FullInfoTapSkeleton />
 	) : (
-		<View className='w-full flex flex-row' {...containerProps}>
+		<TouchableOpacity
+			className='w-full flex flex-row'
+			{...containerProps}
+			onPress={() =>
+				navigate(Routes.TAP_SCREEN, {
+					initialTap: tap,
+					selectedTopic: topic,
+				})
+			}>
 			{isNew && (
 				<Text className='absolute right-0 top-0 px-2 py-[2px] bg-primaryColor-100 rounded-sm text-white text-xs font-inter-medium'>
 					New
@@ -70,7 +93,7 @@ const FullInfoTap = ({ tap, containerProps, isNew, loading }: Props) => {
 					<Text
 						numberOfLines={1}
 						className='text-dark-textColor text-base font-inter-medium w-4/5'>
-						{tap.name}
+						{tap.fullName}
 					</Text>
 					<View className='flex flex-row space-x-1 items-center'>
 						<FontAwesome5
@@ -100,7 +123,7 @@ const FullInfoTap = ({ tap, containerProps, isNew, loading }: Props) => {
 					</Text>
 				</View>
 			</View>
-		</View>
+		</TouchableOpacity>
 	);
 };
 

@@ -34,7 +34,7 @@ const YourTopics = () => {
 						});
 					}}
 				/>
-				<TagRow data={topics} />
+				<TagRow data={topics} dataType='topic' />
 			</>
 		);
 	return (
@@ -52,7 +52,7 @@ const YourTopics = () => {
 				<TagRowSkeleton />
 			) : (
 				// TODO: Fix onPress
-				<TagRow data={userTopics} />
+				<TagRow data={userTopics} dataType='topic' />
 			)}
 		</>
 	);

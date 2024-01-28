@@ -1,9 +1,15 @@
-import { Image, Text, View } from 'react-native';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 import { mode, themeColors } from '../utils/constants';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../providers/AuthProvider';
 import Video from 'react-native-video';
 import { Skeleton } from '@rneui/themed';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList, Routes } from '../navigation/Routes';
+import { TTap, TTopic } from '../types';
+import { useEffect, useState } from 'react';
+import { getTopicFromTap } from '../database/services/MockTapService';
 
 type Props = {
 	thumbnail?: string;
@@ -11,6 +17,7 @@ type Props = {
 	text?: string;
 	showProgress?: boolean;
 	progress?: number;
+	fullTap?: TTap;
 	containerProps?: View['props'];
 	loading?: boolean;
 };
@@ -21,13 +28,36 @@ const PreviewComponent: React.FC<Props> = ({
 	text,
 	showProgress = true,
 	progress,
+	fullTap,
 	containerProps,
 	loading,
 }: Props) => {
+	const { navigate } =
+		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+	const [topic, setTopic] = useState<TTopic | null>(null);
+
+	useEffect(() => {
+		if (!fullTap) return;
+		const getTopic = async () => {
+			const topic = await getTopicFromTap(fullTap);
+			if (!topic) return;
+			setTopic(topic);
+		};
+		getTopic();
+	}, [fullTap]);
+
 	return loading ? (
 		<PreviewComponentSkeleton />
 	) : (
-		<View
+		<TouchableOpacity
+			onPress={() =>
+				fullTap &&
+				topic &&
+				navigate(Routes.TAP_SCREEN, {
+					initialTap: fullTap,
+					selectedTopic: topic,
+				})
+			}
 			className='w-32 h-44 rounded-lg overflow-hidden'
 			{...containerProps}>
 			{thumbnail === '' ? (
@@ -79,7 +109,7 @@ const PreviewComponent: React.FC<Props> = ({
 					)}
 				</View>
 			)}
-		</View>
+		</TouchableOpacity>
 	);
 };
 

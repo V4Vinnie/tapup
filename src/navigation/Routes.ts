@@ -13,6 +13,7 @@ export const Routes = {
 	SEE_MORE_PROFILES: 'SeeMoreProfiles',
 	PROFILE_SCREEN: 'ProfileScreen',
 	TAP_SCREEN: 'TapScreen',
+	TOPIC_SCREEN: 'TopicScreen',
 } as const;
 
 export type RootStackParamList = {
@@ -41,7 +42,10 @@ export type RootStackParamList = {
 	TapScreen: {
 		selectedTopic: TTopic;
 		initialTap: TTap;
-		taps: TTap[];
-		profile: TProfile;
+		taps?: TTap[];
+		profile?: TProfile;
+	};
+	TopicScreen: {
+		topic: TTopic;
 	};
 };

@@ -1,14 +1,14 @@
-import { Timestamp } from 'firebase/firestore';
-
 import {
 	TChapter,
 	TContinueWatchingTap,
 	TFrame,
 	TProfile,
 	TTap,
+	TTopic,
 	TUser,
 } from '../../types';
 import { getUser } from './UserService';
+import { MOCK_FRAMES, MOCK_TAPS, MOCK_TOPICS, MOCK_USERS } from './MockData';
 
 export const getAllTaps = async () => {
 	try {
@@ -111,6 +111,30 @@ export const getViewsForTap = async (tapId: string) => {
 	}
 };
 
+export const getAllTapsForTopic = async (topicId: string) => {
+	try {
+		return MOCK_TAPS.filter((tap) => tap.topicId === topicId);
+	} catch (error) {
+		console.log('getAllTapsForTopic in MockTapService ', error);
+	}
+};
+
+export const getAllTapsForTopics = async (topics: TTopic[]) => {
+	try {
+		const tapsPerTopic = {} as Record<string, TTap[]>;
+		topics.forEach((topic) => {
+			tapsPerTopic[topic.id] = MOCK_TAPS.filter(
+				(tap) => tap.topicId === topic.id
+			);
+		});
+		return new Promise<{ [key: string]: TTap[] }>((resolve) =>
+			setTimeout(() => resolve(tapsPerTopic), 1000)
+		);
+	} catch (error) {
+		console.log('getAllTapsForTopics in MockTapService ', error);
+	}
+};
+
 export const getTapsPerTopicFromProfile = async (profile: TProfile) => {
 	try {
 		const tapsPerTopic = {} as Record<string, TTap[]>;
@@ -155,148 +179,20 @@ export const getProgessForChapters = async (
 	);
 };
 
-export const MOCK_FRAMES: TFrame[] = [
-	{
-		id: '2b4942aa-e129-472d-90f1-23c98bdb2efa',
-		media: 'https://picsum.photos/800/1200',
-		mediaType: 'IMAGE',
-		topicId: 'f0c18c4a-e789-4480-b317-4981f77c22d5',
-		tapId: 'ef1f2e34-bad7-4497-a4d7-7f32d128fbc3',
-		chapterId: '9ac82149-f2c4-4d69-bf88-3bbf248080e7',
-		creatorId: '0b57b80f-e3b5-4048-b8e7-73fe4b0b160a',
-		creationDate: new Timestamp(1, 1),
-	},
-	{
-		id: 'f97431b7-200d-436f-a28c-0e5f00c2b37c',
-		media: 'https://picsum.photos/800/1200',
-		mediaType: 'IMAGE',
-		topicId: 'f0c18c4a-e789-4480-b317-4981f77c22d5',
-		tapId: '2d82222f-86a0-41e5-b0a2-d5b66fa47529',
-		chapterId: '9ac82149-f2c4-4d69-bf88-3bbf248080e7',
-		creatorId: '0b57b80f-e3b5-4048-b8e7-73fe4b0b160a',
-		creationDate: new Timestamp(1, 1),
-	},
-	{
-		id: '7ff44400-6fec-4d4b-b522-8faaed011f28',
-		media: 'https://picsum.photos/800/1200',
-		mediaType: 'IMAGE',
-		topicId: 'f0c18c4a-e789-4480-b317-4981f77c22d5',
-		tapId: 'ef1f2e34-bad7-4497-a4d7-7f32d128fbc3',
-		chapterId: '9ac82149-f2c4-4d69-bf88-3bbf248080e7',
-		creatorId: '0b57b80f-e3b5-4048-b8e7-73fe4b0b160a',
-		creationDate: new Timestamp(1, 1),
-	},
-	{
-		id: '7ff44400-6fec-4d4b-b522-8faaed011f28',
-		media: 'https://picsum.photos/800/1200',
-		mediaType: 'IMAGE',
-		topicId: 'f0c18c4a-e789-4480-b317-4981f77c22d5',
-		tapId: 'ef1f2e34-bad7-4497-a4d7-7f32d128fbc3',
-		chapterId: '9ac82149-f2c4-4d69-bf88-3bbf248080e7',
-		creatorId: '0b57b80f-e3b5-4048-b8e7-73fe4b0b160a',
-		creationDate: new Timestamp(1, 1),
-	},
-];
+export const getProfileForTap = async (tap: TTap) => {
+	try {
+		return new Promise<TProfile>((resolve) =>
+			setTimeout(() => resolve(MOCK_USERS[0]), 1000)
+		);
+	} catch (error) {
+		console.log('getProfileForTap in MockTapService ', error);
+	}
+};
 
-const MOCK_CHAPTERS: TChapter[] = [
-	{
-		id: '9ac82149-f2c4-4d69-bf88-3bbf248080e7',
-		name: 'Chapter 1',
-		description:
-			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl nec sagittis dapibus, urna nisi ultricies mauris, vitae lacinia eros orci id nisi. Nulla facilisi. Nulla facilisi.',
-		frames: MOCK_FRAMES,
-		tapId: 'ef1f2e34-bad7-4497-a4d7-7f32d128fbc3',
-		creatorId: '0b57b80f-e3b5-4048-b8e7-73fe4b0b160a',
-		creationDate: new Timestamp(1, 1),
-	},
-	{
-		id: '76911ae1-8da7-4274-9b4d-8b20e84546b8',
-		name: 'Chapter 2',
-		description:
-			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl nec sagittis dapibus, urna nisi ultricies mauris, vitae lacinia eros orci id nisi. Nulla facilisi. Nulla facilisi.',
-		frames: MOCK_FRAMES,
-		tapId: 'ef1f2e34-bad7-4497-a4d7-7f32d128fbc3',
-		creatorId: '0b57b80f-e3b5-4048-b8e7-73fe4b0b160a',
-		creationDate: new Timestamp(1, 1),
-	},
-];
-const MOCK_CHAPTERS_2: TChapter[] = [
-	{
-		id: 'd8ed5a75-263a-493d-b9fa-dba76e4687c2',
-		name: 'Chapter 2',
-		description:
-			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl nec sagittis dapibus, urna nisi ultricies mauris, vitae lacinia eros orci id nisi. Nulla facilisi. Nulla facilisi.',
-		frames: [
-			{
-				...MOCK_FRAMES[0],
-				tapId: '0b57b80f-e3b5-4048-b8e7-73fe4b0b160a',
-			},
-		],
-		tapId: '0b57b80f-e3b5-4048-b8e7-73fe4b0b160a',
-		creatorId: '0b57b80f-e3b5-4048-b8e7-73fe4b0b160a',
-		creationDate: new Timestamp(1, 1),
-	},
-];
-
-export const MOCK_TAPS: TTap[] = [
-	{
-		id: 'ef1f2e34-bad7-4497-a4d7-7f32d128fbc3',
-		fullName: 'Student Entrepreneurship',
-		name: 'For students',
-		description:
-			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl nec sagittis dapibus, urna nisi ultricies mauris.',
-		thumbnail: 'https://picsum.photos/800/1200',
-		topicId: 'f0c18c4a-e789-4480-b317-4981f77c22d5',
-		chapters: MOCK_CHAPTERS,
-		creatorId: '0b57b80f-e3b5-4048-b8e7-73fe4b0b160a',
-		createdAt: new Timestamp(1, 1),
-	},
-	{
-		id: '0b57b80f-e3b5-4048-b8e7-73fe4b0b160a',
-		fullName: 'Designing for beginners',
-		name: 'For beginners',
-		description:
-			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl nec sagittis dapibus, urna nisi ultricies mauris, vitae lacinia eros orci id nisi. Nulla facilisi. Nulla facilisi.',
-		thumbnail: 'https://picsum.photos/800/1200',
-		topicId: 'f0c18c4a-e789-4480-b317-4981f77c22d5',
-		chapters: MOCK_CHAPTERS_2,
-		creatorId: '0b57b80f-e3b5-4048-b8e7-73fe4b0b160a',
-		createdAt: new Timestamp(1, 1),
-	},
-	{
-		id: '2d82222f-86a0-41e5-b0a2-d5b66fa47529',
-		fullName: 'Coding for dummies',
-		name: 'For dummies',
-		description:
-			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl nec sagittis dapibus, urna nisi ultricies mauris, vitae lacinia eros orci id nisi. Nulla facilisi. Nulla facilisi.',
-		thumbnail: 'https://picsum.photos/800/1200',
-		topicId: '97bbf6d3-8873-47e2-a6cf-5f535bb8e8e7',
-		chapters: MOCK_CHAPTERS,
-		creatorId: '0b57b80f-e3b5-4048-b8e7-73fe4b0b160a',
-		createdAt: new Timestamp(1, 1),
-	},
-	{
-		id: 'fddcdd46-3d34-41db-ba4c-40bbf2c507f6',
-		fullName: 'Marketing for beginners',
-		name: 'For beginners',
-		description:
-			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl nec sagittis dapibus, urna nisi ultricies mauris, vitae lacinia eros orci id nisi. Nulla facilisi. Nulla facilisi.',
-		thumbnail: 'https://picsum.photos/800/1200',
-		topicId: '97bbf6d3-8873-47e2-a6cf-5f535bb8e8e7',
-		chapters: MOCK_CHAPTERS,
-		creatorId: '0b57b80f-e3b5-4048-b8e7-73fe4b0b160a',
-		createdAt: new Timestamp(1, 1),
-	},
-	{
-		id: 'aeb489fd-37a4-453d-8389-2827d7239c0f',
-		fullName: 'Marketing for beginners',
-		name: 'For beginners',
-		description:
-			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl nec sagittis dapibus, urna nisi ultricies mauris, vitae lacinia eros orci id nisi. Nulla facilisi. Nulla facilisi.',
-		thumbnail: 'https://picsum.photos/800/1200',
-		topicId: '97bbf6d3-8873-47e2-a6cf-5f535bb8e8e7',
-		chapters: [],
-		creatorId: '0b57b80f-e3b5-4048-b8e7-73fe4b0b160a',
-		createdAt: new Timestamp(1, 1),
-	},
-];
+export const getTopicFromTap = async (tap: TTap) => {
+	try {
+		return MOCK_TOPICS.find((topic) => topic.id === tap.topicId);
+	} catch (error) {
+		console.log('getTopicFromTap in MockTapService ', error);
+	}
+};
