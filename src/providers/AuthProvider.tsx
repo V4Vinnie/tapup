@@ -22,7 +22,8 @@ const AuthContext = React.createContext<{
 	handleSignup: (
 		name: string,
 		email: string,
-		password: string
+		password: string,
+		profileImage?: string
 	) => Promise<UserCredential | void>;
 	handleLogout: () => void;
 	status: {
@@ -36,7 +37,7 @@ const AuthContext = React.createContext<{
 }>({
 	user: null,
 	handleLogin: (email: string, password: string) => Promise.resolve(),
-	handleSignup: (name: string, email: string, password: string) =>
+	handleSignup: (name: string, email: string, password: string, profileImage?: string) =>
 		Promise.resolve(),
 	handleLogout: () => {},
 	status: null,
@@ -80,10 +81,11 @@ export const AuthProvider = ({ children }: Props) => {
 	const handleSignup = async (
 		name: string,
 		email: string,
-		password: string
+		password: string,
+		profileImage?: string
 	) => {
 		setStatus(null);
-		return registerUser(name, email, password).catch(() =>
+		return registerUser(name, email, password, profileImage).catch(() =>
 			setStatus({
 				type: 'error',
 				message: 'Invalid email or password',
@@ -122,11 +124,13 @@ export const AuthProvider = ({ children }: Props) => {
 				if (user) {
 					const _user = await getUser(user.uid);
 					setUser({ ..._user, ...user } as TUser);
+					console.log(_user);
+					
 				} else {
 					setUser(null);
 				}
 				setLoadingInitial(false);
-			}),
+			}, console.log),
 		[]
 	);
 

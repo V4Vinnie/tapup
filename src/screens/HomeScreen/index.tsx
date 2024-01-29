@@ -8,12 +8,15 @@ import ContinueWatching from './ContinueWatching';
 import YourTopics from './YourTopics';
 import Following from './Following';
 import NewTaps from './NewTaps';
+import AppButton from '../../components/AppButton';
+import { useAuth } from '../../providers/AuthProvider';
 
 type Props = {};
 
 const HomeScreen = (props: Props) => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+		const {handleLogout} = useAuth();
 
 	const scrollY = new Animated.Value(0);
 	const diffClamp = Animated.diffClamp(scrollY, 0, 130);
@@ -54,6 +57,7 @@ const HomeScreen = (props: Props) => {
 						<YourTopics />
 						<Following />
 						<NewTaps />
+						<AppButton onPress={handleLogout} title='LOGOUT' />
 					</View>
 				</ScrollView>
 			</View>

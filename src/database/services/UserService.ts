@@ -9,6 +9,11 @@ import { doc, getDoc, setDoc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { DB, auth } from '../Firebase';
 import { COLLECTIONS } from '../../utils/constants';
 import { TUser } from '../../types';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { storage } from '../Firebase';
+import * as FileSystem from 'expo-file-system';
+
+const STORE_PROFILE_IMAGE = (uid: string, extention: string) => `users/${uid}/profilePicture.${extention}`
 
 export async function loginUser(
 	email: string,
@@ -31,7 +36,8 @@ export async function loginUser(
 export async function registerUser(
 	name: string,
 	email: string,
-	password: string
+	password: string,
+	profileImage?: string
 ): Promise<UserCredential> {
 	return new Promise(async (resolve, reject) => {
 		if (name == '' || name.length < 2 || email == '' || password == '') {
@@ -44,12 +50,10 @@ export async function registerUser(
 				email.toLowerCase(),
 				password
 			);
-			await updateProfile(userCredential.user, {
-				displayName: name,
-			});
+			const url = profileImage ? await saveImage(profileImage, userCredential.user.uid) : '';
 			await setDoc(doc(DB, COLLECTIONS.USERS, userCredential.user.uid), {
 				name: name,
-				profilePic: '',
+				profilePic: url,
 				email: email,
 				role: 'USER',
 
@@ -60,6 +64,30 @@ export async function registerUser(
 			reject(error);
 		}
 	});
+}
+
+export async function saveImage(image: string, uid: string) {
+	try {
+		const {uri} = await FileSystem.getInfoAsync(image)
+			const blob: Blob = await new Promise((resolve, reject) => {
+				const xhr = new XMLHttpRequest();
+				xhr.onload = function() {
+				  resolve(xhr.response);
+				};
+				xhr.onerror = function() {
+				  reject(new TypeError('Network request failed'));
+				};
+				xhr.responseType = 'blob';
+				xhr.open('GET', uri, true);
+				xhr.send(null);
+			  });
+			const extention = image.split('.')[image.split('.').length - 1];
+			const imageRef = ref(storage, STORE_PROFILE_IMAGE(uid, extention));
+			await uploadBytes(imageRef, blob);
+			return getDownloadURL(imageRef);
+	} catch (error) {
+		console.error('saveImage in UserService ', error);
+	}
 }
 
 export async function sendForgotPasswordEmail(email: string) {

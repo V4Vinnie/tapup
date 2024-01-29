@@ -14,6 +14,13 @@ import {
 	scrollViewContentContainer,
 } from '../LoginScreen';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { assets } from '../../../assets/Assets';
+import Modal from "react-native-modal";
+import * as ImagePicker from 'expo-image-picker';
+import ProfilePicture from './ProfilePicture';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import { themeColors } from '../../utils/constants';
+
 
 type Props = {};
 
@@ -21,25 +28,66 @@ const SignupScreen = (props: Props) => {
 	const [email, setEmail] = useState('');
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
+	const [modalOpen, setModalOpen] = useState(false);
 	const [isSending, setIsSending] = useState(false);
+	const [image, setImage] = useState<string | null>(null);
 
 	const { status, handleSignup } = useAuth();
 	const navigation =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
 	const signUp = async () => {
+		if (!username || !email || !password || !image) return;
 		setIsSending(true);
-		handleSignup(username, email, password).finally(() => {
+		handleSignup(username, email, password, image).finally(() => {
 			setIsSending(false);
 		});
 		// TODO: MAKE STATUS MODAL
 	};
 
+	const handleChoosePhoto = () => {
+		setModalOpen(false);
+		ImagePicker.launchImageLibraryAsync({
+			mediaTypes: ImagePicker.MediaTypeOptions.Images,
+			allowsEditing: true,
+			aspect: [1, 1],
+			quality: 1,
+		  })
+		  .then(async (result) => {
+			if (result.canceled) return;
+			const image = result.assets[0].uri;
+			setImage(image);
+		  })
+		  .catch((error) => {
+			console.log(error);
+			});
+	};
+
+	const handleTakePhoto = () => {
+		ImagePicker.launchCameraAsync({
+			mediaTypes: ImagePicker.MediaTypeOptions.Images,
+			allowsEditing: true,
+			aspect: [1, 1],
+			quality: 1,
+		  }).then((result) => {
+			  if (result.canceled) return;
+			setImage(result.assets[0].uri);
+		  }).catch((error) => {
+			console.log(error);
+		});	  
+		setModalOpen(false);
+	};
+
+	const handleRemovePhoto = () => {
+		setImage('');
+		setModalOpen(false);
+	};
+
 	const disabledState = useMemo(() => {
-		return (!username && password.length < 6) || !email || isSending
+		return !username || password.length < 6 || !email || isSending || !image
 			? 0.5
 			: 1;
-	}, [username, password, email, isSending]);
+	}, [username, password, email, isSending, image]);
 
 	return (
 		<KeyboardAwareScrollView
@@ -60,9 +108,10 @@ const SignupScreen = (props: Props) => {
 				/>
 
 				<View className='w-4/5 h-full py-2 justify-between pb-8 pt-52'>
-					<View>
+					<View className='-mt-12'>
+						<ProfilePicture image={image ? { uri: image } : assets.profile_placeholder} onPress={() => setModalOpen(true)} />
 						<Text className='text-3xl font-inter-bold text-center text-dark-textColor'>
-							{'Create account!'}
+							{'Create account'}
 						</Text>
 
 						<Text className='text-base font-inter-medium text-center text-dark-subTextColor'>
@@ -149,7 +198,7 @@ const SignupScreen = (props: Props) => {
 						)}
 						<AppButton
 							buttonProps={{
-								disabled: !username && !password && !email,
+								disabled: disabledState === 0.5,
 								className: 'mt-4',
 								style: {
 									opacity: disabledState,
@@ -175,6 +224,52 @@ const SignupScreen = (props: Props) => {
 					</View>
 				</View>
 			</View>
+			<Modal isVisible={modalOpen} onBackdropPress={() => setModalOpen(false)} onDismiss={
+				() => setModalOpen(false)
+			}
+			style={{ 
+				width: '80%',
+				alignSelf: 'center',
+			 }}>
+				<View className='bg-dark-secondaryBackground rounded-lg py-8'>
+					<Text className='text-2xl font-inter-semiBold text-center text-dark-textColor mb-4'>
+						Profile Picture
+					</Text>
+					<View className=' flex flex-row justify-center items-center gap-x-4'>
+					<TouchableOpacity className='flex items-center w-20 bg-dark-primaryBackground p-2 rounded-lg' onPress={handleChoosePhoto}>
+						<MaterialIcon
+							name='photo-library'
+							size={24}
+							color={themeColors.primaryColor[100]}
+						/>
+						<Text className='text-base font-inter-regular text-center text-dark-textColor leading-4 mt-2'>
+							Choose Photo
+						</Text>
+					</TouchableOpacity>
+					<TouchableOpacity className='flex items-center w-20 bg-dark-primaryBackground p-2 rounded-lg' onPress={handleTakePhoto}>
+						<MaterialIcon
+							name='photo-library'
+							size={24}
+							color={themeColors.primaryColor[100]}
+						/>
+						<Text className='text-base font-inter-regular text-center text-dark-textColor leading-4 mt-2'>
+							Choose Photo
+						</Text>
+					</TouchableOpacity>
+					<TouchableOpacity className='flex items-center w-20 bg-dark-primaryBackground p-2 rounded-lg' onPress={handleRemovePhoto}>
+						<MaterialIcon
+							name='photo-library'
+							size={24}
+							color={themeColors.primaryColor[100]}
+						/>
+						<Text className='text-base font-inter-regular text-center text-dark-textColor leading-4 mt-2'>
+							Choose Photo
+						</Text>
+					</TouchableOpacity>
+					</View>
+				</View>
+			</Modal>
+
 		</KeyboardAwareScrollView>
 	);
 };
