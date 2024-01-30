@@ -2,13 +2,13 @@ import { View, Text, Image, TouchableOpacity } from 'react-native';
 import React, { useEffect, useMemo } from 'react';
 import { TTap, TTopic } from '../types';
 import { mode, themeColors } from '../utils/constants';
-import { getCompanyName } from '../database/services/MockProfileService';
+import { getCreatorName } from '../database/services/ProfileService';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Logo from '../../assets/images/Logo';
 import {
 	getTopicFromTap,
 	getViewsForTap,
-} from '../database/services/MockTapService';
+} from '../database/services/TapService';
 import { Skeleton } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -28,9 +28,15 @@ const FullInfoTap = ({ tap, containerProps, isNew, loading }: Props) => {
 	const { taps } = useTaps();
 	const [views, setViews] = React.useState<string>('0');
 	const [topic, setTopic] = React.useState<TTopic | null>(null);
-	const companyName = useMemo(() => {
-		if (!tap) return '';
-		return getCompanyName(tap.creatorId);
+	const [companyName, setCompanyName] = React.useState<string>('');
+	useEffect(() => {
+		if (!tap) return;
+		const getCompanyName = async () => {
+			const _companyName = await getCreatorName(tap.creatorId);
+			if (!_companyName) return;
+			setCompanyName(_companyName);
+		};
+		getCompanyName();
 	}, [tap]);
 
 	const timeAgo = useMemo(() => {

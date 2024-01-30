@@ -1,25 +1,25 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { TContinueWatchingTap, TTap, TUser } from '../types';
+import React, { useEffect, useMemo, useState } from 'react';
+import { TContinueWatchingTap, TTap, TProfile } from '../types';
 import {
 	getAllTaps,
 	getTapsWithProgressForUser,
-	getUserDiscoverTaps,
-} from '../database/services/MockTapService';
+	getProfileDiscoverTaps,
+} from '../database/services/TapService';
 
 const TapContext = React.createContext<{
 	loadingInitial: boolean;
 	taps: TTap[];
 	discoverTaps: TTap[];
 	userTaps: TContinueWatchingTap[];
-	getDiscoverTaps: (user: TUser) => void;
-	getUserTaps: (user: TUser) => void;
+	getDiscoverTaps: (user: TProfile) => void;
+	geTProfileTaps: (user: TProfile) => void;
 }>({
 	loadingInitial: true,
 	taps: [],
 	discoverTaps: [],
 	userTaps: [],
 	getDiscoverTaps: () => {},
-	getUserTaps: () => {},
+	geTProfileTaps: () => {},
 });
 
 type Props = {
@@ -35,7 +35,7 @@ export const TapProvider = ({ children }: Props) => {
 	const [allTapsDone, setAllTapsDone] = useState<boolean>(false);
 
 	// User Taps
-	const getUserTaps = (user: TUser) => {
+	const geTProfileTaps = (user: TProfile) => {
 		if (!user?.uid) return [];
 		getTapsWithProgressForUser(user).then((taps) => {
 			setUserTaps(taps ?? []);
@@ -44,9 +44,9 @@ export const TapProvider = ({ children }: Props) => {
 	};
 
 	// Discover Taps
-	const getDiscoverTaps = (user: TUser) => {
+	const getDiscoverTaps = (user: TProfile) => {
 		if (!user?.uid) return [];
-		getUserDiscoverTaps(user).then((taps) => {
+		getProfileDiscoverTaps(user).then((taps) => {
 			setDiscoverTaps(taps ?? []);
 			setDiscoverTapsDone(true);
 		});
@@ -74,7 +74,7 @@ export const TapProvider = ({ children }: Props) => {
 			discoverTaps,
 			userTaps,
 			getDiscoverTaps,
-			getUserTaps,
+			geTProfileTaps,
 		}),
 		[
 			loadingInitial,
@@ -82,7 +82,7 @@ export const TapProvider = ({ children }: Props) => {
 			discoverTaps,
 			userTaps,
 			getDiscoverTaps,
-			getUserTaps,
+			geTProfileTaps,
 		]
 	);
 

@@ -8,12 +8,13 @@ import {
 import { doc, getDoc, setDoc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { DB, auth } from '../Firebase';
 import { COLLECTIONS } from '../../utils/constants';
-import { TUser } from '../../types';
+import { TProfile } from '../../types';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { storage } from '../Firebase';
 import * as FileSystem from 'expo-file-system';
 
-const STORE_PROFILE_IMAGE = (uid: string, extention: string) => `users/${uid}/profilePicture.${extention}`
+const STORE_PROFILE_IMAGE = (uid: string, extention: string) =>
+	`users/${uid}/profilePicture.${extention}`;
 
 export async function loginUser(
 	email: string,
@@ -50,7 +51,9 @@ export async function registerUser(
 				email.toLowerCase(),
 				password
 			);
-			const url = profileImage ? await saveImage(profileImage, userCredential.user.uid) : '';
+			const url = profileImage
+				? await saveImage(profileImage, userCredential.user.uid)
+				: '';
 			await setDoc(doc(DB, COLLECTIONS.USERS, userCredential.user.uid), {
 				name: name,
 				profilePic: url,
@@ -68,23 +71,23 @@ export async function registerUser(
 
 export async function saveImage(image: string, uid: string) {
 	try {
-		const {uri} = await FileSystem.getInfoAsync(image)
-			const blob: Blob = await new Promise((resolve, reject) => {
-				const xhr = new XMLHttpRequest();
-				xhr.onload = function() {
-				  resolve(xhr.response);
-				};
-				xhr.onerror = function() {
-				  reject(new TypeError('Network request failed'));
-				};
-				xhr.responseType = 'blob';
-				xhr.open('GET', uri, true);
-				xhr.send(null);
-			  });
-			const extention = image.split('.')[image.split('.').length - 1];
-			const imageRef = ref(storage, STORE_PROFILE_IMAGE(uid, extention));
-			await uploadBytes(imageRef, blob);
-			return getDownloadURL(imageRef);
+		const { uri } = await FileSystem.getInfoAsync(image);
+		const blob: Blob = await new Promise((resolve, reject) => {
+			const xhr = new XMLHttpRequest();
+			xhr.onload = function () {
+				resolve(xhr.response);
+			};
+			xhr.onerror = function () {
+				reject(new TypeError('Network request failed'));
+			};
+			xhr.responseType = 'blob';
+			xhr.open('GET', uri, true);
+			xhr.send(null);
+		});
+		const extention = image.split('.')[image.split('.').length - 1];
+		const imageRef = ref(storage, STORE_PROFILE_IMAGE(uid, extention));
+		await uploadBytes(imageRef, blob);
+		return getDownloadURL(imageRef);
 	} catch (error) {
 		console.error('saveImage in UserService ', error);
 	}
@@ -94,21 +97,21 @@ export async function sendForgotPasswordEmail(email: string) {
 	return sendPasswordResetEmail(auth, email);
 }
 
-export async function getUser(uid: string) {
+export async function geTProfile(uid: string) {
 	try {
 		const user = await getDoc(doc(DB, COLLECTIONS.USERS, uid));
-		return user.data() as TUser;
+		return user.data() as TProfile;
 	} catch (error) {
-		console.error('getUser in UserService ', error);
+		console.error('geTProfile in UserService ', error);
 		return null;
 	}
 }
 
-export function onUser(userId: string, callback: (user: TUser) => void) {
+export function onUser(userId: string, callback: (user: TProfile) => void) {
 	try {
 		const userRef = doc(DB, COLLECTIONS.USERS, userId);
 		return onSnapshot(userRef, (userDoc) => {
-			callback({ ...userDoc.data(), uid: userDoc.id } as TUser);
+			callback({ ...userDoc.data(), uid: userDoc.id } as TProfile);
 		});
 	} catch (error) {
 		console.error('onUser in UserService ', error);

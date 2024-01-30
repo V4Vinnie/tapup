@@ -12,7 +12,6 @@ import { RootStackParamList } from '../../navigation/Routes';
 import AppHeader from '../../components/AppHeader';
 import TagRow, { TagRowSkeleton } from '../../components/TagRow';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { TChapter, TProfile, TTap, TUser } from '../../types';
 import ChapterRow from '../../components/ChapterRow';
 import SectionHeader from '../../components/SectionHeader';
 import IonIcon from 'react-native-vector-icons/Ionicons';
@@ -23,9 +22,10 @@ import { useAuth } from '../../providers/AuthProvider';
 import {
 	getAllTapsForTopic,
 	getProfileForTap,
-	getProgessForChapters,
-} from '../../database/services/MockTapService';
+	getProgressForChapters,
+} from '../../database/services/TapService';
 import { onUser } from '../../database/services/UserService';
+import { TProfile, TTap } from '../../types';
 
 type ProfileScreenProps = NativeStackScreenProps<
 	RootStackParamList,
@@ -53,11 +53,10 @@ const TapScreen = ({ route }: ProfileScreenProps) => {
 
 	useEffect(() => {
 		if (!user?.uid || !sortedChapters) return;
-		const getProgress = (user: TUser) => {
-			getProgessForChapters(user, sortedChapters).then((progress) => {
-				if (progress) setProgress(progress);
-				setLoading(false);
-			});
+		const getProgress = (user: TProfile) => {
+			const progress = getProgressForChapters(user, sortedChapters);
+			if (progress) setProgress(progress);
+			setLoading(false);
 		};
 		if (isFocused) getProgress(user);
 		onUser(user.uid, getProgress);

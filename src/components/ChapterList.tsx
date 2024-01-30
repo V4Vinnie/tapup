@@ -1,13 +1,10 @@
 import { FlatList, Image, View } from 'react-native';
-import { TChapter, TUser } from '../types';
-import PreviewComponent from './PreviewComponent';
+import { TChapter, TProfile } from '../types';
 import { useAuth } from '../providers/AuthProvider';
 import { useEffect, useMemo, useState } from 'react';
 import { onUser } from '../database/services/UserService';
-import { useTaps } from '../providers/TapProvider';
 import { useIsFocused } from '@react-navigation/native';
-import { getProgessForChapters } from '../database/services/MockTapService';
-import LoadingIndicator from './LoadingIndicator';
+import { getProgressForChapters } from '../database/services/TapService';
 import ChapterComponent, { ChapterComponentSkeleton } from './ChapterComponent';
 
 type Props = {
@@ -45,11 +42,10 @@ const ChapterList = ({
 
 	useEffect(() => {
 		if (!user?.uid) return;
-		const getProgress = (user: TUser) => {
-			getProgessForChapters(user, chapters).then((progress) => {
-				if (progress) setProgress(progress);
-				setLoaded(true);
-			});
+		const getProgress = (user: TProfile) => {
+			const progress = getProgressForChapters(user, chapters);
+			if (progress) setProgress(progress);
+			setLoaded(true);
 		};
 		if (isFocused) getProgress(user);
 		onUser(user.uid, getProgress);
@@ -71,9 +67,9 @@ const ChapterList = ({
 						: undefined;
 				return (
 					<ChapterComponent
-						key={chapter.id}
+						key={chapter.chapterId}
 						episodeNumber={index + 1}
-						progress={progress.get(chapter.id)}
+						progress={progress.get(chapter.chapterId)}
 						text={chapter.name}
 						thumbnail={thumbnail}
 						video={video}

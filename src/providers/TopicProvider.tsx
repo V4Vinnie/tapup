@@ -1,19 +1,16 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { TNotificationTopic, TTopic, TUser } from '../types';
-import {
-	getTopics,
-	getTopicsForUser,
-} from '../database/services/MockTopicService';
+import { TNotificationTopic, TTopic, TProfile } from '../types';
+import { getTopics, getTopicsForUser } from '../database/services/TopicService';
 
 const TopicContext = React.createContext<{
 	loadingInitial: boolean;
 	topics: TTopic[];
-	getUserTopics: (user: TUser) => void;
+	getProfileTopics: (user: TProfile) => void;
 	userTopics: TNotificationTopic[];
 }>({
 	loadingInitial: true,
 	topics: [],
-	getUserTopics: () => {},
+	getProfileTopics: () => {},
 	userTopics: [],
 });
 
@@ -23,16 +20,16 @@ type Props = {
 
 export const TopicProvider = ({ children }: Props) => {
 	const [topics, setTopics] = useState<TTopic[]>([]);
-	const [userTopics, setUserTopics] = useState<TNotificationTopic[]>([]);
-	const [userTopicsDone, setUserTopicsDone] = useState<boolean>(false);
+	const [userTopics, seTProfileTopics] = useState<TNotificationTopic[]>([]);
+	const [userTopicsDone, seTProfileTopicsDone] = useState<boolean>(false);
 	const [allTopicsDone, setAllTopicsDone] = useState<boolean>(false);
 
 	// User topics
-	const getUserTopics = (user: TUser) => {
+	const getProfileTopics = (user: TProfile) => {
 		if (!user) return [];
 		getTopicsForUser(user).then((topics) => {
-			setUserTopics(topics ?? []);
-			setUserTopicsDone(true);
+			seTProfileTopics(topics ?? []);
+			seTProfileTopicsDone(true);
 		});
 	};
 
@@ -56,10 +53,10 @@ export const TopicProvider = ({ children }: Props) => {
 		() => ({
 			loadingInitial,
 			topics,
-			getUserTopics,
+			getProfileTopics,
 			userTopics,
 		}),
-		[loadingInitial, topics, getUserTopics, userTopics]
+		[loadingInitial, topics, getProfileTopics, userTopics]
 	);
 
 	return (

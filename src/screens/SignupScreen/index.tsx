@@ -15,18 +15,17 @@ import {
 } from '../LoginScreen';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { assets } from '../../../assets/Assets';
-import Modal from "react-native-modal";
+import Modal from 'react-native-modal';
 import * as ImagePicker from 'expo-image-picker';
 import ProfilePicture from './ProfilePicture';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { themeColors } from '../../utils/constants';
 
-
 type Props = {};
 
 const SignupScreen = (props: Props) => {
 	const [email, setEmail] = useState('');
-	const [username, setUsername] = useState('');
+	const [username, seTProfilename] = useState('');
 	const [password, setPassword] = useState('');
 	const [modalOpen, setModalOpen] = useState(false);
 	const [isSending, setIsSending] = useState(false);
@@ -52,14 +51,14 @@ const SignupScreen = (props: Props) => {
 			allowsEditing: true,
 			aspect: [1, 1],
 			quality: 1,
-		  })
-		  .then(async (result) => {
-			if (result.canceled) return;
-			const image = result.assets[0].uri;
-			setImage(image);
-		  })
-		  .catch((error) => {
-			console.log(error);
+		})
+			.then(async (result) => {
+				if (result.canceled) return;
+				const image = result.assets[0].uri;
+				setImage(image);
+			})
+			.catch((error) => {
+				console.log(error);
 			});
 	};
 
@@ -69,12 +68,14 @@ const SignupScreen = (props: Props) => {
 			allowsEditing: true,
 			aspect: [1, 1],
 			quality: 1,
-		  }).then((result) => {
-			  if (result.canceled) return;
-			setImage(result.assets[0].uri);
-		  }).catch((error) => {
-			console.log(error);
-		});	  
+		})
+			.then((result) => {
+				if (result.canceled) return;
+				setImage(result.assets[0].uri);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
 		setModalOpen(false);
 	};
 
@@ -109,7 +110,14 @@ const SignupScreen = (props: Props) => {
 
 				<View className='w-4/5 h-full py-2 justify-between pb-8 pt-52'>
 					<View className='-mt-12'>
-						<ProfilePicture image={image ? { uri: image } : assets.profile_placeholder} onPress={() => setModalOpen(true)} />
+						<ProfilePicture
+							image={
+								image
+									? { uri: image }
+									: assets.profile_placeholder
+							}
+							onPress={() => setModalOpen(true)}
+						/>
 						<Text className='text-3xl font-inter-bold text-center text-dark-textColor'>
 							{'Create account'}
 						</Text>
@@ -136,7 +144,7 @@ const SignupScreen = (props: Props) => {
 								value: username,
 								keyboardType: 'default',
 								onChangeText: (username) => {
-									setUsername(username);
+									seTProfilename(username);
 								},
 							}}
 						/>
@@ -224,52 +232,58 @@ const SignupScreen = (props: Props) => {
 					</View>
 				</View>
 			</View>
-			<Modal isVisible={modalOpen} onBackdropPress={() => setModalOpen(false)} onDismiss={
-				() => setModalOpen(false)
-			}
-			style={{ 
-				width: '80%',
-				alignSelf: 'center',
-			 }}>
+			<Modal
+				isVisible={modalOpen}
+				onBackdropPress={() => setModalOpen(false)}
+				onDismiss={() => setModalOpen(false)}
+				style={{
+					width: '80%',
+					alignSelf: 'center',
+				}}>
 				<View className='bg-dark-secondaryBackground rounded-lg py-8'>
 					<Text className='text-2xl font-inter-semiBold text-center text-dark-textColor mb-4'>
 						Profile Picture
 					</Text>
 					<View className=' flex flex-row justify-center items-center gap-x-4'>
-					<TouchableOpacity className='flex items-center w-20 bg-dark-primaryBackground p-2 rounded-lg' onPress={handleChoosePhoto}>
-						<MaterialIcon
-							name='photo-library'
-							size={24}
-							color={themeColors.primaryColor[100]}
-						/>
-						<Text className='text-base font-inter-regular text-center text-dark-textColor leading-4 mt-2'>
-							Choose Photo
-						</Text>
-					</TouchableOpacity>
-					<TouchableOpacity className='flex items-center w-20 bg-dark-primaryBackground p-2 rounded-lg' onPress={handleTakePhoto}>
-						<MaterialIcon
-							name='photo-library'
-							size={24}
-							color={themeColors.primaryColor[100]}
-						/>
-						<Text className='text-base font-inter-regular text-center text-dark-textColor leading-4 mt-2'>
-							Choose Photo
-						</Text>
-					</TouchableOpacity>
-					<TouchableOpacity className='flex items-center w-20 bg-dark-primaryBackground p-2 rounded-lg' onPress={handleRemovePhoto}>
-						<MaterialIcon
-							name='photo-library'
-							size={24}
-							color={themeColors.primaryColor[100]}
-						/>
-						<Text className='text-base font-inter-regular text-center text-dark-textColor leading-4 mt-2'>
-							Choose Photo
-						</Text>
-					</TouchableOpacity>
+						<TouchableOpacity
+							className='flex items-center w-20 bg-dark-primaryBackground p-2 rounded-lg'
+							onPress={handleChoosePhoto}>
+							<MaterialIcon
+								name='photo-library'
+								size={24}
+								color={themeColors.primaryColor[100]}
+							/>
+							<Text className='text-base font-inter-regular text-center text-dark-textColor leading-4 mt-2'>
+								Choose Photo
+							</Text>
+						</TouchableOpacity>
+						<TouchableOpacity
+							className='flex items-center w-20 bg-dark-primaryBackground p-2 rounded-lg'
+							onPress={handleTakePhoto}>
+							<MaterialIcon
+								name='photo-library'
+								size={24}
+								color={themeColors.primaryColor[100]}
+							/>
+							<Text className='text-base font-inter-regular text-center text-dark-textColor leading-4 mt-2'>
+								Choose Photo
+							</Text>
+						</TouchableOpacity>
+						<TouchableOpacity
+							className='flex items-center w-20 bg-dark-primaryBackground p-2 rounded-lg'
+							onPress={handleRemovePhoto}>
+							<MaterialIcon
+								name='photo-library'
+								size={24}
+								color={themeColors.primaryColor[100]}
+							/>
+							<Text className='text-base font-inter-regular text-center text-dark-textColor leading-4 mt-2'>
+								Choose Photo
+							</Text>
+						</TouchableOpacity>
 					</View>
 				</View>
 			</Modal>
-
 		</KeyboardAwareScrollView>
 	);
 };

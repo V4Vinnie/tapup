@@ -12,13 +12,14 @@ const YourTopics = () => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const { user } = useAuth();
-	const { getUserTopics, userTopics, topics, loadingInitial } = useTopics();
+	const { getProfileTopics, userTopics, topics, loadingInitial } =
+		useTopics();
 	const isFocused = useIsFocused();
 
 	useEffect(() => {
 		if (!user?.uid) return;
-		if (isFocused) getUserTopics(user);
-		onUser(user.uid, getUserTopics);
+		if (isFocused) getProfileTopics(user);
+		onUser(user.uid, getProfileTopics);
 	}, [isFocused, user]);
 
 	if (!loadingInitial && userTopics.length === 0)

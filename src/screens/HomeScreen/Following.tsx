@@ -14,7 +14,7 @@ const Following = () => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const { user } = useAuth();
-	const { getUserProfiles, userProfiles, profiles, loadingInitial } =
+	const { geTProfileProfiles, userProfiles, profiles, loadingInitial } =
 		useProfiles();
 	const isFocused = useIsFocused();
 	const [following, setFollowing] = React.useState<TNotificationProfile[]>(
@@ -27,8 +27,8 @@ const Following = () => {
 
 	useEffect(() => {
 		if (!user?.uid) return;
-		if (isFocused) getUserProfiles(user);
-		onUser(user.uid, getUserProfiles);
+		if (isFocused) geTProfileProfiles(user);
+		onUser(user.uid, geTProfileProfiles);
 	}, [isFocused, user]);
 
 	useEffect(() => {

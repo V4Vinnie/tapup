@@ -1,9 +1,9 @@
-import { TUser } from '../types';
+import { TProfile } from '../types';
 import { useNavigation } from '@react-navigation/native';
 import { UserCredential, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../database/Firebase';
 import {
-	getUser,
+	geTProfile,
 	loginUser,
 	onUser,
 	registerUser,
@@ -14,7 +14,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useEffect } from 'react';
 
 const AuthContext = React.createContext<{
-	user: TUser | null;
+	user: TProfile | null;
 	handleLogin: (
 		email: string,
 		password: string
@@ -37,8 +37,12 @@ const AuthContext = React.createContext<{
 }>({
 	user: null,
 	handleLogin: (email: string, password: string) => Promise.resolve(),
-	handleSignup: (name: string, email: string, password: string, profileImage?: string) =>
-		Promise.resolve(),
+	handleSignup: (
+		name: string,
+		email: string,
+		password: string,
+		profileImage?: string
+	) => Promise.resolve(),
 	handleLogout: () => {},
 	status: null,
 	handleForgotPassword: (
@@ -55,7 +59,7 @@ export const AuthProvider = ({ children }: Props) => {
 	const navigator =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-	const [user, setUser] = React.useState<TUser | null>(null);
+	const [user, seTProfile] = React.useState<TProfile | null>(null);
 	const [loadingInitial, setLoadingInitial] = React.useState<boolean>(true);
 	const [status, setStatus] = React.useState<{
 		type: 'error' | 'success';
@@ -95,7 +99,7 @@ export const AuthProvider = ({ children }: Props) => {
 
 	const handleLogout = () => {
 		auth.signOut();
-		setUser(null);
+		seTProfile(null);
 		setStatus(null);
 	};
 
@@ -120,17 +124,20 @@ export const AuthProvider = ({ children }: Props) => {
 
 	React.useEffect(
 		() =>
-			onAuthStateChanged(auth, async (user) => {
-				if (user) {
-					const _user = await getUser(user.uid);
-					setUser({ ..._user, ...user } as TUser);
-					console.log(_user);
-					
-				} else {
-					setUser(null);
-				}
-				setLoadingInitial(false);
-			}, console.log),
+			onAuthStateChanged(
+				auth,
+				async (user) => {
+					if (user) {
+						const _user = await geTProfile(user.uid);
+						seTProfile({ ..._user, ...user } as TProfile);
+						console.log(_user);
+					} else {
+						seTProfile(null);
+					}
+					setLoadingInitial(false);
+				},
+				console.log
+			),
 		[]
 	);
 

@@ -25,5 +25,7 @@ export const COLLECTIONS = {
 	TOPICS: 'topics',
 };
 
+export const SKELETON_WAIT_TIME = 700;
+
 export const themeColors = settings.theme.extend.colors;
 export const mode = themeColors.darkMode ? 'dark' : 'light';

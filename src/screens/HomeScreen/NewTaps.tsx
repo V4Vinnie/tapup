@@ -11,7 +11,6 @@ import { Image, Text, View } from 'react-native';
 import FullInfoTap from '../../components/FullInfoTap';
 import { TTap } from '../../types';
 
-const SPACE_BETWEEN = 16;
 const NewTaps = () => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -64,7 +63,7 @@ const NewTaps = () => {
 					{/* Show only first 10 */}
 					{newTaps.slice(0, 10).map((tap, index) => (
 						<View className='mb-4' key={tap.id}>
-							<FullInfoTap tap={tap} isNew={true} />
+							<FullInfoTap key={tap.id} tap={tap} isNew={true} />
 						</View>
 					))}
 				</View>
