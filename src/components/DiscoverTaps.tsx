@@ -1,17 +1,22 @@
 import React, { useEffect, useMemo } from 'react';
-import LoadingIndicator from '../../components/LoadingIndicator';
-import { useTaps } from '../../providers/TapProvider';
-import { useAuth } from '../../providers/AuthProvider';
+import { useTaps } from '../providers/TapProvider';
+import { useAuth } from '../providers/AuthProvider';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { onUser } from '../../database/services/UserService';
-import SectionHeader from '../../components/SectionHeader';
-import { RootStackParamList, Routes } from '../../navigation/Routes';
+import { onUser } from '../database/services/UserService';
+import SectionHeader from './SectionHeader';
+import { RootStackParamList, Routes } from '../navigation/Routes';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Image, Text, View } from 'react-native';
-import FullInfoTap from '../../components/FullInfoTap';
-import { TTap } from '../../types';
+import FullInfoTap from './FullInfoTap';
+import { TTap } from '../types';
 
-const NewTaps = () => {
+type Props = {
+	title?: string;
+	onPress?: () => void;
+	rightButton?: boolean;
+};
+
+const DiscoverTaps = ({ title, onPress, rightButton = true }: Props) => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const { getDiscoverTaps, discoverTaps, loadingInitial } = useTaps();
@@ -40,20 +45,24 @@ const NewTaps = () => {
 		return imagesLoading || loadingInitial;
 	}, [imagesLoading, loadingInitial]);
 
+	const hasOnPress = useMemo(() => {
+		const func = () => {
+			if (loadingInitial) return;
+			navigate(Routes.SEE_MORE_TAPS, {
+				title: 'New Taps',
+				taps: newTaps,
+			});
+		};
+		if (rightButton) {
+			return onPress ?? func;
+		}
+	}, [rightButton, onPress, loadingInitial]);
+
 	return (
 		<>
-			<SectionHeader
-				title='New Taps'
-				onPress={() => {
-					if (loadingInitial) return;
-					navigate(Routes.SEE_MORE_TAPS, {
-						title: 'New Taps',
-						taps: newTaps,
-					});
-				}}
-			/>
+			<SectionHeader title={title ?? 'New Taps'} onPress={hasOnPress} />
 			{dataLoading ? (
-				<NewTapsSkeleton />
+				<DiscoverTapsSkeleton />
 			) : newTaps.length === 0 ? (
 				<Text className='text-dark-textColor text-center h-10'>
 					No new taps
@@ -72,7 +81,7 @@ const NewTaps = () => {
 	);
 };
 
-const NewTapsSkeleton = () => {
+const DiscoverTapsSkeleton = () => {
 	return (
 		<View className='px-4 mb-4'>
 			{/* Show only first 10 */}
@@ -83,4 +92,4 @@ const NewTapsSkeleton = () => {
 	);
 };
 
-export default NewTaps;
+export default DiscoverTaps;

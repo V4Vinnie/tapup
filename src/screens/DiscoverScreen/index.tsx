@@ -6,6 +6,7 @@ import { RootStackParamList, Routes } from '../../navigation/Routes';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
 import { useAuth } from '../../providers/AuthProvider';
 import DiscoverProfiles from './DiscoverProfiles';
+import DiscoverTaps from '../../components/DiscoverTaps';
 
 type Props = {};
 
@@ -50,6 +51,7 @@ const DiscoverScreen = (props: Props) => {
 					}}>
 					<View className='w-full mt-6'>
 						<DiscoverProfiles />
+						<DiscoverTaps title='Taps' rightButton={false} />
 					</View>
 				</ScrollView>
 			</View>
