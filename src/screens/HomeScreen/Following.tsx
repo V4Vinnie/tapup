@@ -6,7 +6,7 @@ import { useAuth } from '../../providers/AuthProvider';
 import { onUser } from '../../database/services/UserService';
 import SectionHeader from '../../components/SectionHeader';
 import { useProfiles } from '../../providers/ProfileProvider';
-import { TNotificationProfile, TProfile } from '../../types';
+import { TNotificationProfile } from '../../types';
 import ProfileRow from '../../components/ProfileRow';
 
 const Following = () => {
