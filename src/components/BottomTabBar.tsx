@@ -7,10 +7,10 @@ import settings from '../../tailwind.config';
 import { Routes } from '../navigation/Routes';
 import { CommonActions } from '@react-navigation/native';
 import { Text } from 'react-native';
+import { bottomNavIcons } from '../utils/constants';
 
 const { colors: themeColors } = settings.theme.extend;
 const mode = themeColors.darkMode ? 'dark' : 'light';
-const ICON_SIZE = 24;
 
 const BottomTabBar = ({
 	state,
@@ -39,49 +39,7 @@ const BottomTabBar = ({
 					}
 				};
 
-				const icons = {
-					[Routes.HOME]: (
-						<MCIcon
-							key='home'
-							name='home-outline'
-							size={ICON_SIZE}
-							color={themeColors[mode].textColor}
-						/>
-					),
-					[Routes.DISCOVER]: (
-						<MCIcon
-							key='discover'
-							name='compass-outline'
-							size={ICON_SIZE}
-							color={themeColors[mode].textColor}
-						/>
-					),
-					[Routes.CREATE]: (
-						<IonIcon
-							key='create'
-							name='add-circle-outline'
-							size={ICON_SIZE}
-							color={themeColors[mode].textColor}
-						/>
-					),
-					[Routes.LIKED]: (
-						<MCIcon
-							key='liked'
-							name='heart-outline'
-							size={ICON_SIZE}
-							color={themeColors[mode].textColor}
-						/>
-					),
-					[Routes.ACCOUNT]: (
-						<MCIcon
-							key='account'
-							name='account-outline'
-							size={ICON_SIZE}
-							color={themeColors[mode].textColor}
-						/>
-					),
-				} as any;
-
+				const icons = bottomNavIcons(isFocused);
 				const icon = icons[route.name] || icons[Routes.HOME];
 
 				return isFocused ? (

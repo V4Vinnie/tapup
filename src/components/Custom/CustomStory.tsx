@@ -30,7 +30,7 @@ import {
 import StoryModal from '@birdwingo/react-native-instagram-stories/src/components/Modal';
 import { StoryModalPublicMethods } from '@birdwingo/react-native-instagram-stories/src/core/dto/componentsDTO';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import Chapter from '../Chapter';
+import PreviewComponent from '../PreviewComponent';
 
 export interface CustomStoryProps extends InstagramStoriesProps {
 	avatarWidth?: number;
@@ -166,7 +166,7 @@ const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 								? {
 										...value,
 										stories: newData,
-								  }
+									}
 								: value
 						)
 					);
@@ -211,7 +211,7 @@ const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 								<TouchableOpacity
 									key={story.id}
 									onPress={() => onPress(story.id)}>
-									<Chapter />
+									<PreviewComponent />
 								</TouchableOpacity>
 							)
 					)}
