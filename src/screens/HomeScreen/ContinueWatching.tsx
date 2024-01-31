@@ -13,7 +13,7 @@ import { TContinueWatchingTap } from '../../types';
 const ContinueWatching = () => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-	const { geTProfileTaps, userTaps, loadingInitial } = useTaps();
+	const { getProfileTaps, userTaps, loadingInitial } = useTaps();
 	const { user } = useAuth();
 	const isFocused = useIsFocused();
 	const [continueWatching, setContinueWatching] = React.useState<
@@ -22,8 +22,8 @@ const ContinueWatching = () => {
 
 	useEffect(() => {
 		if (!user?.uid) return;
-		if (isFocused) geTProfileTaps(user);
-		onUser(user.uid, geTProfileTaps);
+		if (isFocused) getProfileTaps(user);
+		onUser(user.uid, getProfileTaps);
 	}, [isFocused, user]);
 
 	useEffect(() => {

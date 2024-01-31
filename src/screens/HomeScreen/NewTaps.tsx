@@ -62,8 +62,8 @@ const NewTaps = () => {
 				<View className='px-4 mb-4'>
 					{/* Show only first 10 */}
 					{newTaps.slice(0, 10).map((tap, index) => (
-						<View className='mb-4' key={tap.id}>
-							<FullInfoTap key={tap.id} tap={tap} isNew={true} />
+						<View className='mb-4' key={tap.name + index}>
+							<FullInfoTap tap={tap} isNew={true} />
 						</View>
 					))}
 				</View>
@@ -76,8 +76,8 @@ const NewTapsSkeleton = () => {
 	return (
 		<View className='px-4 mb-4'>
 			{/* Show only first 10 */}
-			{[1, 2, 3, 4, 5].map((item) => (
-				<FullInfoTap key={item} loading />
+			{[1, 2, 3, 4, 5].map((item, index) => (
+				<FullInfoTap key={item.toString() + index} loading />
 			))}
 		</View>
 	);

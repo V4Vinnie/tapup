@@ -6,15 +6,14 @@ import { useAuth } from '../../providers/AuthProvider';
 import { onUser } from '../../database/services/UserService';
 import SectionHeader from '../../components/SectionHeader';
 import { useProfiles } from '../../providers/ProfileProvider';
-import { TNotificationProfile, TProfile } from '../../types';
-import { Image } from 'react-native';
+import { TNotificationProfile } from '../../types';
 import ProfileRow from '../../components/ProfileRow';
 
 const Following = () => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const { user } = useAuth();
-	const { geTProfileProfiles, userProfiles, profiles, loadingInitial } =
+	const { getProfileProfiles, userProfiles, profiles, loadingInitial } =
 		useProfiles();
 	const isFocused = useIsFocused();
 	const [following, setFollowing] = React.useState<TNotificationProfile[]>(
@@ -27,8 +26,8 @@ const Following = () => {
 
 	useEffect(() => {
 		if (!user?.uid) return;
-		if (isFocused) geTProfileProfiles(user);
-		onUser(user.uid, geTProfileProfiles);
+		if (isFocused) getProfileProfiles(user);
+		onUser(user.uid, getProfileProfiles);
 	}, [isFocused, user]);
 
 	useEffect(() => {

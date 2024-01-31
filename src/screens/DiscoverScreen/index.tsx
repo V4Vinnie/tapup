@@ -4,15 +4,12 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
-import ContinueWatching from './ContinueWatching';
-import YourTopics from './YourTopics';
-import Following from './Following';
-import NewTaps from './NewTaps';
 import { useAuth } from '../../providers/AuthProvider';
+import DiscoverProfiles from './DiscoverProfiles';
 
 type Props = {};
 
-const HomeScreen = (props: Props) => {
+const DiscoverScreen = (props: Props) => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const { handleLogout } = useAuth();
@@ -52,10 +49,7 @@ const HomeScreen = (props: Props) => {
 						scrollY.setValue(e.nativeEvent.contentOffset.y);
 					}}>
 					<View className='w-full mt-6'>
-						<ContinueWatching />
-						<YourTopics />
-						<Following />
-						<NewTaps />
+						<DiscoverProfiles />
 					</View>
 				</ScrollView>
 			</View>
@@ -63,4 +57,4 @@ const HomeScreen = (props: Props) => {
 	);
 };
 
-export default HomeScreen;
+export default DiscoverScreen;

@@ -5,7 +5,7 @@ import {
 	TTap,
 	TTopic,
 } from '../../types';
-import { geTProfile } from './UserService';
+import { getProfile } from './UserService';
 import {
 	collection,
 	doc,
@@ -40,14 +40,24 @@ export const getProfileDiscoverTaps = async (user: TProfile) => {
 		const watchedTapIds = user.watchedFrames.map((frame) => frame.tapId);
 		if (watchedTapIds.length === 0) {
 			const allTaps = await getDocs(tapsRef);
-			return allTaps.docs.map((doc) => doc.data() as TTap);
+			return allTaps.docs.map((doc) => {
+				return {
+					id: doc.id,
+					...doc.data(),
+				} as TTap;
+			});
 		} else {
 			const _query = query(
 				tapsRef,
 				where(documentId(), 'not-in', watchedTapIds)
 			);
 			const discoverTapsSnapshot = await getDocs(_query);
-			return discoverTapsSnapshot.docs.map((doc) => doc.data() as TTap);
+			return discoverTapsSnapshot.docs.map((doc) => {
+				return {
+					id: doc.id,
+					...doc.data(),
+				} as TTap;
+			});
 		}
 	} catch (error) {
 		console.log('getTaps in TapService ', error);
@@ -58,7 +68,7 @@ export const getTapsWithProgressForUser = async (user: TProfile) => {
 	try {
 		const userData =
 			user.watchedFrames?.length === 0
-				? await geTProfile(user.uid)
+				? await getProfile(user.uid)
 				: user;
 		if (!userData) throw new Error('User not found');
 
@@ -90,7 +100,7 @@ export const getViewsForTap = async (tapId: string) => {
 	try {
 		const tapRef = doc(DB, COLLECTIONS.TAPS, tapId);
 		const tapDoc = await getDoc(tapRef);
-		const tapData = tapDoc.data() as TTap;
+		const tapData = { id: tapDoc.id, ...tapDoc.data() } as TTap;
 		const frames = tapData.chapters.map((chapter) => chapter.frames).flat();
 		return frames.reduce(
 			(total, frame) => total + (frame.watchedBy?.length ?? 0),
@@ -102,11 +112,20 @@ export const getViewsForTap = async (tapId: string) => {
 };
 
 export const getAllTapsForTopic = async (topicId: string) => {
+	console.log(
+		'🚀 ~ file: TapService.ts:115 ~ getAllTapsForTopic ~ topicId:',
+		topicId
+	);
 	try {
 		const tapsRef = collection(DB, COLLECTIONS.TAPS);
 		const _query = query(tapsRef, where('topicId', '==', topicId));
 		const tapsSnapshot = await getDocs(_query);
-		return tapsSnapshot.docs.map((doc) => doc.data() as TTap);
+		return tapsSnapshot.docs.map((doc) => {
+			return {
+				id: doc.id,
+				...doc.data(),
+			} as TTap;
+		});
 	} catch (error) {
 		console.log('getAllTapsForTopic in TapService ', error);
 	}
@@ -119,7 +138,12 @@ export const getAllTapsForTopics = async (topics: TTopic[]) => {
 		if (topicIds.length === 0) return [];
 		const _query = query(tapsRef, where('topicId', 'in', topicIds));
 		const tapsSnapshot = await getDocs(_query);
-		return tapsSnapshot.docs.map((doc) => doc.data() as TTap);
+		return tapsSnapshot.docs.map((doc) => {
+			return {
+				id: doc.id,
+				...doc.data(),
+			} as TTap;
+		});
 	} catch (error) {
 		console.log('getAllTapsForTopics in TapService ', error);
 	}
@@ -130,7 +154,12 @@ export const getTapsByCreator = async (profile: TProfile) => {
 		const tapsRef = collection(DB, COLLECTIONS.TAPS);
 		const _query = query(tapsRef, where('creatorId', '==', profile.uid));
 		const tapsSnapshot = await getDocs(_query);
-		return tapsSnapshot.docs.map((doc) => doc.data() as TTap);
+		return tapsSnapshot.docs.map((doc) => {
+			return {
+				id: doc.id,
+				...doc.data(),
+			} as TTap;
+		});
 	} catch (error) {
 		console.log('getTapsByCreatorAndTopic in TapService ', error);
 	}
@@ -156,21 +185,14 @@ export const getProgressForChapters = (
 	return result;
 };
 
-export const getProfileForTap = async (tap: TTap) => {
-	try {
-		const userRef = doc(DB, COLLECTIONS.USERS, tap.creatorId);
-		const userDoc = await getDoc(userRef);
-		return userDoc.data() as TProfile;
-	} catch (error) {
-		console.log('getProfileForTap in TapService ', error);
-	}
-};
-
 export const getTopicFromTap = async (tap: TTap) => {
 	try {
 		const topicRef = doc(DB, COLLECTIONS.TOPICS, tap.topicId);
 		const topicDoc = await getDoc(topicRef);
-		return topicDoc.data() as TTopic;
+		return {
+			id: topicDoc.id,
+			...topicDoc.data(),
+		} as TTopic;
 	} catch (error) {
 		console.log('getTopicFromTap in TapService ', error);
 	}

@@ -3,9 +3,8 @@ import {
 	createUserWithEmailAndPassword,
 	sendPasswordResetEmail,
 	signInWithEmailAndPassword,
-	updateProfile,
 } from 'firebase/auth';
-import { doc, getDoc, setDoc, onSnapshot, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
 import { DB, auth } from '../Firebase';
 import { COLLECTIONS } from '../../utils/constants';
 import { TProfile } from '../../types';
@@ -51,17 +50,18 @@ export async function registerUser(
 				email.toLowerCase(),
 				password
 			);
+			const userAuthId = userCredential.user.uid;
 			const url = profileImage
-				? await saveImage(profileImage, userCredential.user.uid)
+				? await saveImage(profileImage, userAuthId)
 				: '';
-			await setDoc(doc(DB, COLLECTIONS.USERS, userCredential.user.uid), {
+			await setDoc(doc(DB, COLLECTIONS.USERS, userAuthId), {
+				uid: userAuthId,
 				name: name,
 				profilePic: url,
 				email: email,
 				role: 'USER',
-
 				watchedFrames: [],
-			});
+			} as TProfile);
 			resolve(userCredential);
 		} catch (error) {
 			reject(error);
@@ -97,12 +97,12 @@ export async function sendForgotPasswordEmail(email: string) {
 	return sendPasswordResetEmail(auth, email);
 }
 
-export async function geTProfile(uid: string) {
+export async function getProfile(uid: string) {
 	try {
 		const user = await getDoc(doc(DB, COLLECTIONS.USERS, uid));
 		return user.data() as TProfile;
 	} catch (error) {
-		console.error('geTProfile in UserService ', error);
+		console.error('getProfile in UserService ', error);
 		return null;
 	}
 }

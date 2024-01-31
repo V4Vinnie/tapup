@@ -12,14 +12,14 @@ const TapContext = React.createContext<{
 	discoverTaps: TTap[];
 	userTaps: TContinueWatchingTap[];
 	getDiscoverTaps: (user: TProfile) => void;
-	geTProfileTaps: (user: TProfile) => void;
+	getProfileTaps: (user: TProfile) => void;
 }>({
 	loadingInitial: true,
 	taps: [],
 	discoverTaps: [],
 	userTaps: [],
 	getDiscoverTaps: () => {},
-	geTProfileTaps: () => {},
+	getProfileTaps: () => {},
 });
 
 type Props = {
@@ -35,7 +35,7 @@ export const TapProvider = ({ children }: Props) => {
 	const [allTapsDone, setAllTapsDone] = useState<boolean>(false);
 
 	// User Taps
-	const geTProfileTaps = (user: TProfile) => {
+	const getProfileTaps = (user: TProfile) => {
 		if (!user?.uid) return [];
 		getTapsWithProgressForUser(user).then((taps) => {
 			setUserTaps(taps ?? []);
@@ -74,7 +74,7 @@ export const TapProvider = ({ children }: Props) => {
 			discoverTaps,
 			userTaps,
 			getDiscoverTaps,
-			geTProfileTaps,
+			getProfileTaps,
 		}),
 		[
 			loadingInitial,
@@ -82,7 +82,7 @@ export const TapProvider = ({ children }: Props) => {
 			discoverTaps,
 			userTaps,
 			getDiscoverTaps,
-			geTProfileTaps,
+			getProfileTaps,
 		]
 	);
 

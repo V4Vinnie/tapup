@@ -81,7 +81,7 @@ const TagRow = ({
 		});
 	};
 
-	return (
+	return data.length === 0 ? null : (
 		<View className='w-full' {...containerProps}>
 			<FlatList
 				ref={flatListRef}

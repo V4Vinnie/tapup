@@ -8,12 +8,12 @@ import { TNotificationProfile, TProfile } from '../types';
 const ProfileContext = React.createContext<{
 	loadingInitial: boolean;
 	profiles: TNotificationProfile[];
-	geTProfileProfiles: (user: TProfile) => void;
+	getProfileProfiles: (user: TProfile) => void;
 	userProfiles: TNotificationProfile[];
 }>({
 	loadingInitial: true,
 	profiles: [],
-	geTProfileProfiles: () => {},
+	getProfileProfiles: () => {},
 	userProfiles: [],
 });
 
@@ -30,7 +30,7 @@ export const ProfileProvider = ({ children }: Props) => {
 	const [allProfilesDone, setAllProfilesDone] = useState<boolean>(false);
 
 	// User profiles
-	const geTProfileProfiles = (user: TProfile) => {
+	const getProfileProfiles = (user: TProfile) => {
 		if (!user) return [];
 		getFollowingProfiles(user).then((profiles) => {
 			seTProfileProfiles(profiles ?? []);
@@ -58,10 +58,10 @@ export const ProfileProvider = ({ children }: Props) => {
 		() => ({
 			loadingInitial,
 			profiles,
-			geTProfileProfiles,
+			getProfileProfiles,
 			userProfiles,
 		}),
-		[loadingInitial, profiles, geTProfileProfiles, userProfiles]
+		[loadingInitial, profiles, getProfileProfiles, userProfiles]
 	);
 
 	return (

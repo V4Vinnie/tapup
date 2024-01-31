@@ -6,9 +6,11 @@ import IonIcon from 'react-native-vector-icons/Ionicons';
 import settings from '../../tailwind.config';
 import { Routes } from '../navigation/Routes';
 import { CommonActions } from '@react-navigation/native';
+import { Text } from 'react-native';
 
 const { colors: themeColors } = settings.theme.extend;
 const mode = themeColors.darkMode ? 'dark' : 'light';
+const ICON_SIZE = 24;
 
 const BottomTabBar = ({
 	state,
@@ -42,10 +44,44 @@ const BottomTabBar = ({
 						<MCIcon
 							key='home'
 							name='home-outline'
-							{...standardProps(isFocused)}
+							size={ICON_SIZE}
+							color={themeColors[mode].textColor}
+						/>
+					),
+					[Routes.DISCOVER]: (
+						<MCIcon
+							key='discover'
+							name='compass-outline'
+							size={ICON_SIZE}
+							color={themeColors[mode].textColor}
+						/>
+					),
+					[Routes.CREATE]: (
+						<IonIcon
+							key='create'
+							name='add-circle-outline'
+							size={ICON_SIZE}
+							color={themeColors[mode].textColor}
+						/>
+					),
+					[Routes.LIKED]: (
+						<MCIcon
+							key='liked'
+							name='heart-outline'
+							size={ICON_SIZE}
+							color={themeColors[mode].textColor}
+						/>
+					),
+					[Routes.ACCOUNT]: (
+						<MCIcon
+							key='account'
+							name='account-outline'
+							size={ICON_SIZE}
+							color={themeColors[mode].textColor}
 						/>
 					),
 				} as any;
+
 				const icon = icons[route.name] || icons[Routes.HOME];
 
 				return isFocused ? (
@@ -57,29 +93,31 @@ const BottomTabBar = ({
 							<View className='justify-center items-center'>
 								{icon}
 							</View>
+							<Text className='text-dark-subTextColor text-xs'>
+								{route.name}
+							</Text>
 						</View>
 					</TouchableOpacity>
 				) : (
 					<TouchableOpacity
-						key={icon.key}
+						key={route.key}
+						style={{ opacity: 0.4 }}
 						activeOpacity={0.8}
 						onPress={onPress}
 						className='flex-1 h-14 bg-dark-secondaryBackground justify-center items-center'>
-						{icon}
+						<View className='w-20 h-full rounded-full justify-center items-center'>
+							<View className='justify-center items-center'>
+								{icon}
+							</View>
+							<Text className='text-dark-subTextColor text-xs'>
+								{route.name}
+							</Text>
+						</View>
 					</TouchableOpacity>
 				);
 			})}
 		</View>
 	);
-};
-
-const standardProps = (isFocused: boolean) => {
-	return {
-		size: isFocused ? 32 : 30,
-		color: isFocused
-			? themeColors.dark.textColor
-			: themeColors.dark.subTextColor,
-	};
 };
 
 export default BottomTabBar;

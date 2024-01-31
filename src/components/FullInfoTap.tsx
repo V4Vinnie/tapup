@@ -119,7 +119,7 @@ const FullInfoTap = ({ tap, containerProps, isNew, loading }: Props) => {
 				</Text>
 				<View className='flex flex-row items-center gap-3'>
 					<Text className='text-dark-subTextColor text-[10px] font-inter-light'>
-						{views} views
+						{views} view{views === '1' ? '' : 's'}
 					</Text>
 					<View className='w-1 h-2'>
 						<Logo scale={0.05} width={6} height={10} />

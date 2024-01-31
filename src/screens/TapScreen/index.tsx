@@ -21,11 +21,11 @@ import ChapterList from '../../components/ChapterList';
 import { useAuth } from '../../providers/AuthProvider';
 import {
 	getAllTapsForTopic,
-	getProfileForTap,
 	getProgressForChapters,
 } from '../../database/services/TapService';
 import { onUser } from '../../database/services/UserService';
 import { TProfile, TTap } from '../../types';
+import { getProfileForTap } from '../../database/services/ProfileService';
 
 type ProfileScreenProps = NativeStackScreenProps<
 	RootStackParamList,
