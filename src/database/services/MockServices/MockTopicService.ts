@@ -1,4 +1,4 @@
-import { TNotificationTopic, TProfile, TTopic, TProfile } from '../../types';
+import { TNotificationTopic, TTopic, TProfile } from '../../../types';
 import { MOCK_TAPS, MOCK_TOPICS } from './MockData';
 
 export const getTopics = async () => {
@@ -34,16 +34,14 @@ export const getTopicsForUser = async (user: TProfile) => {
 export const getTopicsByCreator = async (profile: TProfile) => {
 	try {
 		const topics = new Set<TTopic>();
-		const frames = profile.madeFrames ?? [];
-		frames.forEach((frame) => {
-			const tap = MOCK_TAPS.find((tap) => tap.id === frame.tapId);
-			if (tap) {
+		MOCK_TAPS.filter((tap) => tap.creatorId === profile.uid).forEach(
+			(tap) => {
 				const topic = MOCK_TOPICS.find(
 					(topic) => topic.id === tap.topicId
 				);
 				if (topic) topics.add(topic);
 			}
-		});
+		);
 		return new Promise<TTopic[]>((resolve) => {
 			setTimeout(() => {
 				resolve(Array.from(topics));

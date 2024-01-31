@@ -1,7 +1,8 @@
 import { User } from 'firebase/auth';
 import { Timestamp } from 'firebase/firestore';
 
-export type TUser = {
+export type TProfile = {
+	uid: string;
 	name: string;
 	profilePic: string;
 	email: string;
@@ -10,14 +11,9 @@ export type TUser = {
 	watchedFrames: TWatchedFrame[];
 	topicSubscriptionIds?: string[];
 	userSubscriptionIds?: string[];
-	madeFrames?: TFrame[];
 	badges?: TBadge[];
 	companyId?: string;
 	companyRole?: 'EMPLOYER' | 'EMPLOYEE';
-};
-
-export type TProfile = TUser & {
-	uid: string;
 };
 
 export type TTopic = {

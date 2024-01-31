@@ -8,7 +8,6 @@ import ContinueWatching from './ContinueWatching';
 import YourTopics from './YourTopics';
 import Following from './Following';
 import NewTaps from './NewTaps';
-import AppButton from '../../components/AppButton';
 import { useAuth } from '../../providers/AuthProvider';
 
 type Props = {};

@@ -1,5 +1,5 @@
 import { Timestamp } from 'firebase/firestore';
-import { TChapter, TFrame, TProfile, TTap, TTopic } from '../../types';
+import { TChapter, TFrame, TProfile, TTap, TTopic } from '../../../types';
 
 export const MOCK_FRAMES: TFrame[] = [
 	{
@@ -30,7 +30,7 @@ export const MOCK_FRAMES: TFrame[] = [
 
 const MOCK_CHAPTERS: TChapter[] = [
 	{
-		chaperId: '9ac82149-f2c4-4d69-bf88-3bbf248080e7',
+		chapterId: '9ac82149-f2c4-4d69-bf88-3bbf248080e7',
 		name: 'Chapter 1',
 		frames: MOCK_FRAMES,
 		tapId: 'ef1f2e34-bad7-4497-a4d7-7f32d128fbc3',
@@ -38,7 +38,7 @@ const MOCK_CHAPTERS: TChapter[] = [
 		creationDate: new Timestamp(1, 1),
 	},
 	{
-		chaperId: '76911ae1-8da7-4274-9b4d-8b20e84546b8',
+		chapterId: '76911ae1-8da7-4274-9b4d-8b20e84546b8',
 		name: 'Chapter 2',
 		frames: MOCK_FRAMES,
 		tapId: 'ef1f2e34-bad7-4497-a4d7-7f32d128fbc3',
@@ -48,7 +48,7 @@ const MOCK_CHAPTERS: TChapter[] = [
 ];
 const MOCK_CHAPTERS_2: TChapter[] = [
 	{
-		chaperId: 'd8ed5a75-263a-493d-b9fa-dba76e4687c2',
+		chapterId: 'd8ed5a75-263a-493d-b9fa-dba76e4687c2',
 		name: 'Chapter 2',
 		frames: [
 			{
@@ -128,27 +128,22 @@ export const MOCK_TOPICS: TTopic[] = [
 	{
 		id: '25b5f4be-bff4-4d5a-a734-b38e3fc1d40b',
 		name: 'Coding',
-		tapIds: ['c35cbbcd-7571-4dc3-9730-dcaa8775a280']
 	},
 	{
 		id: 'f0c18c4a-e789-4480-b317-4981f77c22d5',
 		name: 'Entrepreneurship',
-		tapIds: ['1048edb7-5a11-4ee4-bacd-99142195841e']
 	},
 	{
 		id: '8a415c6b-d8e1-43dd-bbb4-89ac0158caee',
 		name: 'Design',
-		tapIds: ['c35cbbcd-7571-4dc3-9730-dcaa8775a280']
 	},
 	{
 		id: '97bbf6d3-8873-47e2-a6cf-5f535bb8e8e7',
 		name: 'Marketing',
-		tapIds: ['a222a0e2-18d6-4f9f-87f9-8032bc171897']
 	},
 	{
 		id: 'd5b48269-a55c-4524-b473-c19ccf563196',
 		name: 'Productivity',
-		tapIds: ['155c76af-f601-4bf9-a8fb-3a1e6046fb84']
 	},
 ];
 
@@ -159,13 +154,7 @@ export const MOCK_USERS: TProfile[] = [
 		email: 'jhon.doe@gmail.com',
 		profilePic: 'https://i.pravatar.cc/300',
 		role: 'USER',
-		watchedFrameIds: [],
-		madeFrames: [
-			...MOCK_FRAMES,
-			{
-				...MOCK_FRAMES[0],
-			},
-		],
+		watchedFrames: [],
 	},
 	{
 		uid: 'aaf8197b-e091-4575-9aba-b99a57ec6d2e',
@@ -173,6 +162,6 @@ export const MOCK_USERS: TProfile[] = [
 		email: 'other.doe@gmail.com',
 		profilePic: '',
 		role: 'USER',
-		watchedFrameIds: [],
+		watchedFrames: [],
 	},
 ];

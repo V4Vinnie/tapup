@@ -16,6 +16,10 @@ import ProfileScreen from '../screens/ProfileScreen';
 import TapScreen from '../screens/TapScreen';
 import { mode, themeColors } from '../utils/constants';
 import TopicScreen from '../screens/TopicScreen';
+import DiscoverScreen from '../screens/DiscoverScreen';
+import CreateScreen from '../screens/CreateScreen';
+import LikedScreen from '../screens/LikedScreen';
+import AccountScreen from '../screens/AccountScreen';
 
 type Props = {};
 
@@ -35,6 +39,10 @@ const RootStack = (props: Props) => {
 			}}
 			tabBar={(props) => <BottomTabBar {...props} />}>
 			<Tab.Screen name={Routes.HOME} component={HomeStack} />
+			<Tab.Screen name={Routes.DISCOVER} component={DiscoverStack} />
+			<Tab.Screen name={Routes.CREATE} component={CreateStack} />
+			<Tab.Screen name={Routes.LIKED} component={LikedStack} />
+			<Tab.Screen name={Routes.ACCOUNT} component={AccountStack} />
 		</Tab.Navigator>
 	) : (
 		<Stack.Navigator
@@ -78,6 +86,47 @@ const HomeStack = () => {
 			/>
 			<Stack.Screen name={Routes.TAP_SCREEN} component={TapScreen} />
 			<Stack.Screen name={Routes.TOPIC_SCREEN} component={TopicScreen} />
+		</Stack.Navigator>
+	);
+};
+
+const DiscoverStack = () => {
+	return (
+		<Stack.Navigator screenOptions={{ headerShown: false }}>
+			<Stack.Screen
+				name={Routes.DISCOVER_LANDING}
+				component={DiscoverScreen}
+			/>
+		</Stack.Navigator>
+	);
+};
+
+const CreateStack = () => {
+	return (
+		<Stack.Navigator screenOptions={{ headerShown: false }}>
+			<Stack.Screen
+				name={Routes.CREATE_LANDING}
+				component={CreateScreen}
+			/>
+		</Stack.Navigator>
+	);
+};
+
+const LikedStack = () => {
+	return (
+		<Stack.Navigator screenOptions={{ headerShown: false }}>
+			<Stack.Screen name={Routes.LIKED_LANDING} component={LikedScreen} />
+		</Stack.Navigator>
+	);
+};
+
+const AccountStack = () => {
+	return (
+		<Stack.Navigator screenOptions={{ headerShown: false }}>
+			<Stack.Screen
+				name={Routes.ACCOUNT_LANDING}
+				component={AccountScreen}
+			/>
 		</Stack.Navigator>
 	);
 };

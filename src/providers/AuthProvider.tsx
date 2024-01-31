@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { UserCredential, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../database/Firebase';
 import {
-	geTProfile,
+	getProfile,
 	loginUser,
 	onUser,
 	registerUser,
@@ -128,7 +128,7 @@ export const AuthProvider = ({ children }: Props) => {
 				auth,
 				async (user) => {
 					if (user) {
-						const _user = await geTProfile(user.uid);
+						const _user = await getProfile(user.uid);
 						seTProfile({ ..._user, ...user } as TProfile);
 						console.log(_user);
 					} else {

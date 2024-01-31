@@ -1,4 +1,4 @@
-import { TNotificationProfile, TProfile } from '../../types';
+import { TNotificationProfile, TProfile } from '../../../types';
 import { MOCK_USERS } from './MockData';
 
 export const getProfiles = async (): Promise<TNotificationProfile[]> => {

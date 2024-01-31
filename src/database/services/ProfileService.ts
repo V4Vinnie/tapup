@@ -9,18 +9,26 @@ import {
 } from 'firebase/firestore';
 import { DB } from '../Firebase';
 import { COLLECTIONS } from '../../utils/constants';
-import { TNotificationProfile, TProfile, TUser } from '../../types';
+import { TNotificationProfile, TProfile, TTap } from '../../types';
+import { getProfile } from './UserService';
 
 export const getProfiles = async () => {
 	const usersRef = collection(DB, COLLECTIONS.USERS);
 	const allUsers = await getDocs(usersRef);
 	return allUsers.docs.map((doc) => {
 		return {
-			uid: doc.id,
-			...(doc.data() as TUser),
+			...(doc.data() as TProfile),
 			notification: Math.floor(Math.random() * 100), // TODO: replace with real data
 		} as TNotificationProfile;
 	});
+};
+
+export const getProfileForTap = async (tap: TTap) => {
+	try {
+		return getProfile(tap.creatorId);
+	} catch (error) {
+		console.log('getProfileForTap in TapService ', error);
+	}
 };
 
 export const getFollowingProfiles = async (user: TProfile) => {
@@ -34,8 +42,7 @@ export const getFollowingProfiles = async (user: TProfile) => {
 	const followingProfilesSnapshot = await getDocs(_query);
 	return followingProfilesSnapshot.docs.map((doc) => {
 		return {
-			uid: doc.id,
-			...(doc.data() as TUser),
+			...(doc.data() as TProfile),
 			notification: Math.floor(Math.random() * 100), // TODO: replace with real data
 		} as TNotificationProfile;
 	});
