@@ -1,11 +1,12 @@
 import { FlatList, Image, View } from 'react-native';
-import { TChapter, TUser } from '../types';
+import { TChapter, TProfile } from '../types';
 import PreviewComponent from './PreviewComponent';
 import { useAuth } from '../providers/AuthProvider';
 import { useEffect, useMemo, useState } from 'react';
 import { onUser } from '../database/services/UserService';
 import { useIsFocused } from '@react-navigation/native';
-import { getProgessForChapters } from '../database/services/MockTapService';
+import { getProgressForChapters } from '../database/services/TapService';
+import { SKELETON_WAIT_TIME } from '../utils/constants';
 
 type Props = {
 	chapters?: TChapter[];
@@ -27,14 +28,14 @@ const ChapterRow = ({
 		chapterProgress ?? new Map()
 	);
 	const [imagesLoading, setImagesLoading] = useState<boolean>(true);
+	const [loadingAll, setLoadingAll] = useState<boolean>(true);
 
 	useEffect(() => {
 		if (!user?.uid) return;
-		const getProgress = (user: TUser) => {
+		const getProgress = (user: TProfile) => {
 			if (!chapters) return;
-			getProgessForChapters(user, chapters).then((progress) => {
-				if (progress) setProgress(progress);
-			});
+			const progress = getProgressForChapters(user, chapters);
+			if (progress) setProgress(progress);
 		};
 		if (isFocused) getProgress(user);
 		onUser(user.uid, getProgress);
@@ -52,7 +53,13 @@ const ChapterRow = ({
 		return imagesLoading || loading;
 	}, [imagesLoading, loading]);
 
-	return dataLoading || !chapters ? (
+	useEffect(() => {
+		if (!(dataLoading || !chapters)) {
+			setTimeout(() => setLoadingAll(false), SKELETON_WAIT_TIME);
+		}
+	}, [dataLoading, chapters]);
+
+	return loadingAll ? (
 		<ChapterRowSkeleton />
 	) : (
 		<View className='w-full' {...containerProps}>
@@ -60,7 +67,7 @@ const ChapterRow = ({
 				horizontal
 				data={chapters}
 				showsHorizontalScrollIndicator={false}
-				keyExtractor={(item) => item.id}
+				keyExtractor={(item) => item.chapterId}
 				contentContainerStyle={{
 					paddingHorizontal: 16,
 				}}
@@ -75,14 +82,14 @@ const ChapterRow = ({
 							: undefined;
 					return (
 						<PreviewComponent
-							progress={progress.get(item.id)}
+							progress={progress.get(item.chapterId)}
 							text={item.name}
 							video={video}
 							thumbnail={thumbnail}
 							containerProps={{
 								style: {
 									marginRight:
-										index === chapters.length - 1
+										index === chapters!.length - 1
 											? 0
 											: SPACE_BETWEEN,
 								},

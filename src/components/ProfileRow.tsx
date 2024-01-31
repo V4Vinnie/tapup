@@ -68,7 +68,7 @@ const ProfileRowSkeleton = () => {
 				horizontal
 				data={[1, 2, 3, 4, 5]}
 				showsHorizontalScrollIndicator={false}
-				keyExtractor={(item) => item.toString()}
+				keyExtractor={(item) => item.toString() + 'profile'}
 				contentContainerStyle={{
 					paddingHorizontal: 16,
 					columnGap: SPACE_BETWEEN,

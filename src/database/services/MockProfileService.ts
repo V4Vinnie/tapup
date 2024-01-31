@@ -1,4 +1,4 @@
-import { TNotificationProfile, TUser } from '../../types';
+import { TNotificationProfile, TProfile } from '../../types';
 import { MOCK_USERS } from './MockData';
 
 export const getProfiles = async (): Promise<TNotificationProfile[]> => {
@@ -14,7 +14,7 @@ export const getProfiles = async (): Promise<TNotificationProfile[]> => {
 };
 
 export const getFollowingProfiles = async (
-	user: TUser
+	user: TProfile
 ): Promise<TNotificationProfile[] | undefined> => {
 	const profiles =
 		(user.userSubscriptionIds?.map((id) => {
@@ -32,6 +32,6 @@ export const getFollowingProfiles = async (
 	});
 };
 
-export const getCompanyName = (companyId: string) => {
+export const getCreatorName = (companyId: string) => {
 	return 'Remes';
 };

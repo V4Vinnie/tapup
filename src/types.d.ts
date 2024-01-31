@@ -1,14 +1,13 @@
 import { User } from 'firebase/auth';
 import { Timestamp } from 'firebase/firestore';
 
-export type TProfile = {
-	uid: string;
+export type TUser = {
 	name: string;
 	profilePic: string;
 	email: string;
 	role: 'USER' | 'ADMIN' | 'CREATOR';
 
-	watchedFrameIds: string[];
+	watchedFrames: TWatchedFrame[];
 	topicSubscriptionIds?: string[];
 	userSubscriptionIds?: string[];
 	madeFrames?: TFrame[];
@@ -16,7 +15,10 @@ export type TProfile = {
 	companyId?: string;
 	companyRole?: 'EMPLOYER' | 'EMPLOYEE';
 };
-export type TUser = User & TProfile;
+
+export type TProfile = TUser & {
+	uid: string;
+};
 
 export type TTopic = {
 	id: string;
@@ -49,9 +51,8 @@ export type TContinueWatchingTap = TTap & {
 };
 
 export type TChapter = {
-	id: string;
+	chapterId: string;
 	name: string;
-	description: string;
 	frames: TFrame[];
 	tapId: string;
 	creatorId: string;
@@ -62,12 +63,13 @@ export type TFrame = {
 	id: string;
 	media: string;
 	mediaType: 'IMAGE' | 'VIDEO';
-	topicId: string;
-	tapId: string;
-	chapterId: string;
-	creatorId: string;
-	creationDate: Timestamp;
+	createdAt: Timestamp;
 	watchedBy?: string[];
+};
+
+export type TWatchedFrame = {
+	frameId: string;
+	tapId: string;
 };
 
 export type TBadge = {

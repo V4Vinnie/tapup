@@ -59,12 +59,14 @@ const TapRowSkeleton = () => {
 				horizontal
 				data={[1, 2, 3, 4, 5]}
 				showsHorizontalScrollIndicator={false}
-				keyExtractor={(item) => item.toString()}
+				keyExtractor={(item) => item.toString() + 'tap'}
 				contentContainerStyle={{
 					paddingHorizontal: 16,
 					columnGap: SPACE_BETWEEN,
 				}}
-				renderItem={({ item, index }) => <PreviewComponent loading />}
+				renderItem={({ item, index }) => (
+					<PreviewComponent key={item} loading />
+				)}
 			/>
 		</View>
 	);

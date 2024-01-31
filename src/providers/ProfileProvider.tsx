@@ -2,18 +2,18 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
 	getProfiles,
 	getFollowingProfiles,
-} from '../database/services/MockProfileService';
-import { TNotificationProfile, TUser } from '../types';
+} from '../database/services/ProfileService';
+import { TNotificationProfile, TProfile } from '../types';
 
 const ProfileContext = React.createContext<{
 	loadingInitial: boolean;
 	profiles: TNotificationProfile[];
-	getUserProfiles: (user: TUser) => void;
+	geTProfileProfiles: (user: TProfile) => void;
 	userProfiles: TNotificationProfile[];
 }>({
 	loadingInitial: true,
 	profiles: [],
-	getUserProfiles: () => {},
+	geTProfileProfiles: () => {},
 	userProfiles: [],
 });
 
@@ -23,18 +23,18 @@ type Props = {
 
 export const ProfileProvider = ({ children }: Props) => {
 	const [profiles, setProfiles] = useState<TNotificationProfile[]>([]);
-	const [userProfiles, setUserProfiles] = useState<TNotificationProfile[]>(
+	const [userProfiles, seTProfileProfiles] = useState<TNotificationProfile[]>(
 		[]
 	);
-	const [userProfilesDone, setUserProfilesDone] = useState<boolean>(false);
+	const [userProfilesDone, seTProfileProfilesDone] = useState<boolean>(false);
 	const [allProfilesDone, setAllProfilesDone] = useState<boolean>(false);
 
 	// User profiles
-	const getUserProfiles = (user: TUser) => {
+	const geTProfileProfiles = (user: TProfile) => {
 		if (!user) return [];
 		getFollowingProfiles(user).then((profiles) => {
-			setUserProfiles(profiles ?? []);
-			setUserProfilesDone(true);
+			seTProfileProfiles(profiles ?? []);
+			seTProfileProfilesDone(true);
 		});
 	};
 
@@ -58,10 +58,10 @@ export const ProfileProvider = ({ children }: Props) => {
 		() => ({
 			loadingInitial,
 			profiles,
-			getUserProfiles,
+			geTProfileProfiles,
 			userProfiles,
 		}),
-		[loadingInitial, profiles, getUserProfiles, userProfiles]
+		[loadingInitial, profiles, geTProfileProfiles, userProfiles]
 	);
 
 	return (

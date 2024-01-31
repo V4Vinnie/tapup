@@ -13,7 +13,7 @@ type Props = {
 	selectable?: boolean;
 	setSelected?: React.Dispatch<React.SetStateAction<any>>;
 	loading?: boolean;
-	initialSelected?: TTopic | null;
+	initialSelected?: TTopic | TTap | null;
 };
 
 const SPACE_BETWEEN = 16;
@@ -28,32 +28,32 @@ const TagRow = ({
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const flatListRef = useRef<FlatList>(null);
-	const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
+	const [selectedItem, setSelectedItem] = useState<number | null>(null);
 
 	useEffect(() => {
 		if (selectable && !initialSelected) {
-			setSelectedTopic(0);
+			setSelectedItem(0);
 		}
 	}, [data, selectable]);
 
 	useEffect(() => {
 		if (selectable && setSelected) {
-			setSelected(data[selectedTopic ?? 0]);
+			setSelected(data[selectedItem ?? 0]);
 			flatListRef.current?.scrollToIndex({
-				index: selectedTopic ?? 0,
+				index: selectedItem ?? 0,
 				animated: true,
 				viewPosition: 0.5,
 			});
 		}
-	}, [selectedTopic]);
+	}, [selectedItem]);
 
 	useEffect(() => {
 		if (initialSelected) {
 			const index = data.findIndex(
-				(topic) => topic.id === initialSelected?.id
+				(item) => item.id === initialSelected?.id
 			);
 			if (index !== -1) {
-				setSelectedTopic(index);
+				setSelectedItem(index);
 			}
 		}
 	}, [initialSelected]);
@@ -106,7 +106,7 @@ const TagRow = ({
 										: SPACE_BETWEEN,
 								opacity: !selectable
 									? 1
-									: index === selectedTopic
+									: index === selectedItem
 										? 1
 										: 0.4,
 							},
@@ -118,7 +118,7 @@ const TagRow = ({
 									animated: true,
 									viewPosition: 0.5,
 								});
-								setSelectedTopic(index);
+								setSelectedItem(index);
 							}
 							if (dataType === 'topic') {
 								navigate(Routes.TOPIC_SCREEN, {
@@ -140,7 +140,7 @@ export const TagRowSkeleton = () => {
 				horizontal
 				data={[1, 2, 3, 4, 5]}
 				showsHorizontalScrollIndicator={false}
-				keyExtractor={(item) => item.toString()}
+				keyExtractor={(item) => item.toString() + 'tag'}
 				contentContainerStyle={{
 					paddingHorizontal: 16,
 					columnGap: SPACE_BETWEEN,

@@ -1,4 +1,4 @@
-import { TNotificationTopic, TProfile, TTopic, TUser } from '../../types';
+import { TNotificationTopic, TProfile, TTopic, TProfile } from '../../types';
 import { MOCK_TAPS, MOCK_TOPICS } from './MockData';
 
 export const getTopics = async () => {
@@ -9,7 +9,7 @@ export const getTopics = async () => {
 	}
 };
 
-export const getTopicsForUser = async (user: TUser) => {
+export const getTopicsForUser = async (user: TProfile) => {
 	try {
 		const topics =
 			(user.topicSubscriptionIds?.map((topicId) => {
@@ -31,7 +31,7 @@ export const getTopicsForUser = async (user: TUser) => {
 	}
 };
 
-export const getTopicsFromProfile = async (profile: TProfile) => {
+export const getTopicsByCreator = async (profile: TProfile) => {
 	try {
 		const topics = new Set<TTopic>();
 		const frames = profile.madeFrames ?? [];
@@ -50,6 +50,6 @@ export const getTopicsFromProfile = async (profile: TProfile) => {
 			}, 1000);
 		});
 	} catch (error) {
-		console.log('getTopicsFromProfile in MockTopicService ', error);
+		console.log('getTopicsByCreator in MockTopicService ', error);
 	}
 };

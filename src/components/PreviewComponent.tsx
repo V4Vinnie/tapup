@@ -1,7 +1,6 @@
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 import { mode, themeColors } from '../utils/constants';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useAuth } from '../providers/AuthProvider';
 import Video from 'react-native-video';
 import { Skeleton } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
@@ -9,7 +8,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../navigation/Routes';
 import { TTap, TTopic } from '../types';
 import { useEffect, useState } from 'react';
-import { getTopicFromTap } from '../database/services/MockTapService';
+import { getTopicFromTap } from '../database/services/TapService';
 
 type Props = {
 	thumbnail?: string;
@@ -86,7 +85,7 @@ const PreviewComponent: React.FC<Props> = ({
 			</Text>
 			{showProgress && (
 				<View className='absolute bottom-0 w-full h-1 bg-dark-secondaryBackground'>
-					{!progress ? (
+					{progress === undefined ? (
 						<Skeleton
 							animation='wave'
 							style={{

@@ -14,7 +14,7 @@ import { TTap, TTopic } from '../../types';
 import {
 	getAllTapsForTopic,
 	getAllTapsForTopics,
-} from '../../database/services/MockTapService';
+} from '../../database/services/TapService';
 import SectionHeader from '../../components/SectionHeader';
 import ChapterRow from '../../components/ChapterRow';
 import { useNavigation } from '@react-navigation/native';
@@ -47,7 +47,14 @@ const TopicScreen = ({ route }: TopicScreenProps) => {
 	useEffect(() => {
 		getAllTapsForTopics(topics).then((taps) => {
 			if (!taps) return;
-			setTapsPerTopic(taps);
+			const tapsPerTopic: { [key: string]: TTap[] } = {};
+			taps.forEach((tap) => {
+				if (!tapsPerTopic[tap.topicId]) {
+					tapsPerTopic[tap.topicId] = [];
+				}
+				tapsPerTopic[tap.topicId].push(tap);
+			});
+			setTapsPerTopic(tapsPerTopic);
 		});
 	}, [topics]);
 
@@ -83,6 +90,7 @@ const TopicScreen = ({ route }: TopicScreenProps) => {
 						tapsPerTopic[selectedTopic.id]?.map((tap) => (
 							<View key={tap.id}>
 								<SectionHeader
+									key={tap.id}
 									title={tap.name}
 									onPress={() => {
 										navigate(Routes.TAP_SCREEN, {

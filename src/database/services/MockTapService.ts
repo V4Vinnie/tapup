@@ -2,12 +2,11 @@ import {
 	TChapter,
 	TContinueWatchingTap,
 	TFrame,
-	TProfile,
 	TTap,
 	TTopic,
-	TUser,
+	TProfile,
 } from '../../types';
-import { getUser } from './UserService';
+import { geTProfile } from './UserService';
 import { MOCK_FRAMES, MOCK_TAPS, MOCK_TOPICS, MOCK_USERS } from './MockData';
 
 export const getAllTaps = async () => {
@@ -18,7 +17,7 @@ export const getAllTaps = async () => {
 	}
 };
 
-export const getUserDiscoverTaps = async (user: TUser) => {
+export const getProfileDiscoverTaps = async (user: TProfile) => {
 	try {
 		// taps that user doesn't have in their continue watching list
 		const watchedTaps = (await getTapsWithProgressForUser(user)) ?? [];
@@ -39,12 +38,12 @@ const createFrameToChapterMap = (frames: TFrame[]) => {
 };
 
 const createWatchedChapterIds = (
-	userData: TUser,
+	userData: TProfile,
 	frameToChapterMap: Map<string, string>
 ) => {
 	const watchedChapterIds = new Set<string>();
-	userData.watchedFrameIds.forEach((frameId) => {
-		const chapterId = frameToChapterMap.get(frameId);
+	userData.watchedFrames.forEach((frame) => {
+		const chapterId = frameToChapterMap.get(frame.frameId);
 		if (chapterId) watchedChapterIds.add(chapterId);
 	});
 	return watchedChapterIds;
@@ -52,26 +51,27 @@ const createWatchedChapterIds = (
 
 const calculateProgress = (
 	tapChapters: TChapter[],
-	userData: TUser,
+	userData: TProfile,
 	frameToChapterMap: Map<string, string>
 ) => {
 	const totalFrames = tapChapters.reduce(
 		(total, chapter) => total + chapter.frames.length,
 		0
 	);
-	const watchedFrames = userData.watchedFrameIds.filter(
-		(frameId) =>
-			frameToChapterMap.get(frameId) &&
+	const watchedFrames = userData.watchedFrames.filter(
+		(frame) =>
+			frameToChapterMap.get(frame.frameId) &&
 			tapChapters.find(
-				(chapter) => chapter.id === frameToChapterMap.get(frameId)
+				(chapter) =>
+					chapter.chapterId === frameToChapterMap.get(frame.frameId)
 			)
 	).length;
 	return (watchedFrames / totalFrames) * 100;
 };
 
-export const getTapsWithProgressForUser = async (user: TUser) => {
+export const getTapsWithProgressForUser = async (user: TProfile) => {
 	try {
-		const userData = await getUser(user.uid);
+		const userData = await geTProfile(user.uid);
 		if (!userData) throw new Error('User not found');
 
 		const frameToChapterMap = createFrameToChapterMap(MOCK_FRAMES);
@@ -135,7 +135,7 @@ export const getAllTapsForTopics = async (topics: TTopic[]) => {
 	}
 };
 
-export const getTapsPerTopicFromProfile = async (profile: TProfile) => {
+export const getTapsByCreator = async (profile: TProfile) => {
 	try {
 		const tapsPerTopic = {} as Record<string, TTap[]>;
 		const frames = profile.madeFrames ?? [];
@@ -153,15 +153,12 @@ export const getTapsPerTopicFromProfile = async (profile: TProfile) => {
 			setTimeout(() => resolve(tapsPerTopic), 1000)
 		);
 	} catch (error) {
-		console.log(
-			'getTapsPerTopicFromProfileAndTopic in MockTapService ',
-			error
-		);
+		console.log('getTapsByCreatorAndTopic in MockTapService ', error);
 	}
 };
 
-export const getProgessForChapters = async (
-	user: TUser,
+export const getProgressForChapters = async (
+	user: TProfile,
 	chapters: TChapter[]
 ): Promise<Map<string, number>> => {
 	if (!user) throw new Error('User not found');
@@ -169,7 +166,7 @@ export const getProgessForChapters = async (
 
 	chapters.forEach((chapter) => {
 		const chapterFrames = chapter.frames.filter((frame) =>
-			user.watchedFrameIds.includes(frame.id)
+			user.watchedFrames.includes(frame.id)
 		);
 		const progress = (chapterFrames.length / chapter.frames.length) * 100;
 		result.set(chapter.id, progress);

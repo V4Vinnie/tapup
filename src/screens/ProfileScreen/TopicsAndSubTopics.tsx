@@ -1,17 +1,15 @@
 import { View, Text } from 'react-native';
 import React, { useEffect, useMemo, useState } from 'react';
 import { TProfile, TTap, TTopic } from '../../types';
-import { getTopicsFromProfile } from '../../database/services/MockTopicService';
+import { getTopicsByCreator } from '../../database/services/TopicService';
 import TagRow, { TagRowSkeleton } from '../../components/TagRow';
-import { FlatList } from 'react-native-gesture-handler';
-import { getTapsPerTopicFromProfile } from '../../database/services/MockTapService';
+import { getTapsByCreator } from '../../database/services/TapService';
 import SectionHeader, {
 	SectionHeaderSkeleton,
 } from '../../components/SectionHeader';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
-import TapRow from '../../components/TapRow';
 import ChapterRow from '../../components/ChapterRow';
 
 type Props = {
@@ -28,16 +26,24 @@ const TopicsAndSubTopics = ({ profile }: Props) => {
 	} | null>(null);
 
 	useEffect(() => {
-		getTopicsFromProfile(profile).then((_topics) => {
-			setTopics(_topics ?? []);
-			setSelectedTopic(_topics?.[0] ?? null);
+		getTopicsByCreator(profile).then((_topics) => {
+			if (!_topics) return;
+			setTopics(_topics);
+			setSelectedTopic(_topics[0]);
 		});
 	}, [profile]);
 
 	useEffect(() => {
 		const getTaps = async () => {
 			if (selectedTopic) {
-				const _tapsPerTopic = await getTapsPerTopicFromProfile(profile);
+				const tapsByCreator = await getTapsByCreator(profile);
+				const _tapsPerTopic: { [key: string]: TTap[] } = {};
+				tapsByCreator?.forEach((tap) => {
+					if (!_tapsPerTopic[tap.topicId]) {
+						_tapsPerTopic[tap.topicId] = [];
+					}
+					_tapsPerTopic[tap.topicId].push(tap);
+				});
 				setTapsPerTopic(_tapsPerTopic ?? {});
 			}
 		};
