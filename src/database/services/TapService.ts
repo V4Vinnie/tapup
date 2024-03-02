@@ -112,10 +112,6 @@ export const getViewsForTap = async (tapId: string) => {
 };
 
 export const getAllTapsForTopic = async (topicId: string) => {
-	console.log(
-		'🚀 ~ file: TapService.ts:115 ~ getAllTapsForTopic ~ topicId:',
-		topicId
-	);
 	try {
 		const tapsRef = collection(DB, COLLECTIONS.TAPS);
 		const _query = query(tapsRef, where('topicId', '==', topicId));

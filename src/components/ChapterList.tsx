@@ -1,4 +1,11 @@
-import { FlatList, Image, View } from 'react-native';
+import {
+	FlatList,
+	Image,
+	ScrollView,
+	TouchableHighlight,
+	TouchableOpacity,
+	View,
+} from 'react-native';
 import { TChapter, TProfile } from '../types';
 import { useAuth } from '../providers/AuthProvider';
 import { useEffect, useMemo, useState } from 'react';
@@ -6,6 +13,9 @@ import { onUser } from '../database/services/UserService';
 import { useIsFocused } from '@react-navigation/native';
 import { getProgressForChapters } from '../database/services/TapService';
 import ChapterComponent, { ChapterComponentSkeleton } from './ChapterComponent';
+import { makeStoriesFromChapters } from '../utils/storyUtils';
+import CustomStory from './Custom/CustomStory';
+import { InstagramStoryProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/instagramStoriesDTO';
 
 type Props = {
 	chapters: TChapter[];
@@ -51,10 +61,39 @@ const ChapterList = ({
 		onUser(user.uid, getProgress);
 	}, [isFocused, user, chapters]);
 
+	const stories = useMemo(() => {
+		return makeStoriesFromChapters(chapters);
+	}, [chapters]);
+
 	return dataLoading ? (
 		<ChapterRowSkeleton />
 	) : (
-		<View className='w-full px-4' {...containerProps}>
+		<CustomStory
+			stories={stories}
+			chapters={chapters}
+			progress={progress}
+			PreviewList={PreviewList}
+		/>
+	);
+};
+
+export type PreviewListProps = {
+	data: InstagramStoryProps[];
+	chapters: TChapter[];
+	containerProps?: ScrollView['props'];
+	progress: Map<string, number>;
+	onPress: (id: string) => void;
+};
+
+const PreviewList = ({
+	data,
+	chapters,
+	containerProps,
+	progress,
+	onPress,
+}: PreviewListProps) => {
+	return (
+		<ScrollView className='w-full px-4' {...containerProps}>
 			{chapters.map((chapter, index) => {
 				if (!chapter) return null;
 				const video =
@@ -65,9 +104,11 @@ const ChapterList = ({
 					chapter.frames[0].mediaType === 'IMAGE'
 						? chapter.frames[0].media
 						: undefined;
+
 				return (
 					<ChapterComponent
 						key={chapter.chapterId}
+						onPress={() => onPress(chapter.chapterId)}
 						episodeNumber={index + 1}
 						progress={progress.get(chapter.chapterId)}
 						text={chapter.name}
@@ -85,7 +126,7 @@ const ChapterList = ({
 					/>
 				);
 			})}
-		</View>
+		</ScrollView>
 	);
 };
 

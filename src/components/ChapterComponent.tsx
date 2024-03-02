@@ -1,4 +1,10 @@
-import { Image, Text, View } from 'react-native';
+import {
+	GestureResponderEvent,
+	Image,
+	Text,
+	TouchableOpacity,
+	View,
+} from 'react-native';
 import { mode, themeColors } from '../utils/constants';
 import { useAuth } from '../providers/AuthProvider';
 import Video from 'react-native-video';
@@ -6,6 +12,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { TChapter } from '../types';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import { Skeleton } from '@rneui/themed';
+import CustomStory from './Custom/CustomStory';
 
 type Props = {
 	episodeNumber: number;
@@ -17,6 +24,7 @@ type Props = {
 	containerProps?: View['props'];
 	fullChapter: TChapter;
 	loading?: boolean;
+	onPress: (event: GestureResponderEvent) => void;
 };
 
 const ChapterComponent = ({
@@ -28,6 +36,7 @@ const ChapterComponent = ({
 	progress = 0,
 	fullChapter,
 	containerProps,
+	onPress,
 }: Props) => {
 	const { user } = useAuth();
 	const [views, setViews] = useState<string>('0');
@@ -36,7 +45,7 @@ const ChapterComponent = ({
 		if (!fullChapter) return '';
 		const dateInSeconds = Math.floor(
 			(new Date().valueOf() -
-				new Date(fullChapter.creationDate.toDate()).valueOf()) /
+				fullChapter.creationDate.toDate().valueOf()) /
 				1000
 		);
 		const oneDayInSeconds = 86400;
@@ -63,7 +72,10 @@ const ChapterComponent = ({
 	}, [fullChapter]);
 
 	return (
-		<View className='w-full flex-row space-x-4' {...containerProps}>
+		<TouchableOpacity
+			className='w-full flex-row space-x-4'
+			{...containerProps}
+			onPress={onPress}>
 			<View
 				className='w-24 h-16 rounded-lg overflow-hidden'
 				{...containerProps}>
@@ -122,7 +134,7 @@ const ChapterComponent = ({
 					/>
 				</View>
 			</View>
-		</View>
+		</TouchableOpacity>
 	);
 };
 

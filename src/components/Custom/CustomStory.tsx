@@ -5,6 +5,7 @@ import React, {
 	useEffect,
 	useRef,
 	memo,
+	FC,
 } from 'react';
 import { useSharedValue } from 'react-native-reanimated';
 import { Image, ScrollView } from 'react-native';
@@ -16,6 +17,7 @@ import {
 import {
 	InstagramStoriesProps,
 	InstagramStoriesPublicMethods,
+	InstagramStoryProps,
 } from '@birdwingo/react-native-instagram-stories/src/core/dto/instagramStoriesDTO';
 import { ProgressStorageProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/helpersDTO';
 import {
@@ -29,18 +31,27 @@ import {
 } from '@birdwingo/react-native-instagram-stories/src/core/constants';
 import StoryModal from '@birdwingo/react-native-instagram-stories/src/components/Modal';
 import { StoryModalPublicMethods } from '@birdwingo/react-native-instagram-stories/src/core/dto/componentsDTO';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import PreviewComponent from '../PreviewComponent';
+import { PreviewListProps } from '../ChapterList';
+import { TChapter } from '../../types';
 
-export interface CustomStoryProps extends InstagramStoriesProps {
+export type CustomStoryProps = InstagramStoriesProps & {
 	avatarWidth?: number;
 	avatarHeight?: number;
-}
+	PreviewList: FC<PreviewListProps>;
+
+	chapters: TChapter[];
+	containerProps?: ScrollView['props'];
+	progress: Map<string, number>;
+};
 
 const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 	(
 		{
+			PreviewList,
 			stories,
+			chapters,
+			progress,
+
 			saveProgress = false,
 			avatarBorderColors = DEFAULT_COLORS,
 			avatarSeenBorderColors = SEEN_LOADER_COLORS,
@@ -200,22 +211,12 @@ const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 
 		return (
 			<>
-				<ScrollView
-					horizontal
-					{...listContainerProps}
-					contentContainerStyle={listContainerStyle}
-					testID='storiesList'>
-					{data.map(
-						(story) =>
-							story.imgUrl && (
-								<TouchableOpacity
-									key={story.id}
-									onPress={() => onPress(story.id)}>
-									<PreviewComponent />
-								</TouchableOpacity>
-							)
-					)}
-				</ScrollView>
+				<PreviewList
+					data={data}
+					chapters={chapters}
+					progress={progress}
+					onPress={onPress}
+				/>
 				<StoryModal
 					ref={modalRef}
 					stories={data}
