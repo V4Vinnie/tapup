@@ -36,7 +36,11 @@ const ChapterComponent = ({
 		if (!fullChapter) return '';
 		const dateInSeconds = Math.floor(
 			(new Date().valueOf() -
-				new Date(fullChapter.creationDate.toDate()).valueOf()) /
+				new Date(
+					fullChapter.frames[
+						fullChapter.frames.length - 1
+					].createdAt.toDate()
+				).valueOf()) /
 				1000
 		);
 		const oneDayInSeconds = 86400;
@@ -47,6 +51,8 @@ const ChapterComponent = ({
 		if (daysAgo < 30) return `${(daysAgo / 7) | 0} weeks ago`;
 		if (daysAgo < 365) return `${(daysAgo / 30) | 0} months ago`;
 		return `${(daysAgo / 365) | 0} years ago`;
+
+		// TODO: Replace with react-time-ago
 	}, [fullChapter]);
 
 	useEffect(() => {

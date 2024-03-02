@@ -1,6 +1,6 @@
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import React from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { Platform, TouchableOpacity, View } from 'react-native';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import settings from '../../tailwind.config';
@@ -19,6 +19,9 @@ const BottomTabBar = ({
 }: BottomTabBarProps) => {
 	return (
 		<View
+			style={{
+				paddingBottom: Platform.OS === 'ios' ? 20 : 0,
+			}}
 			className='flex-row bg-dark-secondaryBackground shadow-xl shadow-light-subTextColor/60
         '>
 			{state.routes.map((route, index) => {

@@ -1,4 +1,10 @@
-import { Animated, SafeAreaView, ScrollView, View } from 'react-native';
+import {
+	Animated,
+	Platform,
+	SafeAreaView,
+	ScrollView,
+	View,
+} from 'react-native';
 import SearchBar from '../../components/SearchBar';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -25,7 +31,11 @@ const HomeScreen = (props: Props) => {
 	return (
 		<SafeAreaView className='flex-1 items-center bg-dark-primaryBackground'>
 			<FocusAwareStatusBar translucent barStyle={'light-content'} />
-			<View className='flex w-full mt-8'>
+			<View
+				style={{
+					marginTop: Platform.OS === 'ios' ? 0 : 32,
+				}}
+				className='flex w-full mt-8'>
 				<SearchBar
 					containerProps={{
 						style: {
@@ -40,12 +50,13 @@ const HomeScreen = (props: Props) => {
 					onPress={() => navigate(Routes.SEARCH_SCREEN)}
 				/>
 				<ScrollView
-					className='w-full mt-6'
+					className='w-full h-full mt-6'
 					contentContainerStyle={{
 						alignItems: 'center',
 						justifyContent: 'center',
 					}}
 					showsVerticalScrollIndicator={false}
+					scrollEventThrottle={16}
 					onScroll={(e) => {
 						scrollY.setValue(e.nativeEvent.contentOffset.y);
 					}}>
