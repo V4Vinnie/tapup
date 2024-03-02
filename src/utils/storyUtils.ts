@@ -1,22 +1,11 @@
-/* 
-const stories = [{
-    id: 'user1',
-    name: 'User 1',
-    imgUrl: 'user1-profile-image-url',
-    stories: [
-      { id: 'story1', sourceUrl: 'story1-image-url' },
-      { id: 'story2', sourceUrl: 'story1-video-url', mediaType: 'video' },
-      // ...
-    ]}, // ...
-  ]; */
-
 import { InstagramStoryProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/instagramStoriesDTO';
 import { TChapter } from '../types';
+import { getProfile } from '../database/services/UserService';
 
-export function makeStoriesFromChapters(
+export async function makeStoriesFromChapters(
 	chapters: TChapter[]
-): InstagramStoryProps[] {
-	const stories = chapters.map((chapter, index) => {
+): Promise<InstagramStoryProps[]> {
+	const stories = chapters.map(async (chapter, index) => {
 		const video =
 			chapter.frames[0].mediaType === 'VIDEO'
 				? chapter.frames[0].media
@@ -25,11 +14,14 @@ export function makeStoriesFromChapters(
 			chapter.frames[0].mediaType === 'IMAGE'
 				? chapter.frames[0].media
 				: undefined;
+		const profile = chapter.creatorId
+			? await getProfile(chapter.creatorId)
+			: null;
 
 		return {
 			id: chapter.chapterId,
 			name: chapter.name,
-			imgUrl: thumbnail,
+			imgUrl: profile?.profilePic ?? '',
 			stories: [
 				{
 					id: chapter.chapterId,
@@ -41,5 +33,5 @@ export function makeStoriesFromChapters(
 			],
 		};
 	});
-	return stories;
+	return Promise.all(stories);
 }

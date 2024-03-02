@@ -22,17 +22,19 @@ import {
 import { ProgressStorageProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/helpersDTO';
 import {
 	ANIMATION_DURATION,
-	DEFAULT_COLORS,
 	SEEN_LOADER_COLORS,
 	STORY_AVATAR_SIZE,
 	AVATAR_SIZE,
-	BACKGROUND_COLOR,
-	CLOSE_COLOR,
 } from '@birdwingo/react-native-instagram-stories/src/core/constants';
-import StoryModal from '@birdwingo/react-native-instagram-stories/src/components/Modal';
 import { StoryModalPublicMethods } from '@birdwingo/react-native-instagram-stories/src/core/dto/componentsDTO';
 import { PreviewListProps } from '../ChapterList';
 import { TChapter } from '../../types';
+import { mode, themeColors } from '../../utils/constants';
+import CustomStoryModal from './CustomStoryModal';
+
+const BACKGROUND_COLOR = themeColors[mode].primaryBackground;
+const CLOSE_COLOR = themeColors[mode].textColor;
+const DEFAULT_COLORS = 'transparent';
 
 export type CustomStoryProps = InstagramStoriesProps & {
 	avatarWidth?: number;
@@ -217,7 +219,7 @@ const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 					progress={progress}
 					onPress={onPress}
 				/>
-				<StoryModal
+				<CustomStoryModal
 					ref={modalRef}
 					stories={data}
 					seenStories={seenStories}

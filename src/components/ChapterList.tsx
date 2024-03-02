@@ -38,12 +38,19 @@ const ChapterList = ({
 	);
 	const [loaded, setLoaded] = useState(false);
 	const [imagesLoading, setImagesLoading] = useState<boolean>(true);
+	const [stories, setStories] = useState<InstagramStoryProps[]>([]);
 
 	useEffect(() => {
 		const imageUrls = chapters.map((chapter) =>
 			Image.prefetch(chapter.frames[0].media)
 		);
 		Promise.all(imageUrls).then(() => setImagesLoading(false));
+	}, [chapters]);
+
+	useEffect(() => {
+		makeStoriesFromChapters(chapters).then((stories) =>
+			setStories(stories)
+		);
 	}, [chapters]);
 
 	const dataLoading = useMemo(() => {
@@ -60,10 +67,6 @@ const ChapterList = ({
 		if (isFocused) getProgress(user);
 		onUser(user.uid, getProgress);
 	}, [isFocused, user, chapters]);
-
-	const stories = useMemo(() => {
-		return makeStoriesFromChapters(chapters);
-	}, [chapters]);
 
 	return dataLoading ? (
 		<ChapterRowSkeleton />
