@@ -20,11 +20,25 @@ export async function makeStoriesFromChapters(
 
 		return {
 			id: chapter.chapterId,
-			name: chapter.name,
+			name: profile?.name ?? '',
 			imgUrl: profile?.profilePic ?? '',
 			stories: [
 				{
 					id: chapter.chapterId,
+					sourceUrl: video ?? thumbnail ?? '',
+					mediaType: chapter.frames[0].mediaType.toLowerCase() as
+						| 'image'
+						| 'video',
+				},
+				{
+					id: chapter.chapterId + '2',
+					sourceUrl: video ?? thumbnail ?? '',
+					mediaType: chapter.frames[0].mediaType.toLowerCase() as
+						| 'image'
+						| 'video',
+				},
+				{
+					id: chapter.chapterId + '3',
 					sourceUrl: video ?? thumbnail ?? '',
 					mediaType: chapter.frames[0].mediaType.toLowerCase() as
 						| 'image'

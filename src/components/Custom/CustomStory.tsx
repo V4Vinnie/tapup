@@ -21,7 +21,6 @@ import {
 } from '@birdwingo/react-native-instagram-stories/src/core/dto/instagramStoriesDTO';
 import { ProgressStorageProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/helpersDTO';
 import {
-	ANIMATION_DURATION,
 	SEEN_LOADER_COLORS,
 	STORY_AVATAR_SIZE,
 	AVATAR_SIZE,
@@ -35,6 +34,7 @@ import CustomStoryModal from './CustomStoryModal';
 const BACKGROUND_COLOR = themeColors[mode].primaryBackground;
 const CLOSE_COLOR = themeColors[mode].textColor;
 const DEFAULT_COLORS = 'transparent';
+const ANIMATION_DURATION = 8000;
 
 export type CustomStoryProps = InstagramStoriesProps & {
 	avatarWidth?: number;

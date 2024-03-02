@@ -32,6 +32,7 @@ import GestureHandler from '@birdwingo/react-native-instagram-stories/src/compon
 import StoryList from '@birdwingo/react-native-instagram-stories/src/components/List';
 import ModalStyles from '@birdwingo/react-native-instagram-stories/src/components/Modal/Modal.styles';
 import CustomStoryList from './CustomStoryList';
+import { mode, themeColors } from '../../utils/constants';
 
 const StoryModal = forwardRef<StoryModalPublicMethods, StoryModalProps>(
 	(
@@ -46,7 +47,7 @@ const StoryModal = forwardRef<StoryModalPublicMethods, StoryModalProps>(
 			backgroundColor,
 			videoProps,
 			closeIconColor,
-			modalAnimationDuration = 800,
+			modalAnimationDuration = 400,
 			onLoad,
 			onShow,
 			onHide,
@@ -403,6 +404,12 @@ const StoryModal = forwardRef<StoryModalPublicMethods, StoryModalProps>(
 									paused={paused}
 									videoProps={videoProps}
 									closeColor={closeIconColor}
+									progressActiveColor={
+										themeColors.primaryColor[100]
+									}
+									progressColor={
+										themeColors[mode].secondaryBackground
+									}
 									key={story.id}
 									{...props}
 								/>

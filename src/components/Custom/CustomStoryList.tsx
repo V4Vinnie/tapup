@@ -15,6 +15,9 @@ import StoryContent from '@birdwingo/react-native-instagram-stories/src/componen
 import StoryFooter from '@birdwingo/react-native-instagram-stories/src/components/Footer';
 import CustomStoryImage from './CustomStoryImage';
 import { StoryItemProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/instagramStoriesDTO';
+import CustomStoryHeader from './CustomStoryHeader';
+import { View } from 'react-native';
+import CustomStoryProgress from './CustomStoryProgress';
 
 export interface CustomStoryItemProps {
 	id: string;
@@ -75,36 +78,39 @@ const StoryList: FC<CustomStoryListProps> = ({
 
 	return (
 		<StoryAnimation x={x} index={index}>
+			<CustomStoryHeader {...props} />
+
 			<Animated.View style={[animatedStyles, ListStyles.container]}>
-				<CustomStoryImage
-					stories={stories}
-					activeStory={activeStory}
-					defaultImage={
-						stories[lastSeenIndex + 1]?.sourceUrl ??
-						stories[0]?.sourceUrl
-					}
-					isDefaultVideo={
-						(stories[lastSeenIndex + 1]?.mediaType ??
-							stories[0]?.mediaType) === 'video'
-					}
-					isComponent={
-						(stories[lastSeenIndex + 1]?.mediaType ??
-							stories[0]?.mediaType) === 'component'
-					}
-					component={component}
-					onImageLayout={onImageLayout}
-					onLoad={onLoad}
-					paused={paused}
-					isActive={isActive}
-					videoProps={videoProps}
-				/>
-				<StoryHeader {...props} />
+				<View className='mx-2 overflow-hidden h-[95%] mt-8 rounded-lg bg-dark-secondaryBackground'>
+					<CustomStoryImage
+						stories={stories}
+						activeStory={activeStory}
+						defaultImage={
+							stories[lastSeenIndex + 1]?.sourceUrl ??
+							stories[0]?.sourceUrl
+						}
+						isDefaultVideo={
+							(stories[lastSeenIndex + 1]?.mediaType ??
+								stories[0]?.mediaType) === 'video'
+						}
+						isComponent={
+							(stories[lastSeenIndex + 1]?.mediaType ??
+								stories[0]?.mediaType) === 'component'
+						}
+						component={component}
+						onImageLayout={onImageLayout}
+						onLoad={onLoad}
+						paused={paused}
+						isActive={isActive}
+						videoProps={videoProps}
+					/>
+				</View>
 				<StoryContent
 					stories={stories as StoryItemProps[]}
 					active={isActive}
 					activeStory={activeStory}
 				/>
-				<Progress
+				<CustomStoryProgress
 					active={isActive}
 					activeStory={activeStoryIndex}
 					progress={progress}

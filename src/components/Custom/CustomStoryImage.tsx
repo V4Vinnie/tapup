@@ -129,7 +129,7 @@ const StoryImage: FC<CustomStoryImageProps> = ({
 						<Image
 							source={{ uri: data.uri }}
 							style={{ width: WIDTH, aspectRatio: 0.5626 }}
-							resizeMode='contain'
+							resizeMode='cover'
 							testID='storyImageComponent'
 							onLayout={(e) =>
 								onImageLayout(
