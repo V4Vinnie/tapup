@@ -9,6 +9,7 @@ export type TProfile = {
 	role: 'USER' | 'ADMIN' | 'CREATOR';
 
 	watchedFrames: TWatchedFrame[];
+	progress: ProgressStorageProps | null;
 	topicSubscriptionIds?: string[];
 	userSubscriptionIds?: string[];
 	badges?: TBadge[];
