@@ -1,24 +1,19 @@
-import React, {
+import {
 	forwardRef,
 	useImperativeHandle,
 	useState,
 	useEffect,
 	useRef,
 	memo,
-	FC,
 } from 'react';
 import { useSharedValue } from 'react-native-reanimated';
-import { Image, ScrollView } from 'react-native';
+import { Image } from 'react-native';
 import {
 	clearProgressStorage,
 	getProgressStorage,
 	setProgressStorage,
 } from '@birdwingo/react-native-instagram-stories/src/core/helpers/storage';
-import {
-	InstagramStoriesProps,
-	InstagramStoriesPublicMethods,
-	InstagramStoryProps,
-} from '@birdwingo/react-native-instagram-stories/src/core/dto/instagramStoriesDTO';
+import { InstagramStoriesPublicMethods } from '@birdwingo/react-native-instagram-stories/src/core/dto/instagramStoriesDTO';
 import { ProgressStorageProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/helpersDTO';
 import {
 	SEEN_LOADER_COLORS,
@@ -26,25 +21,14 @@ import {
 	AVATAR_SIZE,
 } from '@birdwingo/react-native-instagram-stories/src/core/constants';
 import { StoryModalPublicMethods } from '@birdwingo/react-native-instagram-stories/src/core/dto/componentsDTO';
-import { PreviewListProps } from '../ChapterList';
-import { TChapter } from '../../types';
 import { mode, themeColors } from '../../utils/constants';
 import CustomStoryModal from './CustomStoryModal';
+import { CustomStoryProps } from './CustomStoryProps';
 
 const BACKGROUND_COLOR = themeColors[mode].primaryBackground;
 const CLOSE_COLOR = themeColors[mode].textColor;
 const DEFAULT_COLORS = 'transparent';
 const ANIMATION_DURATION = 8000;
-
-export type CustomStoryProps = InstagramStoriesProps & {
-	avatarWidth?: number;
-	avatarHeight?: number;
-	PreviewList: FC<PreviewListProps>;
-
-	chapters: TChapter[];
-	containerProps?: ScrollView['props'];
-	progress: Map<string, number>;
-};
 
 const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 	(
@@ -231,6 +215,7 @@ const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 					videoDuration={videoAnimationMaxDuration}
 					videoProps={videoProps}
 					closeIconColor={closeIconColor}
+					creatorId={chapters[0].creatorId}
 					{...props}
 				/>
 			</>

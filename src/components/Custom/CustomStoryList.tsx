@@ -6,9 +6,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import StoryAnimation from '@birdwingo/react-native-instagram-stories/src/components/Animation';
 import ListStyles from '@birdwingo/react-native-instagram-stories/src/components/List/List.styles';
-import StoryImage from '@birdwingo/react-native-instagram-stories/src/components/Image';
-import Progress from '@birdwingo/react-native-instagram-stories/src/components/Progress';
-import StoryHeader from '@birdwingo/react-native-instagram-stories/src/components/Header';
 import { StoryListProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/componentsDTO';
 import { HEIGHT } from '@birdwingo/react-native-instagram-stories/src/core/constants';
 import StoryContent from '@birdwingo/react-native-instagram-stories/src/components/Content';
@@ -38,9 +35,12 @@ export interface CustomStoryListProps
 	extends Override<StoryListProps, 'stories'> {
 	stories: CustomStoryItemProps[];
 	component?: ReactNode;
+	creatorId: string;
 }
 
 const StoryList: FC<CustomStoryListProps> = ({
+	creatorId,
+
 	id,
 	stories,
 	index,
@@ -78,7 +78,7 @@ const StoryList: FC<CustomStoryListProps> = ({
 
 	return (
 		<StoryAnimation x={x} index={index}>
-			<CustomStoryHeader {...props} />
+			<CustomStoryHeader {...props} userId={creatorId} />
 
 			<Animated.View style={[animatedStyles, ListStyles.container]}>
 				<View className='mx-2 overflow-hidden h-[95%] mt-8 rounded-lg bg-dark-secondaryBackground'>

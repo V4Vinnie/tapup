@@ -1,11 +1,18 @@
-import React, { FC, memo } from 'react';
+import React, { FC, memo, useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import HeaderStyles from '@birdwingo/react-native-instagram-stories/src/components/Header/Header.styles';
 import { WIDTH } from '@birdwingo/react-native-instagram-stories/src/core/constants';
-import { StoryHeaderProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/componentsDTO';
 import Close from '@birdwingo/react-native-instagram-stories/src/components/Icon/close';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList, Routes } from '../../navigation/Routes';
+import { useNavigation } from '@react-navigation/native';
+import { TProfile } from '../../types';
+import { getProfile } from '../../database/services/UserService';
+import { CustomStoryHeaderProps } from './CustomStoryProps';
 
-const StoryHeader: FC<StoryHeaderProps> = ({
+const StoryHeader: FC<CustomStoryHeaderProps> = ({
+	userId,
+
 	imgUrl,
 	name,
 	onClose,
@@ -14,17 +21,33 @@ const StoryHeader: FC<StoryHeaderProps> = ({
 	buttonHandled,
 	closeColor,
 }) => {
+	const { navigate } =
+		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+	const [profile, setProfile] = useState<TProfile | null>(null);
 	const styles = {
 		width: avatarSize,
 		height: avatarSize,
 		borderRadius: avatarSize,
 	};
-
 	const width = WIDTH - HeaderStyles.container.left * 2;
+
+	useEffect(() => {
+		if (!userId) return;
+		(async () => {
+			const _profile = await getProfile(userId);
+			setProfile(_profile);
+		})();
+	}, [userId]);
 
 	return (
 		<View style={[{ ...HeaderStyles.container, top: 8 }, { width }]}>
-			<View style={HeaderStyles.left}>
+			<TouchableOpacity
+				style={HeaderStyles.left}
+				onPress={() => {
+					if (!profile) return;
+					onClose();
+					navigate(Routes.PROFILE_SCREEN, { profile });
+				}}>
 				{Boolean(imgUrl) && (
 					<View
 						style={[
@@ -41,7 +64,7 @@ const StoryHeader: FC<StoryHeaderProps> = ({
 						{name}
 					</Text>
 				)}
-			</View>
+			</TouchableOpacity>
 			<TouchableOpacity
 				onPress={onClose}
 				hitSlop={16}
