@@ -22,7 +22,7 @@ const Progress: FC<StoryProgressProps> = ({
 	return (
 		<View
 			style={[
-				{ ...ProgressStyles.container, top: 10 },
+				{ ...ProgressStyles.container, top: 10, gap: 6 },
 				{ width: WIDTH },
 			]}>
 			{[...Array(length).keys()].map((val) => (
