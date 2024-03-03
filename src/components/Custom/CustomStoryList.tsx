@@ -6,9 +6,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import StoryAnimation from '@birdwingo/react-native-instagram-stories/src/components/Animation';
 import ListStyles from '@birdwingo/react-native-instagram-stories/src/components/List/List.styles';
-import StoryImage from '@birdwingo/react-native-instagram-stories/src/components/Image';
-import Progress from '@birdwingo/react-native-instagram-stories/src/components/Progress';
-import StoryHeader from '@birdwingo/react-native-instagram-stories/src/components/Header';
 import { StoryListProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/componentsDTO';
 import { HEIGHT } from '@birdwingo/react-native-instagram-stories/src/core/constants';
 import StoryContent from '@birdwingo/react-native-instagram-stories/src/components/Content';

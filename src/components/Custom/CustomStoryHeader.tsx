@@ -2,17 +2,13 @@ import React, { FC, memo, useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import HeaderStyles from '@birdwingo/react-native-instagram-stories/src/components/Header/Header.styles';
 import { WIDTH } from '@birdwingo/react-native-instagram-stories/src/core/constants';
-import { StoryHeaderProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/componentsDTO';
 import Close from '@birdwingo/react-native-instagram-stories/src/components/Icon/close';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
 import { useNavigation } from '@react-navigation/native';
 import { TProfile } from '../../types';
 import { getProfile } from '../../database/services/UserService';
-
-type CustomStoryHeaderProps = StoryHeaderProps & {
-	userId: string | undefined;
-};
+import { CustomStoryHeaderProps } from './CustomStoryProps';
 
 const StoryHeader: FC<CustomStoryHeaderProps> = ({
 	userId,
@@ -40,7 +36,6 @@ const StoryHeader: FC<CustomStoryHeaderProps> = ({
 		(async () => {
 			const _profile = await getProfile(userId);
 			setProfile(_profile);
-			console.log('profile', _profile);
 		})();
 	}, [userId]);
 
@@ -49,8 +44,6 @@ const StoryHeader: FC<CustomStoryHeaderProps> = ({
 			<TouchableOpacity
 				style={HeaderStyles.left}
 				onPress={() => {
-					console.log('userId', userId);
-
 					if (!profile) return;
 					onClose();
 					navigate(Routes.PROFILE_SCREEN, { profile });

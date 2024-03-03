@@ -25,17 +25,13 @@ import {
 } from '@birdwingo/react-native-instagram-stories/src/core/constants';
 import {
 	GestureContext,
-	StoryModalProps,
 	StoryModalPublicMethods,
 } from '@birdwingo/react-native-instagram-stories/src/core/dto/componentsDTO';
 import GestureHandler from '@birdwingo/react-native-instagram-stories/src/components/Modal/gesture';
 import ModalStyles from '@birdwingo/react-native-instagram-stories/src/components/Modal/Modal.styles';
 import CustomStoryList from './CustomStoryList';
 import { mode, themeColors } from '../../utils/constants';
-
-type CustomStoryModalProps = StoryModalProps & {
-	creatorId: string;
-};
+import { CustomStoryModalProps } from './CustomStoryProps';
 
 const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 	(
