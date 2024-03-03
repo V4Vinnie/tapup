@@ -1,4 +1,10 @@
-import { Image, Text, TouchableOpacity, View } from 'react-native';
+import {
+	GestureResponderEvent,
+	Image,
+	Text,
+	TouchableOpacity,
+	View,
+} from 'react-native';
 import { mode, themeColors } from '../utils/constants';
 import { LinearGradient } from 'expo-linear-gradient';
 import Video from 'react-native-video';
@@ -11,6 +17,7 @@ import { useEffect, useState } from 'react';
 import { getTopicFromTap } from '../database/services/TapService';
 
 type Props = {
+	onPress?: () => void;
 	thumbnail?: string;
 	video?: string;
 	text?: string;
@@ -22,6 +29,7 @@ type Props = {
 };
 
 const PreviewComponent: React.FC<Props> = ({
+	onPress,
 	thumbnail,
 	video,
 	text,
@@ -45,18 +53,21 @@ const PreviewComponent: React.FC<Props> = ({
 		getTopic();
 	}, [fullTap]);
 
+	function handleOnPress(event: GestureResponderEvent) {
+		fullTap &&
+			topic &&
+			navigate(Routes.TAP_SCREEN, {
+				initialTap: fullTap,
+				selectedTopic: topic,
+			});
+		onPress && onPress();
+	}
+
 	return loading ? (
 		<PreviewComponentSkeleton />
 	) : (
 		<TouchableOpacity
-			onPress={() =>
-				fullTap &&
-				topic &&
-				navigate(Routes.TAP_SCREEN, {
-					initialTap: fullTap,
-					selectedTopic: topic,
-				})
-			}
+			onPress={handleOnPress}
 			className='w-32 h-44 rounded-lg overflow-hidden'
 			{...containerProps}>
 			{thumbnail === '' ? (

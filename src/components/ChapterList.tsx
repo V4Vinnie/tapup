@@ -16,6 +16,7 @@ import ChapterComponent, { ChapterComponentSkeleton } from './ChapterComponent';
 import { makeStoriesFromChapters } from '../utils/storyUtils';
 import CustomStory from './Custom/CustomStory';
 import { InstagramStoryProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/instagramStoriesDTO';
+import { PreviewListProps } from './Custom/CustomStoryProps';
 
 type Props = {
 	chapters: TChapter[];
@@ -78,14 +79,6 @@ const ChapterList = ({
 			PreviewList={PreviewList}
 		/>
 	);
-};
-
-export type PreviewListProps = {
-	data: InstagramStoryProps[];
-	chapters: TChapter[];
-	containerProps?: ScrollView['props'];
-	progress: Map<string, number>;
-	onPress: (id: string) => void;
 };
 
 const PreviewList = ({
