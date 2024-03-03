@@ -38,9 +38,12 @@ export interface CustomStoryListProps
 	extends Override<StoryListProps, 'stories'> {
 	stories: CustomStoryItemProps[];
 	component?: ReactNode;
+	creatorId: string;
 }
 
 const StoryList: FC<CustomStoryListProps> = ({
+	creatorId,
+
 	id,
 	stories,
 	index,
@@ -78,7 +81,7 @@ const StoryList: FC<CustomStoryListProps> = ({
 
 	return (
 		<StoryAnimation x={x} index={index}>
-			<CustomStoryHeader {...props} />
+			<CustomStoryHeader {...props} userId={creatorId} />
 
 			<Animated.View style={[animatedStyles, ListStyles.container]}>
 				<View className='mx-2 overflow-hidden h-[95%] mt-8 rounded-lg bg-dark-secondaryBackground'>

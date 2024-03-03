@@ -231,6 +231,7 @@ const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 					videoDuration={videoAnimationMaxDuration}
 					videoProps={videoProps}
 					closeIconColor={closeIconColor}
+					creatorId={chapters[0].creatorId}
 					{...props}
 				/>
 			</>

@@ -29,14 +29,19 @@ import {
 	StoryModalPublicMethods,
 } from '@birdwingo/react-native-instagram-stories/src/core/dto/componentsDTO';
 import GestureHandler from '@birdwingo/react-native-instagram-stories/src/components/Modal/gesture';
-import StoryList from '@birdwingo/react-native-instagram-stories/src/components/List';
 import ModalStyles from '@birdwingo/react-native-instagram-stories/src/components/Modal/Modal.styles';
 import CustomStoryList from './CustomStoryList';
 import { mode, themeColors } from '../../utils/constants';
 
-const StoryModal = forwardRef<StoryModalPublicMethods, StoryModalProps>(
+type CustomStoryModalProps = StoryModalProps & {
+	creatorId: string;
+};
+
+const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 	(
 		{
+			creatorId,
+
 			stories,
 			seenStories,
 			duration,
@@ -410,6 +415,7 @@ const StoryModal = forwardRef<StoryModalPublicMethods, StoryModalProps>(
 									progressColor={
 										themeColors[mode].secondaryBackground
 									}
+									creatorId={creatorId}
 									key={story.id}
 									{...props}
 								/>
