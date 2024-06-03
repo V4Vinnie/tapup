@@ -53,7 +53,6 @@ export type TChapter = {
 	frames: TFrame[];
 	tapId: string;
 	creatorId: string;
-	creationDate: Timestamp;
 };
 
 export type TFrame = {

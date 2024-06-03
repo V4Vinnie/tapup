@@ -47,7 +47,9 @@ const TapScreen = ({ route }: ProfileScreenProps) => {
 
 	const sortedChapters = useMemo(() => {
 		return (selectedTap?.chapters ?? initialTap.chapters).sort(
-			(a, b) => a.creationDate.seconds - b.creationDate.seconds
+			(a, b) =>
+				a.frames[a.frames.length - 1].createdAt.seconds -
+				b.frames[b.frames.length - 1].createdAt.seconds
 		);
 	}, [selectedTap, initialTap]);
 
