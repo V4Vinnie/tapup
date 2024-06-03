@@ -12,7 +12,7 @@ import {
 	clearProgressStorage,
 	getProgressStorage,
 	setProgressStorage,
-} from '@birdwingo/react-native-instagram-stories/src/core/helpers/storage';
+} from './CustomStoryStorage';
 import { InstagramStoriesPublicMethods } from '@birdwingo/react-native-instagram-stories/src/core/dto/instagramStoriesDTO';
 import { ProgressStorageProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/helpersDTO';
 import {
@@ -24,6 +24,7 @@ import { StoryModalPublicMethods } from '@birdwingo/react-native-instagram-stori
 import { mode, themeColors } from '../../utils/constants';
 import CustomStoryModal from './CustomStoryModal';
 import { CustomStoryProps } from './CustomStoryProps';
+import { useAuth } from '../../providers/AuthProvider';
 
 const BACKGROUND_COLOR = themeColors[mode].primaryBackground;
 const CLOSE_COLOR = themeColors[mode].textColor;
@@ -38,7 +39,7 @@ const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 			chapters,
 			progress,
 
-			saveProgress = false,
+			saveProgress = true,
 			avatarBorderColors = DEFAULT_COLORS,
 			avatarSeenBorderColors = SEEN_LOADER_COLORS,
 			avatarWidth = AVATAR_SIZE,
@@ -57,6 +58,7 @@ const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 		},
 		ref
 	) => {
+		const { user } = useAuth();
 		const [data, setData] = useState(stories);
 
 		const seenStories = useSharedValue<ProgressStorageProps>({});
@@ -79,7 +81,7 @@ const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 
 		const onStoriesChange = async () => {
 			seenStories.value = await (saveProgress
-				? getProgressStorage()
+				? getProgressStorage(user?.uid!)
 				: {});
 
 			const promises = stories.map((story) => {
@@ -107,15 +109,18 @@ const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 			}
 		};
 
-		const onSeenStoriesChange = async (user: string, value: string) => {
+		const onSeenStoriesChange = async (
+			chapterId: string,
+			value: string
+		) => {
 			if (!saveProgress) {
 				return;
 			}
 
-			if (seenStories.value[user]) {
-				const userData = data.find((story) => story.id === user);
+			if (seenStories.value[chapterId]) {
+				const userData = data.find((story) => story.id === chapterId);
 				const oldIndex = userData?.stories.findIndex(
-					(story) => story.id === seenStories.value[user]
+					(story) => story.id === seenStories.value[chapterId]
 				);
 				const newIndex = userData?.stories.findIndex(
 					(story) => story.id === value
@@ -126,7 +131,11 @@ const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 				}
 			}
 
-			seenStories.value = await setProgressStorage(user, value);
+			seenStories.value = await setProgressStorage(
+				user?.uid!,
+				chapterId,
+				value
+			);
 		};
 
 		useImperativeHandle(

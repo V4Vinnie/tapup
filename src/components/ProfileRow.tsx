@@ -45,6 +45,7 @@ const ProfileRow = ({ profiles, containerProps, loading }: Props) => {
 				}}
 				renderItem={({ item, index }) => (
 					<ProfileComponent
+						key={item.uid}
 						profile={item}
 						containerProps={{
 							style: {
