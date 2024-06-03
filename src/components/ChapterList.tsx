@@ -1,4 +1,11 @@
-import { FlatList, Image, View } from 'react-native';
+import {
+	FlatList,
+	Image,
+	ScrollView,
+	TouchableHighlight,
+	TouchableOpacity,
+	View,
+} from 'react-native';
 import { TChapter, TProfile } from '../types';
 import { useAuth } from '../providers/AuthProvider';
 import { useEffect, useMemo, useState } from 'react';
@@ -6,6 +13,10 @@ import { onUser } from '../database/services/UserService';
 import { useIsFocused } from '@react-navigation/native';
 import { getProgressForChapters } from '../database/services/TapService';
 import ChapterComponent, { ChapterComponentSkeleton } from './ChapterComponent';
+import { makeStoriesFromChapters } from '../utils/storyUtils';
+import CustomStory from './Custom/CustomStory';
+import { InstagramStoryProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/instagramStoriesDTO';
+import { PreviewListProps } from './Custom/CustomStoryProps';
 
 type Props = {
 	chapters: TChapter[];
@@ -28,12 +39,19 @@ const ChapterList = ({
 	);
 	const [loaded, setLoaded] = useState(false);
 	const [imagesLoading, setImagesLoading] = useState<boolean>(true);
+	const [stories, setStories] = useState<InstagramStoryProps[]>([]);
 
 	useEffect(() => {
 		const imageUrls = chapters.map((chapter) =>
 			Image.prefetch(chapter.frames[0].media)
 		);
 		Promise.all(imageUrls).then(() => setImagesLoading(false));
+	}, [chapters]);
+
+	useEffect(() => {
+		makeStoriesFromChapters(chapters).then((stories) =>
+			setStories(stories)
+		);
 	}, [chapters]);
 
 	const dataLoading = useMemo(() => {
@@ -54,7 +72,24 @@ const ChapterList = ({
 	return dataLoading ? (
 		<ChapterRowSkeleton />
 	) : (
-		<View className='w-full px-4' {...containerProps}>
+		<CustomStory
+			stories={stories}
+			chapters={chapters}
+			progress={progress}
+			PreviewList={PreviewList}
+		/>
+	);
+};
+
+const PreviewList = ({
+	data,
+	chapters,
+	containerProps,
+	progress,
+	onPress,
+}: PreviewListProps) => {
+	return (
+		<ScrollView className='w-full px-4' {...containerProps}>
 			{chapters.map((chapter, index) => {
 				if (!chapter) return null;
 				const video =
@@ -65,9 +100,11 @@ const ChapterList = ({
 					chapter.frames[0].mediaType === 'IMAGE'
 						? chapter.frames[0].media
 						: undefined;
+
 				return (
 					<ChapterComponent
 						key={chapter.chapterId}
+						onPress={() => onPress(chapter.chapterId)}
 						episodeNumber={index + 1}
 						progress={progress.get(chapter.chapterId)}
 						text={chapter.name}
@@ -85,7 +122,7 @@ const ChapterList = ({
 					/>
 				);
 			})}
-		</View>
+		</ScrollView>
 	);
 };
 

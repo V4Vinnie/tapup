@@ -12,22 +12,14 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Circle, Defs, LinearGradient, Stop, Svg } from 'react-native-svg';
 import {
-	AVATAR_SIZE,
 	LOADER_ID,
 	LOADER_URL,
 	STROKE_WIDTH,
 } from '@birdwingo/react-native-instagram-stories/src/core/constants';
-import { SharedValue } from 'react-native-gesture-handler/lib/typescript/handlers/gestures/reanimatedWrapper';
+import { CustomLoaderProps } from './CustomStoryProps';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 const AnimatedSvg = Animated.createAnimatedComponent(Svg);
-
-export interface CustomLoaderProps {
-	loading: SharedValue<boolean>;
-	color: SharedValue<string[]>;
-	width: number;
-	height: number;
-}
 
 const CustomLoader: FC<CustomLoaderProps> = ({
 	loading,

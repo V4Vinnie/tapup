@@ -9,6 +9,7 @@ export type TProfile = {
 	role: 'USER' | 'ADMIN' | 'CREATOR';
 
 	watchedFrames: TWatchedFrame[];
+	progress: ProgressStorageProps | null;
 	topicSubscriptionIds?: string[];
 	userSubscriptionIds?: string[];
 	badges?: TBadge[];
@@ -57,7 +58,7 @@ export type TChapter = {
 export type TFrame = {
 	id: string;
 	media: string;
-	mediaType: 'IMAGE' | 'VIDEO';
+	mediaType: 'IMAGE' | 'VIDEO' | 'COMPONENT';
 	createdAt: Timestamp;
 	watchedBy?: string[];
 };

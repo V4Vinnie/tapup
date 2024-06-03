@@ -1,4 +1,4 @@
-import React, {
+import {
 	forwardRef,
 	useImperativeHandle,
 	useState,
@@ -7,41 +7,39 @@ import React, {
 	memo,
 } from 'react';
 import { useSharedValue } from 'react-native-reanimated';
-import { Image, ScrollView } from 'react-native';
+import { Image } from 'react-native';
 import {
 	clearProgressStorage,
 	getProgressStorage,
 	setProgressStorage,
-} from '@birdwingo/react-native-instagram-stories/src/core/helpers/storage';
-import {
-	InstagramStoriesProps,
-	InstagramStoriesPublicMethods,
-} from '@birdwingo/react-native-instagram-stories/src/core/dto/instagramStoriesDTO';
+} from './CustomStoryStorage';
+import { InstagramStoriesPublicMethods } from '@birdwingo/react-native-instagram-stories/src/core/dto/instagramStoriesDTO';
 import { ProgressStorageProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/helpersDTO';
 import {
-	ANIMATION_DURATION,
-	DEFAULT_COLORS,
 	SEEN_LOADER_COLORS,
 	STORY_AVATAR_SIZE,
 	AVATAR_SIZE,
-	BACKGROUND_COLOR,
-	CLOSE_COLOR,
 } from '@birdwingo/react-native-instagram-stories/src/core/constants';
-import StoryModal from '@birdwingo/react-native-instagram-stories/src/components/Modal';
 import { StoryModalPublicMethods } from '@birdwingo/react-native-instagram-stories/src/core/dto/componentsDTO';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import PreviewComponent from '../PreviewComponent';
+import { mode, themeColors } from '../../utils/constants';
+import CustomStoryModal from './CustomStoryModal';
+import { CustomStoryProps } from './CustomStoryProps';
+import { useAuth } from '../../providers/AuthProvider';
 
-export interface CustomStoryProps extends InstagramStoriesProps {
-	avatarWidth?: number;
-	avatarHeight?: number;
-}
+const BACKGROUND_COLOR = themeColors[mode].primaryBackground;
+const CLOSE_COLOR = themeColors[mode].textColor;
+const DEFAULT_COLORS = 'transparent';
+const ANIMATION_DURATION = 8000;
 
 const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 	(
 		{
+			PreviewList,
 			stories,
-			saveProgress = false,
+			chapters,
+			progress,
+
+			saveProgress = true,
 			avatarBorderColors = DEFAULT_COLORS,
 			avatarSeenBorderColors = SEEN_LOADER_COLORS,
 			avatarWidth = AVATAR_SIZE,
@@ -60,6 +58,7 @@ const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 		},
 		ref
 	) => {
+		const { user } = useAuth();
 		const [data, setData] = useState(stories);
 
 		const seenStories = useSharedValue<ProgressStorageProps>({});
@@ -82,7 +81,7 @@ const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 
 		const onStoriesChange = async () => {
 			seenStories.value = await (saveProgress
-				? getProgressStorage()
+				? getProgressStorage(user?.uid!)
 				: {});
 
 			const promises = stories.map((story) => {
@@ -110,15 +109,18 @@ const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 			}
 		};
 
-		const onSeenStoriesChange = async (user: string, value: string) => {
+		const onSeenStoriesChange = async (
+			chapterId: string,
+			value: string
+		) => {
 			if (!saveProgress) {
 				return;
 			}
 
-			if (seenStories.value[user]) {
-				const userData = data.find((story) => story.id === user);
+			if (seenStories.value[chapterId]) {
+				const userData = data.find((story) => story.id === chapterId);
 				const oldIndex = userData?.stories.findIndex(
-					(story) => story.id === seenStories.value[user]
+					(story) => story.id === seenStories.value[chapterId]
 				);
 				const newIndex = userData?.stories.findIndex(
 					(story) => story.id === value
@@ -129,7 +131,11 @@ const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 				}
 			}
 
-			seenStories.value = await setProgressStorage(user, value);
+			seenStories.value = await setProgressStorage(
+				user?.uid!,
+				chapterId,
+				value
+			);
 		};
 
 		useImperativeHandle(
@@ -200,23 +206,13 @@ const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 
 		return (
 			<>
-				<ScrollView
-					horizontal
-					{...listContainerProps}
-					contentContainerStyle={listContainerStyle}
-					testID='storiesList'>
-					{data.map(
-						(story) =>
-							story.imgUrl && (
-								<TouchableOpacity
-									key={story.id}
-									onPress={() => onPress(story.id)}>
-									<PreviewComponent />
-								</TouchableOpacity>
-							)
-					)}
-				</ScrollView>
-				<StoryModal
+				<PreviewList
+					data={data}
+					chapters={chapters}
+					progress={progress}
+					onPress={onPress}
+				/>
+				<CustomStoryModal
 					ref={modalRef}
 					stories={data}
 					seenStories={seenStories}
@@ -228,6 +224,7 @@ const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 					videoDuration={videoAnimationMaxDuration}
 					videoProps={videoProps}
 					closeIconColor={closeIconColor}
+					creatorId={chapters[0].creatorId}
 					{...props}
 				/>
 			</>
