@@ -12,13 +12,16 @@ import { Skeleton } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../navigation/Routes';
-import { TTap, TTopic } from '../types';
+import { TChapter, TTap, TTopic } from '../types';
 import { useEffect, useState } from 'react';
 import { getTopicFromTap } from '../database/services/TapService';
+import PlaceholderImage from '../../assets/images/login_header_1.png';
+import { generatePreviewPhoto } from '../utils/getThumbnailFromVideo';
 
 type Props = {
 	onPress?: () => void;
 	thumbnail?: string;
+	chapter?: TChapter;
 	video?: string;
 	text?: string;
 	showProgress?: boolean;
@@ -28,10 +31,10 @@ type Props = {
 	loading?: boolean;
 };
 
-const PreviewComponent: React.FC<Props> = ({
+const PreviewComponent = ({
 	onPress,
 	thumbnail,
-	video,
+	chapter,
 	text,
 	showProgress = true,
 	progress,
@@ -42,16 +45,9 @@ const PreviewComponent: React.FC<Props> = ({
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const [topic, setTopic] = useState<TTopic | null>(null);
-
-	useEffect(() => {
-		if (!fullTap) return;
-		const getTopic = async () => {
-			const topic = await getTopicFromTap(fullTap);
-			if (!topic) return;
-			setTopic(topic);
-		};
-		getTopic();
-	}, [fullTap]);
+	const [previewPhoto, setPreviewPhoto] = useState<string>(
+		thumbnail ?? Image.resolveAssetSource(PlaceholderImage).uri
+	);
 
 	function handleOnPress(event: GestureResponderEvent) {
 		fullTap &&
@@ -63,6 +59,51 @@ const PreviewComponent: React.FC<Props> = ({
 		onPress && onPress();
 	}
 
+	const getPreviewPhoto = async (
+		chapter: TChapter,
+		frameIndex: number
+	): Promise<string | undefined> => {
+		if (!chapter) return undefined;
+
+		switch (chapter.frames[frameIndex].mediaType) {
+			case 'IMAGE':
+				return chapter.frames[frameIndex].media;
+			case 'VIDEO':
+				const videoPreviewPhoto = await generatePreviewPhoto(
+					chapter.frames[frameIndex].media
+				);
+				return videoPreviewPhoto;
+			default:
+				if (!chapter.frames[frameIndex + 1]) return undefined;
+				return getPreviewPhoto(chapter, frameIndex + 1);
+		}
+	};
+
+	useEffect(() => {
+		if (!fullTap) return;
+		const getTopic = async () => {
+			const topic = await getTopicFromTap(fullTap);
+			if (!topic) return;
+			setTopic(topic);
+		};
+		getTopic();
+	}, [fullTap]);
+
+	useEffect(() => {
+		console.log(chapter);
+
+		if (thumbnail) {
+			setPreviewPhoto(thumbnail);
+			return;
+		}
+		const getPreviewPhotoFromVideo = async () => {
+			if (!chapter) return;
+			const previewPhoto = await getPreviewPhoto(chapter, 0);
+			if (previewPhoto) setPreviewPhoto(previewPhoto);
+		};
+		getPreviewPhotoFromVideo();
+	}, [chapter]);
+
 	return loading ? (
 		<PreviewComponentSkeleton />
 	) : (
@@ -70,22 +111,10 @@ const PreviewComponent: React.FC<Props> = ({
 			onPress={handleOnPress}
 			className='w-32 h-44 rounded-lg overflow-hidden'
 			{...containerProps}>
-			{thumbnail === '' ? (
-				<View className='w-full h-full bg-dark-secondaryBackground' />
-			) : (
-				<Image
-					source={{ uri: thumbnail }}
-					className='w-full h-full bg-dark-secondaryBackground'
-				/>
-			)}
-			{!thumbnail && video && (
-				<Text>REPLACE</Text>
-				// <Video
-				// 	source={{ uri: video }} // Can be a URL or a local file.
-				// 	paused={true}
-				// 	controls={false}
-				// />
-			)}
+			<Image
+				source={{ uri: previewPhoto }}
+				className='w-full h-full bg-dark-secondaryBackground'
+			/>
 			<LinearGradient
 				className='absolute bottom-0 w-full h-1/2'
 				colors={['transparent', 'rgba(0,0,0,1)']}
