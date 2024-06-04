@@ -15,6 +15,7 @@ import {
 import { TapProvider } from './src/providers/TapProvider';
 import { TopicProvider } from './src/providers/TopicProvider';
 import { ProfileProvider } from './src/providers/ProfileProvider';
+import { Text, View } from 'react-native';
 
 SplashScreen.preventAutoHideAsync();
 export default function App() {

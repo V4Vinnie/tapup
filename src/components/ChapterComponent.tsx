@@ -7,12 +7,13 @@ import {
 } from 'react-native';
 import { mode, themeColors } from '../utils/constants';
 import { useAuth } from '../providers/AuthProvider';
-import Video from 'react-native-video';
 import { useEffect, useMemo, useState } from 'react';
 import { TChapter } from '../types';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import { Skeleton } from '@rneui/themed';
 import CustomStory from './Custom/CustomStory';
+// import { useVideoPlayer, VideoView } from 'expo-video';
+import Video from './Video';
 
 type Props = {
 	episodeNumber: number;
@@ -93,13 +94,7 @@ const ChapterComponent = ({
 						className='w-full h-full bg-dark-secondaryBackground'
 					/>
 				)}
-				{!thumbnail && video && (
-					<Video
-						source={{ uri: video }} // Can be a URL or a local file.
-						paused={true}
-						controls={false}
-					/>
-				)}
+				{!thumbnail && video && <Video video={video} />}
 				{showProgress && (
 					<View className='absolute bottom-0 w-full h-1 bg-dark-secondaryBackground'>
 						<View

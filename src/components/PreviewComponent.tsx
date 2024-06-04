@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import { mode, themeColors } from '../utils/constants';
 import { LinearGradient } from 'expo-linear-gradient';
-import Video from 'react-native-video';
+// import Video from 'react-native-video';
 import { Skeleton } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -79,11 +79,12 @@ const PreviewComponent: React.FC<Props> = ({
 				/>
 			)}
 			{!thumbnail && video && (
-				<Video
-					source={{ uri: video }} // Can be a URL or a local file.
-					paused={true}
-					controls={false}
-				/>
+				<Text>REPLACE</Text>
+				// <Video
+				// 	source={{ uri: video }} // Can be a URL or a local file.
+				// 	paused={true}
+				// 	controls={false}
+				// />
 			)}
 			<LinearGradient
 				className='absolute bottom-0 w-full h-1/2'
