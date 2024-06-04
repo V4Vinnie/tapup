@@ -12,10 +12,6 @@ import {
   Inter_600SemiBold,
   Inter_700Bold,
 } from '@expo-google-fonts/inter';
-import { TapProvider } from './src/providers/TapProvider';
-import { TopicProvider } from './src/providers/TopicProvider';
-import { ProfileProvider } from './src/providers/ProfileProvider';
-import { Text, View } from 'react-native';
 
 SplashScreen.preventAutoHideAsync();
 export default function App() {
@@ -37,14 +33,8 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <NavigationContainer>
         <AuthProvider>
-          <TopicProvider>
-            <TapProvider>
-              <ProfileProvider>
-                <StatusBar translucent />
-                <RootStack />
-              </ProfileProvider>
-            </TapProvider>
-          </TopicProvider>
+          <StatusBar translucent />
+          <RootStack />
         </AuthProvider>
       </NavigationContainer>
     </GestureHandlerRootView>

@@ -1,11 +1,4 @@
-import {
-	FlatList,
-	Image,
-	ScrollView,
-	TouchableHighlight,
-	TouchableOpacity,
-	View,
-} from 'react-native';
+import { Image, ScrollView, View } from 'react-native';
 import { TChapter, TProfile } from '../types';
 import { useAuth } from '../providers/AuthProvider';
 import { useEffect, useMemo, useState } from 'react';

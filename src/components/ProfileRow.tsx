@@ -75,7 +75,7 @@ const ProfileRowSkeleton = () => {
 					columnGap: SPACE_BETWEEN,
 				}}
 				renderItem={({ item, index }) => (
-					<ProfileComponentSkeleton width={85} />
+					<ProfileComponentSkeleton key={item} width={85} />
 				)}
 			/>
 		</View>

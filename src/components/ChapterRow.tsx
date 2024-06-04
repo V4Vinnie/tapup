@@ -144,7 +144,9 @@ const ChapterRowSkeleton = () => {
 					paddingHorizontal: 16,
 					columnGap: SPACE_BETWEEN,
 				}}
-				renderItem={({ item, index }) => <PreviewComponent loading />}
+				renderItem={({ item, index }) => (
+					<PreviewComponent key={item} loading />
+				)}
 			/>
 		</View>
 	);
