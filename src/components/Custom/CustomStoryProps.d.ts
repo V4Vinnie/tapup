@@ -26,6 +26,8 @@ export type CustomStoryProps = InstagramStoriesProps & {
 
 export type CustomStoryModalProps = StoryModalProps & {
 	creatorId: string;
+	stories: CustomStoryItemProps[];
+	component?: ReactNode;
 };
 
 type CustomStoryHeaderProps = StoryHeaderProps & {

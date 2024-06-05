@@ -5,7 +5,7 @@ import React, {
 	useImperativeHandle,
 	useState,
 } from 'react';
-import { Modal } from 'react-native';
+import { GestureResponderEvent, Modal } from 'react-native';
 import Animated, {
 	cancelAnimation,
 	interpolate,
@@ -18,7 +18,7 @@ import Animated, {
 	withTiming,
 } from 'react-native-reanimated';
 import {
-	ANIMATION_CONFIG,
+	ANIMATION_DURATION,
 	HEIGHT,
 	LONG_PRESS_DURATION,
 	WIDTH,
@@ -49,6 +49,7 @@ const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 			videoProps,
 			closeIconColor,
 			modalAnimationDuration = 400,
+			hideElementsOnLongPress,
 			onLoad,
 			onShow,
 			onHide,
@@ -69,11 +70,13 @@ const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 		const buttonHandled = useSharedValue(false);
 		const paused = useSharedValue(false);
 		const durationValue = useSharedValue(duration);
+		const isLongPress = useSharedValue(false);
+		const hideElements = useSharedValue(false);
 
 		const userIndex = useDerivedValue(() => Math.round(x.value / WIDTH));
 		const storyIndex = useDerivedValue(() =>
 			stories[userIndex.value]?.stories.findIndex(
-				(story) => story.id === currentStory.value
+				(story: (typeof stories)[0]) => story.id === currentStory.value
 			)
 		);
 		const userId = useDerivedValue(() => stories[userIndex.value]?.id);
@@ -155,7 +158,9 @@ const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 			const newUserIndex = stories.findIndex((story) => story.id === id);
 			const newX = newUserIndex * WIDTH;
 
-			x.value = animated ? withTiming(newX, ANIMATION_CONFIG) : newX;
+			x.value = animated
+				? withTiming(newX, { duration: ANIMATION_DURATION })
+				: newX;
 
 			if (sameUser) {
 				startAnimation(true);
@@ -171,7 +176,8 @@ const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 			}
 
 			const newStoryIndex = stories[newUserIndex]?.stories.findIndex(
-				(story) => story.id === seenStories.value[id]
+				(story: (typeof stories)[0]) =>
+					story.id === seenStories.value[id]
 			);
 			const userStories = stories[newUserIndex]?.stories;
 			const newStory =
@@ -219,14 +225,23 @@ const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 			if (!previousStory.value) {
 				if (previousUserId.value) {
 					scrollTo(previousUserId.value);
+				} else {
+					return false;
 				}
 			} else {
-				onStoryEnd?.(userId.value, currentStory.value);
-				onStoryStart?.(userId.value, previousStory.value);
+				if (onStoryEnd) {
+					runOnJS(onStoryEnd)(userId.value, currentStory.value);
+				}
+
+				if (onStoryStart) {
+					runOnJS(onStoryStart)(userId.value, previousStory.value);
+				}
 
 				animation.value = 0;
 				currentStory.value = previousStory.value;
 			}
+
+			return true;
 		};
 
 		const show = (id: string) => {
@@ -317,6 +332,51 @@ const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 			},
 		});
 
+		const onPressIn = () => {
+			stopAnimation();
+			paused.value = true;
+		};
+
+		const onLongPress = () => {
+			isLongPress.value = true;
+			hideElements.value = hideElementsOnLongPress ?? false;
+		};
+
+		const onPressOut = () => {
+			if (!isLongPress.value) {
+				return;
+			}
+
+			hideElements.value = false;
+			isLongPress.value = false;
+			paused.value = false;
+			startAnimation(true);
+		};
+
+		const onPress = ({
+			nativeEvent: { locationX },
+		}: GestureResponderEvent) => {
+			hideElements.value = false;
+
+			if (isLongPress.value) {
+				onPressOut();
+
+				return;
+			}
+
+			if (locationX < WIDTH / 2) {
+				const success = toPreviousStory();
+
+				if (!success) {
+					startAnimation(true);
+				}
+			} else {
+				toNextStory();
+			}
+
+			paused.value = false;
+		};
+
 		useImperativeHandle(
 			ref,
 			() => ({
@@ -334,6 +394,8 @@ const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 					userId: userId.value,
 					storyId: currentStory.value,
 				}),
+				goToPreviousStory: toPreviousStory,
+				goToNextStory: toNextStory,
 			}),
 			[userId.value, currentStory.value]
 		);
@@ -390,6 +452,7 @@ const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 									progress={animation}
 									seenStories={seenStories}
 									onClose={onClose}
+									stories={stories}
 									onLoad={(value) => {
 										onLoad?.();
 										startAnimation(
@@ -401,10 +464,10 @@ const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 									}}
 									avatarSize={storyAvatarSize}
 									textStyle={textStyle}
-									buttonHandled={buttonHandled}
 									paused={paused}
 									videoProps={videoProps}
 									closeColor={closeIconColor}
+									hideElements={hideElements}
 									progressActiveColor={
 										themeColors.primaryColor[100]
 									}

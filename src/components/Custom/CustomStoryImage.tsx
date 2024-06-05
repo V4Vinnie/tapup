@@ -1,5 +1,5 @@
 import { Image, View } from 'react-native';
-import React, { FC, memo, useState } from 'react';
+import React, { FC, memo, useEffect, useState } from 'react';
 import {
 	runOnJS,
 	useAnimatedReaction,
@@ -16,11 +16,13 @@ import {
 import ImageStyles from '@birdwingo/react-native-instagram-stories/src/components/Image/Image.styles';
 import StoryVideo from '@birdwingo/react-native-instagram-stories/src/components/Image/video';
 import { CustomStoryItemProps, Override } from './CustomStoryList';
+import { VideoView, useVideoPlayer } from 'expo-video';
 
 interface CustomStoryImageProps extends Override<StoryImageProps, 'stories'> {
 	stories: CustomStoryItemProps[];
 	isComponent?: boolean;
 	component?: React.ReactNode;
+	defaultImage: string;
 }
 
 const StoryImage: FC<CustomStoryImageProps> = ({
@@ -107,6 +109,30 @@ const StoryImage: FC<CustomStoryImageProps> = ({
 		}
 	};
 
+	const player = useVideoPlayer(data.uri ?? '', (player) => {
+		player.loop = true;
+		player.play();
+	});
+
+	const start = () => player.replay();
+
+	useAnimatedReaction(
+		() => isActive.value,
+		(res) => res && runOnJS(start)(),
+		[isActive.value]
+	);
+
+	useEffect(() => {
+		paused.addListener(1, (value) => {
+			if (value) {
+				player.pause();
+			} else {
+				player.play();
+			}
+		});
+		return () => paused.removeListener(1);
+	}, []);
+
 	return (
 		<>
 			<View style={ImageStyles.container}>
@@ -115,13 +141,19 @@ const StoryImage: FC<CustomStoryImageProps> = ({
 			<View style={ImageStyles.image}>
 				{data.uri &&
 					(data.isVideo ? (
-						<StoryVideo
-							onLoad={onContentLoad}
-							onLayout={onImageLayout}
-							uri={data.uri}
-							paused={isPaused}
-							isActive={isActive}
-							{...videoProps}
+						// <StoryVideo
+						// 	onLoad={onContentLoad}
+						// 	onLayout={onImageLayout}
+						// 	uri={data.uri}
+						// 	paused={isPaused}
+						// 	isActive={isActive}
+						// 	{...videoProps}
+						// />
+						<VideoView
+							player={player}
+							style={{ width: WIDTH, aspectRatio: 0.5626 }}
+							allowsFullscreen
+							allowsPictureInPicture
 						/>
 					) : data.isComponent ? (
 						data.component

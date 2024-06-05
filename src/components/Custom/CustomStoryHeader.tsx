@@ -18,7 +18,6 @@ const StoryHeader: FC<CustomStoryHeaderProps> = ({
 	onClose,
 	avatarSize,
 	textStyle,
-	buttonHandled,
 	closeColor,
 }) => {
 	const { navigate } =
@@ -68,10 +67,7 @@ const StoryHeader: FC<CustomStoryHeaderProps> = ({
 			<TouchableOpacity
 				onPress={onClose}
 				hitSlop={16}
-				testID='storyCloseButton'
-				onPressIn={() => {
-					buttonHandled.value = true;
-				}}>
+				testID='storyCloseButton'>
 				<Close color={closeColor} />
 			</TouchableOpacity>
 		</View>

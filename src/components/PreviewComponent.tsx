@@ -7,7 +7,6 @@ import {
 } from 'react-native';
 import { mode, themeColors } from '../utils/constants';
 import { LinearGradient } from 'expo-linear-gradient';
-// import Video from 'react-native-video';
 import { Skeleton } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';

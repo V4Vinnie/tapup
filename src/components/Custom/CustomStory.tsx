@@ -25,6 +25,7 @@ import { mode, themeColors } from '../../utils/constants';
 import CustomStoryModal from './CustomStoryModal';
 import { CustomStoryProps } from './CustomStoryProps';
 import { useAuth } from '../../providers/AuthProvider';
+import { InstagramStoriesProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/instagramStoriesDTO';
 
 const BACKGROUND_COLOR = themeColors[mode].primaryBackground;
 const CLOSE_COLOR = themeColors[mode].textColor;
@@ -96,7 +97,10 @@ const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 				}
 
 				return seenStory.mediaType !== 'video'
-					? Image.prefetch(seenStory.sourceUrl)
+					? Image.prefetch(
+							(seenStory.source as any)?.uri ??
+								seenStory.sourceUrl
+						)
 					: true;
 			});
 
@@ -191,6 +195,8 @@ const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 				},
 				pause: () => modalRef.current?.pause()!,
 				resume: () => modalRef.current?.resume()!,
+				goToPreviousStory: () => modalRef.current?.goToPreviousStory()!,
+				goToNextStory: () => modalRef.current?.goToNextStory()!,
 				getCurrentStory: () => modalRef.current?.getCurrentStory()!,
 			}),
 			[data]
