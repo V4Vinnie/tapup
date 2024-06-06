@@ -1,4 +1,4 @@
-import { Image, View } from 'react-native';
+import { Image, Text, View } from 'react-native';
 import React, { FC, memo, useEffect, useState } from 'react';
 import {
 	runOnJS,
@@ -22,13 +22,13 @@ interface CustomStoryImageProps extends Override<StoryImageProps, 'stories'> {
 	stories: CustomStoryItemProps[];
 	isComponent?: boolean;
 	component?: React.ReactNode;
-	defaultImage: string;
+	source: string;
 }
 
 const StoryImage: FC<CustomStoryImageProps> = ({
 	stories,
 	activeStory,
-	defaultImage,
+	source,
 	isDefaultVideo,
 	isComponent,
 	component,
@@ -44,7 +44,7 @@ const StoryImage: FC<CustomStoryImageProps> = ({
 		isComponent?: boolean;
 		component?: React.ReactNode;
 	}>({
-		uri: defaultImage,
+		uri: source,
 		isVideo: isDefaultVideo,
 		isComponent: isComponent,
 		component: component,
@@ -123,15 +123,14 @@ const StoryImage: FC<CustomStoryImageProps> = ({
 	);
 
 	useEffect(() => {
-		paused.addListener(1, (value) => {
-			if (value) {
-				player.pause();
-			} else {
-				player.play();
-			}
-		});
-		return () => paused.removeListener(1);
-	}, []);
+		if (paused.value) {
+			player.pause();
+		} else {
+			player.play();
+		}
+	}, [paused.value]);
+
+	console.log('StoryImage.tsx: data:', data);
 
 	return (
 		<>
@@ -141,14 +140,6 @@ const StoryImage: FC<CustomStoryImageProps> = ({
 			<View style={ImageStyles.image}>
 				{data.uri &&
 					(data.isVideo ? (
-						// <StoryVideo
-						// 	onLoad={onContentLoad}
-						// 	onLayout={onImageLayout}
-						// 	uri={data.uri}
-						// 	paused={isPaused}
-						// 	isActive={isActive}
-						// 	{...videoProps}
-						// />
 						<VideoView
 							player={player}
 							style={{ width: WIDTH, aspectRatio: 0.5626 }}
