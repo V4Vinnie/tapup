@@ -11,6 +11,7 @@ import { PreviewListProps } from './Custom/CustomStoryProps';
 import CustomStory from './Custom/CustomStory';
 import { InstagramStoryProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/instagramStoriesDTO';
 import { makeStoriesFromChapters } from '../utils/storyUtils';
+import { CustomInstagramStoryProps } from './Custom/CustomStoryList';
 
 type Props = {
 	chapters?: TChapter[];
@@ -31,7 +32,7 @@ const ChapterRow = ({
 	const [progress, setProgress] = useState<Map<string, number>>(
 		chapterProgress ?? new Map()
 	);
-	const [stories, setStories] = useState<InstagramStoryProps[]>([]);
+	const [stories, setStories] = useState<CustomInstagramStoryProps[]>([]);
 	const [imagesLoading, setImagesLoading] = useState<boolean>(true);
 	const [loadingAll, setLoadingAll] = useState<boolean>(true);
 

@@ -5,7 +5,7 @@ import React, {
 	useImperativeHandle,
 	useState,
 } from 'react';
-import { GestureResponderEvent, Modal } from 'react-native';
+import { GestureResponderEvent, Modal, Pressable } from 'react-native';
 import Animated, {
 	cancelAnimation,
 	interpolate,
@@ -32,6 +32,7 @@ import ModalStyles from '@birdwingo/react-native-instagram-stories/src/component
 import CustomStoryList from './CustomStoryList';
 import { mode, themeColors } from '../../utils/constants';
 import { CustomStoryModalProps } from './CustomStoryProps';
+import { StoryModalProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/componentsDTO';
 
 const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 	(
@@ -76,7 +77,7 @@ const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 		const userIndex = useDerivedValue(() => Math.round(x.value / WIDTH));
 		const storyIndex = useDerivedValue(() =>
 			stories[userIndex.value]?.stories.findIndex(
-				(story: (typeof stories)[0]) => story.id === currentStory.value
+				(story) => story.id === currentStory.value
 			)
 		);
 		const userId = useDerivedValue(() => stories[userIndex.value]?.id);
@@ -176,8 +177,7 @@ const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 			}
 
 			const newStoryIndex = stories[newUserIndex]?.stories.findIndex(
-				(story: (typeof stories)[0]) =>
-					story.id === seenStories.value[id]
+				(story) => story.id === seenStories.value[id]
 			);
 			const userStories = stories[newUserIndex]?.stories;
 			const newStory =
@@ -430,56 +430,65 @@ const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 					<Animated.View
 						style={ModalStyles.container}
 						testID='storyModal'>
-						<Animated.View
-							style={[
-								ModalStyles.bgAnimation,
-								backgroundAnimatedStyles,
-							]}
-						/>
-						<Animated.View
-							style={[
-								ModalStyles.absolute,
-								animatedStyles,
-								containerStyle,
-							]}>
-							{stories?.map((story, index) => (
-								<CustomStoryList
-									{...story}
-									index={index}
-									x={x}
-									activeUser={userId}
-									activeStory={currentStory}
-									progress={animation}
-									seenStories={seenStories}
-									onClose={onClose}
-									stories={stories}
-									onLoad={(value) => {
-										onLoad?.();
-										startAnimation(
-											undefined,
-											value !== undefined
-												? videoDuration ?? value
-												: duration
-										);
-									}}
-									avatarSize={storyAvatarSize}
-									textStyle={textStyle}
-									paused={paused}
-									videoProps={videoProps}
-									closeColor={closeIconColor}
-									hideElements={hideElements}
-									progressActiveColor={
-										themeColors.primaryColor[100]
-									}
-									progressColor={
-										themeColors[mode].secondaryBackground
-									}
-									creatorId={creatorId}
-									key={story.id}
-									{...props}
-								/>
-							))}
-						</Animated.View>
+						<Pressable
+							onPressIn={onPressIn}
+							onPress={onPress}
+							onLongPress={onLongPress}
+							onPressOut={onPressOut}
+							delayLongPress={LONG_PRESS_DURATION}
+							style={ModalStyles.container}>
+							<Animated.View
+								style={[
+									ModalStyles.bgAnimation,
+									backgroundAnimatedStyles,
+								]}
+							/>
+							<Animated.View
+								style={[
+									ModalStyles.absolute,
+									animatedStyles,
+									containerStyle,
+								]}>
+								{stories?.map((story, index) => (
+									<CustomStoryList
+										{...story}
+										index={index}
+										x={x}
+										activeUser={userId}
+										activeStory={currentStory}
+										progress={animation}
+										seenStories={seenStories}
+										onClose={onClose}
+										stories={story.stories}
+										onLoad={(value) => {
+											onLoad?.();
+											startAnimation(
+												undefined,
+												value !== undefined
+													? videoDuration ?? value
+													: duration
+											);
+										}}
+										avatarSize={storyAvatarSize}
+										textStyle={textStyle}
+										paused={paused}
+										videoProps={videoProps}
+										closeColor={closeIconColor}
+										hideElements={hideElements}
+										progressActiveColor={
+											themeColors.primaryColor[100]
+										}
+										progressColor={
+											themeColors[mode]
+												.secondaryBackground
+										}
+										creatorId={creatorId}
+										key={story.id}
+										{...props}
+									/>
+								))}
+							</Animated.View>
+						</Pressable>
 					</Animated.View>
 				</GestureHandler>
 			</Modal>

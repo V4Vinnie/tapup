@@ -15,11 +15,11 @@ import {
 } from '@birdwingo/react-native-instagram-stories/src/core/constants';
 import ImageStyles from '@birdwingo/react-native-instagram-stories/src/components/Image/Image.styles';
 import StoryVideo from '@birdwingo/react-native-instagram-stories/src/components/Image/video';
-import { CustomStoryItemProps, Override } from './CustomStoryList';
+import { CustomInstagramStoryProps, Override } from './CustomStoryList';
 import { VideoView, useVideoPlayer } from 'expo-video';
 
 interface CustomStoryImageProps extends Override<StoryImageProps, 'stories'> {
-	stories: CustomStoryItemProps[];
+	stories: CustomInstagramStoryProps['stories'];
 	isComponent?: boolean;
 	component?: React.ReactNode;
 	source: string;
@@ -81,7 +81,7 @@ const StoryImage: FC<CustomStoryImageProps> = ({
 		const nextStory = stories[stories.indexOf(story) + 1];
 
 		if (nextStory && nextStory.mediaType !== 'video') {
-			Image.prefetch(nextStory.sourceUrl);
+			Image.prefetch(nextStory.sourceUrl!);
 		}
 	};
 

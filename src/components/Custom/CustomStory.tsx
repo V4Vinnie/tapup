@@ -20,19 +20,24 @@ import {
 	STORY_AVATAR_SIZE,
 	AVATAR_SIZE,
 } from '@birdwingo/react-native-instagram-stories/src/core/constants';
-import { StoryModalPublicMethods } from '@birdwingo/react-native-instagram-stories/src/core/dto/componentsDTO';
 import { mode, themeColors } from '../../utils/constants';
 import CustomStoryModal from './CustomStoryModal';
-import { CustomStoryProps } from './CustomStoryProps';
+import {
+	CustomInstagramStoriesPublicMethods,
+	CustomStoryProps,
+} from './CustomStoryProps';
 import { useAuth } from '../../providers/AuthProvider';
-import { InstagramStoriesProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/instagramStoriesDTO';
+import { StoryModalPublicMethods } from '@birdwingo/react-native-instagram-stories/src/core/dto/componentsDTO';
 
 const BACKGROUND_COLOR = themeColors[mode].primaryBackground;
 const CLOSE_COLOR = themeColors[mode].textColor;
 const DEFAULT_COLORS = 'transparent';
 const ANIMATION_DURATION = 8000;
 
-const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
+const CustomStory = forwardRef<
+	CustomInstagramStoriesPublicMethods,
+	CustomStoryProps
+>(
 	(
 		{
 			PreviewList,
@@ -209,6 +214,8 @@ const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 		useEffect(() => {
 			setData(stories);
 		}, [stories]);
+
+		console.log('CustomStory.tsx: data:', data);
 
 		return (
 			<>
