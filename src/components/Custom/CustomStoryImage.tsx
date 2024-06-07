@@ -110,7 +110,7 @@ const StoryImage: FC<CustomStoryImageProps> = ({
 	};
 
 	const player = useVideoPlayer(data.uri ?? '', (player) => {
-		player.loop = true;
+		player.loop = false;
 		player.play();
 	});
 
@@ -129,8 +129,6 @@ const StoryImage: FC<CustomStoryImageProps> = ({
 			player.play();
 		}
 	}, [paused.value]);
-
-	console.log('StoryImage.tsx: data:', data);
 
 	return (
 		<>
