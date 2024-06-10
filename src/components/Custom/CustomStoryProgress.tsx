@@ -1,9 +1,9 @@
 import React, { FC, memo } from 'react';
 import { View } from 'react-native';
-import ProgressItem from '@birdwingo/react-native-instagram-stories/src/components/Progress/item';
-import { WIDTH } from '@birdwingo/react-native-instagram-stories/src/core/constants';
-import ProgressStyles from '@birdwingo/react-native-instagram-stories/src/components/Progress/Progress.styles';
-import { StoryProgressProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/componentsDTO';
+import ProgressItem from '@birdwingo/components/Progress/item';
+import { WIDTH } from '@birdwingo/core/constants';
+import ProgressStyles from '@birdwingo/components/Progress/Progress.styles';
+import { StoryProgressProps } from '@birdwingo/core/dto/componentsDTO';
 
 const Progress: FC<StoryProgressProps> = ({
 	progress,

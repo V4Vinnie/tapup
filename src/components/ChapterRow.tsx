@@ -9,7 +9,7 @@ import { getProgressForChapters } from '../database/services/TapService';
 import { SKELETON_WAIT_TIME } from '../utils/constants';
 import { PreviewListProps } from './Custom/CustomStoryProps';
 import CustomStory from './Custom/CustomStory';
-import { InstagramStoryProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/instagramStoriesDTO';
+import { InstagramStoryProps } from '@birdwingo/core/dto/instagramStoriesDTO';
 import { makeStoriesFromChapters } from '../utils/storyUtils';
 import { CustomInstagramStoryProps } from './Custom/CustomStoryList';
 

@@ -3,11 +3,11 @@ import {
 	StoryListProps,
 	StoryModalProps,
 	StoryModalPublicMethods,
-} from '@birdwingo/react-native-instagram-stories/src/core/dto/componentsDTO';
+} from '@birdwingo/core/dto/componentsDTO';
 import {
 	InstagramStoriesProps,
 	InstagramStoriesPublicMethods,
-} from '@birdwingo/react-native-instagram-stories/src/core/dto/instagramStoriesDTO';
+} from '@birdwingo/core/dto/instagramStoriesDTO';
 import { ReactNode } from 'react';
 import { CustomInstagramStoryProps, Override } from './CustomStoryList';
 

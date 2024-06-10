@@ -11,11 +11,7 @@ import Animated, {
 	withTiming,
 } from 'react-native-reanimated';
 import { Circle, Defs, LinearGradient, Stop, Svg } from 'react-native-svg';
-import {
-	LOADER_ID,
-	LOADER_URL,
-	STROKE_WIDTH,
-} from '@birdwingo/react-native-instagram-stories/src/core/constants';
+import { LOADER_ID, LOADER_URL, STROKE_WIDTH } from '@birdwingo/core/constants';
 import { CustomLoaderProps } from './CustomStoryProps';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);

@@ -1,8 +1,8 @@
 import React, { FC, memo, useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
-import HeaderStyles from '@birdwingo/react-native-instagram-stories/src/components/Header/Header.styles';
-import { WIDTH } from '@birdwingo/react-native-instagram-stories/src/core/constants';
-import Close from '@birdwingo/react-native-instagram-stories/src/components/Icon/close';
+import HeaderStyles from '@birdwingo/components/Header/Header.styles';
+import { WIDTH } from '@birdwingo/core/constants';
+import Close from '@birdwingo/components/Icon/close';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
 import { useNavigation } from '@react-navigation/native';

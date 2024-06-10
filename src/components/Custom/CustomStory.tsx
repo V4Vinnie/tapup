@@ -13,13 +13,13 @@ import {
 	getProgressStorage,
 	setProgressStorage,
 } from './CustomStoryStorage';
-import { InstagramStoriesPublicMethods } from '@birdwingo/react-native-instagram-stories/src/core/dto/instagramStoriesDTO';
-import { ProgressStorageProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/helpersDTO';
+import { InstagramStoriesPublicMethods } from '@birdwingo/core/dto/instagramStoriesDTO';
+import { ProgressStorageProps } from '@birdwingo/core/dto/helpersDTO';
 import {
 	SEEN_LOADER_COLORS,
 	STORY_AVATAR_SIZE,
 	AVATAR_SIZE,
-} from '@birdwingo/react-native-instagram-stories/src/core/constants';
+} from '@birdwingo/core/constants';
 import { mode, themeColors } from '../../utils/constants';
 import CustomStoryModal from './CustomStoryModal';
 import {
@@ -27,7 +27,7 @@ import {
 	CustomStoryProps,
 } from './CustomStoryProps';
 import { useAuth } from '../../providers/AuthProvider';
-import { StoryModalPublicMethods } from '@birdwingo/react-native-instagram-stories/src/core/dto/componentsDTO';
+import { StoryModalPublicMethods } from '@birdwingo/core/dto/componentsDTO';
 
 const BACKGROUND_COLOR = themeColors[mode].primaryBackground;
 const CLOSE_COLOR = themeColors[mode].textColor;

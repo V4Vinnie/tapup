@@ -4,17 +4,17 @@ import Animated, {
 	useDerivedValue,
 	useSharedValue,
 } from 'react-native-reanimated';
-import StoryAnimation from '@birdwingo/react-native-instagram-stories/src/components/Animation';
-import ListStyles from '@birdwingo/react-native-instagram-stories/src/components/List/List.styles';
-import { StoryListProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/componentsDTO';
-import { HEIGHT } from '@birdwingo/react-native-instagram-stories/src/core/constants';
-import StoryContent from '@birdwingo/react-native-instagram-stories/src/components/Content';
-import StoryFooter from '@birdwingo/react-native-instagram-stories/src/components/Footer';
+import StoryAnimation from '@birdwingo/components/Animation';
+import ListStyles from '@birdwingo/components/List/List.styles';
+import { StoryListProps } from '@birdwingo/core/dto/componentsDTO';
+import { HEIGHT } from '@birdwingo/core/constants';
+import StoryContent from '@birdwingo/components/Content';
+import StoryFooter from '@birdwingo/components/Footer';
 import CustomStoryImage from './CustomStoryImage';
 import {
 	InstagramStoryProps,
 	StoryItemProps,
-} from '@birdwingo/react-native-instagram-stories/src/core/dto/instagramStoriesDTO';
+} from '@birdwingo/core/dto/instagramStoriesDTO';
 import CustomStoryHeader from './CustomStoryHeader';
 import { ImagePropsBase, ImageStyle, StyleProp, View } from 'react-native';
 import CustomStoryProgress from './CustomStoryProgress';

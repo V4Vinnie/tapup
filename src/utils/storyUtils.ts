@@ -1,4 +1,4 @@
-import { InstagramStoryProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/instagramStoriesDTO';
+import { InstagramStoryProps } from '@birdwingo/core/dto/instagramStoriesDTO';
 import { TChapter } from '../types';
 import { getProfile } from '../database/services/UserService';
 import { CustomInstagramStoryProps } from '../components/Custom/CustomStoryList';

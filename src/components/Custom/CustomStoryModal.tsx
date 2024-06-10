@@ -1,4 +1,4 @@
-import React, {
+import {
 	forwardRef,
 	memo,
 	useEffect,
@@ -22,17 +22,16 @@ import {
 	HEIGHT,
 	LONG_PRESS_DURATION,
 	WIDTH,
-} from '@birdwingo/react-native-instagram-stories/src/core/constants';
+} from '@birdwingo/core/constants';
 import {
 	GestureContext,
 	StoryModalPublicMethods,
-} from '@birdwingo/react-native-instagram-stories/src/core/dto/componentsDTO';
-import GestureHandler from '@birdwingo/react-native-instagram-stories/src/components/Modal/gesture';
-import ModalStyles from '@birdwingo/react-native-instagram-stories/src/components/Modal/Modal.styles';
+} from '@birdwingo/core/dto/componentsDTO';
+import GestureHandler from '@birdwingo/components/Modal/gesture';
+import ModalStyles from '@birdwingo/components/Modal/Modal.styles';
 import CustomStoryList from './CustomStoryList';
 import { mode, themeColors } from '../../utils/constants';
 import { CustomStoryModalProps } from './CustomStoryProps';
-import { StoryModalProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/componentsDTO';
 
 const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 	(
