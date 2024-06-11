@@ -12,8 +12,7 @@ import {
 	clearProgressStorage,
 	getProgressStorage,
 	setProgressStorage,
-} from './CustomStoryStorage';
-import { InstagramStoriesPublicMethods } from '@birdwingo/core/dto/instagramStoriesDTO';
+} from '@birdwingo/core/helpers/storage';
 import { ProgressStorageProps } from '@birdwingo/core/dto/helpersDTO';
 import {
 	SEEN_LOADER_COLORS,
@@ -87,7 +86,7 @@ const CustomStory = forwardRef<
 
 		const onStoriesChange = async () => {
 			seenStories.value = await (saveProgress
-				? getProgressStorage(user?.uid!)
+				? getProgressStorage()
 				: {});
 
 			const promises = stories.map((story) => {
@@ -118,18 +117,15 @@ const CustomStory = forwardRef<
 			}
 		};
 
-		const onSeenStoriesChange = async (
-			chapterId: string,
-			value: string
-		) => {
+		const onSeenStoriesChange = async (user: string, value: string) => {
 			if (!saveProgress) {
 				return;
 			}
 
-			if (seenStories.value[chapterId]) {
-				const userData = data.find((story) => story.id === chapterId);
+			const userData = data.find((story) => story.id === user);
+			if (seenStories.value[user]) {
 				const oldIndex = userData?.stories.findIndex(
-					(story) => story.id === seenStories.value[chapterId]
+					(story) => story.id === seenStories.value[user]
 				);
 				const newIndex = userData?.stories.findIndex(
 					(story) => story.id === value
@@ -140,11 +136,7 @@ const CustomStory = forwardRef<
 				}
 			}
 
-			seenStories.value = await setProgressStorage(
-				user?.uid!,
-				chapterId,
-				value
-			);
+			seenStories.value = await setProgressStorage(user, value);
 		};
 
 		useImperativeHandle(

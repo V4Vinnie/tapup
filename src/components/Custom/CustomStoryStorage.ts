@@ -23,15 +23,30 @@ export const clearProgressStorage = async () => {
 	}
 };
 
-export const getProgressStorage = async (
-	userId: string
-): Promise<ProgressStorageProps> => {
+export const getProgressStorage = async (): Promise<ProgressStorageProps> => {
 	try {
 		const AsyncStorage =
 			require('@react-native-async-storage/async-storage').default;
 
 		const progress = await AsyncStorage.getItem(STORAGE_KEY);
+
 		return progress ? JSON.parse(progress) : {};
+	} catch (error) {
+		return {};
+	}
+};
+
+export const setProgressStorage = async (user: string, lastSeen: string) => {
+	const progress = await getProgressStorage();
+	progress[user] = lastSeen;
+
+	try {
+		const AsyncStorage =
+			require('@react-native-async-storage/async-storage').default;
+
+		await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+
+		return progress;
 	} catch (error) {
 		return {};
 	}
@@ -62,28 +77,7 @@ const setProgressStorageToFirebase = async (
 	try {
 		const userRef = doc(DB, COLLECTIONS.USERS, userId);
 		await updateDoc(userRef, { progress });
-		console.log('progress in setProgressStorageToFirebase ', progress);
 	} catch (error) {
 		console.error('setProgressStorageToFirebase ', error);
-	}
-};
-
-export const setProgressStorage = async (
-	userId: string,
-	chaperId: string,
-	lastSeen: string
-) => {
-	const progress = await getProgressStorage(userId);
-	progress[chaperId] = lastSeen;
-	try {
-		const AsyncStorage =
-			require('@react-native-async-storage/async-storage').default;
-
-		await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
-		await setProgressStorageToFirebase(userId, progress);
-
-		return progress;
-	} catch (error) {
-		return {};
 	}
 };

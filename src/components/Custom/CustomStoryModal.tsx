@@ -137,6 +137,8 @@ const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 					userId.value !== undefined &&
 					currentStory.value !== undefined
 				) {
+					console.log('onSeenStoriesChange');
+
 					runOnJS(onSeenStoriesChange)(
 						userId.value,
 						currentStory.value
@@ -215,6 +217,7 @@ const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 
 				animation.value = 0;
 				currentStory.value = nextStory.value;
+				console.log('nextStory.value', nextStory.value);
 			}
 		};
 

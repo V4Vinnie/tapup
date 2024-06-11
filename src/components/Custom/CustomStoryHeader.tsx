@@ -39,7 +39,9 @@ const StoryHeader: FC<CustomStoryHeaderProps> = ({
 	}, [userId]);
 
 	return (
-		<View style={[{ ...HeaderStyles.container, top: 8 }, { width }]}>
+		<View
+			style={[{ ...HeaderStyles.container, top: 8 }]}
+			className='w-11/12 flex flex-row justify-between'>
 			<TouchableOpacity
 				style={HeaderStyles.left}
 				onPress={() => {
