@@ -1,5 +1,5 @@
-import { View, Text, SafeAreaView, ScrollView, FlatList } from 'react-native';
-import React, { useEffect, useMemo, useState } from 'react';
+import { View, Text, SafeAreaView, ScrollView } from 'react-native';
+import { useEffect, useMemo, useState } from 'react';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
 import ProfileHeader, {
 	ProfileHeaderSkeleton,

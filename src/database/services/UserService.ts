@@ -61,6 +61,7 @@ export async function registerUser(
 				email: email,
 				role: 'USER',
 				watchedFrames: [],
+				progress: {},
 			} as TProfile);
 			resolve(userCredential);
 		} catch (error) {

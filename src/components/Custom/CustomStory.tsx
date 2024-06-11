@@ -12,26 +12,31 @@ import {
 	clearProgressStorage,
 	getProgressStorage,
 	setProgressStorage,
-} from './CustomStoryStorage';
-import { InstagramStoriesPublicMethods } from '@birdwingo/react-native-instagram-stories/src/core/dto/instagramStoriesDTO';
-import { ProgressStorageProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/helpersDTO';
+} from '@birdwingo/core/helpers/storage';
+import { ProgressStorageProps } from '@birdwingo/core/dto/helpersDTO';
 import {
 	SEEN_LOADER_COLORS,
 	STORY_AVATAR_SIZE,
 	AVATAR_SIZE,
-} from '@birdwingo/react-native-instagram-stories/src/core/constants';
-import { StoryModalPublicMethods } from '@birdwingo/react-native-instagram-stories/src/core/dto/componentsDTO';
+} from '@birdwingo/core/constants';
 import { mode, themeColors } from '../../utils/constants';
 import CustomStoryModal from './CustomStoryModal';
-import { CustomStoryProps } from './CustomStoryProps';
+import {
+	CustomInstagramStoriesPublicMethods,
+	CustomStoryProps,
+} from './CustomStoryProps';
 import { useAuth } from '../../providers/AuthProvider';
+import { StoryModalPublicMethods } from '@birdwingo/core/dto/componentsDTO';
 
 const BACKGROUND_COLOR = themeColors[mode].primaryBackground;
 const CLOSE_COLOR = themeColors[mode].textColor;
 const DEFAULT_COLORS = 'transparent';
 const ANIMATION_DURATION = 8000;
 
-const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
+const CustomStory = forwardRef<
+	CustomInstagramStoriesPublicMethods,
+	CustomStoryProps
+>(
 	(
 		{
 			PreviewList,
@@ -81,7 +86,7 @@ const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 
 		const onStoriesChange = async () => {
 			seenStories.value = await (saveProgress
-				? getProgressStorage(user?.uid!)
+				? getProgressStorage()
 				: {});
 
 			const promises = stories.map((story) => {
@@ -96,7 +101,10 @@ const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 				}
 
 				return seenStory.mediaType !== 'video'
-					? Image.prefetch(seenStory.sourceUrl)
+					? Image.prefetch(
+							(seenStory.source as any)?.uri ??
+								seenStory.sourceUrl
+						)
 					: true;
 			});
 
@@ -109,18 +117,15 @@ const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 			}
 		};
 
-		const onSeenStoriesChange = async (
-			chapterId: string,
-			value: string
-		) => {
+		const onSeenStoriesChange = async (user: string, value: string) => {
 			if (!saveProgress) {
 				return;
 			}
 
-			if (seenStories.value[chapterId]) {
-				const userData = data.find((story) => story.id === chapterId);
+			const userData = data.find((story) => story.id === user);
+			if (seenStories.value[user]) {
 				const oldIndex = userData?.stories.findIndex(
-					(story) => story.id === seenStories.value[chapterId]
+					(story) => story.id === seenStories.value[user]
 				);
 				const newIndex = userData?.stories.findIndex(
 					(story) => story.id === value
@@ -131,11 +136,7 @@ const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 				}
 			}
 
-			seenStories.value = await setProgressStorage(
-				user?.uid!,
-				chapterId,
-				value
-			);
+			seenStories.value = await setProgressStorage(user, value);
 		};
 
 		useImperativeHandle(
@@ -191,6 +192,8 @@ const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 				},
 				pause: () => modalRef.current?.pause()!,
 				resume: () => modalRef.current?.resume()!,
+				goToPreviousStory: () => modalRef.current?.goToPreviousStory()!,
+				goToNextStory: () => modalRef.current?.goToNextStory()!,
 				getCurrentStory: () => modalRef.current?.getCurrentStory()!,
 			}),
 			[data]
@@ -203,6 +206,8 @@ const CustomStory = forwardRef<InstagramStoriesPublicMethods, CustomStoryProps>(
 		useEffect(() => {
 			setData(stories);
 		}, [stories]);
+
+		console.log('CustomStory.tsx: data:', data);
 
 		return (
 			<>

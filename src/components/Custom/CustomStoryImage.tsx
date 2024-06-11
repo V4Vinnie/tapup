@@ -1,32 +1,31 @@
-import { Image, View } from 'react-native';
-import React, { FC, memo, useState } from 'react';
+import { Image, Text, View } from 'react-native';
+import React, { FC, memo, useEffect, useRef, useState } from 'react';
 import {
 	runOnJS,
 	useAnimatedReaction,
 	useDerivedValue,
 	useSharedValue,
 } from 'react-native-reanimated';
-import { StoryImageProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/componentsDTO';
-import Loader from '@birdwingo/react-native-instagram-stories/src/components/Loader';
-import {
-	HEIGHT,
-	LOADER_COLORS,
-	WIDTH,
-} from '@birdwingo/react-native-instagram-stories/src/core/constants';
-import ImageStyles from '@birdwingo/react-native-instagram-stories/src/components/Image/Image.styles';
-import StoryVideo from '@birdwingo/react-native-instagram-stories/src/components/Image/video';
-import { CustomStoryItemProps, Override } from './CustomStoryList';
+import { StoryImageProps } from '@birdwingo/core/dto/componentsDTO';
+import Loader from '@birdwingo/components/Loader';
+import { HEIGHT, LOADER_COLORS, WIDTH } from '@birdwingo/core/constants';
+import ImageStyles from '@birdwingo/components/Image/Image.styles';
+import { CustomInstagramStoryProps, Override } from './CustomStoryList';
+import { VideoView, useVideoPlayer } from 'expo-video';
+import Video, { VideoRef } from 'react-native-video';
+import StoryVideo from '@birdwingo/components/Image/video';
 
 interface CustomStoryImageProps extends Override<StoryImageProps, 'stories'> {
-	stories: CustomStoryItemProps[];
+	stories: CustomInstagramStoryProps['stories'];
 	isComponent?: boolean;
 	component?: React.ReactNode;
+	source: string;
 }
 
 const StoryImage: FC<CustomStoryImageProps> = ({
 	stories,
 	activeStory,
-	defaultImage,
+	source,
 	isDefaultVideo,
 	isComponent,
 	component,
@@ -42,15 +41,15 @@ const StoryImage: FC<CustomStoryImageProps> = ({
 		isComponent?: boolean;
 		component?: React.ReactNode;
 	}>({
-		uri: defaultImage,
+		uri: source,
 		isVideo: isDefaultVideo,
 		isComponent: isComponent,
 		component: component,
 	});
 
+	const videoDuration = useSharedValue<number | undefined>(undefined);
 	const loading = useSharedValue(true);
 	const color = useSharedValue(LOADER_COLORS);
-	const videoDuration = useSharedValue<number | undefined>(undefined);
 	const isPaused = useDerivedValue(() => paused.value || !isActive.value);
 
 	const onImageChange = async () => {
@@ -79,7 +78,7 @@ const StoryImage: FC<CustomStoryImageProps> = ({
 		const nextStory = stories[stories.indexOf(story) + 1];
 
 		if (nextStory && nextStory.mediaType !== 'video') {
-			Image.prefetch(nextStory.sourceUrl);
+			Image.prefetch(nextStory.sourceUrl!);
 		}
 	};
 
@@ -107,6 +106,26 @@ const StoryImage: FC<CustomStoryImageProps> = ({
 		}
 	};
 
+	const player = useVideoPlayer(data.uri ?? '', (player) => {
+		player.loop = false;
+		player.play();
+	});
+
+	const start = () => player.replay();
+
+	useAnimatedReaction(
+		() => isActive.value,
+		(res) => res && runOnJS(start)(),
+		[isActive.value]
+	);
+	useEffect(() => {
+		if (paused.value) {
+			player.pause();
+		} else {
+			player.play();
+		}
+	}, [paused.value]);
+
 	return (
 		<>
 			<View style={ImageStyles.container}>
@@ -118,7 +137,7 @@ const StoryImage: FC<CustomStoryImageProps> = ({
 						<StoryVideo
 							onLoad={onContentLoad}
 							onLayout={onImageLayout}
-							uri={data.uri}
+							source={{ uri: data.uri }}
 							paused={isPaused}
 							isActive={isActive}
 							{...videoProps}

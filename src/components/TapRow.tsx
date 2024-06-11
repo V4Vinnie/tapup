@@ -37,6 +37,7 @@ const TapRow = ({ tapData, containerProps, loading }: Props) => {
 				}}
 				renderItem={({ item, index }) => (
 					<PreviewComponent
+						key={item.id}
 						fullTap={item}
 						thumbnail={item.thumbnail}
 						text={item.name}

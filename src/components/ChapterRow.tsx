@@ -9,9 +9,9 @@ import { getProgressForChapters } from '../database/services/TapService';
 import { SKELETON_WAIT_TIME } from '../utils/constants';
 import { PreviewListProps } from './Custom/CustomStoryProps';
 import CustomStory from './Custom/CustomStory';
-import { InstagramStoryProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/instagramStoriesDTO';
+import { InstagramStoryProps } from '@birdwingo/core/dto/instagramStoriesDTO';
 import { makeStoriesFromChapters } from '../utils/storyUtils';
-import { Text } from 'react-native-svg';
+import { CustomInstagramStoryProps } from './Custom/CustomStoryList';
 
 type Props = {
 	chapters?: TChapter[];
@@ -32,7 +32,7 @@ const ChapterRow = ({
 	const [progress, setProgress] = useState<Map<string, number>>(
 		chapterProgress ?? new Map()
 	);
-	const [stories, setStories] = useState<InstagramStoryProps[]>([]);
+	const [stories, setStories] = useState<CustomInstagramStoryProps[]>([]);
 	const [imagesLoading, setImagesLoading] = useState<boolean>(true);
 	const [loadingAll, setLoadingAll] = useState<boolean>(true);
 
@@ -101,34 +101,21 @@ const PreviewList = ({
 		contentContainerStyle={{
 			paddingHorizontal: 16,
 		}}
-		renderItem={({ item, index }) => {
-			const video =
-				item.frames[0].mediaType === 'VIDEO'
-					? item.frames[0].media
-					: undefined;
-			const thumbnail =
-				item.frames[0].mediaType === 'IMAGE'
-					? item.frames[0].media
-					: undefined;
-			return (
-				<PreviewComponent
-					key={item.chapterId}
-					progress={progress.get(item.chapterId)}
-					text={item.name}
-					video={video}
-					thumbnail={thumbnail}
-					containerProps={{
-						style: {
-							marginRight:
-								index === chapters!.length - 1
-									? 0
-									: SPACE_BETWEEN,
-						},
-					}}
-					onPress={() => onPress(item.chapterId)}
-				/>
-			);
-		}}
+		renderItem={({ item, index }) => (
+			<PreviewComponent
+				key={item.chapterId}
+				progress={progress.get(item.chapterId)}
+				text={item.name}
+				chapter={item}
+				containerProps={{
+					style: {
+						marginRight:
+							index === chapters!.length - 1 ? 0 : SPACE_BETWEEN,
+					},
+				}}
+				onPress={() => onPress(item.chapterId)}
+			/>
+		)}
 	/>
 );
 
@@ -144,7 +131,9 @@ const ChapterRowSkeleton = () => {
 					paddingHorizontal: 16,
 					columnGap: SPACE_BETWEEN,
 				}}
-				renderItem={({ item, index }) => <PreviewComponent loading />}
+				renderItem={({ item, index }) => (
+					<PreviewComponent key={item} loading />
+				)}
 			/>
 		</View>
 	);

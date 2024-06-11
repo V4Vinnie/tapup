@@ -1,4 +1,4 @@
-import { FlatList, ScrollView, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
 import AppHeader from '../../components/AppHeader';
 import FullInfoTap from '../../components/FullInfoTap';

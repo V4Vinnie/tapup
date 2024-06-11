@@ -1,11 +1,4 @@
-import {
-	FlatList,
-	Image,
-	ScrollView,
-	TouchableHighlight,
-	TouchableOpacity,
-	View,
-} from 'react-native';
+import { Image, ScrollView, View } from 'react-native';
 import { TChapter, TProfile } from '../types';
 import { useAuth } from '../providers/AuthProvider';
 import { useEffect, useMemo, useState } from 'react';
@@ -15,7 +8,7 @@ import { getProgressForChapters } from '../database/services/TapService';
 import ChapterComponent, { ChapterComponentSkeleton } from './ChapterComponent';
 import { makeStoriesFromChapters } from '../utils/storyUtils';
 import CustomStory from './Custom/CustomStory';
-import { InstagramStoryProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/instagramStoriesDTO';
+import { InstagramStoryProps } from '@birdwingo/core/dto/instagramStoriesDTO';
 import { PreviewListProps } from './Custom/CustomStoryProps';
 
 type Props = {

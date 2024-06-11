@@ -1,28 +1,53 @@
-import React, { FC, ReactNode, memo } from 'react';
+import React, { FC, ReactNode, memo, useMemo } from 'react';
 import Animated, {
 	useAnimatedStyle,
 	useDerivedValue,
 	useSharedValue,
 } from 'react-native-reanimated';
-import StoryAnimation from '@birdwingo/react-native-instagram-stories/src/components/Animation';
-import ListStyles from '@birdwingo/react-native-instagram-stories/src/components/List/List.styles';
-import { StoryListProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/componentsDTO';
-import { HEIGHT } from '@birdwingo/react-native-instagram-stories/src/core/constants';
-import StoryContent from '@birdwingo/react-native-instagram-stories/src/components/Content';
-import StoryFooter from '@birdwingo/react-native-instagram-stories/src/components/Footer';
+import StoryAnimation from '@birdwingo/components/Animation';
+import ListStyles from '@birdwingo/components/List/List.styles';
+import { StoryListProps } from '@birdwingo/core/dto/componentsDTO';
+import { HEIGHT } from '@birdwingo/core/constants';
+import StoryContent from '@birdwingo/components/Content';
+import StoryFooter from '@birdwingo/components/Footer';
 import CustomStoryImage from './CustomStoryImage';
-import { StoryItemProps } from '@birdwingo/react-native-instagram-stories/src/core/dto/instagramStoriesDTO';
+import {
+	InstagramStoryProps,
+	StoryItemProps,
+} from '@birdwingo/core/dto/instagramStoriesDTO';
 import CustomStoryHeader from './CustomStoryHeader';
-import { View } from 'react-native';
+import { ImagePropsBase, ImageStyle, StyleProp, View } from 'react-native';
 import CustomStoryProgress from './CustomStoryProgress';
 
-export interface CustomStoryItemProps {
+export interface ImageProps extends ImagePropsBase {
+	/**
+	 *
+	 * Style
+	 */
+	style?: StyleProp<ImageStyle> | undefined;
+}
+
+export type CustomStoryItemProps = {
 	id: string;
-	sourceUrl: string;
+	/**
+	 * @deprecated Use {@link source} instead (set source to {uri: 'your url'}).
+	 */
+	sourceUrl?: string;
+	source: ImageProps['source'];
 	mediaType?: 'image' | 'video' | 'component';
+	animationDuration?: number;
 	renderContent?: () => ReactNode;
 	renderFooter?: () => ReactNode;
-}
+};
+
+export type CustomInstagramStoryProps = {
+	id: string;
+	imgUrl?: string;
+	renderAvatar?: () => ReactNode;
+	renderStoryHeader?: () => ReactNode;
+	name?: string;
+	stories: CustomStoryItemProps[];
+};
 
 export type Override<
 	T,
@@ -76,6 +101,15 @@ const StoryList: FC<CustomStoryListProps> = ({
 		(item) => item.id === seenStories.value[id]
 	);
 
+	const storiesAsStoryItems: StoryItemProps[] = useMemo(() => {
+		return stories.map((story) => ({
+			id: story.id,
+			sourceUrl: story.sourceUrl,
+			mediaType: 'image',
+			source: { uri: story.sourceUrl },
+		}));
+	}, [stories]);
+
 	return (
 		<StoryAnimation x={x} index={index}>
 			<CustomStoryHeader {...props} userId={creatorId} />
@@ -85,9 +119,9 @@ const StoryList: FC<CustomStoryListProps> = ({
 					<CustomStoryImage
 						stories={stories}
 						activeStory={activeStory}
-						defaultImage={
+						source={
 							stories[lastSeenIndex + 1]?.sourceUrl ??
-							stories[0]?.sourceUrl
+							stories[0]?.sourceUrl!
 						}
 						isDefaultVideo={
 							(stories[lastSeenIndex + 1]?.mediaType ??
@@ -106,7 +140,7 @@ const StoryList: FC<CustomStoryListProps> = ({
 					/>
 				</View>
 				<StoryContent
-					stories={stories as StoryItemProps[]}
+					stories={storiesAsStoryItems}
 					active={isActive}
 					activeStory={activeStory}
 				/>
@@ -120,7 +154,7 @@ const StoryList: FC<CustomStoryListProps> = ({
 				/>
 			</Animated.View>
 			<StoryFooter
-				stories={stories as StoryItemProps[]}
+				stories={storiesAsStoryItems}
 				active={isActive}
 				activeStory={activeStory}
 			/>

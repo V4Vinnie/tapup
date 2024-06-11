@@ -52,6 +52,7 @@ const SearchScreen = (props: Props) => {
 					}}
 					renderItem={({ item }) => (
 						<FullInfoTap
+							key={item.id}
 							tap={item}
 							containerProps={{
 								style: {

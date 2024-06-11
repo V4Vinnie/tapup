@@ -98,6 +98,7 @@ const TagRow = ({
 				renderItem={({ item, index }) => (
 					<TagComponent
 						data={item}
+						key={item.id}
 						containerProps={{
 							style: {
 								marginRight:
@@ -145,7 +146,9 @@ export const TagRowSkeleton = () => {
 					paddingHorizontal: 16,
 					columnGap: SPACE_BETWEEN,
 				}}
-				renderItem={({ item, index }) => <TagComponentSkeleton />}
+				renderItem={({ item, index }) => (
+					<TagComponentSkeleton key={item} />
+				)}
 			/>
 		</View>
 	);

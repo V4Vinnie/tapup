@@ -1,11 +1,11 @@
-import React, {
+import {
 	forwardRef,
 	memo,
 	useEffect,
 	useImperativeHandle,
 	useState,
 } from 'react';
-import { Modal } from 'react-native';
+import { GestureResponderEvent, Modal, Pressable } from 'react-native';
 import Animated, {
 	cancelAnimation,
 	interpolate,
@@ -18,17 +18,17 @@ import Animated, {
 	withTiming,
 } from 'react-native-reanimated';
 import {
-	ANIMATION_CONFIG,
+	ANIMATION_DURATION,
 	HEIGHT,
 	LONG_PRESS_DURATION,
 	WIDTH,
-} from '@birdwingo/react-native-instagram-stories/src/core/constants';
+} from '@birdwingo/core/constants';
 import {
 	GestureContext,
 	StoryModalPublicMethods,
-} from '@birdwingo/react-native-instagram-stories/src/core/dto/componentsDTO';
-import GestureHandler from '@birdwingo/react-native-instagram-stories/src/components/Modal/gesture';
-import ModalStyles from '@birdwingo/react-native-instagram-stories/src/components/Modal/Modal.styles';
+} from '@birdwingo/core/dto/componentsDTO';
+import GestureHandler from '@birdwingo/components/Modal/gesture';
+import ModalStyles from '@birdwingo/components/Modal/Modal.styles';
 import CustomStoryList from './CustomStoryList';
 import { mode, themeColors } from '../../utils/constants';
 import { CustomStoryModalProps } from './CustomStoryProps';
@@ -49,6 +49,7 @@ const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 			videoProps,
 			closeIconColor,
 			modalAnimationDuration = 400,
+			hideElementsOnLongPress,
 			onLoad,
 			onShow,
 			onHide,
@@ -69,6 +70,8 @@ const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 		const buttonHandled = useSharedValue(false);
 		const paused = useSharedValue(false);
 		const durationValue = useSharedValue(duration);
+		const isLongPress = useSharedValue(false);
+		const hideElements = useSharedValue(false);
 
 		const userIndex = useDerivedValue(() => Math.round(x.value / WIDTH));
 		const storyIndex = useDerivedValue(() =>
@@ -134,6 +137,8 @@ const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 					userId.value !== undefined &&
 					currentStory.value !== undefined
 				) {
+					console.log('onSeenStoriesChange');
+
 					runOnJS(onSeenStoriesChange)(
 						userId.value,
 						currentStory.value
@@ -155,7 +160,9 @@ const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 			const newUserIndex = stories.findIndex((story) => story.id === id);
 			const newX = newUserIndex * WIDTH;
 
-			x.value = animated ? withTiming(newX, ANIMATION_CONFIG) : newX;
+			x.value = animated
+				? withTiming(newX, { duration: ANIMATION_DURATION })
+				: newX;
 
 			if (sameUser) {
 				startAnimation(true);
@@ -210,6 +217,7 @@ const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 
 				animation.value = 0;
 				currentStory.value = nextStory.value;
+				console.log('nextStory.value', nextStory.value);
 			}
 		};
 
@@ -219,14 +227,23 @@ const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 			if (!previousStory.value) {
 				if (previousUserId.value) {
 					scrollTo(previousUserId.value);
+				} else {
+					return false;
 				}
 			} else {
-				onStoryEnd?.(userId.value, currentStory.value);
-				onStoryStart?.(userId.value, previousStory.value);
+				if (onStoryEnd) {
+					runOnJS(onStoryEnd)(userId.value, currentStory.value);
+				}
+
+				if (onStoryStart) {
+					runOnJS(onStoryStart)(userId.value, previousStory.value);
+				}
 
 				animation.value = 0;
 				currentStory.value = previousStory.value;
 			}
+
+			return true;
 		};
 
 		const show = (id: string) => {
@@ -317,6 +334,51 @@ const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 			},
 		});
 
+		const onPressIn = () => {
+			stopAnimation();
+			paused.value = true;
+		};
+
+		const onLongPress = () => {
+			isLongPress.value = true;
+			hideElements.value = hideElementsOnLongPress ?? false;
+		};
+
+		const onPressOut = () => {
+			if (!isLongPress.value) {
+				return;
+			}
+
+			hideElements.value = false;
+			isLongPress.value = false;
+			paused.value = false;
+			startAnimation(true);
+		};
+
+		const onPress = ({
+			nativeEvent: { locationX },
+		}: GestureResponderEvent) => {
+			hideElements.value = false;
+
+			if (isLongPress.value) {
+				onPressOut();
+
+				return;
+			}
+
+			if (locationX < WIDTH / 2) {
+				const success = toPreviousStory();
+
+				if (!success) {
+					startAnimation(true);
+				}
+			} else {
+				toNextStory();
+			}
+
+			paused.value = false;
+		};
+
 		useImperativeHandle(
 			ref,
 			() => ({
@@ -334,6 +396,8 @@ const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 					userId: userId.value,
 					storyId: currentStory.value,
 				}),
+				goToPreviousStory: toPreviousStory,
+				goToNextStory: toNextStory,
 			}),
 			[userId.value, currentStory.value]
 		);
@@ -368,55 +432,65 @@ const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 					<Animated.View
 						style={ModalStyles.container}
 						testID='storyModal'>
-						<Animated.View
-							style={[
-								ModalStyles.bgAnimation,
-								backgroundAnimatedStyles,
-							]}
-						/>
-						<Animated.View
-							style={[
-								ModalStyles.absolute,
-								animatedStyles,
-								containerStyle,
-							]}>
-							{stories?.map((story, index) => (
-								<CustomStoryList
-									{...story}
-									index={index}
-									x={x}
-									activeUser={userId}
-									activeStory={currentStory}
-									progress={animation}
-									seenStories={seenStories}
-									onClose={onClose}
-									onLoad={(value) => {
-										onLoad?.();
-										startAnimation(
-											undefined,
-											value !== undefined
-												? videoDuration ?? value
-												: duration
-										);
-									}}
-									avatarSize={storyAvatarSize}
-									textStyle={textStyle}
-									buttonHandled={buttonHandled}
-									paused={paused}
-									videoProps={videoProps}
-									closeColor={closeIconColor}
-									progressActiveColor={
-										themeColors.primaryColor[100]
-									}
-									progressColor={
-										themeColors[mode].secondaryBackground
-									}
-									creatorId={creatorId}
-									key={story.id}
-									{...props}
-								/>
-							))}
-						</Animated.View>
+						<Pressable
+							onPressIn={onPressIn}
+							onPress={onPress}
+							onLongPress={onLongPress}
+							onPressOut={onPressOut}
+							delayLongPress={LONG_PRESS_DURATION}
+							style={ModalStyles.container}>
+							<Animated.View
+								style={[
+									ModalStyles.bgAnimation,
+									backgroundAnimatedStyles,
+								]}
+							/>
+							<Animated.View
+								style={[
+									ModalStyles.absolute,
+									animatedStyles,
+									containerStyle,
+								]}>
+								{stories?.map((story, index) => (
+									<CustomStoryList
+										{...story}
+										index={index}
+										x={x}
+										activeUser={userId}
+										activeStory={currentStory}
+										progress={animation}
+										seenStories={seenStories}
+										onClose={onClose}
+										stories={story.stories}
+										onLoad={(value) => {
+											onLoad?.();
+											startAnimation(
+												undefined,
+												value !== undefined
+													? videoDuration ?? value
+													: duration
+											);
+										}}
+										avatarSize={storyAvatarSize}
+										textStyle={textStyle}
+										paused={paused}
+										videoProps={videoProps}
+										closeColor={closeIconColor}
+										hideElements={hideElements}
+										progressActiveColor={
+											themeColors.primaryColor[100]
+										}
+										progressColor={
+											themeColors[mode]
+												.secondaryBackground
+										}
+										creatorId={creatorId}
+										key={story.id}
+										{...props}
+									/>
+								))}
+							</Animated.View>
+						</Pressable>
 					</Animated.View>
 				</GestureHandler>
 			</Modal>

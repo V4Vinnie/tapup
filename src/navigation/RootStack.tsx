@@ -20,6 +20,9 @@ import DiscoverScreen from '../screens/DiscoverScreen';
 import CreateScreen from '../screens/CreateScreen';
 import LikedScreen from '../screens/LikedScreen';
 import AccountScreen from '../screens/AccountScreen';
+import { TopicProvider } from '../providers/TopicProvider';
+import { TapProvider } from '../providers/TapProvider';
+import { ProfileProvider } from '../providers/ProfileProvider';
 
 type Props = {};
 
@@ -30,20 +33,39 @@ const RootStack = (props: Props) => {
 	const { user } = useAuth();
 
 	return user ? (
-		<Tab.Navigator
-			sceneContainerStyle={{
-				backgroundColor: themeColors[mode].primaryBackground,
-			}}
-			screenOptions={{
-				headerShown: false,
-			}}
-			tabBar={(props) => <BottomTabBar {...props} />}>
-			<Tab.Screen name={Routes.HOME} component={HomeStack} />
-			<Tab.Screen name={Routes.DISCOVER} component={DiscoverStack} />
-			<Tab.Screen name={Routes.CREATE} component={CreateStack} />
-			<Tab.Screen name={Routes.LIKED} component={LikedStack} />
-			<Tab.Screen name={Routes.ACCOUNT} component={AccountStack} />
-		</Tab.Navigator>
+		<TopicProvider>
+			<TapProvider>
+				<ProfileProvider>
+					<Tab.Navigator
+						sceneContainerStyle={{
+							backgroundColor:
+								themeColors[mode].primaryBackground,
+						}}
+						screenOptions={{
+							headerShown: false,
+						}}
+						tabBar={(props) => <BottomTabBar {...props} />}>
+						<Tab.Screen name={Routes.HOME} component={HomeStack} />
+						<Tab.Screen
+							name={Routes.DISCOVER}
+							component={DiscoverStack}
+						/>
+						<Tab.Screen
+							name={Routes.CREATE}
+							component={CreateStack}
+						/>
+						<Tab.Screen
+							name={Routes.LIKED}
+							component={LikedStack}
+						/>
+						<Tab.Screen
+							name={Routes.ACCOUNT}
+							component={AccountStack}
+						/>
+					</Tab.Navigator>
+				</ProfileProvider>
+			</TapProvider>
+		</TopicProvider>
 	) : (
 		<Stack.Navigator
 			screenOptions={{
