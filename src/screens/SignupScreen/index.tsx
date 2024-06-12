@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Dimensions, Text, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
@@ -19,17 +19,22 @@ import Swiper from 'react-native-swiper';
 import RegisterUserDetails from './RegisterUserDetails';
 import AddCompanyCode from './AddCompanyCode';
 import CustomSwiperDot from '../../components/CustomSwiperDot';
+import useKeyboard from '../../hooks/useKeyboard';
 
 type Props = {};
 
 const SignupScreen = (props: Props) => {
 	const { width, height } = Dimensions.get('window');
+	const { isKeyboardOpen } = useKeyboard();
+
 	const [email, setEmail] = useState('');
 	const [username, setProfilename] = useState('');
 	const [password, setPassword] = useState('');
 	const [modalOpen, setModalOpen] = useState(false);
 	const [isSending, setIsSending] = useState(false);
 	const [image, setImage] = useState<string | null>(null);
+
+	const swiper = useRef<Swiper>(null);
 
 	const { status, handleSignup } = useAuth();
 	const navigation =
@@ -97,22 +102,28 @@ const SignupScreen = (props: Props) => {
 			contentContainerStyle={scrollViewContentContainer}
 			showsVerticalScrollIndicator={false}>
 			<View className='flex-1 items-center bg-dark-primaryBackground'>
-				<AppHeader
-					transparentHeader={true}
-					headerWithBack={true}
-					title={'Signup'}
-				/>
+				{!isKeyboardOpen && (
+					<AppHeader
+						transparentHeader={true}
+						headerWithBack={true}
+						title={'Signup'}
+					/>
+				)}
 				<FocusAwareStatusBar
 					translucent
 					backgroundColor='transparent'
-					barStyle='dark-content'
+					barStyle='light-content'
 				/>
 
-				<View className='h-full py-2 justify-between pb-8 pt-52'>
+				<View className='h-full py-2 justify-between pb-8 pt-40'>
 					<Swiper
+						ref={swiper}
 						height={350}
 						width={width}
-						containerStyle={{ marginBottom: 30 }}
+						containerStyle={{
+							marginBottom: isKeyboardOpen ? 30 : 80,
+							paddingBottom: isKeyboardOpen ? 20 : undefined,
+						}}
 						showsPagination
 						dot={<CustomSwiperDot />}
 						activeDot={<CustomSwiperDot active />}
@@ -129,24 +140,27 @@ const SignupScreen = (props: Props) => {
 							setPassword={setPassword}
 							status={status}
 							disabledState={disabledState}
-							signUp={signUp}
+							isSending={isSending}
+							swiper={swiper}
 						/>
 						<AddCompanyCode />
 					</Swiper>
 
-					<View className='flex-row items-center justify-center'>
-						<Text className='text-base font-inter-regular text-dark-subTextColor'>
-							{'Already have an account?'}
-						</Text>
-						<TouchableOpacity
-							onPress={() => {
-								navigation.navigate(Routes.LOGIN);
-							}}>
-							<Text className='text-base font-inter-bold text-dark-textColor'>
-								{' Login'}
+					{!isKeyboardOpen && (
+						<View className='flex-row items-center justify-center'>
+							<Text className='text-base font-inter-regular text-dark-subTextColor'>
+								{'Already have an account?'}
 							</Text>
-						</TouchableOpacity>
-					</View>
+							<TouchableOpacity
+								onPress={() => {
+									navigation.navigate(Routes.LOGIN);
+								}}>
+								<Text className='text-base font-inter-bold text-dark-textColor'>
+									{' Login'}
+								</Text>
+							</TouchableOpacity>
+						</View>
+					)}
 				</View>
 			</View>
 			<Modal
