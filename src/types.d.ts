@@ -73,3 +73,8 @@ export type TBadge = {
 	img: string;
 	name: string;
 };
+
+export type TCompany = {
+	code: string;
+	name: string;
+};

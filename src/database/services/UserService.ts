@@ -4,10 +4,19 @@ import {
 	sendPasswordResetEmail,
 	signInWithEmailAndPassword,
 } from 'firebase/auth';
-import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
+import {
+	doc,
+	getDoc,
+	setDoc,
+	onSnapshot,
+	collection,
+	query,
+	where,
+	getDocs,
+} from 'firebase/firestore';
 import { DB, auth } from '../Firebase';
 import { COLLECTIONS } from '../../utils/constants';
-import { TProfile } from '../../types';
+import { TCompany, TProfile } from '../../types';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { storage } from '../Firebase';
 import * as FileSystem from 'expo-file-system';
@@ -116,5 +125,18 @@ export function onUser(userId: string, callback: (user: TProfile) => void) {
 		});
 	} catch (error) {
 		console.error('onUser in UserService ', error);
+	}
+}
+
+export async function searchCompany(code: string) {
+	try {
+		const companiesRef = collection(DB, COLLECTIONS.COMPANIES);
+		const _query = query(companiesRef, where('code', '==', code));
+		const _querySnapshot = await getDocs(_query);
+		if (_querySnapshot.empty) return null;
+		return _querySnapshot.docs[0].data() as TCompany;
+	} catch (error) {
+		console.error('searchCompany in UserService ', error);
+		return null;
 	}
 }

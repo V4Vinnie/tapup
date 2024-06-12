@@ -17,9 +17,10 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { themeColors } from '../../utils/constants';
 import Swiper from 'react-native-swiper';
 import RegisterUserDetails from './RegisterUserDetails';
-import AddCompanyCode from './AddCompanyCode';
 import CustomSwiperDot from '../../components/CustomSwiperDot';
 import useKeyboard from '../../hooks/useKeyboard';
+import AddCompanyCode from './AddCompanyCode';
+import { TCompany } from '../../types';
 
 type Props = {};
 
@@ -33,21 +34,22 @@ const SignupScreen = (props: Props) => {
 	const [modalOpen, setModalOpen] = useState(false);
 	const [isSending, setIsSending] = useState(false);
 	const [image, setImage] = useState<string | null>(null);
+	const [company, setCompany] = useState<TCompany>();
 
 	const swiper = useRef<Swiper>(null);
 
-	const { status, handleSignup } = useAuth();
 	const navigation =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-	const signUp = async () => {
-		if (!username || !email || !password || !image) return;
-		setIsSending(true);
-		handleSignup(username, email, password, image).finally(() => {
-			setIsSending(false);
-		});
-		// TODO: MAKE STATUS MODAL
-	};
+	// TODO: MOVE TO END STEP
+	// const signUp = async () => {
+	// 	if (!username || !email || !password || !image) return;
+	// 	setIsSending(true);
+	// 	handleSignup(username, email, password, image).finally(() => {
+	// 		setIsSending(false);
+	// 	});
+	// 	// TODO: MAKE STATUS MODAL
+	// };
 
 	const handleChoosePhoto = () => {
 		setModalOpen(false);
@@ -89,12 +91,6 @@ const SignupScreen = (props: Props) => {
 		setModalOpen(false);
 	};
 
-	const disabledState = useMemo(() => {
-		return !username || password.length < 6 || !email || isSending || !image
-			? 0.5
-			: 1;
-	}, [username, password, email, isSending, image]);
-
 	return (
 		<KeyboardAwareScrollView
 			keyboardShouldPersistTaps={'handled'}
@@ -127,7 +123,9 @@ const SignupScreen = (props: Props) => {
 						showsPagination
 						dot={<CustomSwiperDot />}
 						activeDot={<CustomSwiperDot active />}
-						scrollEnabled={false}
+						// scrollEnabled={false}
+						// TODO: ENABLE WHEN READY
+						loop={false}
 						showsButtons={false}>
 						<RegisterUserDetails
 							image={image}
@@ -138,12 +136,13 @@ const SignupScreen = (props: Props) => {
 							setEmail={setEmail}
 							password={password}
 							setPassword={setPassword}
-							status={status}
-							disabledState={disabledState}
 							isSending={isSending}
 							swiper={swiper}
 						/>
-						<AddCompanyCode />
+						<AddCompanyCode
+							setCompany={setCompany}
+							swiper={swiper}
+						/>
 					</Swiper>
 
 					{!isKeyboardOpen && (

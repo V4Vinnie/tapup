@@ -6,7 +6,8 @@ import { assets } from '../../../assets/Assets';
 import ProfilePicture from './ProfilePicture';
 import Swiper from 'react-native-swiper';
 import useKeyboard from '../../hooks/useKeyboard';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
+import { useAuth } from '../../providers/AuthProvider';
 
 type Props = {
 	image: string | null;
@@ -17,8 +18,6 @@ type Props = {
 	setEmail: React.Dispatch<React.SetStateAction<string>>;
 	password: string;
 	setPassword: React.Dispatch<React.SetStateAction<string>>;
-	status: { type: 'error' | 'success'; message: string } | null;
-	disabledState: number;
 	isSending: boolean;
 	swiper: React.RefObject<Swiper>;
 };
@@ -32,18 +31,23 @@ const RegisterUserDetails = ({
 	setEmail,
 	password,
 	setPassword,
-	status,
-	disabledState,
 	isSending,
 	swiper,
 }: Props) => {
 	const { isKeyboardOpen } = useKeyboard();
+	const { status } = useAuth();
 
 	useEffect(() => {
 		if (status?.type === 'error') {
 			swiper.current?.scrollTo(0);
 		}
 	}, [status]);
+
+	const disabledState = useMemo(() => {
+		return (
+			!username || password.length < 6 || !email || isSending || !image
+		);
+	}, [username, password, email, isSending, image]);
 
 	return (
 		<View className='w-4/5 mx-auto'>
@@ -126,10 +130,10 @@ const RegisterUserDetails = ({
 			)}
 			<AppButton
 				buttonProps={{
-					disabled: disabledState === 0.5,
+					disabled: disabledState,
 					className: 'mt-4',
 					style: {
-						opacity: disabledState,
+						opacity: disabledState ? 0.5 : 1,
 					},
 				}}
 				title={'Next'}
