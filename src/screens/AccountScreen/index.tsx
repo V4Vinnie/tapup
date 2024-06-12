@@ -1,4 +1,11 @@
-import { Animated, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import {
+	Animated,
+	SafeAreaView,
+	ScrollView,
+	Text,
+	TouchableOpacity,
+	View,
+} from 'react-native';
 import SearchBar from '../../components/SearchBar';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -11,6 +18,11 @@ type Props = {};
 const AccountScreen = (props: Props) => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+	const { handleLogout } = useAuth();
+
+	function logout(): void {
+		handleLogout();
+	}
 
 	return (
 		<SafeAreaView className='flex-1 items-center bg-dark-primaryBackground'>
@@ -26,6 +38,9 @@ const AccountScreen = (props: Props) => {
 					<Text className='text-white font-inter-medium text-center'>
 						ACCOUNT
 					</Text>
+					<TouchableOpacity onPress={logout}>
+						<Text>Logout</Text>
+					</TouchableOpacity>
 				</View>
 			</ScrollView>
 		</SafeAreaView>
