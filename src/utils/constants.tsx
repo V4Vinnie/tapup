@@ -114,3 +114,5 @@ export const bottomNavIcons = (isFocused: boolean) => {
 		),
 	} as any;
 };
+
+export const primaryColor = themeColors.primaryColor[100];

@@ -1,32 +1,19 @@
 import { View, Text } from 'react-native';
 import { mode, themeColors } from '../utils/constants';
-import { LinearGradient } from 'expo-linear-gradient';
+import PrimaryGradient from './PrimaryGradient';
+import { useCompany } from '../providers/CompanyProvider';
 
 type Props = {
 	active?: boolean;
 };
 
 const CustomSwiperDot = ({ active = false }: Props) => {
+	const { isCompanyColorSet, companyColor } = useCompany();
+
 	return (
-		<LinearGradient
-			colors={[
-				themeColors.gradientColor1,
-				themeColors.gradientColor2,
-				themeColors.gradientColor3,
-				themeColors.gradientColor4,
-			]}
-			locations={[0, 0.3, 0.8, 1]}
-			start={{ x: 0, y: 0 }}
-			end={{ x: 1, y: 0 }}
-			style={{
-				width: 8,
-				height: 8,
-				borderRadius: 4,
-				marginLeft: 3,
-				marginRight: 3,
-				marginTop: 3,
-				marginBottom: 3,
-			}}>
+		<PrimaryGradient
+			companyColor={isCompanyColorSet ? companyColor : undefined}
+			className='w-2 h-2 rounded-full mx-1 my-1'>
 			{!active && (
 				<View
 					style={{
@@ -37,7 +24,7 @@ const CustomSwiperDot = ({ active = false }: Props) => {
 					}}
 				/>
 			)}
-		</LinearGradient>
+		</PrimaryGradient>
 	);
 };
 

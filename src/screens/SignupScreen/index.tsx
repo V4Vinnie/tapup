@@ -1,11 +1,10 @@
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Dimensions, Text, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
 import { useNavigation } from '@react-navigation/native';
 import AppHeader from '../../components/AppHeader';
-import { useAuth } from '../../providers/AuthProvider';
 import {
 	scrollViewContainer,
 	scrollViewContentContainer,
@@ -114,11 +113,14 @@ const SignupScreen = (props: Props) => {
 				<View className='h-full py-2 justify-between pb-8 pt-40'>
 					<Swiper
 						ref={swiper}
-						height={350}
+						height={height / 2}
 						width={width}
 						containerStyle={{
 							marginBottom: isKeyboardOpen ? 30 : 80,
 							paddingBottom: isKeyboardOpen ? 20 : undefined,
+						}}
+						paginationStyle={{
+							bottom: 30,
 						}}
 						showsPagination
 						dot={<CustomSwiperDot />}

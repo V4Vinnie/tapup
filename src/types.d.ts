@@ -77,4 +77,5 @@ export type TBadge = {
 export type TCompany = {
 	code: string;
 	name: string;
+	primaryColor: string;
 };
