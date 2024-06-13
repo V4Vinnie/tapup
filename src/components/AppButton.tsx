@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { Text, TouchableOpacity } from 'react-native';
-import { themeColors } from '../utils/constants';
-import { LinearGradient } from 'expo-linear-gradient';
+import PrimaryGradient from './PrimaryGradient';
+import { useCompany } from '../providers/CompanyProvider';
 
 type Props = {
 	title: string;
@@ -18,21 +18,15 @@ const AppButton = ({
 	textProps,
 	children,
 }: Props) => {
+	const { isCompanyColorSet, companyColor } = useCompany();
+
 	return (
 		<TouchableOpacity
 			{...buttonProps}
 			onPress={onPress}
 			className={`w-full justify-center items-center rounded-full`}>
-			<LinearGradient
-				colors={[
-					themeColors.gradientColor1,
-					themeColors.gradientColor2,
-					themeColors.gradientColor3,
-					themeColors.gradientColor4,
-				]}
-				locations={[0, 0.3, 0.8, 1]}
-				start={{ x: 0, y: 0 }}
-				end={{ x: 1, y: 0 }}
+			<PrimaryGradient
+				companyColor={isCompanyColorSet ? companyColor : undefined}
 				className={`w-full h-12 flex justify-center items-center rounded-full ${
 					buttonProps?.className ?? ''
 				}`}>
@@ -45,7 +39,7 @@ const AppButton = ({
 						{title}
 					</Text>
 				)}
-			</LinearGradient>
+			</PrimaryGradient>
 		</TouchableOpacity>
 	);
 };

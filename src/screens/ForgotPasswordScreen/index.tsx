@@ -8,10 +8,7 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import { useAuth } from '../../providers/AuthProvider';
 import { useNavigation } from '@react-navigation/native';
 import AppButton from '../../components/AppButton';
-import {
-	scrollViewContainer,
-	scrollViewContentContainer,
-} from '../LoginScreen';
+import { containerStyle, scrollViewContentContainer } from '../LoginScreen';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/Routes';
 
@@ -33,7 +30,7 @@ const ForgotPasswordScreen = (props: Props) => {
 	return (
 		<KeyboardAwareScrollView
 			keyboardShouldPersistTaps={'never'}
-			style={scrollViewContainer}
+			style={containerStyle}
 			contentContainerStyle={scrollViewContentContainer}
 			showsVerticalScrollIndicator={false}>
 			<View className='flex-1 items-center bg-dark-primaryBackground'>

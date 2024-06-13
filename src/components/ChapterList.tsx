@@ -10,6 +10,7 @@ import { makeStoriesFromChapters } from '../utils/storyUtils';
 import CustomStory from './Custom/CustomStory';
 import { InstagramStoryProps } from '@birdwingo/core/dto/instagramStoriesDTO';
 import { PreviewListProps } from './Custom/CustomStoryProps';
+import { CustomInstagramStoryProps } from './Custom/CustomStoryList';
 
 type Props = {
 	chapters: TChapter[];
@@ -32,7 +33,7 @@ const ChapterList = ({
 	);
 	const [loaded, setLoaded] = useState(false);
 	const [imagesLoading, setImagesLoading] = useState<boolean>(true);
-	const [stories, setStories] = useState<InstagramStoryProps[]>([]);
+	const [stories, setStories] = useState<CustomInstagramStoryProps[]>([]);
 
 	useEffect(() => {
 		const imageUrls = chapters.map((chapter) =>

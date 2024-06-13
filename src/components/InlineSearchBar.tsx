@@ -3,6 +3,7 @@ import { Animated, TextInput, View } from 'react-native';
 import FontistoIcon from 'react-native-vector-icons/Fontisto';
 import settings from '../../tailwind.config';
 import AppInput from './AppInput';
+import { useCompany } from '../providers/CompanyProvider';
 
 type Props = {
 	onSearch: (search: string) => void;
@@ -22,6 +23,8 @@ const InlineSearchBar = ({
 	text = 'Search keywords...',
 	autoFocus = true,
 }: Props) => {
+	const { companyColor } = useCompany();
+
 	const [search, setSearch] = useState('');
 
 	useEffect(() => {
@@ -49,7 +52,7 @@ const InlineSearchBar = ({
 						<FontistoIcon
 							name='search'
 							size={17}
-							color={themeColors.primaryColor[100]}
+							color={companyColor}
 						/>
 					),
 				}}

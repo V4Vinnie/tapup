@@ -4,10 +4,19 @@ import {
 	sendPasswordResetEmail,
 	signInWithEmailAndPassword,
 } from 'firebase/auth';
-import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
+import {
+	doc,
+	getDoc,
+	setDoc,
+	onSnapshot,
+	collection,
+	query,
+	where,
+	getDocs,
+} from 'firebase/firestore';
 import { DB, auth } from '../Firebase';
 import { COLLECTIONS } from '../../utils/constants';
-import { TProfile } from '../../types';
+import { TCompany, TProfile } from '../../types';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { storage } from '../Firebase';
 import * as FileSystem from 'expo-file-system';
@@ -37,10 +46,20 @@ export async function registerUser(
 	name: string,
 	email: string,
 	password: string,
-	profileImage?: string
+	profileImage: string,
+	company: TCompany,
+	information: { fullName: string; jobType: string }
 ): Promise<UserCredential> {
 	return new Promise(async (resolve, reject) => {
-		if (name == '' || name.length < 2 || email == '' || password == '') {
+		if (
+			name == '' ||
+			name.length < 2 ||
+			email == '' ||
+			password == '' ||
+			profileImage == '' ||
+			!company ||
+			!information
+		) {
 			reject('Please fill all the fields');
 			return;
 		}
@@ -62,6 +81,11 @@ export async function registerUser(
 				role: 'USER',
 				watchedFrames: [],
 				progress: {},
+				companyInfo: {
+					companyCode: company.code,
+					jobType: information.jobType,
+				},
+				fullName: information.fullName,
 			} as TProfile);
 			resolve(userCredential);
 		} catch (error) {

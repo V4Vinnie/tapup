@@ -1,4 +1,4 @@
-import { TProfile } from '../types';
+import { TCompany, TProfile } from '../types';
 import { useNavigation } from '@react-navigation/native';
 import { UserCredential, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../database/Firebase';
@@ -12,6 +12,9 @@ import {
 import { RootStackParamList } from '../navigation/Routes';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useEffect } from 'react';
+import { useCompany } from './CompanyProvider';
+import { getCompanyByCode } from '../database/services/CompaniesService';
+import { primaryColor } from '../utils/constants';
 
 const AuthContext = React.createContext<{
 	user: TProfile | null;
@@ -23,13 +26,12 @@ const AuthContext = React.createContext<{
 		name: string,
 		email: string,
 		password: string,
-		profileImage?: string
+		profileImage: string,
+		company: TCompany,
+		information: { fullName: string; jobType: string }
 	) => Promise<UserCredential | void>;
 	handleLogout: () => void;
-	status: {
-		type: 'error' | 'success';
-		message: string;
-	} | null;
+	authErrors: Record<string, any> | null;
 	handleForgotPassword: (
 		email: string,
 		setLoading: React.Dispatch<React.SetStateAction<boolean>>
@@ -41,10 +43,12 @@ const AuthContext = React.createContext<{
 		name: string,
 		email: string,
 		password: string,
-		profileImage?: string
+		profileImage: string,
+		company: TCompany,
+		information: { fullName: string; jobType: string }
 	) => Promise.resolve(),
 	handleLogout: () => {},
-	status: null,
+	authErrors: null,
 	handleForgotPassword: (
 		email: string,
 		setLoading: React.Dispatch<React.SetStateAction<boolean>>
@@ -58,25 +62,24 @@ type Props = {
 export const AuthProvider = ({ children }: Props) => {
 	const navigator =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+	const { companyColor, setCompanyColor } = useCompany();
 
 	const [user, seTProfile] = React.useState<TProfile | null>(null);
 	const [loadingInitial, setLoadingInitial] = React.useState<boolean>(true);
-	const [status, setStatus] = React.useState<{
-		type: 'error' | 'success';
-		message: string;
-	} | null>(null);
+	const [authErrors, setAuthErrors] = React.useState<Record<
+		string,
+		any
+	> | null>(null);
 
 	const handleLogin = async (email: string, password: string) => {
 		if (email == '' || password == '') {
-			setStatus({
-				type: 'error',
+			setAuthErrors({
 				message: 'Email and password are required',
 			});
 			return;
 		}
 		return await loginUser(email, password).catch(() =>
-			setStatus({
-				type: 'error',
+			setAuthErrors({
 				message: 'Invalid email or password',
 			})
 		);
@@ -86,13 +89,28 @@ export const AuthProvider = ({ children }: Props) => {
 		name: string,
 		email: string,
 		password: string,
-		profileImage?: string
+		profileImage: string,
+		company: TCompany,
+		information: { fullName: string; jobType: string }
 	) => {
-		setStatus(null);
-		return registerUser(name, email, password, profileImage).catch(() =>
-			setStatus({
-				type: 'error',
-				message: 'Invalid email or password',
+		setAuthErrors(null);
+		return registerUser(
+			name,
+			email,
+			password,
+			profileImage,
+			company,
+			information
+		).catch(() =>
+			setAuthErrors({
+				userDetails: {
+					message:
+						"Make sure to use a valid email and a password with at least 6 characters. Don't forget your profile picture!",
+				},
+				information: {
+					message:
+						'Invalid information. Make sure to fill all the fields.',
+				},
 			})
 		);
 	};
@@ -100,24 +118,24 @@ export const AuthProvider = ({ children }: Props) => {
 	const handleLogout = () => {
 		auth.signOut();
 		seTProfile(null);
-		setStatus(null);
+		setAuthErrors(null);
 	};
 
 	const handleForgotPassword = (
 		email: string,
 		setLoading: React.Dispatch<React.SetStateAction<boolean>>
 	) => {
-		setStatus(null);
+		setAuthErrors(null);
 		setLoading(true);
 		sendForgotPasswordEmail(email)
 			.then(() => {
-				setStatus({
+				setAuthErrors({
 					type: 'success',
 					message: 'Password reset email sent',
 				});
 			})
 			.catch((error) => {
-				setStatus({ type: 'error', message: 'Invalid email' });
+				setAuthErrors({ type: 'error', message: 'Invalid email' });
 			})
 			.finally(() => setLoading(false));
 	};
@@ -131,8 +149,14 @@ export const AuthProvider = ({ children }: Props) => {
 						const _user = await getProfile(user.uid);
 						seTProfile({ ..._user, ...user } as TProfile);
 						console.log(_user);
+						if (!_user?.companyInfo?.companyCode) return;
+						const company = await getCompanyByCode(
+							_user?.companyInfo?.companyCode
+						);
+						if (company) setCompanyColor(company.primaryColor);
 					} else {
 						seTProfile(null);
+						setCompanyColor(primaryColor);
 					}
 					setLoadingInitial(false);
 				},
@@ -143,7 +167,7 @@ export const AuthProvider = ({ children }: Props) => {
 
 	React.useEffect(() => {
 		const handleFocus = () => {
-			setStatus(null);
+			setAuthErrors(null);
 		};
 
 		navigator.addListener('state', handleFocus);
@@ -155,7 +179,7 @@ export const AuthProvider = ({ children }: Props) => {
 			handleLogin,
 			handleSignup,
 			handleLogout,
-			status,
+			authErrors,
 			handleForgotPassword,
 		}),
 		[
@@ -163,7 +187,7 @@ export const AuthProvider = ({ children }: Props) => {
 			handleLogin,
 			handleSignup,
 			handleLogout,
-			status,
+			authErrors,
 			handleForgotPassword,
 		]
 	);

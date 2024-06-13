@@ -4,6 +4,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 import { NavigationContainer } from '@react-navigation/native';
 import { AuthProvider } from './src/providers/AuthProvider';
+import { CompanyProvider } from './src/providers/CompanyProvider';
 import RootStack from './src/navigation/RootStack';
 import {
   Inter_300Light,
@@ -32,10 +33,12 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <NavigationContainer>
-        <AuthProvider>
-          <StatusBar translucent />
-          <RootStack />
-        </AuthProvider>
+        <CompanyProvider>
+          <AuthProvider>
+            <StatusBar translucent />
+            <RootStack />
+          </AuthProvider>
+        </CompanyProvider>
       </NavigationContainer>
     </GestureHandlerRootView>
   );

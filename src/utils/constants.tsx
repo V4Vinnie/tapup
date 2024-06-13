@@ -26,6 +26,7 @@ export const COLLECTIONS = {
 	USERS: 'users',
 	TAPS: 'taps',
 	TOPICS: 'topics',
+	COMPANIES: 'companies',
 };
 
 export const SKELETON_WAIT_TIME = 0;
@@ -113,3 +114,5 @@ export const bottomNavIcons = (isFocused: boolean) => {
 		),
 	} as any;
 };
+
+export const primaryColor = themeColors.primaryColor[100];

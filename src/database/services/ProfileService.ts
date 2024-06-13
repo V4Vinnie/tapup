@@ -47,9 +47,3 @@ export const getFollowingProfiles = async (user: TProfile) => {
 		} as TNotificationProfile;
 	});
 };
-
-export const getCreatorName = async (companyId: string) => {
-	const creatorRef = doc(DB, COLLECTIONS.USERS, companyId);
-	const creatorSnapshot = await getDoc(creatorRef);
-	return (creatorSnapshot.data() as TProfile).name;
-};
