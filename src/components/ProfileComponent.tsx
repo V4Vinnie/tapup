@@ -6,6 +6,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../navigation/Routes';
 import { Skeleton } from '@rneui/themed';
 import { mode, themeColors } from '../utils/constants';
+import { useCompany } from '../providers/CompanyProvider';
 
 type Props = {
 	profile: TNotificationProfile | TProfile;
@@ -22,6 +23,8 @@ const ProfileComponent = ({
 }: Props) => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+	const { companyColor } = useCompany();
+
 	const notification = 'notification' in profile ? profile.notification : 0;
 	return (
 		<TouchableOpacity
@@ -35,8 +38,11 @@ const ProfileComponent = ({
 			<View
 				style={{
 					width,
+					borderColor: notification
+						? companyColor
+						: themeColors[mode].secondaryBackground,
 				}}
-				className={`aspect-square flex items-center justify-center border-2 rounded-full p-[3px] ${notification ? 'border-primaryColor-100' : 'border-dark-secondaryBackground'}`}>
+				className={`aspect-square flex items-center justify-center border-2 rounded-full p-[3px]`}>
 				{notification > 0 && (
 					<View className='absolute w-4 h-4 rounded-full bg-primary top-0 right-0' />
 				)}

@@ -4,6 +4,7 @@ import { TNotificationTopic, TTap, TTopic } from '../types';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import { mode, themeColors } from '../utils/constants';
 import { Skeleton } from '@rneui/themed';
+import { useCompany } from '../providers/CompanyProvider';
 
 type Props = {
 	data: TNotificationTopic | TTopic | TTap;
@@ -12,6 +13,7 @@ type Props = {
 };
 
 const TagComponent = ({ data, containerProps, onPress }: Props) => {
+	const { companyColor } = useCompany();
 	const notification = 'notification' in data ? data.notification : 0;
 	return (
 		<TouchableHighlight
@@ -24,7 +26,7 @@ const TagComponent = ({ data, containerProps, onPress }: Props) => {
 						<IonIcon
 							name='notifications'
 							size={16}
-							color={themeColors.primaryColor[100]}
+							color={companyColor}
 						/>
 					</View>
 				)}

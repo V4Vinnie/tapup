@@ -33,12 +33,12 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <NavigationContainer>
-        <AuthProvider>
-          <CompanyProvider>
+        <CompanyProvider>
+          <AuthProvider>
             <StatusBar translucent />
             <RootStack />
-          </CompanyProvider>
-        </AuthProvider>
+          </AuthProvider>
+        </CompanyProvider>
       </NavigationContainer>
     </GestureHandlerRootView>
   );

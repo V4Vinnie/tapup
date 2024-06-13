@@ -2,6 +2,7 @@ import React from 'react';
 import { Animated, Text, TouchableOpacity, View } from 'react-native';
 import FontistoIcon from 'react-native-vector-icons/Fontisto';
 import settings from '../../tailwind.config';
+import { useCompany } from '../providers/CompanyProvider';
 
 type Props = {
 	onPress: () => void;
@@ -10,9 +11,10 @@ type Props = {
 };
 
 const { colors: themeColors } = settings.theme.extend;
-const mode = themeColors.darkMode ? 'dark' : 'light';
 
 const SearchBar = ({ onPress, containerProps }: Props) => {
+	const { companyColor } = useCompany();
+
 	return (
 		<Animated.View
 			{...containerProps}
@@ -23,7 +25,7 @@ const SearchBar = ({ onPress, containerProps }: Props) => {
 				<FontistoIcon
 					name='search'
 					size={17}
-					color={themeColors.primaryColor[100]}
+					color={companyColor}
 					style={{ position: 'absolute', left: 16 }}
 				/>
 

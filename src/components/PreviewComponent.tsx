@@ -16,6 +16,7 @@ import { useEffect, useState } from 'react';
 import { getTopicFromTap } from '../database/services/TapService';
 import PlaceholderImage from '../../assets/images/login_header_1.png';
 import { generatePreviewPhoto } from '../utils/getThumbnailFromVideo';
+import { useCompany } from '../providers/CompanyProvider';
 
 type Props = {
 	onPress?: () => void;
@@ -43,6 +44,8 @@ const PreviewComponent = ({
 }: Props) => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+	const { companyColor } = useCompany();
+
 	const [topic, setTopic] = useState<TTopic | null>(null);
 	const [previewPhoto, setPreviewPhoto] = useState<string>(
 		thumbnail ?? Image.resolveAssetSource(PlaceholderImage).uri
@@ -140,9 +143,10 @@ const PreviewComponent = ({
 						/>
 					) : (
 						<View
-							className='h-full w-full bg-primaryColor-100'
+							className='h-full w-full'
 							style={{
 								width: `${progress}%`,
+								backgroundColor: companyColor,
 							}}
 						/>
 					)}

@@ -32,6 +32,7 @@ import ModalStyles from '@birdwingo/components/Modal/Modal.styles';
 import CustomStoryList from './CustomStoryList';
 import { mode, themeColors } from '../../utils/constants';
 import { CustomStoryModalProps } from './CustomStoryProps';
+import { useCompany } from '../../providers/CompanyProvider';
 
 const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 	(
@@ -61,6 +62,7 @@ const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 		},
 		ref
 	) => {
+		const { companyColor } = useCompany();
 		const [visible, setVisible] = useState(false);
 
 		const x = useSharedValue(0);
@@ -477,9 +479,7 @@ const StoryModal = forwardRef<StoryModalPublicMethods, CustomStoryModalProps>(
 										videoProps={videoProps}
 										closeColor={closeIconColor}
 										hideElements={hideElements}
-										progressActiveColor={
-											themeColors.primaryColor[100]
-										}
+										progressActiveColor={companyColor}
 										progressColor={
 											themeColors[mode]
 												.secondaryBackground

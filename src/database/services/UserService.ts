@@ -46,10 +46,20 @@ export async function registerUser(
 	name: string,
 	email: string,
 	password: string,
-	profileImage?: string
+	profileImage: string,
+	company: TCompany,
+	information: { fullName: string; jobType: string }
 ): Promise<UserCredential> {
 	return new Promise(async (resolve, reject) => {
-		if (name == '' || name.length < 2 || email == '' || password == '') {
+		if (
+			name == '' ||
+			name.length < 2 ||
+			email == '' ||
+			password == '' ||
+			profileImage == '' ||
+			!company ||
+			!information
+		) {
 			reject('Please fill all the fields');
 			return;
 		}
@@ -71,6 +81,11 @@ export async function registerUser(
 				role: 'USER',
 				watchedFrames: [],
 				progress: {},
+				companyInfo: {
+					companyCode: company.code,
+					jobType: information.jobType,
+				},
+				fullName: information.fullName,
 			} as TProfile);
 			resolve(userCredential);
 		} catch (error) {
@@ -125,18 +140,5 @@ export function onUser(userId: string, callback: (user: TProfile) => void) {
 		});
 	} catch (error) {
 		console.error('onUser in UserService ', error);
-	}
-}
-
-export async function searchCompany(code: string) {
-	try {
-		const companiesRef = collection(DB, COLLECTIONS.COMPANIES);
-		const _query = query(companiesRef, where('code', '==', code));
-		const _querySnapshot = await getDocs(_query);
-		if (_querySnapshot.empty) return null;
-		return _querySnapshot.docs[0].data() as TCompany;
-	} catch (error) {
-		console.error('searchCompany in UserService ', error);
-		return null;
 	}
 }

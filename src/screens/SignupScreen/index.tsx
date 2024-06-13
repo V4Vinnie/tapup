@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react';
-import { Dimensions, Text, TouchableOpacity, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Alert, Dimensions, Text, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
@@ -20,12 +20,15 @@ import CustomSwiperDot from '../../components/CustomSwiperDot';
 import useKeyboard from '../../hooks/useKeyboard';
 import AddCompanyCode from './AddCompanyCode';
 import { TCompany } from '../../types';
+import AddInformation from './AddInformation';
+import { useAuth } from '../../providers/AuthProvider';
 
 type Props = {};
 
 const SignupScreen = (props: Props) => {
 	const { width, height } = Dimensions.get('window');
 	const { isKeyboardOpen } = useKeyboard();
+	const { handleSignup, authErrors } = useAuth();
 
 	const [email, setEmail] = useState('');
 	const [username, setProfilename] = useState('');
@@ -34,21 +37,35 @@ const SignupScreen = (props: Props) => {
 	const [isSending, setIsSending] = useState(false);
 	const [image, setImage] = useState<string | null>(null);
 	const [company, setCompany] = useState<TCompany>();
+	const [information, setInformation] = useState<{
+		fullName: string;
+		jobType: string;
+	}>();
 
 	const swiper = useRef<Swiper>(null);
 
 	const navigation =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-	// TODO: MOVE TO END STEP
-	// const signUp = async () => {
-	// 	if (!username || !email || !password || !image) return;
-	// 	setIsSending(true);
-	// 	handleSignup(username, email, password, image).finally(() => {
-	// 		setIsSending(false);
-	// 	});
-	// 	// TODO: MAKE STATUS MODAL
-	// };
+	const signUp = async () => {
+		setIsSending(true);
+		handleSignup(
+			username,
+			email,
+			password,
+			image!,
+			company!,
+			information!
+		).finally(() => {
+			setIsSending(false);
+		});
+	};
+
+	useEffect(() => {
+		if (authErrors) {
+			swiper.current?.scrollTo(0);
+		}
+	}, [authErrors]);
 
 	const handleChoosePhoto = () => {
 		setModalOpen(false);
@@ -113,20 +130,19 @@ const SignupScreen = (props: Props) => {
 				<View className='h-full py-2 justify-between pb-8 pt-40'>
 					<Swiper
 						ref={swiper}
-						height={height / 2}
+						height={height / 1.5}
 						width={width}
 						containerStyle={{
 							marginBottom: isKeyboardOpen ? 30 : 80,
 							paddingBottom: isKeyboardOpen ? 20 : undefined,
 						}}
 						paginationStyle={{
-							bottom: 30,
+							bottom: authErrors ? -30 : 30,
 						}}
 						showsPagination
 						dot={<CustomSwiperDot />}
 						activeDot={<CustomSwiperDot active />}
-						// scrollEnabled={false}
-						// TODO: ENABLE WHEN READY
+						scrollEnabled={false}
 						loop={false}
 						showsButtons={false}>
 						<RegisterUserDetails
@@ -138,12 +154,16 @@ const SignupScreen = (props: Props) => {
 							setEmail={setEmail}
 							password={password}
 							setPassword={setPassword}
-							isSending={isSending}
 							swiper={swiper}
 						/>
 						<AddCompanyCode
 							setCompany={setCompany}
 							swiper={swiper}
+						/>
+						<AddInformation
+							setInformation={setInformation}
+							signUp={signUp}
+							isSending={isSending}
 						/>
 					</Swiper>
 

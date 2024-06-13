@@ -2,7 +2,6 @@ import { View, Text, Image, TouchableOpacity } from 'react-native';
 import React, { useEffect, useMemo } from 'react';
 import { TTap, TTopic } from '../types';
 import { mode, themeColors } from '../utils/constants';
-import { getCreatorName } from '../database/services/ProfileService';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Logo from '../../assets/images/Logo';
 import {
@@ -14,6 +13,8 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../navigation/Routes';
 import { useTaps } from '../providers/TapProvider';
+import { getCompanyByCode } from '../database/services/CompaniesService';
+import { useCompany } from '../providers/CompanyProvider';
 
 type Props = {
 	tap?: TTap;
@@ -25,14 +26,16 @@ type Props = {
 const FullInfoTap = ({ tap, containerProps, isNew, loading }: Props) => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+	const { companyColor } = useCompany();
 	const { taps } = useTaps();
+
 	const [views, setViews] = React.useState<string>('0');
 	const [topic, setTopic] = React.useState<TTopic | null>(null);
 	const [companyName, setCompanyName] = React.useState<string>('');
 	useEffect(() => {
 		if (!tap) return;
 		const getCompanyName = async () => {
-			const _companyName = await getCreatorName(tap.creatorId);
+			const _companyName = (await getCompanyByCode(tap.creatorId))?.name;
 			if (!_companyName) return;
 			setCompanyName(_companyName);
 		};
@@ -86,7 +89,9 @@ const FullInfoTap = ({ tap, containerProps, isNew, loading }: Props) => {
 				})
 			}>
 			{isNew && (
-				<Text className='absolute right-0 top-0 px-2 py-[2px] bg-primaryColor-100 rounded-sm text-white text-xs font-inter-medium'>
+				<Text
+					style={{ backgroundColor: companyColor }}
+					className='absolute right-0 top-0 px-2 py-[2px] rounded-sm text-white text-xs font-inter-medium'>
 					New
 				</Text>
 			)}
@@ -105,7 +110,7 @@ const FullInfoTap = ({ tap, containerProps, isNew, loading }: Props) => {
 						<FontAwesome5
 							name='chevron-right'
 							size={9}
-							color={themeColors.primaryColor[100]}
+							color={companyColor}
 						/>
 						<Text className='text-dark-subTextColor text-[12px] font-inter-regular'>
 							{companyName}
@@ -122,7 +127,12 @@ const FullInfoTap = ({ tap, containerProps, isNew, loading }: Props) => {
 						{views} view{views === '1' ? '' : 's'}
 					</Text>
 					<View className='w-1 h-2'>
-						<Logo scale={0.05} width={6} height={10} />
+						<Logo
+							scale={0.05}
+							width={6}
+							height={10}
+							fill={companyColor}
+						/>
 					</View>
 					<Text className='text-dark-subTextColor text-[10px] font-inter-light'>
 						{timeAgo}

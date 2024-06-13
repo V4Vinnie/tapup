@@ -18,7 +18,6 @@ type Props = {
 	setEmail: React.Dispatch<React.SetStateAction<string>>;
 	password: string;
 	setPassword: React.Dispatch<React.SetStateAction<string>>;
-	isSending: boolean;
 	swiper: React.RefObject<Swiper>;
 };
 
@@ -31,26 +30,18 @@ const RegisterUserDetails = ({
 	setEmail,
 	password,
 	setPassword,
-	isSending,
 	swiper,
 }: Props) => {
 	const { isKeyboardOpen } = useKeyboard();
-	const { status } = useAuth();
-
-	useEffect(() => {
-		if (status?.type === 'error') {
-			swiper.current?.scrollTo(0);
-		}
-	}, [status]);
+	const { authErrors } = useAuth();
 
 	const disabledState = useMemo(() => {
-		return (
-			!username || password.length < 6 || !email || isSending || !image
-		);
-	}, [username, password, email, isSending, image]);
+		return !username || password.length < 6 || !email || !image;
+	}, [username, password, email, image]);
 
 	return (
-		<View className='w-4/5 mx-auto h-[85%] flex justify-between'>
+		<View
+			className={`w-4/5 mx-auto h-[85%] flex justify-between ${authErrors && 'h-full'}`}>
 			<View>
 				{!isKeyboardOpen && (
 					<ProfilePicture
@@ -126,29 +117,28 @@ const RegisterUserDetails = ({
 						},
 					}}
 				/>
-
-				{status && !isSending && (
+			</View>
+			<View>
+				<AppButton
+					buttonProps={{
+						disabled: disabledState,
+						className: 'mt-4',
+						style: {
+							opacity: disabledState ? 0.5 : 1,
+						},
+					}}
+					title={'Next'}
+					onPress={() => swiper.current?.scrollBy(1)}
+				/>
+				{authErrors?.userDetails && (
 					<Text
-						className={`text-base font-inter-medium ${
-							status.type === 'error'
-								? 'text-red-500'
-								: 'text-green-500'
-						}`}>
-						{status.message}
+						className={
+							'text-sm font-inter-medium text-red-500 text-center my-2 h-16'
+						}>
+						{authErrors?.userDetails.message}
 					</Text>
 				)}
 			</View>
-			<AppButton
-				buttonProps={{
-					disabled: disabledState,
-					className: 'mt-4',
-					style: {
-						opacity: disabledState ? 0.5 : 1,
-					},
-				}}
-				title={'Next'}
-				onPress={() => swiper.current?.scrollBy(1)}
-			/>
 		</View>
 	);
 };

@@ -7,14 +7,18 @@ export type TProfile = {
 	profilePic: string;
 	email: string;
 	role: 'USER' | 'ADMIN' | 'CREATOR';
+	fullName: string;
+	companyInfo: {
+		companyCode: string;
+		jobType: string;
+		companyRole?: 'EMPLOYER' | 'EMPLOYEE';
+	};
 
 	watchedFrames: TWatchedFrame[];
 	progress: ProgressStorageProps | null;
 	topicSubscriptionIds?: string[];
 	userSubscriptionIds?: string[];
 	badges?: TBadge[];
-	companyId?: string;
-	companyRole?: 'EMPLOYER' | 'EMPLOYEE';
 };
 
 export type TTopic = {

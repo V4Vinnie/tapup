@@ -14,6 +14,7 @@ import { Skeleton } from '@rneui/themed';
 import CustomStory from './Custom/CustomStory';
 // import { useVideoPlayer, VideoView } from 'expo-video';
 import Video from './Video';
+import { useCompany } from '../providers/CompanyProvider';
 
 type Props = {
 	episodeNumber: number;
@@ -40,6 +41,8 @@ const ChapterComponent = ({
 	onPress,
 }: Props) => {
 	const { user } = useAuth();
+	const { companyColor } = useCompany();
+
 	const [views, setViews] = useState<string>('0');
 
 	const timeAgo = useMemo(() => {
@@ -98,14 +101,19 @@ const ChapterComponent = ({
 				{showProgress && (
 					<View className='absolute bottom-0 w-full h-1 bg-dark-secondaryBackground'>
 						<View
-							className='h-full w-full bg-primaryColor-100'
+							className='h-full w-full'
 							style={{
 								width: `${progress}%`,
+								backgroundColor: companyColor,
 							}}
 						/>
 					</View>
 				)}
-				<View className='absolute top-1 right-1 bg-primaryColor-100 px-2 py-px rounded-md'>
+				<View
+					className='absolute top-1 right-1 px-2 py-px rounded-md'
+					style={{
+						backgroundColor: companyColor,
+					}}>
 					<Text className='text-white text-[10px] font-inter-semiBold'>
 						EP {episodeNumber}
 					</Text>
@@ -128,11 +136,7 @@ const ChapterComponent = ({
 					</Text>
 				</View>
 				<View className='flex self-end mb-3'>
-					<AntIcon
-						name='arrowright'
-						size={20}
-						color={themeColors.primaryColor[100]}
-					/>
+					<AntIcon name='arrowright' size={20} color={companyColor} />
 				</View>
 			</View>
 		</TouchableOpacity>
