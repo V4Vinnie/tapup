@@ -1,6 +1,5 @@
 module.exports = {
-    "rules": {
-        "react/prop-types": "off",
-    },
-    "parser": "babel-eslint"
-}
+  rules: {
+    "react/prop-types": "off",
+  },
+};
