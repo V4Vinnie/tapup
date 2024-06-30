@@ -162,23 +162,23 @@ export const getTapsByCreator = async (profile: TProfile) => {
 };
 
 export const getProgressForChapters = (
-	user: TProfile,
-	chapters: TChapter[]
+    user: TProfile,
+    chapters: TChapter[]
 ) => {
-	if (!user) throw new Error('User not found');
-	const result = new Map<string, number>();
+    if (!user) throw new Error('User not found');
+    const result = new Map<string, number>();
 
-	chapters.forEach((chapter) => {
-		const amountOfFrames = chapter.frames.length;
-		const amountOfFramesWatched = chapter.frames.filter((frame) =>
-			user.watchedFrames.find(
-				(watchedFrame) => watchedFrame.frameId === frame.id
-			)
-		).length;
-		const progress = (amountOfFramesWatched / amountOfFrames) * 100;
-		result.set(chapter.chapterId, progress);
-	});
-	return result;
+    chapters.forEach((chapter) => {
+        const amountOfFrames = chapter.frames.length;
+        const amountOfFramesWatched = chapter.frames.filter((frame) =>
+            (user.watchedFrames || []).find(
+                (watchedFrame) => watchedFrame.frameId === frame.id
+            )
+        ).length;
+        const progress = (amountOfFramesWatched / amountOfFrames) * 100;
+        result.set(chapter.chapterId, progress);
+    });
+    return result;
 };
 
 export const getTopicFromTap = async (tap: TTap) => {
