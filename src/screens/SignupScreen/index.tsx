@@ -22,6 +22,7 @@ import AddCompanyCode from './AddCompanyCode';
 import { TCompany } from '../../types';
 import AddInformation from './AddInformation';
 import { useAuth } from '../../providers/AuthProvider';
+import { signOut } from 'firebase/auth';
 
 type Props = {};
 
@@ -41,6 +42,9 @@ const SignupScreen = (props: Props) => {
 		fullName: string;
 		jobType: string;
 	}>();
+
+	// permissions for camera and gallery (ios)
+	const [mediaLibraryPermissions, requestPermission] = ImagePicker.useMediaLibraryPermissions();
 
 	const swiper = useRef<Swiper>(null);
 
@@ -67,8 +71,7 @@ const SignupScreen = (props: Props) => {
 		}
 	}, [authErrors]);
 
-	const handleChoosePhoto = () => {
-		setModalOpen(false);
+	const handleChoosePhoto = async () => {
 		ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ImagePicker.MediaTypeOptions.Images,
 			allowsEditing: true,
@@ -79,27 +82,37 @@ const SignupScreen = (props: Props) => {
 				if (result.canceled) return;
 				const image = result.assets[0].uri;
 				setImage(image);
+				setModalOpen(false);
 			})
 			.catch((error) => {
 				console.log(error);
 			});
 	};
 
-	const handleTakePhoto = () => {
-		ImagePicker.launchCameraAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.Images,
-			allowsEditing: true,
-			aspect: [1, 1],
-			quality: 1,
+	const handleTakePhoto = async () => {
+	  // Request camera permissions
+	  const { status } = await ImagePicker.requestCameraPermissionsAsync();
+	  if (status !== 'granted') {
+		alert('Sorry, we need camera permissions to make this work!');
+		return;
+	  }
+	
+	  // Launch camera with permissions
+	  ImagePicker.launchCameraAsync({
+		mediaTypes: ImagePicker.MediaTypeOptions.Images,
+		allowsEditing: true,
+		aspect: [1, 1],
+		quality: 1,
+	  })
+		.then((result) => {
+		  if (result.canceled) return;
+		  setImage(result.assets[0].uri);
 		})
-			.then((result) => {
-				if (result.canceled) return;
-				setImage(result.assets[0].uri);
-			})
-			.catch((error) => {
-				console.log(error);
-			});
-		setModalOpen(false);
+		.catch((error) => {
+		  console.log(error);
+		});
+	
+	  setModalOpen(false);
 	};
 
 	const handleRemovePhoto = () => {
