@@ -33,11 +33,19 @@
     },
     "plugins": [
       "expo-image-picker",
-      "expo-video"
+      "expo-video",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ]
     ],
     "extra": {
       "eas": {
-        "projectId": "959b1993-8ad6-4ef7-8944-a6e84eac1bbe"
+        "projectId": "e0b58693-6ae4-4963-bcc8-97be2a755d04"
       }
     }
   }
