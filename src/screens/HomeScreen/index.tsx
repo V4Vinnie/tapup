@@ -7,6 +7,8 @@ import {
 } from 'react-native';
 import SearchBar from '../../components/SearchBar';
 import { useNavigation } from '@react-navigation/native';
+import { useHeaderHeight } from '@react-navigation/elements'; // get the header height 
+import { useSafeAreaInsets } from 'react-native-safe-area-context'; // get the safe area insets, initially used for the search bar
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
@@ -18,48 +20,37 @@ import DiscoverTaps from '../../components/DiscoverTaps';
 type Props = {};
 
 const HomeScreen = (props: Props) => {
-	const { navigate } =
-		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
-	const scrollY = new Animated.Value(0);
-	const diffClamp = Animated.diffClamp(scrollY, 0, 130);
-	const translateY = diffClamp.interpolate({
-		inputRange: [0, 130],
-		outputRange: [0, -130],
-	});
+	const { navigate } = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+	const insets = useSafeAreaInsets();
+	const headerHeight = useHeaderHeight();
 
 	return (
 		<SafeAreaView className='flex-1 items-center bg-dark-primaryBackground'>
 			<FocusAwareStatusBar translucent barStyle={'light-content'} />
-			<View
-				style={{
-					marginTop: Platform.OS === 'ios' ? 0 : 32,
-				}}
-				className='flex w-full mt-8'>
+			<View className='flex w-full'>
 				<SearchBar
 					containerProps={{
 						style: {
 							position: 'absolute',
 							top: 0,
 							left: 0,
+							right: 0,
 							zIndex: 100,
 							paddingHorizontal: 16,
-							transform: [{ translateY: translateY }],
+							backgroundColor: 'transparent',
 						},
 					}}
 					onPress={() => navigate(Routes.SEARCH_SCREEN)}
 				/>
 				<ScrollView
-					className='w-full h-full mt-6'
+					className='w-full h-full'
 					contentContainerStyle={{
 						alignItems: 'center',
 						justifyContent: 'center',
+						paddingTop: 0, // Adjust this value as needed
 					}}
 					showsVerticalScrollIndicator={false}
-					scrollEventThrottle={16}
-					onScroll={(e) => {
-						scrollY.setValue(e.nativeEvent.contentOffset.y);
-					}}>
+				>
 					<View className='w-full mt-6'>
 						<ContinueWatching />
 						<YourTopics />
