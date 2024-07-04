@@ -13,7 +13,7 @@ TODO: connect with user data
 TODO: style
 */
 
-const ProfileHeader = ({ name, imageUrl }: { name: string, imageUrl: string }) => {
+const AccountHeader = ({ name, imageUrl }: { name: string, imageUrl: string }) => {
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', padding: 16 }}>
       <Image
@@ -38,4 +38,4 @@ const ProfileHeader = ({ name, imageUrl }: { name: string, imageUrl: string }) =
   );
 };
 
-export default ProfileHeader;
+export default AccountHeader;
