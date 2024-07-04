@@ -49,7 +49,7 @@ const DiscoverTaps = ({ title, onPress, rightButton = true }: Props) => {
 		const func = () => {
 			if (loadingInitial) return;
 			navigate(Routes.SEE_MORE_TAPS, {
-				title: 'New Taps',
+				title: 'New taps',
 				taps: newTaps,
 			});
 		};
@@ -60,7 +60,7 @@ const DiscoverTaps = ({ title, onPress, rightButton = true }: Props) => {
 
 	return (
 		<>
-			<SectionHeader title={title ?? 'New Taps'} onPress={hasOnPress} />
+			<SectionHeader title={title ?? 'New taps'} onPress={hasOnPress} />
 			{dataLoading ? (
 				<DiscoverTapsSkeleton />
 			) : newTaps.length === 0 ? (

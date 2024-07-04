@@ -26,11 +26,11 @@ const YourTopics = () => {
 		return (
 			<>
 				<SectionHeader
-					title='Discover Topics'
+					title='Discover topics'
 					onPress={() => {
 						if (loadingInitial) return;
 						navigate(Routes.SEE_MORE_TOPICS, {
-							title: 'Discover Topics',
+							title: 'Discover topics',
 							topics,
 						});
 					}}
