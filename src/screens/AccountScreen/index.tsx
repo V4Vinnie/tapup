@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-	Animated,
 	SafeAreaView,
 	ScrollView,
 	Text,
@@ -36,25 +35,24 @@ const AccountScreen = (props: Props) => {
 	}
 
 	return (
-		<SafeAreaView className='flex-1 items-center bg-dark-primaryBackground'>
+		<SafeAreaView className='flex-1 bg-dark-primaryBackground'>
 			<FocusAwareStatusBar translucent barStyle={'light-content'} />
-			<ScrollView
-				className='w-full'
-				contentContainerStyle={{
-					alignItems: 'center',
-					justifyContent: 'center',
-				}}
-				showsVerticalScrollIndicator={false}>
-				<View className='w-full'>
-					<SectionHeader title='Your account' />
+			<View className='flex-1 w-full'>
+				<SectionHeader title='Your account' />
+				<ScrollView
+					className='w-full'
+					showsVerticalScrollIndicator={false}>
 					<AccountHeader name='Jan Janssens' imageUrl='https://i.pravatar.cc/300' />
-					<TouchableOpacity
-						className='bg-orange-600 py-3 px-6 rounded-lg mt-5'
-						onPress={logout}>
-						<Text className='text-white text-lg font-bold'>Logout</Text>
-					</TouchableOpacity>
-				</View>
-			</ScrollView>
+					<View className='w-full px-4'>
+						<Text className='text-white text-lg font-bold mt-5'>Email: {user?.email}</Text>
+						<TouchableOpacity
+							className='bg-orange-600 py-3 px-6 rounded-lg mt-5'
+							onPress={logout}>
+							<Text className='text-white text-lg font-bold'>Logout</Text>
+						</TouchableOpacity>
+					</View>
+				</ScrollView>
+			</View>
 		</SafeAreaView>
 	);
 };

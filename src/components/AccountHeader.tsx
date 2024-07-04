@@ -1,7 +1,7 @@
 /* 
 This AccountHeader is created by Arthur Cremelie.
 And does not use the previously created ProfileHeader and ProfileComponent.
-This is the case, as I wanted to make another design.
+I wanted to make another design, but feel free to change it.
 */
 
 import React from 'react';
