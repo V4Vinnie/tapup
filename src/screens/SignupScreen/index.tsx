@@ -158,6 +158,7 @@ const SignupScreen = (props: Props) => {
 						scrollEnabled={false}
 						loop={false}
 						showsButtons={false}>
+							
 						<RegisterUserDetails
 							image={image}
 							setModalOpen={setModalOpen}
