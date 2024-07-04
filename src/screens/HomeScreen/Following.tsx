@@ -43,11 +43,11 @@ const Following = () => {
 		return (
 			<>
 				<SectionHeader
-					title='Discover Profiles'
+					title='Discover profiles'
 					onPress={() => {
 						if (loadingInitial) return;
 						navigate(Routes.SEE_MORE_PROFILES, {
-							title: 'Discover Profiles',
+							title: 'Discover profiles',
 							profiles,
 						});
 					}}
