@@ -53,10 +53,6 @@ const RootStack = (props: Props) => {
 						tabBar={(props) => <BottomTabBar {...props} />}>
 						<Tab.Screen name={Routes.HOME} component={HomeStack} />
 						<Tab.Screen
-							name={Routes.DISCOVER}
-							component={DiscoverStack}
-						/>
-						<Tab.Screen
 							name={Routes.CREATE}
 							component={CreateStack}
 						/>
@@ -114,17 +110,6 @@ const HomeStack = () => {
 			/>
 			<Stack.Screen name={Routes.TAP_SCREEN} component={TapScreen} />
 			<Stack.Screen name={Routes.TOPIC_SCREEN} component={TopicScreen} />
-		</Stack.Navigator>
-	);
-};
-
-const DiscoverStack = () => {
-	return (
-		<Stack.Navigator screenOptions={{ headerShown: false }}>
-			<Stack.Screen
-				name={Routes.DISCOVER_LANDING}
-				component={DiscoverScreen}
-			/>
 		</Stack.Navigator>
 	);
 };
