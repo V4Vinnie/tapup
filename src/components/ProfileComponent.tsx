@@ -46,7 +46,7 @@ const ProfileComponent = ({
 				{notification > 0 && (
 					<View className='absolute w-4 h-4 rounded-full bg-primary top-0 right-0' />
 				)}
-				{profile.profilePic !== '' ? (
+				{profile.profilePic !== '' && profile.profilePic ? (
 					<Image
 						source={{ uri: profile.profilePic }}
 						className='rounded-full w-full h-full'

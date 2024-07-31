@@ -22,14 +22,14 @@ export const getAllTaps = async () => {
 	try {
 		const tapsRef = collection(DB, COLLECTIONS.TAPS);
 		const allTaps = await getDocs(tapsRef);
-		return allTaps.docs.map((doc) => {
+		return allTaps.docs?.map((doc) => {
 			return {
 				id: doc.id,
 				...doc.data(),
 			} as TTap;
 		});
 	} catch (error) {
-		console.log('getTaps in TapService ', error);
+		console.log('getAllTaps in TapService ', error);
 	}
 };
 
@@ -162,23 +162,23 @@ export const getTapsByCreator = async (profile: TProfile) => {
 };
 
 export const getProgressForChapters = (
-    user: TProfile,
-    chapters: TChapter[]
+	user: TProfile,
+	chapters: TChapter[]
 ) => {
-    if (!user) throw new Error('User not found');
-    const result = new Map<string, number>();
+	if (!user) throw new Error('User not found');
+	const result = new Map<string, number>();
 
-    chapters.forEach((chapter) => {
-        const amountOfFrames = chapter.frames.length;
-        const amountOfFramesWatched = chapter.frames.filter((frame) =>
-            (user.watchedFrames || []).find(
-                (watchedFrame) => watchedFrame.frameId === frame.id
-            )
-        ).length;
-        const progress = (amountOfFramesWatched / amountOfFrames) * 100;
-        result.set(chapter.chapterId, progress);
-    });
-    return result;
+	chapters.forEach((chapter) => {
+		const amountOfFrames = chapter.frames.length;
+		const amountOfFramesWatched = chapter.frames.filter((frame) =>
+			(user.watchedFrames || []).find(
+				(watchedFrame) => watchedFrame.frameId === frame.id
+			)
+		).length;
+		const progress = (amountOfFramesWatched / amountOfFrames) * 100;
+		result.set(chapter.chapterId, progress);
+	});
+	return result;
 };
 
 export const getTopicFromTap = async (tap: TTap) => {
@@ -197,7 +197,7 @@ export const getTopicFromTap = async (tap: TTap) => {
 async function getWatchedTapsForUser(userData: TProfile) {
 	const tapsRef = collection(DB, COLLECTIONS.TAPS);
 	const tapIds = [
-		...new Set(userData.watchedFrames.map((frame) => frame.tapId)),
+		...new Set(userData.watchedFrames?.map((frame) => frame.tapId)),
 	];
 	if (tapIds.length === 0) return [];
 	const _query = query(tapsRef, where(documentId(), 'in', tapIds));

@@ -1,5 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
-import { Alert, Dimensions, Text, TouchableOpacity, View } from 'react-native';
+import {
+	Alert,
+	Dimensions,
+	PermissionsAndroid,
+	Text,
+	TouchableOpacity,
+	View,
+} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
@@ -95,37 +102,43 @@ const SignupScreen = (props: Props) => {
 
 	const handleTakePhoto = async () => {
 		// Request camera permissions
-		const { status } = await ImagePicker.requestCameraPermissionsAsync();
-		if (status !== 'granted') {
-			Alert.alert(
-				'Permission needed',
-				'You need to grant camera permissions to take a photo',
-				[{ text: 'OK' }]
+		try {
+			const granted = await PermissionsAndroid.request(
+				PermissionsAndroid.PERMISSIONS.CAMERA,
+				{
+					title: 'Camera Permission',
+					message:
+						'App needs access to your camera ' +
+						'so you can take pictures.',
+					buttonNeutral: 'Ask Me Later',
+					buttonNegative: 'Cancel',
+					buttonPositive: 'OK',
+				}
 			);
-			return;
+			if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+				console.log('You can use the camera');
+				// Launch camera with permissions
+				ImagePicker.launchCameraAsync({
+					mediaTypes: ImagePicker.MediaTypeOptions.Images,
+					allowsEditing: true,
+					aspect: [1, 1],
+					quality: 1,
+				})
+					.then((result) => {
+						if (result.canceled) return;
+						setImage(result.assets[0].uri);
+					})
+					.catch((error) => {
+						console.log(error);
+					});
+
+				setModalOpen(false);
+			} else {
+				console.log('Camera permission denied');
+			}
+		} catch (err) {
+			console.warn(err);
 		}
-
-		// Launch camera with permissions
-		ImagePicker.launchCameraAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.Images,
-			allowsEditing: true,
-			aspect: [1, 1],
-			quality: 1,
-		})
-			.then((result) => {
-				if (result.canceled) return;
-				setImage(result.assets[0].uri);
-			})
-			.catch((error) => {
-				console.log(error);
-			});
-
-		setModalOpen(false);
-	};
-
-	const handleRemovePhoto = () => {
-		setImage('');
-		setModalOpen(false);
 	};
 
 	return (
@@ -213,45 +226,33 @@ const SignupScreen = (props: Props) => {
 					width: '80%',
 					alignSelf: 'center',
 				}}>
-				<View className='bg-dark-secondaryBackground rounded-lg py-8'>
+				<View className='rounded-lg py-8 bg-dark-primaryBackground'>
 					<Text className='text-2xl font-inter-semiBold text-center text-dark-textColor mb-4'>
-						Profile Picture
+						{'Choose a photo'}
 					</Text>
 					<View className=' flex flex-row justify-center items-center gap-x-4'>
 						<TouchableOpacity
-							className='flex items-center w-20 bg-dark-primaryBackground p-2 rounded-lg'
+							className='flex items-center w-20 p-2 rounded-lg'
 							onPress={handleChoosePhoto}>
 							<MaterialIcon
 								name='photo-library'
-								size={24}
+								size={45}
 								color={themeColors.primaryColor[100]}
 							/>
-							<Text className='text-base font-inter-regular text-center text-dark-textColor leading-4 mt-2'>
-								Choose Photo
+							<Text className='text-xs font-inter-regular text-center text-dark-textColor leading-4 mt-2'>
+								Gallery
 							</Text>
 						</TouchableOpacity>
 						<TouchableOpacity
-							className='flex items-center w-20 bg-dark-primaryBackground p-2 rounded-lg'
+							className='flex items-center w-20 p-2 rounded-lg'
 							onPress={handleTakePhoto}>
 							<MaterialIcon
 								name='camera-alt'
-								size={24}
+								size={45}
 								color={themeColors.primaryColor[100]}
 							/>
-							<Text className='text-base font-inter-regular text-center text-dark-textColor leading-4 mt-2'>
-								Take Photo
-							</Text>
-						</TouchableOpacity>
-						<TouchableOpacity
-							className='flex items-center w-20 bg-dark-primaryBackground p-2 rounded-lg'
-							onPress={handleRemovePhoto}>
-							<MaterialIcon
-								name='delete'
-								size={24}
-								color={themeColors.primaryColor[100]}
-							/>
-							<Text className='text-base font-inter-regular text-center text-dark-textColor leading-4 mt-2'>
-								Remove Photo
+							<Text className='text-xs font-inter-regular text-center text-dark-textColor leading-4 mt-2'>
+								Camera
 							</Text>
 						</TouchableOpacity>
 					</View>
