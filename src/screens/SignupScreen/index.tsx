@@ -41,10 +41,14 @@ const SignupScreen = (props: Props) => {
 	const [information, setInformation] = useState<{
 		fullName: string;
 		jobType: string;
-	}>();
+	}>({
+		fullName: '',
+		jobType: '',
+	});
 
 	// permissions for camera and gallery (ios)
-	const [mediaLibraryPermissions, requestPermission] = ImagePicker.useMediaLibraryPermissions();
+	const [mediaLibraryPermissions, requestPermission] =
+		ImagePicker.useMediaLibraryPermissions();
 
 	const swiper = useRef<Swiper>(null);
 
@@ -90,29 +94,33 @@ const SignupScreen = (props: Props) => {
 	};
 
 	const handleTakePhoto = async () => {
-	  // Request camera permissions
-	  const { status } = await ImagePicker.requestCameraPermissionsAsync();
-	  if (status !== 'granted') {
-		alert('Sorry, we need camera permissions to make this work!');
-		return;
-	  }
-	
-	  // Launch camera with permissions
-	  ImagePicker.launchCameraAsync({
-		mediaTypes: ImagePicker.MediaTypeOptions.Images,
-		allowsEditing: true,
-		aspect: [1, 1],
-		quality: 1,
-	  })
-		.then((result) => {
-		  if (result.canceled) return;
-		  setImage(result.assets[0].uri);
+		// Request camera permissions
+		const { status } = await ImagePicker.requestCameraPermissionsAsync();
+		if (status !== 'granted') {
+			Alert.alert(
+				'Permission needed',
+				'You need to grant camera permissions to take a photo',
+				[{ text: 'OK' }]
+			);
+			return;
+		}
+
+		// Launch camera with permissions
+		ImagePicker.launchCameraAsync({
+			mediaTypes: ImagePicker.MediaTypeOptions.Images,
+			allowsEditing: true,
+			aspect: [1, 1],
+			quality: 1,
 		})
-		.catch((error) => {
-		  console.log(error);
-		});
-	
-	  setModalOpen(false);
+			.then((result) => {
+				if (result.canceled) return;
+				setImage(result.assets[0].uri);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+
+		setModalOpen(false);
 	};
 
 	const handleRemovePhoto = () => {
@@ -158,7 +166,6 @@ const SignupScreen = (props: Props) => {
 						scrollEnabled={false}
 						loop={false}
 						showsButtons={false}>
-							
 						<RegisterUserDetails
 							image={image}
 							setModalOpen={setModalOpen}

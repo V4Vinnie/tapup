@@ -29,6 +29,12 @@ type Props = {};
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
 
+const error = console.error;
+console.error = (...args: any) => {
+	if (/defaultProps/.test(args[0])) return;
+	error(...args);
+};
+
 const RootStack = (props: Props) => {
 	const { user } = useAuth();
 
