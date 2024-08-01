@@ -1,13 +1,7 @@
 /* eslint-disable global-require */
 import { STORAGE_KEY } from '@birdwingo/core/constants';
 import { ProgressStorageProps } from '@birdwingo/core/dto/helpersDTO';
-import {
-	collection,
-	doc,
-	getDoc,
-	onSnapshot,
-	updateDoc,
-} from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { COLLECTIONS } from '../../utils/constants';
 import { TProfile } from '../../types';
 import { DB } from '../../database/Firebase';

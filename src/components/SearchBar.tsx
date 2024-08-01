@@ -18,10 +18,10 @@ const SearchBar = ({ onPress, containerProps }: Props) => {
 	return (
 		<Animated.View
 			{...containerProps}
-			className='w-full bg-dark-primaryBackground'>
+			className='w-full bg-dark-primaryBackground py-2'>
 			<TouchableOpacity
 				onPress={onPress}
-				className={`relative w-full self-center h-10 rounded-full bg-dark-secondaryBackground dark:bg-dark-secondaryBackground flex-row items-center mt-6 z-50`}>
+				className={`relative w-full self-center h-10 rounded-full bg-dark-secondaryBackground dark:bg-dark-secondaryBackground flex-row items-center z-50`}>
 				<FontistoIcon
 					name='search'
 					size={17}

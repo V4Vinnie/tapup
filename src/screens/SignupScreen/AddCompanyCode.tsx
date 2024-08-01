@@ -42,7 +42,7 @@ const AddCompanyCode = ({ setCompany: setCompany, swiper }: Props) => {
 
 	return (
 		<View
-			className={`w-4/5 mx-auto h-[85%] flex justify-between ${authErrors && 'h-full'}`}>
+			className={`w-4/5 mx-auto h-[85%] flex ${authErrors && 'h-full'}`}>
 			<View>
 				<Text className='text-3xl font-inter-bold text-center text-dark-textColor'>
 					{'Add company code'}

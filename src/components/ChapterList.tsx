@@ -36,9 +36,11 @@ const ChapterList = ({
 	const [stories, setStories] = useState<CustomInstagramStoryProps[]>([]);
 
 	useEffect(() => {
-		const imageUrls = chapters.map((chapter) =>
-			Image.prefetch(chapter.frames[0].media)
-		);
+		const imageUrls = chapters.map((chapter) => {
+			if (chapter.frames[0].media) {
+				return Image.prefetch(chapter.frames[0].media);
+			}
+		});
 		Promise.all(imageUrls).then(() => setImagesLoading(false));
 	}, [chapters]);
 
@@ -60,7 +62,8 @@ const ChapterList = ({
 			setLoaded(true);
 		};
 		if (isFocused) getProgress(user);
-		onUser(user.uid, getProgress);
+		const sub = onUser(user.uid, getProgress);
+		return () => (sub ? sub() : undefined);
 	}, [isFocused, user, chapters]);
 
 	return dataLoading ? (

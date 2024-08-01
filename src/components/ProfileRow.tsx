@@ -21,7 +21,9 @@ const ProfileRow = ({ profiles, containerProps, loading }: Props) => {
 	useEffect(() => {
 		if (!profiles) return;
 		const imageUrls = profiles
-			.filter((profile) => profile.profilePic !== '')
+			.filter(
+				(profile) => profile.profilePic !== '' && profile.profilePic
+			)
 			.map((profiles) => Image.prefetch(profiles.profilePic));
 		Promise.all(imageUrls).then(() => setImagesLoading(false));
 	}, [profiles]);

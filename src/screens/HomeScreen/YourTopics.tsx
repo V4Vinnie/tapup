@@ -19,18 +19,19 @@ const YourTopics = () => {
 	useEffect(() => {
 		if (!user?.uid) return;
 		if (isFocused) getProfileTopics(user);
-		onUser(user.uid, getProfileTopics);
+		const sub = onUser(user.uid, getProfileTopics);
+		return () => (sub ? sub() : undefined);
 	}, [isFocused, user]);
 
 	if (!loadingInitial && userTopics.length === 0)
 		return (
 			<>
 				<SectionHeader
-					title='Discover Topics'
+					title='Discover topics'
 					onPress={() => {
 						if (loadingInitial) return;
 						navigate(Routes.SEE_MORE_TOPICS, {
-							title: 'Discover Topics',
+							title: 'Discover topics',
 							topics,
 						});
 					}}

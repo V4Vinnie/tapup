@@ -61,7 +61,8 @@ const TapScreen = ({ route }: ProfileScreenProps) => {
 			setLoading(false);
 		};
 		if (isFocused) getProgress(user);
-		onUser(user.uid, getProgress);
+		const sub = onUser(user.uid, getProgress);
+		return () => (sub ? sub() : undefined);
 	}, [isFocused, user, sortedChapters]);
 
 	useEffect(() => {

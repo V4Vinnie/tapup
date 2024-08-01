@@ -93,11 +93,11 @@ const ChapterComponent = ({
 					<View className='w-full h-full bg-dark-secondaryBackground' />
 				) : (
 					<Image
-						source={{ uri: thumbnail }}
+						source={{ uri: thumbnail ?? '' }}
 						className='w-full h-full bg-dark-secondaryBackground'
 					/>
 				)}
-				{!thumbnail && video && <Video video={video} />}
+				{!thumbnail && video && <Video video={video ?? ''} />}
 				{showProgress && (
 					<View className='absolute bottom-0 w-full h-1 bg-dark-secondaryBackground'>
 						<View

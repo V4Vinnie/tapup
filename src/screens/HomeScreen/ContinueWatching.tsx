@@ -23,7 +23,8 @@ const ContinueWatching = () => {
 	useEffect(() => {
 		if (!user?.uid) return;
 		if (isFocused) getProfileTaps(user);
-		onUser(user.uid, getProfileTaps);
+		const sub = onUser(user.uid, getProfileTaps);
+		return () => (sub ? sub() : undefined);
 	}, [isFocused, user]);
 
 	useEffect(() => {

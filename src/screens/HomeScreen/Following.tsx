@@ -27,7 +27,8 @@ const Following = () => {
 	useEffect(() => {
 		if (!user?.uid) return;
 		if (isFocused) getProfileProfiles(user);
-		onUser(user.uid, getProfileProfiles);
+		const sub = onUser(user.uid, getProfileProfiles);
+		return () => (sub ? sub() : undefined);
 	}, [isFocused, user]);
 
 	useEffect(() => {
@@ -43,11 +44,11 @@ const Following = () => {
 		return (
 			<>
 				<SectionHeader
-					title='Discover Profiles'
+					title='Discover profiles'
 					onPress={() => {
 						if (loadingInitial) return;
 						navigate(Routes.SEE_MORE_PROFILES, {
-							title: 'Discover Profiles',
+							title: 'Discover profiles',
 							profiles,
 						});
 					}}

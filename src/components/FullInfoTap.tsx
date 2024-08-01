@@ -96,7 +96,7 @@ const FullInfoTap = ({ tap, containerProps, isNew, loading }: Props) => {
 				</Text>
 			)}
 			<Image
-				source={{ uri: tap.thumbnail }}
+				source={{ uri: tap.thumbnail ?? '' }}
 				className='w-20 h-28 rounded-md mr-2'
 			/>
 			<View className='flex justify-between shrink'>
