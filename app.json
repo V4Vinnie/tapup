@@ -1,52 +1,67 @@
 {
-  "expo": {
-    "name": "TapUp",
-    "slug": "TapUp",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "app.TapUp"
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "permissions": [
-        "android.permission.RECORD_AUDIO"
-      ],
-      "package": "app.TapUp"
-    },
-    "web": {
-      "favicon": "./assets/images/favicon.png"
-    },
-    "plugins": [
-      "expo-image-picker",
-      "expo-video",
-      [
-        "expo-build-properties",
-        {
-          "ios": {
-            "useFrameworks": "static"
-          }
-        }
-      ]
-    ],
-    "extra": {
-      "eas": {
-        "projectId": "e0b58693-6ae4-4963-bcc8-97be2a755d04"
-      }
-    }
-  }
+	"expo": {
+		"name": "TapUp",
+		"slug": "TapUp",
+		"version": "1.0.0",
+		"orientation": "portrait",
+		"icon": "./assets/images/icon.png",
+		"userInterfaceStyle": "automatic",
+		"splash": {
+			"image": "./assets/images/splash.png",
+			"resizeMode": "contain",
+			"backgroundColor": "#15151e"
+		},
+		"assetBundlePatterns": ["**/*"],
+		"ios": {
+			"supportsTablet": true,
+			"bundleIdentifier": "app.TapUp",
+			"buildNumber": "1.0.0",
+			"infoPlist": {
+				"NSCameraUsageDescription": "This app uses the camera to take photos and videos.",
+				"NSMicrophoneUsageDescription": "This app uses the microphone to record audio.",
+				"NSPhotoLibraryUsageDescription": "This app uses the photo library to select images and videos.",
+				"NSPhotoLibraryAddUsageDescription": "This app uses the photo library to save images and videos."
+			}
+		},
+		"android": {
+			"adaptiveIcon": {
+				"foregroundImage": "./assets/images/adaptive-icon.png",
+				"backgroundColor": "#15151e"
+			},
+			"permissions": [
+				"android.permission.RECORD_AUDIO",
+				"android.permission.CAMERA",
+				"android.permission.READ_EXTERNAL_STORAGE",
+				"android.permission.WRITE_EXTERNAL_STORAGE"
+			],
+			"package": "app.TapUp"
+		},
+		"web": {
+			"favicon": "./assets/images/favicon.png"
+		},
+		"plugins": [
+			[
+				"expo-image-picker",
+				{
+					"photosPermission": "TapUp needs access to your photos so you can upload them to your profile.",
+					"cameraPermission": "TapUp needs access to your camera so you can take photos and upload them to your profile.",
+					"microphonePermission": "TapUp needs access to your microphone so you can record audio and upload it to your profile."
+				}
+			],
+			"expo-video",
+			[
+				"expo-build-properties",
+				{
+					"ios": {
+						"useFrameworks": "static"
+					}
+				}
+			]
+		],
+		"extra": {
+			"eas": {
+				"projectId": "e0b58693-6ae4-4963-bcc8-97be2a755d04"
+			}
+		}
+	}
 }

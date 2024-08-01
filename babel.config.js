@@ -4,7 +4,7 @@ module.exports = function (api) {
     presets: ['babel-preset-expo'],
     plugins: [
       // "@babel/plugin-proposal-export-namespace-from",
-      "react-native-reanimated/plugin",
+      ["react-native-reanimated/plugin", { relativeSourceLocation: true }],
       "nativewind/babel",
       ["module:react-native-dotenv", {
         "allowUndefined": false
