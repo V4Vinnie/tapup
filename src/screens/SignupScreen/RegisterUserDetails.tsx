@@ -131,6 +131,15 @@ const RegisterUserDetails = ({
 					title={'Next'}
 					onPress={() => swiper.current?.scrollBy(1)}
 				/>
+				{!authErrors?.userDetails && isKeyboardOpen && (
+					<Text
+						className={
+							'text-sm font-inter-medium text-white text-center my-2 h-16'
+						}>
+						Password must be at least 6 characters long and don't
+						forget to add a profile picture.
+					</Text>
+				)}
 				{authErrors?.userDetails && (
 					<Text
 						className={

@@ -3,6 +3,7 @@ import {
 	Alert,
 	Dimensions,
 	PermissionsAndroid,
+	Platform,
 	Text,
 	TouchableOpacity,
 	View,
@@ -29,7 +30,6 @@ import AddCompanyCode from './AddCompanyCode';
 import { TCompany } from '../../types';
 import AddInformation from './AddInformation';
 import { useAuth } from '../../providers/AuthProvider';
-import { signOut } from 'firebase/auth';
 
 type Props = {};
 
@@ -52,10 +52,6 @@ const SignupScreen = (props: Props) => {
 		fullName: '',
 		jobType: '',
 	});
-
-	// permissions for camera and gallery (ios)
-	const [mediaLibraryPermissions, requestPermission] =
-		ImagePicker.useMediaLibraryPermissions();
 
 	const swiper = useRef<Swiper>(null);
 
@@ -101,44 +97,32 @@ const SignupScreen = (props: Props) => {
 	};
 
 	const handleTakePhoto = async () => {
-		// Request camera permissions
-		try {
-			const granted = await PermissionsAndroid.request(
-				PermissionsAndroid.PERMISSIONS.CAMERA,
-				{
-					title: 'Camera Permission',
-					message:
-						'App needs access to your camera ' +
-						'so you can take pictures.',
-					buttonNeutral: 'Ask Me Later',
-					buttonNegative: 'Cancel',
-					buttonPositive: 'OK',
-				}
-			);
-			if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-				console.log('You can use the camera');
-				// Launch camera with permissions
-				ImagePicker.launchCameraAsync({
-					mediaTypes: ImagePicker.MediaTypeOptions.Images,
-					allowsEditing: true,
-					aspect: [1, 1],
-					quality: 1,
-				})
-					.then((result) => {
-						if (result.canceled) return;
-						setImage(result.assets[0].uri);
-					})
-					.catch((error) => {
-						console.log(error);
-					});
-
-				setModalOpen(false);
-			} else {
-				console.log('Camera permission denied');
-			}
-		} catch (err) {
-			console.warn(err);
+		const { status } = await ImagePicker.requestCameraPermissionsAsync();
+		if (status !== 'granted') {
+			Alert.alert('Permission needed', 'Please allow camera access');
+			return;
 		}
+
+		ImagePicker.launchCameraAsync({
+			mediaTypes: ImagePicker.MediaTypeOptions.Images,
+			allowsEditing: true,
+			aspect: [1, 1],
+			quality: 1,
+			presentationStyle:
+				ImagePicker.UIImagePickerPresentationStyle.OVER_FULL_SCREEN,
+			preferredAssetRepresentationMode:
+				ImagePicker.UIImagePickerPreferredAssetRepresentationMode
+					.Compatible,
+		})
+			.then((result) => {
+				if (result.canceled) return;
+				setImage(result.assets[0].uri);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+
+		setModalOpen(false);
 	};
 
 	return (
@@ -243,18 +227,20 @@ const SignupScreen = (props: Props) => {
 								Gallery
 							</Text>
 						</TouchableOpacity>
-						<TouchableOpacity
-							className='flex items-center w-20 p-2 rounded-lg'
-							onPress={handleTakePhoto}>
-							<MaterialIcon
-								name='camera-alt'
-								size={45}
-								color={themeColors.primaryColor[100]}
-							/>
-							<Text className='text-xs font-inter-regular text-center text-dark-textColor leading-4 mt-2'>
-								Camera
-							</Text>
-						</TouchableOpacity>
+						{Platform.OS === 'android' && (
+							<TouchableOpacity
+								className='flex items-center w-20 p-2 rounded-lg'
+								onPress={handleTakePhoto}>
+								<MaterialIcon
+									name='camera-alt'
+									size={45}
+									color={themeColors.primaryColor[100]}
+								/>
+								<Text className='text-xs font-inter-regular text-center text-dark-textColor leading-4 mt-2'>
+									Camera
+								</Text>
+							</TouchableOpacity>
+						)}
 					</View>
 				</View>
 			</Modal>
