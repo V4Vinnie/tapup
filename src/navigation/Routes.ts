@@ -14,12 +14,8 @@ export const Routes = {
 	PROFILE_SCREEN: 'ProfileScreen',
 	TAP_SCREEN: 'TapScreen',
 	TOPIC_SCREEN: 'TopicScreen',
-	CREATE: 'Create',
-	CREATE_LANDING: 'CreateLanding',
-	LIKED: 'Liked',
-	LIKED_LANDING: 'LikedLanding',
-	ACCOUNT: 'Account',
-	ACCOUNT_LANDING: 'AccountLanding',
+	ACCOUNT: 'Settings',
+	ACCOUNT_LANDING: 'SettingsLanding',
 } as const;
 
 export type RootStackParamList = {
@@ -54,11 +50,6 @@ export type RootStackParamList = {
 	TopicScreen: {
 		topic: TTopic;
 	};
-	DiscoverLanding: undefined;
-	Create: undefined;
-	CreateLanding: undefined;
-	Liked: undefined;
-	LikedLanding: undefined;
-	Account: undefined;
-	AccountLanding: undefined;
+	Settings: undefined;
+	SettingsLanding: undefined;
 };

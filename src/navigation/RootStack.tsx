@@ -16,9 +16,6 @@ import ProfileScreen from '../screens/ProfileScreen';
 import TapScreen from '../screens/TapScreen';
 import { mode, themeColors } from '../utils/constants';
 import TopicScreen from '../screens/TopicScreen';
-import DiscoverScreen from '../screens/DiscoverScreen';
-import CreateScreen from '../screens/CreateScreen';
-import LikedScreen from '../screens/LikedScreen';
 import AccountScreen from '../screens/AccountScreen';
 import { TopicProvider } from '../providers/TopicProvider';
 import { TapProvider } from '../providers/TapProvider';
@@ -52,14 +49,6 @@ const RootStack = (props: Props) => {
 						}}
 						tabBar={(props) => <BottomTabBar {...props} />}>
 						<Tab.Screen name={Routes.HOME} component={HomeStack} />
-						<Tab.Screen
-							name={Routes.CREATE}
-							component={CreateStack}
-						/>
-						<Tab.Screen
-							name={Routes.LIKED}
-							component={LikedStack}
-						/>
 						<Tab.Screen
 							name={Routes.ACCOUNT}
 							component={AccountStack}
@@ -110,25 +99,6 @@ const HomeStack = () => {
 			/>
 			<Stack.Screen name={Routes.TAP_SCREEN} component={TapScreen} />
 			<Stack.Screen name={Routes.TOPIC_SCREEN} component={TopicScreen} />
-		</Stack.Navigator>
-	);
-};
-
-const CreateStack = () => {
-	return (
-		<Stack.Navigator screenOptions={{ headerShown: false }}>
-			<Stack.Screen
-				name={Routes.CREATE_LANDING}
-				component={CreateScreen}
-			/>
-		</Stack.Navigator>
-	);
-};
-
-const LikedStack = () => {
-	return (
-		<Stack.Navigator screenOptions={{ headerShown: false }}>
-			<Stack.Screen name={Routes.LIKED_LANDING} component={LikedScreen} />
 		</Stack.Navigator>
 	);
 };
