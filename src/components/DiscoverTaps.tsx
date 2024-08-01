@@ -28,7 +28,8 @@ const DiscoverTaps = ({ title, onPress, rightButton = true }: Props) => {
 	useEffect(() => {
 		if (!user?.uid) return;
 		if (isFocused) getDiscoverTaps(user);
-		onUser(user.uid, getDiscoverTaps);
+		const sub = onUser(user.uid, getDiscoverTaps);
+		return () => (sub ? sub() : undefined);
 	}, [isFocused, user]);
 
 	useEffect(() => {

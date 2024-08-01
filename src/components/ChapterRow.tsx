@@ -44,7 +44,8 @@ const ChapterRow = ({
 			if (progress) setProgress(progress);
 		};
 		if (isFocused) getProgress(user);
-		onUser(user.uid, getProgress);
+		const sub = onUser(user.uid, getProgress);
+		return () => (sub ? sub() : undefined);
 	}, [isFocused, user, chapters]);
 
 	useEffect(() => {

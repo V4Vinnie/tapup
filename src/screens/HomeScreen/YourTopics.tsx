@@ -19,7 +19,8 @@ const YourTopics = () => {
 	useEffect(() => {
 		if (!user?.uid) return;
 		if (isFocused) getProfileTopics(user);
-		onUser(user.uid, getProfileTopics);
+		const sub = onUser(user.uid, getProfileTopics);
+		return () => (sub ? sub() : undefined);
 	}, [isFocused, user]);
 
 	if (!loadingInitial && userTopics.length === 0)

@@ -27,7 +27,8 @@ const Following = () => {
 	useEffect(() => {
 		if (!user?.uid) return;
 		if (isFocused) getProfileProfiles(user);
-		onUser(user.uid, getProfileProfiles);
+		const sub = onUser(user.uid, getProfileProfiles);
+		return () => (sub ? sub() : undefined);
 	}, [isFocused, user]);
 
 	useEffect(() => {

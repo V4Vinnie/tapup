@@ -52,21 +52,6 @@ export const bottomNavIcons = (isFocused: boolean) => {
 				color={themeColors[mode].textColor}
 			/>
 		),
-		[Routes.DISCOVER]: isFocused ? (
-			<MCIcon
-				key='discover'
-				name='compass'
-				size={ICON_SIZE}
-				color={themeColors[mode].textColor}
-			/>
-		) : (
-			<MCIcon
-				key='discover'
-				name='compass-outline'
-				size={ICON_SIZE}
-				color={themeColors[mode].textColor}
-			/>
-		),
 		[Routes.CREATE]: isFocused ? (
 			<IonIcon
 				key='create'
