@@ -52,47 +52,17 @@ export const bottomNavIcons = (isFocused: boolean) => {
 				color={themeColors[mode].textColor}
 			/>
 		),
-		[Routes.CREATE]: isFocused ? (
-			<IonIcon
-				key='create'
-				name='add-circle'
-				size={ICON_SIZE}
-				color={themeColors[mode].textColor}
-			/>
-		) : (
-			<IonIcon
-				key='create'
-				name='add-circle-outline'
-				size={ICON_SIZE}
-				color={themeColors[mode].textColor}
-			/>
-		),
-		[Routes.LIKED]: isFocused ? (
-			<MCIcon
-				key='liked'
-				name='heart'
-				size={ICON_SIZE}
-				color={themeColors[mode].textColor}
-			/>
-		) : (
-			<MCIcon
-				key='liked'
-				name='heart-outline'
-				size={ICON_SIZE}
-				color={themeColors[mode].textColor}
-			/>
-		),
 		[Routes.ACCOUNT]: isFocused ? (
-			<MCIcon
-				key='account'
-				name='account'
+			<IonIcon
+				key='settings'
+				name='settings'
 				size={ICON_SIZE}
 				color={themeColors[mode].textColor}
 			/>
 		) : (
-			<MCIcon
-				key='account'
-				name='account-outline'
+			<IonIcon
+				key='settings'
+				name='settings-outline'
 				size={ICON_SIZE}
 				color={themeColors[mode].textColor}
 			/>
