@@ -89,7 +89,7 @@ const ChapterComponent = ({
 			<View
 				className='w-24 h-16 rounded-lg overflow-hidden'
 				{...containerProps}>
-				{thumbnail === '' ? (
+				{thumbnail?.isBlank ? (
 					<View className='w-full h-full bg-dark-secondaryBackground' />
 				) : (
 					<Image

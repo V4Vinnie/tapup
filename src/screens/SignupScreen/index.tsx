@@ -43,13 +43,8 @@ const SignupScreen = (props: Props) => {
 	const [image, setImage] = useState('');
 	const [isSending, setIsSending] = useState(false);
 	const [company, setCompany] = useState<TCompany>();
-	const [information, setInformation] = useState<{
-		fullName: string;
-		jobType: string;
-	}>({
-		fullName: '',
-		jobType: '',
-	});
+	const [fullName, setFullName] = useState('');
+	const [jobType, setJobType] = useState('');
 
 	const swiper = useRef<Swiper>(null);
 
@@ -64,7 +59,8 @@ const SignupScreen = (props: Props) => {
 			password,
 			image!,
 			company!,
-			information!
+			fullName!,
+			jobType!
 		).finally(() => {
 			setIsSending(false);
 		});
@@ -130,7 +126,10 @@ const SignupScreen = (props: Props) => {
 							swiper={swiper}
 						/>
 						<AddInformation
-							setInformation={setInformation}
+							setFullName={setFullName}
+							fullName={fullName}
+							setJobType={setJobType}
+							jobType={jobType}
 							signUp={signUp}
 							isSending={isSending}
 						/>

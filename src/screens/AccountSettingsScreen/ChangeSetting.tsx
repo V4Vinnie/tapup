@@ -26,11 +26,15 @@ const ChangeSetting = ({
 	const { companyColor } = useCompany();
 	const [modalVisible, setModalVisible] = React.useState(false);
 	const [newValue, setNewValue] = React.useState(value);
+	const inputRef = React.useRef<TextInput>(null);
 
 	return (
 		<>
 			<TouchableOpacity
-				onPress={() => setModalVisible(true)}
+				onPress={() => {
+					setModalVisible(true);
+					setTimeout(() => inputRef.current?.focus(), 500);
+				}}
 				className='flex flex-row justify-between items-center mb-8'>
 				<View className='mr-6'>{icon}</View>
 				<View className='flex flex-col gap-1 flex-1'>
@@ -66,6 +70,7 @@ const ChangeSetting = ({
 					</Text>
 					<View className='relative'>
 						<TextInput
+							ref={inputRef}
 							value={newValue}
 							onChangeText={setNewValue}
 							placeholder={title}
