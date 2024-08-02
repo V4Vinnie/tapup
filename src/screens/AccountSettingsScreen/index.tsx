@@ -12,8 +12,10 @@ import SettingsTab from './SettingsTab';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { mode, themeColors } from '../../utils/constants';
 import ProfilePicture from '../SignupScreen/ProfilePicture';
+import ChangeSetting from './ChangeSetting';
 
 type Props = {};
 
@@ -22,9 +24,10 @@ const AccountSettingsScreen = (props: Props) => {
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const { user } = useAuth();
 	const [userDetails, setUserDetails] = React.useState({
-		name: user?.fullName || '',
+		name: user?.name || '',
 		email: user?.email || '',
 		profilePic: user?.profilePic || '',
+		fullName: user?.fullName || '',
 	});
 
 	function save(): void {
@@ -39,7 +42,7 @@ const AccountSettingsScreen = (props: Props) => {
 				<ScrollView
 					className='w-full'
 					showsVerticalScrollIndicator={false}>
-					<View className='w-full px-8 pt-8 h-3/5 flex flex-col justify-between'>
+					<View className='px-8 pt-8 h-3/5 flex flex-col justify-between'>
 						<ProfilePicture
 							image={{ uri: userDetails.profilePic }}
 							setImage={(image) =>
@@ -49,12 +52,60 @@ const AccountSettingsScreen = (props: Props) => {
 								})
 							}
 						/>
-						<AppButton
-							title='Save'
-							onPress={save}
-							buttonProps={{
-								className: 'mt-8',
-							}}
+						<ChangeSetting
+							icon={
+								<MaterialCommunityIcons
+									name='account'
+									size={20}
+									color={themeColors[mode].textColor}
+								/>
+							}
+							maxChars={20}
+							title='Username'
+							value={userDetails.name}
+							onChange={(text) =>
+								setUserDetails({
+									...userDetails,
+									name: text,
+								})
+							}
+							description='This is the name that will be displayed on your profile.'
+						/>
+						<ChangeSetting
+							icon={
+								<MaterialCommunityIcons
+									name='email'
+									size={20}
+									color={themeColors[mode].textColor}
+								/>
+							}
+							maxChars={20}
+							title='Email'
+							value={userDetails.email}
+							onChange={(text) =>
+								setUserDetails({
+									...userDetails,
+									email: text,
+								})
+							}
+						/>
+						<ChangeSetting
+							icon={
+								<FontAwesome5
+									name='user-tie'
+									size={20}
+									color={themeColors[mode].textColor}
+								/>
+							}
+							maxChars={20}
+							title='Full Name'
+							value={userDetails.fullName}
+							onChange={(text) =>
+								setUserDetails({
+									...userDetails,
+									fullName: text,
+								})
+							}
 						/>
 					</View>
 				</ScrollView>

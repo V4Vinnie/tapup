@@ -24,7 +24,12 @@ const AddInformation = ({ setInformation, signUp, isSending }: Props) => {
 	const [jobType, setJobType] = useState<string | undefined>();
 
 	const submitDisabled = useMemo(() => {
-		return !fullName || !jobType;
+		return (
+			fullName?.isBlank ||
+			jobType?.isBlank ||
+			fullName?.startsWithOrEndsWithSpaces ||
+			jobType?.startsWithOrEndsWithSpaces
+		);
 	}, [fullName, jobType]);
 
 	return (

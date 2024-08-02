@@ -40,8 +40,8 @@ const SignupScreen = (props: Props) => {
 	const [email, setEmail] = useState('');
 	const [username, setProfilename] = useState('');
 	const [password, setPassword] = useState('');
+	const [image, setImage] = useState('');
 	const [isSending, setIsSending] = useState(false);
-	const [image, setImage] = useState<string | null>(null);
 	const [company, setCompany] = useState<TCompany>();
 	const [information, setInformation] = useState<{
 		fullName: string;

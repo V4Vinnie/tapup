@@ -10,7 +10,7 @@ import { useEffect, useMemo } from 'react';
 import { useAuth } from '../../providers/AuthProvider';
 
 type Props = {
-	image: string | null;
+	image: string;
 	setImage: (image: string) => void;
 	username: string;
 	setProfilename: React.Dispatch<React.SetStateAction<string>>;
@@ -25,7 +25,7 @@ const RegisterUserDetails = ({
 	image,
 	setImage,
 	username,
-	setProfilename: setProfilename,
+	setProfilename,
 	email,
 	setEmail,
 	password,
@@ -36,7 +36,16 @@ const RegisterUserDetails = ({
 	const { authErrors } = useAuth();
 
 	const disabledState = useMemo(() => {
-		return !username || password.length < 6 || !email || !image;
+		return (
+			username.isBlank ||
+			password.length < 6 ||
+			email.isBlank ||
+			image.isBlank ||
+			!email.isValidEmail ||
+			username.startsWithOrEndsWithSpaces ||
+			password.startsWithOrEndsWithSpaces ||
+			email.startsWithOrEndsWithSpaces
+		);
 	}, [username, password, email, image]);
 
 	return (

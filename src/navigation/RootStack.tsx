@@ -23,6 +23,7 @@ import { ProfileProvider } from '../providers/ProfileProvider';
 import AccountSettingsScreen from '../screens/AccountSettingsScreen';
 import PrivacyPolicyScreen from '../screens/PrivacyPolicyScreen';
 import MyCompanyScreen from '../screens/MyComanyScreen';
+import '../utils/stringExtensions';
 
 type Props = {};
 
