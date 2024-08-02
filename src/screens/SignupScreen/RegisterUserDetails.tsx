@@ -1,13 +1,15 @@
-import { Text, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import AppInput from '../../components/AppInput';
 import AppButton from '../../components/AppButton';
-import Icon from 'react-native-vector-icons/AntDesign';
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+import EntypoIcon from 'react-native-vector-icons/Entypo';
 import { assets } from '../../../assets/Assets';
 import ProfilePicture from './ProfilePicture';
 import Swiper from 'react-native-swiper';
 import useKeyboard from '../../hooks/useKeyboard';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../../providers/AuthProvider';
+import { maxChars } from '../../utils/constants';
 
 type Props = {
 	image: string;
@@ -34,6 +36,7 @@ const RegisterUserDetails = ({
 }: Props) => {
 	const { isKeyboardOpen } = useKeyboard();
 	const { authErrors } = useAuth();
+	const [hidePassword, setHidePassword] = useState(true);
 
 	const disabledState = useMemo(() => {
 		return (
@@ -78,7 +81,11 @@ const RegisterUserDetails = ({
 					}}
 					leftIcon={{
 						component: (
-							<Icon name='user' size={16} color={'gray'} />
+							<AntDesignIcon
+								name='user'
+								size={16}
+								color={'gray'}
+							/>
 						),
 					}}
 					inputProps={{
@@ -88,6 +95,7 @@ const RegisterUserDetails = ({
 						onChangeText: (username) => {
 							setProfilename(username);
 						},
+						maxLength: maxChars.username,
 					}}
 				/>
 				<AppInput
@@ -96,7 +104,11 @@ const RegisterUserDetails = ({
 					}}
 					leftIcon={{
 						component: (
-							<Icon name='mail' size={16} color={'gray'} />
+							<AntDesignIcon
+								name='mail'
+								size={16}
+								color={'gray'}
+							/>
 						),
 					}}
 					inputProps={{
@@ -106,6 +118,7 @@ const RegisterUserDetails = ({
 						onChangeText: (email) => {
 							setEmail(email);
 						},
+						maxLength: maxChars.email,
 					}}
 				/>
 
@@ -115,16 +128,41 @@ const RegisterUserDetails = ({
 					}}
 					leftIcon={{
 						component: (
-							<Icon name='lock' size={16} color={'gray'} />
+							<AntDesignIcon
+								name='lock'
+								size={16}
+								color={'gray'}
+							/>
+						),
+					}}
+					rightIcon={{
+						component: (
+							<TouchableOpacity
+								onPress={() => setHidePassword(!hidePassword)}>
+								{hidePassword ? (
+									<EntypoIcon
+										name='eye-with-line'
+										size={18}
+										color={'gray'}
+									/>
+								) : (
+									<EntypoIcon
+										name='eye'
+										size={18}
+										color={'gray'}
+									/>
+								)}
+							</TouchableOpacity>
 						),
 					}}
 					inputProps={{
 						placeholder: 'Password',
 						value: password,
-						secureTextEntry: true,
+						secureTextEntry: hidePassword,
 						onChangeText: (password) => {
 							setPassword(password);
 						},
+						maxLength: maxChars.password,
 					}}
 				/>
 			</View>

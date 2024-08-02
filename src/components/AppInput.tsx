@@ -69,7 +69,7 @@ const AppInput = ({
 			{rightIcon && (
 				<TouchableHighlight
 					{...rightIcon.buttonProps}
-					className={`absolute right-0 top-0 bottom-0 flex justify-center items-center ${
+					className={`absolute right-4 top-0 bottom-0 flex justify-center items-center ${
 						rightIcon.buttonProps?.className ?? ''
 					}`}>
 					{rightIcon.component}

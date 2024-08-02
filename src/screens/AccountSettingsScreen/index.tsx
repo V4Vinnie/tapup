@@ -13,7 +13,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { mode, themeColors } from '../../utils/constants';
+import { maxChars, mode, themeColors } from '../../utils/constants';
 import ProfilePicture from '../SignupScreen/ProfilePicture';
 import ChangeSetting from './ChangeSetting';
 import { assets } from '../../../assets/Assets';
@@ -90,13 +90,13 @@ const AccountSettingsScreen = (props: Props) => {
 							/>
 							<ChangeSetting
 								icon={
-									<MaterialCommunityIcons
-										name='account'
+									<FontAwesome5
+										name='user-alt'
 										size={20}
 										color={themeColors[mode].textColor}
 									/>
 								}
-								maxChars={25}
+								maxChars={maxChars.username}
 								title='Username'
 								value={userDetails.name}
 								onChange={(text) => {
@@ -116,7 +116,7 @@ const AccountSettingsScreen = (props: Props) => {
 										color={themeColors[mode].textColor}
 									/>
 								}
-								maxChars={55}
+								maxChars={maxChars.fullName}
 								title='Full Name'
 								value={userDetails.fullName}
 								onChange={(text) => {
@@ -139,7 +139,7 @@ const AccountSettingsScreen = (props: Props) => {
 										color={themeColors[mode].textColor}
 									/>
 								}
-								maxChars={45}
+								maxChars={maxChars.jobType}
 								title='Job Title'
 								value={userDetails.jobType}
 								onChange={(text) => {
@@ -166,7 +166,7 @@ const AccountSettingsScreen = (props: Props) => {
 										color={themeColors[mode].textColor}
 									/>
 								}
-								maxChars={60}
+								maxChars={maxChars.email}
 								title='Email'
 								value={userDetails.email}
 								onChange={changeEmail}

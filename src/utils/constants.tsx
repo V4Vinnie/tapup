@@ -71,3 +71,11 @@ export const bottomNavIcons = (isFocused: boolean) => {
 };
 
 export const primaryColor = themeColors.primaryColor[100];
+
+export const maxChars = {
+	username: 25,
+	fullName: 55,
+	jobType: 45,
+	email: 320,
+	password: 30,
+};
