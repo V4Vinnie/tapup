@@ -18,7 +18,6 @@ import {
 	scrollViewContentContainer,
 } from '../LoginScreen';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import Modal from 'react-native-modal';
 import * as ImagePicker from 'expo-image-picker';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { themeColors } from '../../utils/constants';
@@ -41,17 +40,11 @@ const SignupScreen = (props: Props) => {
 	const [email, setEmail] = useState('');
 	const [username, setProfilename] = useState('');
 	const [password, setPassword] = useState('');
-	const [modalOpen, setModalOpen] = useState(false);
+	const [image, setImage] = useState('');
 	const [isSending, setIsSending] = useState(false);
-	const [image, setImage] = useState<string | null>(null);
 	const [company, setCompany] = useState<TCompany>();
-	const [information, setInformation] = useState<{
-		fullName: string;
-		jobType: string;
-	}>({
-		fullName: '',
-		jobType: '',
-	});
+	const [fullName, setFullName] = useState('');
+	const [jobType, setJobType] = useState('');
 
 	const swiper = useRef<Swiper>(null);
 
@@ -66,7 +59,8 @@ const SignupScreen = (props: Props) => {
 			password,
 			image!,
 			company!,
-			information!
+			fullName!,
+			jobType!
 		).finally(() => {
 			setIsSending(false);
 		});
@@ -77,53 +71,6 @@ const SignupScreen = (props: Props) => {
 			swiper.current?.scrollTo(0);
 		}
 	}, [authErrors]);
-
-	const handleChoosePhoto = async () => {
-		ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.Images,
-			allowsEditing: true,
-			aspect: [1, 1],
-			quality: 1,
-		})
-			.then(async (result) => {
-				if (result.canceled) return;
-				const image = result.assets[0].uri;
-				setImage(image);
-				setModalOpen(false);
-			})
-			.catch((error) => {
-				console.log(error);
-			});
-	};
-
-	const handleTakePhoto = async () => {
-		const { status } = await ImagePicker.requestCameraPermissionsAsync();
-		if (status !== 'granted') {
-			Alert.alert('Permission needed', 'Please allow camera access');
-			return;
-		}
-
-		ImagePicker.launchCameraAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.Images,
-			allowsEditing: true,
-			aspect: [1, 1],
-			quality: 1,
-			presentationStyle:
-				ImagePicker.UIImagePickerPresentationStyle.OVER_FULL_SCREEN,
-			preferredAssetRepresentationMode:
-				ImagePicker.UIImagePickerPreferredAssetRepresentationMode
-					.Compatible,
-		})
-			.then((result) => {
-				if (result.canceled) return;
-				setImage(result.assets[0].uri);
-			})
-			.catch((error) => {
-				console.log(error);
-			});
-
-		setModalOpen(false);
-	};
 
 	return (
 		<KeyboardAwareScrollView
@@ -165,7 +112,7 @@ const SignupScreen = (props: Props) => {
 						showsButtons={false}>
 						<RegisterUserDetails
 							image={image}
-							setModalOpen={setModalOpen}
+							setImage={setImage}
 							username={username}
 							setProfilename={setProfilename}
 							email={email}
@@ -179,7 +126,10 @@ const SignupScreen = (props: Props) => {
 							swiper={swiper}
 						/>
 						<AddInformation
-							setInformation={setInformation}
+							setFullName={setFullName}
+							fullName={fullName}
+							setJobType={setJobType}
+							jobType={jobType}
 							signUp={signUp}
 							isSending={isSending}
 						/>
@@ -202,48 +152,6 @@ const SignupScreen = (props: Props) => {
 					)}
 				</View>
 			</View>
-			<Modal
-				isVisible={modalOpen}
-				onBackdropPress={() => setModalOpen(false)}
-				onDismiss={() => setModalOpen(false)}
-				style={{
-					width: '80%',
-					alignSelf: 'center',
-				}}>
-				<View className='rounded-lg py-8 bg-dark-primaryBackground'>
-					<Text className='text-2xl font-inter-semiBold text-center text-dark-textColor mb-4'>
-						{'Choose a photo'}
-					</Text>
-					<View className=' flex flex-row justify-center items-center gap-x-4'>
-						<TouchableOpacity
-							className='flex items-center w-20 p-2 rounded-lg'
-							onPress={handleChoosePhoto}>
-							<MaterialIcon
-								name='photo-library'
-								size={45}
-								color={themeColors.primaryColor[100]}
-							/>
-							<Text className='text-xs font-inter-regular text-center text-dark-textColor leading-4 mt-2'>
-								Gallery
-							</Text>
-						</TouchableOpacity>
-						{Platform.OS === 'android' && (
-							<TouchableOpacity
-								className='flex items-center w-20 p-2 rounded-lg'
-								onPress={handleTakePhoto}>
-								<MaterialIcon
-									name='camera-alt'
-									size={45}
-									color={themeColors.primaryColor[100]}
-								/>
-								<Text className='text-xs font-inter-regular text-center text-dark-textColor leading-4 mt-2'>
-									Camera
-								</Text>
-							</TouchableOpacity>
-						)}
-					</View>
-				</View>
-			</Modal>
 		</KeyboardAwareScrollView>
 	);
 };

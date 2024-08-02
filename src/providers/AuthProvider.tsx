@@ -3,10 +3,12 @@ import { useNavigation } from '@react-navigation/native';
 import { UserCredential, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../database/Firebase';
 import {
+	changeProfilePicture,
 	getProfile,
 	loginUser,
 	registerUser,
 	sendForgotPasswordEmail,
+	updateUser,
 } from '../database/services/UserService';
 import { RootStackParamList } from '../navigation/Routes';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -18,6 +20,12 @@ import { clearFirebaseSubscriptions } from '../utils/firebaseSubscriptions';
 
 const AuthContext = React.createContext<{
 	user: TProfile | null;
+	handleUpdateUser: <K extends keyof TProfile>(
+		userid: string,
+		key: K,
+		value: TProfile[K]
+	) => void;
+	handleChangeProfilePic: (image: string) => Promise<string | undefined>;
 	handleLogin: (
 		email: string,
 		password: string
@@ -28,7 +36,8 @@ const AuthContext = React.createContext<{
 		password: string,
 		profileImage: string,
 		company: TCompany,
-		information: { fullName: string; jobType: string }
+		fullName: string,
+		jobType: string
 	) => Promise<UserCredential | void>;
 	handleLogout: () => void;
 	authErrors: Record<string, any> | null;
@@ -38,6 +47,8 @@ const AuthContext = React.createContext<{
 	) => void;
 }>({
 	user: null,
+	handleUpdateUser: () => {},
+	handleChangeProfilePic: () => Promise.resolve(''),
 	handleLogin: (email: string, password: string) => Promise.resolve(),
 	handleSignup: (
 		name: string,
@@ -45,7 +56,8 @@ const AuthContext = React.createContext<{
 		password: string,
 		profileImage: string,
 		company: TCompany,
-		information: { fullName: string; jobType: string }
+		fullName: string,
+		jobType: string
 	) => Promise.resolve(),
 	handleLogout: () => {},
 	authErrors: null,
@@ -64,12 +76,32 @@ export const AuthProvider = ({ children }: Props) => {
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const { companyColor, setCompanyColor } = useCompany();
 
-	const [user, seTProfile] = React.useState<TProfile | null>(null);
+	const [user, setProfile] = React.useState<TProfile | null>(null);
 	const [loadingInitial, setLoadingInitial] = React.useState<boolean>(true);
 	const [authErrors, setAuthErrors] = React.useState<Record<
 		string,
 		any
 	> | null>(null);
+
+	const handleUpdateUser = async <K extends keyof TProfile>(
+		userid: string,
+		key: K,
+		value: TProfile[K]
+	) => {
+		updateUser(userid, key, value)
+			.then(() => {
+				setProfile((prev) => {
+					if (prev) {
+						return {
+							...prev,
+							[key]: value,
+						};
+					}
+					return null;
+				});
+			})
+			.catch(console.error);
+	};
 
 	const handleLogin = async (email: string, password: string) => {
 		if (email == '' || password == '') {
@@ -91,7 +123,8 @@ export const AuthProvider = ({ children }: Props) => {
 		password: string,
 		profileImage: string,
 		company: TCompany,
-		information: { fullName: string; jobType: string }
+		fullName: string,
+		jobType: string
 	) => {
 		setAuthErrors(null);
 		return registerUser(
@@ -100,7 +133,8 @@ export const AuthProvider = ({ children }: Props) => {
 			password,
 			profileImage,
 			company,
-			information
+			fullName,
+			jobType
 		).catch(() =>
 			setAuthErrors({
 				userDetails: {
@@ -115,9 +149,14 @@ export const AuthProvider = ({ children }: Props) => {
 		);
 	};
 
+	const handleChangeProfilePic = async (image: string) => {
+		if (!user) return;
+		return await changeProfilePicture(image, user.uid);
+	};
+
 	const handleLogout = () => {
 		auth.signOut();
-		seTProfile(null);
+		setProfile(null);
 		setAuthErrors(null);
 		clearFirebaseSubscriptions();
 	};
@@ -148,7 +187,7 @@ export const AuthProvider = ({ children }: Props) => {
 				async (user) => {
 					if (user) {
 						const _user = await getProfile(user.uid);
-						seTProfile({ ..._user, ...user } as TProfile);
+						setProfile({ ..._user, ...user } as TProfile);
 						console.log(_user);
 						if (!_user?.companyInfo?.companyCode) return;
 						const company = await getCompanyByCode(
@@ -156,7 +195,7 @@ export const AuthProvider = ({ children }: Props) => {
 						);
 						if (company) setCompanyColor(company.primaryColor);
 					} else {
-						seTProfile(null);
+						setProfile(null);
 						setCompanyColor(primaryColor);
 					}
 					setLoadingInitial(false);
@@ -177,19 +216,23 @@ export const AuthProvider = ({ children }: Props) => {
 	const authProperties = React.useMemo(
 		() => ({
 			user,
+			handleUpdateUser,
 			handleLogin,
 			handleSignup,
 			handleLogout,
 			authErrors,
 			handleForgotPassword,
+			handleChangeProfilePic,
 		}),
 		[
 			user,
+			handleUpdateUser,
 			handleLogin,
 			handleSignup,
 			handleLogout,
 			authErrors,
 			handleForgotPassword,
+			handleChangeProfilePic,
 		]
 	);
 

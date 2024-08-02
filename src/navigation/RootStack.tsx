@@ -20,6 +20,10 @@ import AccountScreen from '../screens/AccountScreen';
 import { TopicProvider } from '../providers/TopicProvider';
 import { TapProvider } from '../providers/TapProvider';
 import { ProfileProvider } from '../providers/ProfileProvider';
+import AccountSettingsScreen from '../screens/AccountSettingsScreen';
+import PrivacyPolicyScreen from '../screens/PrivacyPolicyScreen';
+import MyCompanyScreen from '../screens/MyComanyScreen';
+import '../utils/stringExtensions';
 
 type Props = {};
 
@@ -109,6 +113,18 @@ const AccountStack = () => {
 			<Stack.Screen
 				name={Routes.ACCOUNT_LANDING}
 				component={AccountScreen}
+			/>
+			<Stack.Screen
+				name={Routes.ACCOUNT_SETTINGS}
+				component={AccountSettingsScreen}
+			/>
+			<Stack.Screen
+				name={Routes.PRIVACY_POLICY}
+				component={PrivacyPolicyScreen}
+			/>
+			<Stack.Screen
+				name={Routes.MY_COMPANY}
+				component={MyCompanyScreen}
 			/>
 		</Stack.Navigator>
 	);

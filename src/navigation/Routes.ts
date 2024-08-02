@@ -16,6 +16,9 @@ export const Routes = {
 	TOPIC_SCREEN: 'TopicScreen',
 	ACCOUNT: 'Settings',
 	ACCOUNT_LANDING: 'SettingsLanding',
+	ACCOUNT_SETTINGS: 'AccountSettings',
+	PRIVACY_POLICY: 'PrivacyPolicy',
+	MY_COMPANY: 'MyCompany',
 } as const;
 
 export type RootStackParamList = {
@@ -52,4 +55,7 @@ export type RootStackParamList = {
 	};
 	Settings: undefined;
 	SettingsLanding: undefined;
+	AccountSettings: undefined;
+	PrivacyPolicy: undefined;
+	MyCompany: undefined;
 };

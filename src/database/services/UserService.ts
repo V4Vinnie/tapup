@@ -3,8 +3,9 @@ import {
 	createUserWithEmailAndPassword,
 	sendPasswordResetEmail,
 	signInWithEmailAndPassword,
+	updateEmail,
 } from 'firebase/auth';
-import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
+import { doc, getDoc, setDoc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { DB, auth } from '../Firebase';
 import { COLLECTIONS } from '../../utils/constants';
 import { TCompany, TProfile } from '../../types';
@@ -40,7 +41,8 @@ export async function registerUser(
 	password: string,
 	profileImage: string,
 	company: TCompany,
-	information: { fullName: string; jobType: string }
+	fullName: string,
+	jobType: string
 ): Promise<UserCredential> {
 	return new Promise(async (resolve, reject) => {
 		if (
@@ -50,17 +52,9 @@ export async function registerUser(
 			!password ||
 			!profileImage ||
 			!company ||
-			!information
+			!fullName ||
+			!jobType
 		) {
-			console.log(
-				name,
-				name.length,
-				email,
-				password,
-				profileImage,
-				company,
-				information
-			);
 			reject('Please fill all the fields');
 			return;
 		}
@@ -74,7 +68,7 @@ export async function registerUser(
 			const url = profileImage
 				? await saveImage(profileImage, userAuthId)
 				: '';
-			await setDoc(doc(DB, COLLECTIONS.USERS, userAuthId), {
+			setDoc(doc(DB, COLLECTIONS.USERS, userAuthId), {
 				uid: userAuthId,
 				name: name,
 				profilePic: url,
@@ -84,11 +78,12 @@ export async function registerUser(
 				progress: {},
 				companyInfo: {
 					companyCode: company.code,
-					jobType: information.jobType,
+					jobType: jobType,
 				},
-				fullName: information.fullName,
-			} as TProfile);
-			resolve(userCredential);
+				fullName,
+			} as TProfile).then(() => {
+				resolve(userCredential);
+			});
 		} catch (error) {
 			console.log(error);
 			reject(error);
@@ -144,5 +139,37 @@ export function onUser(userId: string, callback: (user: TProfile) => void) {
 		return sub;
 	} catch (error) {
 		console.error('onUser in UserService ', error);
+	}
+}
+
+export function updateUser<K extends keyof TProfile>(
+	userid: string,
+	key: K,
+	value: TProfile[K]
+) {
+	if (key === 'email') {
+		return updateEmail(auth.currentUser!, value)
+			.then(() => {
+				return updateDoc(doc(DB, COLLECTIONS.USERS, userid), {
+					[key]: value,
+				});
+			})
+			.catch(console.error);
+	} else {
+		return updateDoc(doc(DB, COLLECTIONS.USERS, userid), {
+			[key]: value,
+		});
+	}
+}
+
+export async function changeProfilePicture(image: string, uid: string) {
+	try {
+		const url = await saveImage(image, uid);
+		updateDoc(doc(DB, COLLECTIONS.USERS, uid), {
+			profilePic: url,
+		});
+		return url;
+	} catch (error) {
+		console.error('changeProfilePicture in UserService ', error);
 	}
 }

@@ -16,7 +16,7 @@ import { mode, themeColors } from '../../utils/constants';
 
 type Props = {};
 
-const AccountScreen = (props: Props) => {
+const PrivacyPolicyScreen = (props: Props) => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const { handleLogout, user } = useAuth();
@@ -82,4 +82,4 @@ const AccountScreen = (props: Props) => {
 	);
 };
 
-export default AccountScreen;
+export default PrivacyPolicyScreen;

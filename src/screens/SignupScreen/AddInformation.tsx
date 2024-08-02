@@ -2,29 +2,35 @@ import { Text, View } from 'react-native';
 import AppInput from '../../components/AppInput';
 import AppButton from '../../components/AppButton';
 import Icon from 'react-native-vector-icons/AntDesign';
-import Swiper from 'react-native-swiper';
 import { useMemo, useState } from 'react';
 import { useAuth } from '../../providers/AuthProvider';
 
 type Props = {
-	setInformation: React.Dispatch<
-		React.SetStateAction<{
-			fullName: string;
-			jobType: string;
-		}>
-	>;
+	setFullName: React.Dispatch<React.SetStateAction<string>>;
+	fullName: string;
+	setJobType: React.Dispatch<React.SetStateAction<string>>;
+	jobType: string;
 	isSending: boolean;
 	signUp: () => void;
 };
 
-const AddInformation = ({ setInformation, signUp, isSending }: Props) => {
+const AddInformation = ({
+	setFullName,
+	fullName,
+	setJobType,
+	jobType,
+	signUp,
+	isSending,
+}: Props) => {
 	const { authErrors } = useAuth();
 
-	const [fullName, setFullName] = useState<string | undefined>();
-	const [jobType, setJobType] = useState<string | undefined>();
-
 	const submitDisabled = useMemo(() => {
-		return !fullName || !jobType;
+		return (
+			fullName?.isBlank ||
+			jobType?.isBlank ||
+			fullName?.startsWithOrEndsWithSpaces ||
+			jobType?.startsWithOrEndsWithSpaces
+		);
 	}, [fullName, jobType]);
 
 	return (
@@ -88,10 +94,8 @@ const AddInformation = ({ setInformation, signUp, isSending }: Props) => {
 					}}
 					title={isSending ? 'Loading...' : 'Sign up'}
 					onPress={() => {
-						setInformation({
-							fullName: fullName!,
-							jobType: jobType!,
-						});
+						setFullName(fullName.trim());
+						setJobType(jobType.trim());
 						signUp();
 					}}
 				/>

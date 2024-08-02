@@ -46,7 +46,7 @@ const ProfileComponent = ({
 				{notification > 0 && (
 					<View className='absolute w-4 h-4 rounded-full bg-primary top-0 right-0' />
 				)}
-				{profile.profilePic !== '' && profile.profilePic ? (
+				{!profile.profilePic?.isBlank && profile.profilePic ? (
 					<Image
 						source={{ uri: profile.profilePic }}
 						className='rounded-full w-full h-full'
@@ -54,7 +54,7 @@ const ProfileComponent = ({
 				) : (
 					<View className='rounded-full w-full h-full bg-dark-secondaryBackground flex items-center justify-center'>
 						<Text className='text-dark-textColor text-4xl font-inter-bold text-center pt-1'>
-							{profile.name.split(' ').map((n) => n[0])}
+							{profile.fullName?.split(' ').map((n) => n[0])}
 						</Text>
 					</View>
 				)}
