@@ -7,9 +7,10 @@ import { mode, themeColors } from '../utils/constants';
 
 type Props = {
 	profile: TProfile;
+	showDetails?: boolean;
 };
 
-const ProfileHeader = ({ profile }: Props) => {
+const ProfileHeader = ({ profile, showDetails = true }: Props) => {
 	const [loading, setLoading] = React.useState<boolean>(true);
 	const [followerAmount, setFollowerAmount] = React.useState<string>('');
 	const [followingAmount, setFollowingAmount] = React.useState<string>('');
@@ -34,12 +35,14 @@ const ProfileHeader = ({ profile }: Props) => {
 				className='text-dark-textColor text-2xl font-inter-semiBold mt-2'>
 				{profile.name}
 			</Text>
-			<ProfileDetails
-				followerAmount={followerAmount}
-				followingAmount={followingAmount}
-				likesAmount={likesAmount}
-				loading={loading}
-			/>
+			{showDetails && (
+				<ProfileDetails
+					followerAmount={followerAmount}
+					followingAmount={followingAmount}
+					likesAmount={likesAmount}
+					loading={loading}
+				/>
+			)}
 		</View>
 	);
 };

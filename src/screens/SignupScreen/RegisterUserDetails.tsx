@@ -11,7 +11,7 @@ import { useAuth } from '../../providers/AuthProvider';
 
 type Props = {
 	image: string | null;
-	setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+	setImage: (image: string) => void;
 	username: string;
 	setProfilename: React.Dispatch<React.SetStateAction<string>>;
 	email: string;
@@ -23,7 +23,7 @@ type Props = {
 
 const RegisterUserDetails = ({
 	image,
-	setModalOpen,
+	setImage,
 	username,
 	setProfilename: setProfilename,
 	email,
@@ -51,7 +51,7 @@ const RegisterUserDetails = ({
 									? { uri: image }
 									: assets.profile_placeholder
 							}
-							onPress={() => setModalOpen(true)}
+							setImage={setImage}
 						/>
 					</View>
 				)}

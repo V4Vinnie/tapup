@@ -13,64 +13,45 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { mode, themeColors } from '../../utils/constants';
+import ProfilePicture from '../SignupScreen/ProfilePicture';
 
 type Props = {};
 
-const AccountScreen = (props: Props) => {
+const AccountSettingsScreen = (props: Props) => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-	const { handleLogout, user } = useAuth();
+	const { user } = useAuth();
+	const [userDetails, setUserDetails] = React.useState({
+		name: user?.fullName || '',
+		email: user?.email || '',
+		profilePic: user?.profilePic || '',
+	});
 
-	function logout(): void {
-		handleLogout();
+	function save(): void {
+		// updateUser(userDetails);
 	}
 
 	return (
 		<SafeAreaView className='flex-1 bg-dark-primaryBackground'>
 			<FocusAwareStatusBar translucent barStyle={'light-content'} />
 			<View className='flex-1 w-full'>
-				<AppHeader title='Account' />
+				<AppHeader title='Account Settings' headerWithBack />
 				<ScrollView
 					className='w-full'
 					showsVerticalScrollIndicator={false}>
-					{user && <ProfileHeader profile={user} />}
 					<View className='w-full px-8 pt-8 h-3/5 flex flex-col justify-between'>
-						<SettingsTab
-							title='Account'
-							onPress={() => navigate(Routes.ACCOUNT_SETTINGS)}
-							icon={
-								<MaterialCommunityIcons
-									name='account'
-									size={20}
-									color={themeColors[mode].textColor}
-								/>
-							}
-						/>
-						<SettingsTab
-							title='Privacy Policy'
-							onPress={() => navigate(Routes.PRIVACY_POLICY)}
-							icon={
-								<MaterialIcons
-									name='privacy-tip'
-									size={20}
-									color={themeColors[mode].textColor}
-								/>
-							}
-						/>
-						<SettingsTab
-							title='My Company'
-							onPress={() => navigate(Routes.MY_COMPANY)}
-							icon={
-								<Entypo
-									name='suitcase'
-									size={20}
-									color={themeColors[mode].textColor}
-								/>
+						<ProfilePicture
+							image={{ uri: userDetails.profilePic }}
+							setImage={(image) =>
+								setUserDetails({
+									...userDetails,
+									profilePic: image,
+								})
 							}
 						/>
 						<AppButton
-							title='Logout'
-							onPress={logout}
+							title='Save'
+							onPress={save}
 							buttonProps={{
 								className: 'mt-8',
 							}}
@@ -82,4 +63,4 @@ const AccountScreen = (props: Props) => {
 	);
 };
 
-export default AccountScreen;
+export default AccountSettingsScreen;
