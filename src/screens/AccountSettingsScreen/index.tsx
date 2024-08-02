@@ -27,7 +27,7 @@ type Props = {};
 const AccountSettingsScreen = (props: Props) => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-	const { user, handleUpdateUser } = useAuth();
+	const { user, handleUpdateUser, handleChangeProfilePic } = useAuth();
 	const [showLoginModal, setShowLoginModal] = React.useState(false);
 	const [userDetails, setUserDetails] = React.useState({
 		name: user?.name || '',
@@ -65,6 +65,23 @@ const AccountSettingsScreen = (props: Props) => {
 			});
 	}
 
+	function changeProfileImage(image: string): void {
+		handleChangeProfilePic(image).then((url) => {
+			if (!url) {
+				Alert.alert('Something went wrong', 'Please try again');
+				return;
+			}
+			setUserDetails({
+				...userDetails,
+				profilePic: url,
+			});
+			Alert.alert(
+				'Profile Picture Updated',
+				'Your profile picture has been updated. It may take a few minutes to reflect.'
+			);
+		});
+	}
+
 	return (
 		<>
 			<SafeAreaView className='flex-1 bg-dark-primaryBackground'>
@@ -81,12 +98,7 @@ const AccountSettingsScreen = (props: Props) => {
 										? { uri: userDetails.profilePic }
 										: assets.profile_placeholder
 								}
-								setImage={(image) =>
-									setUserDetails({
-										...userDetails,
-										profilePic: image,
-									})
-								}
+								setImage={changeProfileImage}
 							/>
 							<ChangeSetting
 								icon={

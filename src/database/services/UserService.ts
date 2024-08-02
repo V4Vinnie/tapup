@@ -161,3 +161,15 @@ export function updateUser<K extends keyof TProfile>(
 		});
 	}
 }
+
+export async function changeProfilePicture(image: string, uid: string) {
+	try {
+		const url = await saveImage(image, uid);
+		updateDoc(doc(DB, COLLECTIONS.USERS, uid), {
+			profilePic: url,
+		});
+		return url;
+	} catch (error) {
+		console.error('changeProfilePicture in UserService ', error);
+	}
+}

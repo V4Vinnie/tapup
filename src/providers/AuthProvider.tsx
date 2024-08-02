@@ -3,6 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { UserCredential, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../database/Firebase';
 import {
+	changeProfilePicture,
 	getProfile,
 	loginUser,
 	registerUser,
@@ -24,6 +25,7 @@ const AuthContext = React.createContext<{
 		key: K,
 		value: TProfile[K]
 	) => void;
+	handleChangeProfilePic: (image: string) => Promise<string | undefined>;
 	handleLogin: (
 		email: string,
 		password: string
@@ -46,6 +48,7 @@ const AuthContext = React.createContext<{
 }>({
 	user: null,
 	handleUpdateUser: () => {},
+	handleChangeProfilePic: () => Promise.resolve(''),
 	handleLogin: (email: string, password: string) => Promise.resolve(),
 	handleSignup: (
 		name: string,
@@ -146,6 +149,11 @@ export const AuthProvider = ({ children }: Props) => {
 		);
 	};
 
+	const handleChangeProfilePic = async (image: string) => {
+		if (!user) return;
+		return await changeProfilePicture(image, user.uid);
+	};
+
 	const handleLogout = () => {
 		auth.signOut();
 		setProfile(null);
@@ -214,6 +222,7 @@ export const AuthProvider = ({ children }: Props) => {
 			handleLogout,
 			authErrors,
 			handleForgotPassword,
+			handleChangeProfilePic,
 		}),
 		[
 			user,
@@ -223,6 +232,7 @@ export const AuthProvider = ({ children }: Props) => {
 			handleLogout,
 			authErrors,
 			handleForgotPassword,
+			handleChangeProfilePic,
 		]
 	);
 
