@@ -3,6 +3,7 @@ import {
 	createUserWithEmailAndPassword,
 	sendPasswordResetEmail,
 	signInWithEmailAndPassword,
+	updateEmail,
 } from 'firebase/auth';
 import { doc, getDoc, setDoc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { DB, auth } from '../Firebase';
@@ -146,7 +147,17 @@ export function updateUser<K extends keyof TProfile>(
 	key: K,
 	value: TProfile[K]
 ) {
-	return updateDoc(doc(DB, COLLECTIONS.USERS, userid), {
-		[key]: value,
-	});
+	if (key === 'email') {
+		return updateEmail(auth.currentUser!, value)
+			.then(() => {
+				return updateDoc(doc(DB, COLLECTIONS.USERS, userid), {
+					[key]: value,
+				});
+			})
+			.catch(console.error);
+	} else {
+		return updateDoc(doc(DB, COLLECTIONS.USERS, userid), {
+			[key]: value,
+		});
+	}
 }

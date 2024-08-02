@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useCompany } from '../../providers/CompanyProvider';
 import FoundationIcon from 'react-native-vector-icons/Foundation';
@@ -27,6 +27,10 @@ const ChangeSetting = ({
 	const [modalVisible, setModalVisible] = React.useState(false);
 	const [newValue, setNewValue] = React.useState(value);
 	const inputRef = React.useRef<TextInput>(null);
+
+	const charsLeft = useMemo(() => {
+		return `${maxChars - newValue.length}`;
+	}, [newValue]);
 
 	return (
 		<>
@@ -70,6 +74,7 @@ const ChangeSetting = ({
 					</Text>
 					<View className='relative'>
 						<TextInput
+							maxLength={maxChars}
 							ref={inputRef}
 							value={newValue}
 							onChangeText={setNewValue}
@@ -83,7 +88,7 @@ const ChangeSetting = ({
 							}}
 						/>
 						<Text className='absolute right-8 bottom-6 text-dark-textColor/50 text-xs font-inter-regular'>
-							{maxChars - value.length}
+							{charsLeft}
 						</Text>
 					</View>
 
