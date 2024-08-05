@@ -46,7 +46,9 @@ const AccountSettingsScreen = (props: Props) => {
 			return;
 		}
 		setTempEmail(text);
-		setShowLoginModal(true);
+		setTimeout(() => {
+			setShowLoginModal(true);
+		}, 1000);
 	};
 
 	function loginAndChangeEmail(): void {
@@ -188,6 +190,7 @@ const AccountSettingsScreen = (props: Props) => {
 				</View>
 			</SafeAreaView>
 			<Modal
+				avoidKeyboard
 				isVisible={showLoginModal}
 				onBackdropPress={() => setShowLoginModal(false)}
 				onBackButtonPress={() => setShowLoginModal(false)}>
