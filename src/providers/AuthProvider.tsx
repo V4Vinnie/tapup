@@ -35,7 +35,7 @@ const AuthContext = React.createContext<{
 		email: string,
 		password: string,
 		profileImage: string,
-		company: TCompany,
+		company: TCompany | null,
 		fullName: string,
 		jobType: string
 	) => Promise<UserCredential | void>;
@@ -55,7 +55,7 @@ const AuthContext = React.createContext<{
 		email: string,
 		password: string,
 		profileImage: string,
-		company: TCompany,
+		company: TCompany | null,
 		fullName: string,
 		jobType: string
 	) => Promise.resolve(),
@@ -74,9 +74,9 @@ type Props = {
 export const AuthProvider = ({ children }: Props) => {
 	const navigator =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-	const { companyColor, setCompanyColor } = useCompany();
+	const { setCompany } = useCompany();
 
-	const [user, setProfile] = React.useState<TProfile | null>(null);
+	const [user, setUser] = React.useState<TProfile | null>(null);
 	const [loadingInitial, setLoadingInitial] = React.useState<boolean>(true);
 	const [authErrors, setAuthErrors] = React.useState<Record<
 		string,
@@ -90,7 +90,7 @@ export const AuthProvider = ({ children }: Props) => {
 	) => {
 		updateUser(userid, key, value)
 			.then(() => {
-				setProfile((prev) => {
+				setUser((prev) => {
 					if (prev) {
 						return {
 							...prev,
@@ -122,7 +122,7 @@ export const AuthProvider = ({ children }: Props) => {
 		email: string,
 		password: string,
 		profileImage: string,
-		company: TCompany,
+		company: TCompany | null,
 		fullName: string,
 		jobType: string
 	) => {
@@ -156,7 +156,7 @@ export const AuthProvider = ({ children }: Props) => {
 
 	const handleLogout = () => {
 		auth.signOut();
-		setProfile(null);
+		setUser(null);
 		setAuthErrors(null);
 		clearFirebaseSubscriptions();
 	};
@@ -186,17 +186,17 @@ export const AuthProvider = ({ children }: Props) => {
 				auth,
 				async (user) => {
 					if (user) {
-						const _user = await getProfile(user.uid);
-						setProfile({ ..._user, ...user } as TProfile);
-						console.log(_user);
-						if (!_user?.companyInfo?.companyCode) return;
-						const company = await getCompanyByCode(
-							_user?.companyInfo?.companyCode
-						);
-						if (company) setCompanyColor(company.primaryColor);
+						setTimeout(async () => {
+							const _user = await getProfile(user.uid);
+							setUser({ ..._user, ...user } as TProfile);
+							if (!_user?.companyInfo?.companyCode) return;
+							const company = await getCompanyByCode(
+								_user?.companyInfo?.companyCode
+							);
+							if (company) setCompany(company);
+						}, 1000);
 					} else {
-						setProfile(null);
-						setCompanyColor(primaryColor);
+						setUser(null);
 					}
 					setLoadingInitial(false);
 				},

@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Platform } from 'react-native';
 import React from 'react';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
@@ -18,7 +18,11 @@ const SearchbarHeader = ({ onSearch, text = 'Search', autoFocus }: Props) => {
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
 	return (
-		<View className='w-full flex flex-row justify-between items-center mt-8'>
+		<View
+			className='w-full flex flex-row justify-between items-center'
+			style={{
+				marginTop: Platform.OS === 'ios' ? 0 : 32,
+			}}>
 			<TouchableOpacity className='mr-4 mt-5' onPress={() => goBack()}>
 				<IonIcon
 					name='arrow-back'

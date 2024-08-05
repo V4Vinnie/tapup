@@ -61,7 +61,10 @@ const DiscoverTaps = ({ title, onPress, rightButton = true }: Props) => {
 
 	return (
 		<>
-			<SectionHeader title={title ?? 'New taps'} onPress={hasOnPress} />
+			<SectionHeader
+				title={title ?? 'Taps to view'}
+				onPress={hasOnPress}
+			/>
 			{dataLoading ? (
 				<DiscoverTapsSkeleton />
 			) : newTaps.length === 0 ? (

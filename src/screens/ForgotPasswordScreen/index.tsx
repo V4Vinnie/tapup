@@ -8,7 +8,7 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import { useAuth } from '../../providers/AuthProvider';
 import { useNavigation } from '@react-navigation/native';
 import AppButton from '../../components/AppButton';
-import { containerStyle, scrollViewContentContainer } from '../LoginScreen';
+import { scrollViewContentContainer } from '../LoginScreen';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/Routes';
 
@@ -17,7 +17,7 @@ type Props = {};
 const ForgotPasswordScreen = (props: Props) => {
 	const navigation =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-	const { status, handleForgotPassword } = useAuth();
+	const { authErrors, handleForgotPassword } = useAuth();
 
 	//Internal States
 	const [email, setEmail] = useState('');
@@ -30,15 +30,10 @@ const ForgotPasswordScreen = (props: Props) => {
 	return (
 		<KeyboardAwareScrollView
 			keyboardShouldPersistTaps={'never'}
-			style={containerStyle}
 			contentContainerStyle={scrollViewContentContainer}
 			showsVerticalScrollIndicator={false}>
 			<View className='flex-1 items-center bg-dark-primaryBackground'>
-				<AppHeader
-					headerWithBackground
-					headerWithBack
-					title={'Password Recovery'}
-				/>
+				<AppHeader headerWithBack title={'Password Recovery'} />
 				<FocusAwareStatusBar
 					translucent
 					backgroundColor='transparent'
@@ -72,6 +67,7 @@ const ForgotPasswordScreen = (props: Props) => {
 							onChangeText: (email) => {
 								setEmail(email);
 							},
+							autoCapitalize: 'none',
 						}}
 					/>
 
@@ -81,25 +77,25 @@ const ForgotPasswordScreen = (props: Props) => {
 							disabled: isSending,
 						}}
 						title={
-							status?.type === 'success'
+							authErrors?.type === 'success'
 								? 'Resend link'
 								: 'Send link'
 						}
 						onPress={() => sendForgotPasswordEmail()}
 					/>
-					{status && (
+					{authErrors && (
 						<Text
 							className={`text-base text-center mt-2 font-semibold ${
-								status.type === 'error'
+								authErrors.type === 'error'
 									? 'text-red-500'
 									: 'text-green-600'
 							}`}>
-							{status.message}
+							{authErrors.message}
 						</Text>
 					)}
-					{status?.type === 'success' && (
+					{authErrors?.type === 'success' && (
 						<Text
-							className={`text-sm font-inter-regular text-center opacity-60`}>
+							className={`text-sm font-inter-regular text-center opacity-60 text-dark-textColor`}>
 							{`Didn't receive an email? Check your spam folder.`}
 						</Text>
 					)}

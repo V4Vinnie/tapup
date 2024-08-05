@@ -68,8 +68,8 @@ const ChangeSetting = ({
 				isVisible={modalVisible}
 				onBackdropPress={() => setModalVisible(false)}
 				onDismiss={() => setModalVisible(false)}>
-				<View className='rounded-lg py-8 bg-dark-primaryBackground'>
-					<Text className='text-xl font-inter-semiBold text-center text-dark-textColor mb-4'>
+				<View className='rounded-lg px-8 py-6 bg-dark-primaryBackground'>
+					<Text className='text-xl font-inter-semiBold text-dark-textColor mb-4'>
 						{'Change ' + title}
 					</Text>
 					<View className='relative'>
@@ -79,38 +79,39 @@ const ChangeSetting = ({
 							value={newValue}
 							onChangeText={setNewValue}
 							placeholder={title}
-							className='bg-transparent border-b-[1px] border-dark-textColor/80 text-dark-textColor p-1 mx-8 mb-4 font-inter-regular text-base'
+							className='bg-transparent border-b-[1px] border-dark-textColor/80 text-dark-textColor mb-4 font-inter-regular text-base'
 							placeholderTextColor={
 								themeColors[mode].subTextColor
 							}
 							style={{
 								borderColor: companyColor,
 							}}
+							autoCapitalize='none'
 						/>
-						<Text className='absolute right-8 bottom-6 text-dark-textColor/50 text-xs font-inter-regular'>
+						<Text className='absolute right-0 bottom-5 text-dark-textColor/50 text-xs font-inter-regular'>
 							{charsLeft}
 						</Text>
 					</View>
 
-					<View className=' flex flex-row justify-center items-center gap-x-4'>
+					<View className='flex flex-row justify-end items-center gap-x-12 mt-4'>
 						<TouchableOpacity
-							className='flex items-center px-4 py-2 rounded-full border-[1px] border-dark-textColor/80'
+							className=''
 							onPress={() => setModalVisible(false)}>
-							<Text className='text-xs font-inter-regular text-center text-dark-textColor/80 leading-4 tracking-wider'>
+							<Text className='text-sm font-inter-regular text-center text-dark-textColor leading-4 tracking-wider'>
 								Cancel
 							</Text>
 						</TouchableOpacity>
 						<TouchableOpacity
-							className='flex items-center w-20 p-2 rounded-full border-[1px]'
-							style={{
-								backgroundColor: companyColor,
-								borderColor: companyColor,
-							}}
+							className='flex items-center rounded-full'
 							onPress={() => {
 								setModalVisible(false);
 								onChange(newValue);
 							}}>
-							<Text className='text-xs font-inter-regular text-center leading-4 tracking-wider font-bold'>
+							<Text
+								className='text-sm font-inter-regular text-center leading-4'
+								style={{
+									color: companyColor,
+								}}>
 								Save
 							</Text>
 						</TouchableOpacity>

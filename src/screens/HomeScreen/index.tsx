@@ -1,34 +1,29 @@
-import {
-	Animated,
-	Platform,
-	SafeAreaView,
-	ScrollView,
-	View,
-} from 'react-native';
+import { Platform, SafeAreaView, ScrollView, View } from 'react-native';
 import SearchBar from '../../components/SearchBar';
 import { useNavigation } from '@react-navigation/native';
-import { useHeaderHeight } from '@react-navigation/elements'; // get the header height
-import { useSafeAreaInsets } from 'react-native-safe-area-context'; // get the safe area insets, initially used for the search bar
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
 import ContinueWatching from './ContinueWatching';
-import YourTopics from './YourTopics';
-import Following from './Following';
 import DiscoverTaps from '../../components/DiscoverTaps';
+import AddCompanyCode from '../SignupScreen/AddCompanyCode';
+import { useCompany } from '../../providers/CompanyProvider';
 
 type Props = {};
 
 const HomeScreen = (props: Props) => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-	const insets = useSafeAreaInsets();
-	const headerHeight = useHeaderHeight();
+	const { company } = useCompany();
 
 	return (
 		<SafeAreaView className='flex-1 items-center bg-dark-primaryBackground'>
 			<FocusAwareStatusBar translucent barStyle={'light-content'} />
-			<View className='flex w-full mt-12'>
+			<View
+				className='flex w-full'
+				style={{
+					marginTop: Platform.OS === 'ios' ? 20 : 48,
+				}}>
 				<SearchBar
 					containerProps={{
 						style: {
@@ -53,8 +48,8 @@ const HomeScreen = (props: Props) => {
 					showsVerticalScrollIndicator={false}>
 					<View className='w-full mt-6'>
 						<ContinueWatching />
-						<YourTopics />
-						<Following />
+						{/* <YourTopics /> */}
+						{/* <Following /> */}
 						<DiscoverTaps />
 					</View>
 				</ScrollView>

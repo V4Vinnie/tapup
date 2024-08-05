@@ -118,6 +118,7 @@ const RegisterUserDetails = ({
 						onChangeText: (email) => {
 							setEmail(email);
 						},
+						autoCapitalize: 'none',
 						maxLength: maxChars.email,
 					}}
 				/>

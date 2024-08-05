@@ -19,6 +19,7 @@ export const Routes = {
 	ACCOUNT_SETTINGS: 'AccountSettings',
 	PRIVACY_POLICY: 'PrivacyPolicy',
 	MY_COMPANY: 'MyCompany',
+	ADD_COMPANY_CODE: 'AddCompanyCode',
 } as const;
 
 export type RootStackParamList = {
@@ -58,4 +59,5 @@ export type RootStackParamList = {
 	AccountSettings: undefined;
 	PrivacyPolicy: undefined;
 	MyCompany: undefined;
+	AddCompanyCode: undefined;
 };

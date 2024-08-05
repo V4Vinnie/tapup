@@ -40,7 +40,7 @@ export async function registerUser(
 	email: string,
 	password: string,
 	profileImage: string,
-	company: TCompany,
+	company: TCompany | null,
 	fullName: string,
 	jobType: string
 ): Promise<UserCredential> {
@@ -51,7 +51,6 @@ export async function registerUser(
 			!email ||
 			!password ||
 			!profileImage ||
-			!company ||
 			!fullName ||
 			!jobType
 		) {
@@ -77,7 +76,7 @@ export async function registerUser(
 				watchedFrames: [],
 				progress: {},
 				companyInfo: {
-					companyCode: company.code,
+					companyCode: company?.code ?? '',
 					jobType: jobType,
 				},
 				fullName,

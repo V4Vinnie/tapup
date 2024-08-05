@@ -26,21 +26,11 @@ type Props = {
 const FullInfoTap = ({ tap, containerProps, isNew, loading }: Props) => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-	const { companyColor } = useCompany();
+	const { companyColor, company } = useCompany();
 	const { taps } = useTaps();
 
-	const [views, setViews] = React.useState<string>('0');
+	// const [views, setViews] = React.useState<string>('0');
 	const [topic, setTopic] = React.useState<TTopic | null>(null);
-	const [companyName, setCompanyName] = React.useState<string>('');
-	useEffect(() => {
-		if (!tap) return;
-		const getCompanyName = async () => {
-			const _companyName = (await getCompanyByCode(tap.creatorId))?.name;
-			if (!_companyName) return;
-			setCompanyName(_companyName);
-		};
-		getCompanyName();
-	}, [tap]);
 
 	const timeAgo = useMemo(() => {
 		if (!tap) return '';
@@ -61,15 +51,15 @@ const FullInfoTap = ({ tap, containerProps, isNew, loading }: Props) => {
 
 	useEffect(() => {
 		if (!tap) return;
-		getViewsForTap(tap.id).then((views) => {
-			if (!views) return;
-			const viewsString = views.toString();
-			setViews(
-				viewsString.length > 3
-					? `${viewsString.slice(0, -3)}K`
-					: viewsString
-			);
-		});
+		// getViewsForTap(tap.id).then((views) => {
+		// 	if (!views) return;
+		// 	const viewsString = views.toString();
+		// 	setViews(
+		// 		viewsString.length > 3
+		// 			? `${viewsString.slice(0, -3)}K`
+		// 			: viewsString
+		// 	);
+		// });
 		getTopicFromTap(tap).then((topic) => {
 			if (!topic) return;
 			setTopic(topic);
@@ -100,30 +90,32 @@ const FullInfoTap = ({ tap, containerProps, isNew, loading }: Props) => {
 				className='w-20 h-28 rounded-md mr-2'
 			/>
 			<View className='flex justify-between shrink'>
-				<View className='flex flex-col'>
-					<Text
-						numberOfLines={1}
-						className='text-dark-textColor text-base font-inter-medium w-4/5'>
-						{tap.fullName}
-					</Text>
-					<View className='flex flex-row space-x-1 items-center'>
-						<FontAwesome5
-							name='chevron-right'
-							size={9}
-							color={companyColor}
-						/>
-						<Text className='text-dark-subTextColor text-[12px] font-inter-regular'>
-							{companyName}
+				<View className='space-y-2'>
+					<View className='flex flex-col'>
+						<Text
+							numberOfLines={1}
+							className='text-dark-textColor text-base font-inter-medium w-4/5'>
+							{tap.fullName}
 						</Text>
+						<View className='flex flex-row space-x-1 items-center'>
+							<FontAwesome5
+								name='chevron-right'
+								size={9}
+								color={companyColor}
+							/>
+							<Text className='text-dark-subTextColor text-[12px] font-inter-regular'>
+								{company?.name}
+							</Text>
+						</View>
 					</View>
+					<Text
+						numberOfLines={2}
+						className='text-dark-subTextColor text-[10px] font-inter-light'>
+						{tap.description}
+					</Text>
 				</View>
-				<Text
-					numberOfLines={2}
-					className='text-dark-subTextColor text-[10px] font-inter-light'>
-					{tap.description}
-				</Text>
 				<View className='flex flex-row items-center gap-3'>
-					<Text className='text-dark-subTextColor text-[10px] font-inter-light'>
+					{/* <Text className='text-dark-subTextColor text-[10px] font-inter-light'>
 						{views} view{views === '1' ? '' : 's'}
 					</Text>
 					<View className='w-1 h-2'>
@@ -133,7 +125,7 @@ const FullInfoTap = ({ tap, containerProps, isNew, loading }: Props) => {
 							height={10}
 							fill={companyColor}
 						/>
-					</View>
+					</View> */}
 					<Text className='text-dark-subTextColor text-[10px] font-inter-light'>
 						{timeAgo}
 					</Text>

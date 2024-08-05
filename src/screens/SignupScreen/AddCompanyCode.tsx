@@ -6,19 +6,26 @@ import Swiper from 'react-native-swiper';
 import { useEffect, useState } from 'react';
 import { TCompany } from '../../types';
 import { useCompany } from '../../providers/CompanyProvider';
-import { primaryColor } from '../../utils/constants';
+import { mode, primaryColor, themeColors } from '../../utils/constants';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { getCompanyByCode } from '../../database/services/CompaniesService';
 import { useAuth } from '../../providers/AuthProvider';
 
 type Props = {
-	setCompany: React.Dispatch<React.SetStateAction<TCompany | undefined>>;
-	swiper: React.RefObject<Swiper>;
+	canSkip?: boolean;
+	buttonText?: string;
+	addButtonPress: () => void;
+	skipButtonPress?: () => void;
 };
 
-const AddCompanyCode = ({ setCompany: setCompany, swiper }: Props) => {
+const AddCompanyCode = ({
+	canSkip,
+	buttonText = 'Next',
+	addButtonPress,
+	skipButtonPress,
+}: Props) => {
 	const { authErrors } = useAuth();
-	const { setCompanyColor, companyColor } = useCompany();
+	const { companyColor, setCompany } = useCompany();
 	const [code, setCode] = useState<string | undefined>();
 	const [foundCompany, setFoundCompany] = useState<TCompany | null>(null);
 
@@ -27,16 +34,17 @@ const AddCompanyCode = ({ setCompany: setCompany, swiper }: Props) => {
 			getCompanyByCode(code).then((company) => {
 				setFoundCompany(company);
 				if (!company) return;
-				setCompany(company);
-				setCompanyColor(company.primaryColor);
 			});
 		}
+		() => {
+			setFoundCompany(null);
+			setCode('');
+		};
 	}, [code]);
 
 	useEffect(() => {
 		if (!foundCompany) {
-			setCompany(undefined);
-			setCompanyColor(primaryColor);
+			setCompany(null);
 		}
 	}, [foundCompany]);
 
@@ -95,9 +103,42 @@ const AddCompanyCode = ({ setCompany: setCompany, swiper }: Props) => {
 							opacity: !foundCompany ? 0.5 : 1,
 						},
 					}}
-					title={'Next'}
-					onPress={() => swiper.current?.scrollBy(1)}
+					title={buttonText}
+					onPress={() => {
+						setCompany(foundCompany);
+						addButtonPress();
+					}}
 				/>
+				{canSkip && skipButtonPress && (
+					<AppButton
+						buttonProps={{
+							className: 'mt-2',
+						}}
+						title={'Skip'}
+						onPress={skipButtonPress}>
+						<View
+							className='absolute inset-1 z-40'
+							style={{
+								position: 'absolute',
+								top: 2,
+								left: 2,
+								right: 2,
+								bottom: 2,
+								zIndex: 40,
+								borderRadius: 999,
+								backgroundColor:
+									themeColors[mode].primaryBackground,
+							}}
+						/>
+						<Text
+							className='text-base font-inter-medium text-dark-textColor'
+							style={{
+								zIndex: 50,
+							}}>
+							{'Skip'}
+						</Text>
+					</AppButton>
+				)}
 				{authErrors?.information && (
 					<Text
 						className={`text-sm font-inter-medium text-transparent text-center my-2 h-16`}>
