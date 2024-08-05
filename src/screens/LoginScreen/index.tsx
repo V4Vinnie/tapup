@@ -88,6 +88,7 @@ const LoginScreen = ({}: Props) => {
 								onChangeText: (email) => {
 									setEmail(email);
 								},
+								autoCapitalize: 'none',
 							}}
 						/>
 

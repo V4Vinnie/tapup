@@ -28,7 +28,11 @@ const HomeScreen = (props: Props) => {
 	return (
 		<SafeAreaView className='flex-1 items-center bg-dark-primaryBackground'>
 			<FocusAwareStatusBar translucent barStyle={'light-content'} />
-			<View className='flex w-full mt-12'>
+			<View
+				className='flex w-full'
+				style={{
+					marginTop: Platform.OS === 'ios' ? 20 : 48,
+				}}>
 				<SearchBar
 					containerProps={{
 						style: {
@@ -53,8 +57,8 @@ const HomeScreen = (props: Props) => {
 					showsVerticalScrollIndicator={false}>
 					<View className='w-full mt-6'>
 						<ContinueWatching />
-						<YourTopics />
-						<Following />
+						{/* <YourTopics /> */}
+						{/* <Following /> */}
 						<DiscoverTaps />
 					</View>
 				</ScrollView>

@@ -32,6 +32,7 @@ const FullInfoTap = ({ tap, containerProps, isNew, loading }: Props) => {
 	const [views, setViews] = React.useState<string>('0');
 	const [topic, setTopic] = React.useState<TTopic | null>(null);
 	const [companyName, setCompanyName] = React.useState<string>('');
+
 	useEffect(() => {
 		if (!tap) return;
 		const getCompanyName = async () => {
@@ -123,7 +124,7 @@ const FullInfoTap = ({ tap, containerProps, isNew, loading }: Props) => {
 					{tap.description}
 				</Text>
 				<View className='flex flex-row items-center gap-3'>
-					<Text className='text-dark-subTextColor text-[10px] font-inter-light'>
+					{/* <Text className='text-dark-subTextColor text-[10px] font-inter-light'>
 						{views} view{views === '1' ? '' : 's'}
 					</Text>
 					<View className='w-1 h-2'>
@@ -133,7 +134,7 @@ const FullInfoTap = ({ tap, containerProps, isNew, loading }: Props) => {
 							height={10}
 							fill={companyColor}
 						/>
-					</View>
+					</View> */}
 					<Text className='text-dark-subTextColor text-[10px] font-inter-light'>
 						{timeAgo}
 					</Text>

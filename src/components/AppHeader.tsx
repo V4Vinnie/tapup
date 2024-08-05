@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import {
+	Platform,
 	StyleProp,
 	TouchableWithoutFeedback,
 	View,
@@ -93,6 +94,7 @@ const AppHeader = ({
 				headerWithBackground && containerStyle,
 				transparentHeader && transparentContainerStyle,
 				bottomMargin,
+				headerStyle,
 			]}
 			backgroundColor='transparent'
 		/>
@@ -110,7 +112,7 @@ const centerContainerStyle: StyleProp<ViewStyle> = {
 const containerStyle: StyleProp<ViewStyle> = {
 	backgroundColor: themeColors[mode].secondaryBackground,
 	zIndex: 2,
-	paddingTop: 20,
+	paddingTop: Platform.OS == 'ios' ? 0 : 20,
 	paddingBottom: 30,
 };
 const transparentContainerStyle: StyleProp<ViewStyle> = {
@@ -120,6 +122,9 @@ const transparentContainerStyle: StyleProp<ViewStyle> = {
 	borderBottomWidth: 0,
 	zIndex: 2,
 	marginTop: 5,
+};
+const headerStyle: StyleProp<ViewStyle> = {
+	marginTop: Platform.OS === 'ios' ? -48 : 0,
 };
 
 export default AppHeader;

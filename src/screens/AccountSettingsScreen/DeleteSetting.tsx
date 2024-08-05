@@ -86,7 +86,6 @@ const ChangeSetting = ({
 							style={{
 								borderColor: companyColor,
 							}}
-							autoCapitalize='none'
 						/>
 						<Text className='absolute right-8 bottom-6 text-dark-textColor/50 text-xs font-inter-regular'>
 							{charsLeft}
