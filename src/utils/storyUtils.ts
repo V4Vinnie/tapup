@@ -1,11 +1,9 @@
-import { InstagramStoryProps } from '@birdwingo/core/dto/instagramStoriesDTO';
-import { TChapter } from '../types';
+import { TChapter, TStory } from '../types';
 import { getProfile } from '../database/services/UserService';
-import { CustomInstagramStoryProps } from '../components/Custom/CustomStoryList';
 
 export async function makeStoriesFromChapters(
 	chapters: TChapter[]
-): Promise<CustomInstagramStoryProps[]> {
+): Promise<TStory[]> {
 	const stories = chapters.map(async (chapter, index) => {
 		const profile = chapter.creatorId
 			? await getProfile(chapter.creatorId)
@@ -15,7 +13,7 @@ export async function makeStoriesFromChapters(
 			id: chapter.chapterId,
 			name: profile?.name ?? '',
 			imgUrl: profile?.profilePic ?? '',
-			stories: [] as CustomInstagramStoryProps['stories'],
+			stories: [] as TStory[],
 		};
 		chapter.frames.forEach((frame, index) => {
 			res.stories.push({

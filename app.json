@@ -47,15 +47,6 @@
 					"cameraPermission": "TapUp needs access to your camera so you can take photos and upload them to your profile.",
 					"microphonePermission": "TapUp needs access to your microphone so you can record audio and upload it to your profile."
 				}
-			],
-			"expo-video",
-			[
-				"expo-build-properties",
-				{
-					"ios": {
-						"useFrameworks": "static"
-					}
-				}
 			]
 		],
 		"extra": {

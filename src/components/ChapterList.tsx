@@ -1,5 +1,5 @@
 import { Image, ScrollView, View } from 'react-native';
-import { TChapter, TProfile } from '../types';
+import { TChapter, TProfile, TStory } from '../types';
 import { useAuth } from '../providers/AuthProvider';
 import { useEffect, useMemo, useState } from 'react';
 import { onUser } from '../database/services/UserService';
@@ -7,10 +7,6 @@ import { useIsFocused } from '@react-navigation/native';
 import { getProgressForChapters } from '../database/services/TapService';
 import ChapterComponent, { ChapterComponentSkeleton } from './ChapterComponent';
 import { makeStoriesFromChapters } from '../utils/storyUtils';
-import CustomStory from './Custom/CustomStory';
-import { InstagramStoryProps } from '@birdwingo/core/dto/instagramStoriesDTO';
-import { PreviewListProps } from './Custom/CustomStoryProps';
-import { CustomInstagramStoryProps } from './Custom/CustomStoryList';
 
 type Props = {
 	chapters: TChapter[];
@@ -33,7 +29,7 @@ const ChapterList = ({
 	);
 	const [loaded, setLoaded] = useState(false);
 	const [imagesLoading, setImagesLoading] = useState<boolean>(true);
-	const [stories, setStories] = useState<CustomInstagramStoryProps[]>([]);
+	const [stories, setStories] = useState<TStory[]>([]);
 
 	useEffect(() => {
 		const imageUrls = chapters.map((chapter) => {
@@ -69,23 +65,6 @@ const ChapterList = ({
 	return dataLoading ? (
 		<ChapterRowSkeleton />
 	) : (
-		<CustomStory
-			stories={stories}
-			chapters={chapters}
-			progress={progress}
-			PreviewList={PreviewList}
-		/>
-	);
-};
-
-const PreviewList = ({
-	data,
-	chapters,
-	containerProps,
-	progress,
-	onPress,
-}: PreviewListProps) => {
-	return (
 		<ScrollView className='w-full px-4' {...containerProps}>
 			{chapters.map((chapter, index) => {
 				if (!chapter) return null;
@@ -101,7 +80,8 @@ const PreviewList = ({
 				return (
 					<ChapterComponent
 						key={chapter.chapterId}
-						onPress={() => onPress(chapter.chapterId)}
+						// TODO LINK TO CHAPTER VIEWER
+						onPress={() => {}}
 						episodeNumber={index + 1}
 						progress={progress.get(chapter.chapterId)}
 						text={chapter.name}

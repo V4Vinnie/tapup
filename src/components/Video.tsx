@@ -1,4 +1,3 @@
-import { useVideoPlayer, VideoView } from 'expo-video';
 import { useRef } from 'react';
 import { StyleSheet, View, Button, Text } from 'react-native';
 
@@ -8,23 +7,23 @@ type Props = {
 
 const Video = ({ video }: Props) => {
 	const ref = useRef(null);
-	const player = useVideoPlayer(video, (player) => {
-		player.loop = true;
-		player.play();
-	});
+	// const player = useVideoPlayer(video, (player) => {
+	// 	player.loop = true;
+	// 	player.play();
+	// });
 
 	return (
 		<View style={styles.contentContainer}>
 			<Text>Replace</Text>
-			<VideoView
+			{/* <VideoView
 				ref={ref}
 				style={styles.video}
 				player={player}
 				allowsFullscreen
 				allowsPictureInPicture
-			/>
+			/> */}
 			<View style={styles.controlsContainer}>
-				<Button
+				{/* <Button
 					title={player.playing ? 'Pause' : 'Play'}
 					onPress={() => {
 						if (player.playing) {
@@ -33,7 +32,7 @@ const Video = ({ video }: Props) => {
 							player.play();
 						}
 					}}
-				/>
+				/> */}
 			</View>
 		</View>
 	);
