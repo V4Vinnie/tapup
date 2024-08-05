@@ -6,13 +6,12 @@ import Swiper from 'react-native-swiper';
 import { useEffect, useState } from 'react';
 import { TCompany } from '../../types';
 import { useCompany } from '../../providers/CompanyProvider';
-import { primaryColor } from '../../utils/constants';
+import { mode, primaryColor, themeColors } from '../../utils/constants';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { getCompanyByCode } from '../../database/services/CompaniesService';
 import { useAuth } from '../../providers/AuthProvider';
 
 type Props = {
-	swiper?: React.RefObject<Swiper>;
 	canSkip?: boolean;
 	buttonText?: string;
 	addButtonPress: () => void;
@@ -20,14 +19,13 @@ type Props = {
 };
 
 const AddCompanyCode = ({
-	swiper,
 	canSkip,
 	buttonText = 'Next',
 	addButtonPress,
 	skipButtonPress,
 }: Props) => {
 	const { authErrors } = useAuth();
-	const { setCompanyColor, companyColor, setCompany } = useCompany();
+	const { companyColor, setCompany } = useCompany();
 	const [code, setCode] = useState<string | undefined>();
 	const [foundCompany, setFoundCompany] = useState<TCompany | null>(null);
 
@@ -36,7 +34,6 @@ const AddCompanyCode = ({
 			getCompanyByCode(code).then((company) => {
 				setFoundCompany(company);
 				if (!company) return;
-				setCompanyColor(company.primaryColor);
 			});
 		}
 		() => {
@@ -48,7 +45,6 @@ const AddCompanyCode = ({
 	useEffect(() => {
 		if (!foundCompany) {
 			setCompany(null);
-			setCompanyColor(primaryColor);
 		}
 	}, [foundCompany]);
 
@@ -116,15 +112,32 @@ const AddCompanyCode = ({
 				{canSkip && skipButtonPress && (
 					<AppButton
 						buttonProps={{
-							disabled: !foundCompany,
-							className: 'mt-4',
-							style: {
-								opacity: !foundCompany ? 0.5 : 1,
-							},
+							className: 'mt-2',
 						}}
 						title={'Skip'}
-						onPress={skipButtonPress}
-					/>
+						onPress={skipButtonPress}>
+						<View
+							className='absolute inset-1 z-40'
+							style={{
+								position: 'absolute',
+								top: 2,
+								left: 2,
+								right: 2,
+								bottom: 2,
+								zIndex: 40,
+								borderRadius: 999,
+								backgroundColor:
+									themeColors[mode].primaryBackground,
+							}}
+						/>
+						<Text
+							className='text-base font-inter-medium text-dark-textColor'
+							style={{
+								zIndex: 50,
+							}}>
+							{'Skip'}
+						</Text>
+					</AppButton>
 				)}
 				{authErrors?.information && (
 					<Text

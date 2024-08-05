@@ -35,7 +35,7 @@ const AccountSettingsScreen = (props: Props) => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const { user, handleUpdateUser, handleChangeProfilePic } = useAuth();
-	const { company, setCompany, setCompanyColor } = useCompany();
+	const { company, setCompany } = useCompany();
 	const [showLoginModal, setShowLoginModal] = React.useState(false);
 	const [userDetails, setUserDetails] = React.useState({
 		name: user?.name || '',
@@ -206,7 +206,6 @@ const AccountSettingsScreen = (props: Props) => {
 								noValueText='No company'
 								onDelete={() => {
 									setCompany(null);
-									setCompanyColor(primaryColor);
 								}}
 								onAdd={() => {
 									navigate(Routes.HOME);

@@ -59,7 +59,7 @@ const SignupScreen = (props: Props) => {
 			email,
 			password,
 			image!,
-			company!,
+			company,
 			fullName!,
 			jobType!
 		).finally(() => {
@@ -124,6 +124,8 @@ const SignupScreen = (props: Props) => {
 						/>
 						<AddCompanyCode
 							addButtonPress={() => swiper?.current?.scrollBy(1)}
+							canSkip
+							skipButtonPress={() => swiper?.current?.scrollBy(1)}
 						/>
 						<AddInformation
 							setFullName={setFullName}
