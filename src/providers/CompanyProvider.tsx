@@ -1,14 +1,19 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { primaryColor } from '../utils/constants';
+import { TCompany } from '../types';
 
 const CompanyContext = React.createContext<{
 	companyColor: string;
 	setCompanyColor: React.Dispatch<React.SetStateAction<string>>;
 	isCompanyColorSet: boolean;
+	company: TCompany | null;
+	setCompany: React.Dispatch<React.SetStateAction<TCompany | null>>;
 }>({
 	companyColor: primaryColor,
 	setCompanyColor: () => {},
 	isCompanyColorSet: false,
+	company: null,
+	setCompany: () => {},
 });
 
 type Props = {
@@ -17,6 +22,7 @@ type Props = {
 
 export const CompanyProvider = ({ children }: Props) => {
 	const [companyColor, setCompanyColor] = useState<string>(primaryColor);
+	const [company, setCompany] = useState<TCompany | null>(null);
 	const isCompanyColorSet = useMemo(
 		() => companyColor !== primaryColor,
 		[companyColor]
@@ -27,8 +33,10 @@ export const CompanyProvider = ({ children }: Props) => {
 			companyColor,
 			setCompanyColor,
 			isCompanyColorSet,
+			company,
+			setCompany,
 		}),
-		[companyColor, setCompanyColor, isCompanyColorSet]
+		[companyColor, setCompanyColor, isCompanyColorSet, company, setCompany]
 	);
 
 	return (

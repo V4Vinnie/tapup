@@ -29,6 +29,7 @@ import AddCompanyCode from './AddCompanyCode';
 import { TCompany } from '../../types';
 import AddInformation from './AddInformation';
 import { useAuth } from '../../providers/AuthProvider';
+import { useCompany } from '../../providers/CompanyProvider';
 
 type Props = {};
 
@@ -36,13 +37,13 @@ const SignupScreen = (props: Props) => {
 	const { width, height } = Dimensions.get('window');
 	const { isKeyboardOpen } = useKeyboard();
 	const { handleSignup, authErrors } = useAuth();
+	const { company } = useCompany();
 
 	const [email, setEmail] = useState('');
 	const [username, setProfilename] = useState('');
 	const [password, setPassword] = useState('');
 	const [image, setImage] = useState('');
 	const [isSending, setIsSending] = useState(false);
-	const [company, setCompany] = useState<TCompany>();
 	const [fullName, setFullName] = useState('');
 	const [jobType, setJobType] = useState('');
 
@@ -122,8 +123,7 @@ const SignupScreen = (props: Props) => {
 							swiper={swiper}
 						/>
 						<AddCompanyCode
-							setCompany={setCompany}
-							swiper={swiper}
+							addButtonPress={() => swiper?.current?.scrollBy(1)}
 						/>
 						<AddInformation
 							setFullName={setFullName}

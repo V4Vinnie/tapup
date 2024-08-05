@@ -3,7 +3,7 @@ import { DB } from '../Firebase';
 import { COLLECTIONS } from '../../utils/constants';
 import { TCompany } from '../../types';
 
-export async function getCompanyByCode(code: string) {
+export async function getCompanyByCode(code: string): Promise<TCompany | null> {
 	try {
 		const companiesRef = collection(DB, COLLECTIONS.COMPANIES);
 		const _query = query(companiesRef, where('code', '==', code));

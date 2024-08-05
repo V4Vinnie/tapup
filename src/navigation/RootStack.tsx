@@ -24,6 +24,8 @@ import AccountSettingsScreen from '../screens/AccountSettingsScreen';
 import PrivacyPolicyScreen from '../screens/PrivacyPolicyScreen';
 import MyCompanyScreen from '../screens/MyComanyScreen';
 import '../utils/stringExtensions';
+import AddCompanyCodeScreen from '../screens/AddCompanyCodeScreen';
+import { useCompany } from '../providers/CompanyProvider';
 
 type Props = {};
 
@@ -78,31 +80,51 @@ const RootStack = (props: Props) => {
 };
 
 const HomeStack = () => {
+	const { company } = useCompany();
+
 	return (
 		<Stack.Navigator screenOptions={{ headerShown: false }}>
-			<Stack.Screen name={Routes.HOME_LANDING} component={HomeScreen} />
-			<Stack.Screen
-				name={Routes.SEARCH_SCREEN}
-				component={SearchScreen}
-			/>
-			<Stack.Screen
-				name={Routes.SEE_MORE_TAPS}
-				component={SeeMoreTapsScreen}
-			/>
-			<Stack.Screen
-				name={Routes.SEE_MORE_PROFILES}
-				component={SeeMoreProfilesScreen}
-			/>
-			<Stack.Screen
-				name={Routes.SEE_MORE_TOPICS}
-				component={SeeMoreTopicsScreen}
-			/>
-			<Stack.Screen
-				name={Routes.PROFILE_SCREEN}
-				component={ProfileScreen}
-			/>
-			<Stack.Screen name={Routes.TAP_SCREEN} component={TapScreen} />
-			<Stack.Screen name={Routes.TOPIC_SCREEN} component={TopicScreen} />
+			{company ? (
+				<>
+					<Stack.Screen
+						name={Routes.HOME_LANDING}
+						component={HomeScreen}
+					/>
+					<Stack.Screen
+						name={Routes.SEARCH_SCREEN}
+						component={SearchScreen}
+					/>
+					<Stack.Screen
+						name={Routes.SEE_MORE_TAPS}
+						component={SeeMoreTapsScreen}
+					/>
+					<Stack.Screen
+						name={Routes.SEE_MORE_PROFILES}
+						component={SeeMoreProfilesScreen}
+					/>
+					<Stack.Screen
+						name={Routes.SEE_MORE_TOPICS}
+						component={SeeMoreTopicsScreen}
+					/>
+					<Stack.Screen
+						name={Routes.PROFILE_SCREEN}
+						component={ProfileScreen}
+					/>
+					<Stack.Screen
+						name={Routes.TAP_SCREEN}
+						component={TapScreen}
+					/>
+					<Stack.Screen
+						name={Routes.TOPIC_SCREEN}
+						component={TopicScreen}
+					/>
+				</>
+			) : (
+				<Stack.Screen
+					name={Routes.ADD_COMPANY_CODE}
+					component={AddCompanyCodeScreen}
+				/>
+			)}
 		</Stack.Navigator>
 	);
 };

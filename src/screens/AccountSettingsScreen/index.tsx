@@ -13,7 +13,12 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { maxChars, mode, themeColors } from '../../utils/constants';
+import {
+	maxChars,
+	mode,
+	primaryColor,
+	themeColors,
+} from '../../utils/constants';
 import ProfilePicture from '../SignupScreen/ProfilePicture';
 import ChangeSetting from './ChangeSetting';
 import { assets } from '../../../assets/Assets';
@@ -21,6 +26,8 @@ import Modal from 'react-native-modal';
 import AppInput from '../../components/AppInput';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../database/Firebase';
+import { useCompany } from '../../providers/CompanyProvider';
+import DeleteOrAddSetting from './DeleteOrAddSetting';
 
 type Props = {};
 
@@ -28,6 +35,7 @@ const AccountSettingsScreen = (props: Props) => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const { user, handleUpdateUser, handleChangeProfilePic } = useAuth();
+	const { company, setCompany, setCompanyColor } = useCompany();
 	const [showLoginModal, setShowLoginModal] = React.useState(false);
 	const [userDetails, setUserDetails] = React.useState({
 		name: user?.name || '',
@@ -184,6 +192,25 @@ const AccountSettingsScreen = (props: Props) => {
 								title='Email'
 								value={userDetails.email}
 								onChange={changeEmail}
+							/>
+							<DeleteOrAddSetting
+								icon={
+									<MaterialIcons
+										name='domain-add'
+										size={20}
+										color={themeColors[mode].textColor}
+									/>
+								}
+								title='Company'
+								value={company?.name}
+								noValueText='No company'
+								onDelete={() => {
+									setCompany(null);
+									setCompanyColor(primaryColor);
+								}}
+								onAdd={() => {
+									navigate(Routes.HOME);
+								}}
 							/>
 						</View>
 					</ScrollView>

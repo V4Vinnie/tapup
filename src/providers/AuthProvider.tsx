@@ -74,7 +74,7 @@ type Props = {
 export const AuthProvider = ({ children }: Props) => {
 	const navigator =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-	const { companyColor, setCompanyColor } = useCompany();
+	const { setCompany, setCompanyColor } = useCompany();
 
 	const [user, setProfile] = React.useState<TProfile | null>(null);
 	const [loadingInitial, setLoadingInitial] = React.useState<boolean>(true);
@@ -194,6 +194,7 @@ export const AuthProvider = ({ children }: Props) => {
 							_user?.companyInfo?.companyCode
 						);
 						if (company) setCompanyColor(company.primaryColor);
+						if (company) setCompany(company);
 					} else {
 						setProfile(null);
 						setCompanyColor(primaryColor);

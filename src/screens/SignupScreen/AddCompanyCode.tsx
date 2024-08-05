@@ -12,13 +12,22 @@ import { getCompanyByCode } from '../../database/services/CompaniesService';
 import { useAuth } from '../../providers/AuthProvider';
 
 type Props = {
-	setCompany: React.Dispatch<React.SetStateAction<TCompany | undefined>>;
-	swiper: React.RefObject<Swiper>;
+	swiper?: React.RefObject<Swiper>;
+	canSkip?: boolean;
+	buttonText?: string;
+	addButtonPress: () => void;
+	skipButtonPress?: () => void;
 };
 
-const AddCompanyCode = ({ setCompany: setCompany, swiper }: Props) => {
+const AddCompanyCode = ({
+	swiper,
+	canSkip,
+	buttonText = 'Next',
+	addButtonPress,
+	skipButtonPress,
+}: Props) => {
 	const { authErrors } = useAuth();
-	const { setCompanyColor, companyColor } = useCompany();
+	const { setCompanyColor, companyColor, setCompany } = useCompany();
 	const [code, setCode] = useState<string | undefined>();
 	const [foundCompany, setFoundCompany] = useState<TCompany | null>(null);
 
@@ -27,15 +36,18 @@ const AddCompanyCode = ({ setCompany: setCompany, swiper }: Props) => {
 			getCompanyByCode(code).then((company) => {
 				setFoundCompany(company);
 				if (!company) return;
-				setCompany(company);
 				setCompanyColor(company.primaryColor);
 			});
 		}
+		() => {
+			setFoundCompany(null);
+			setCode('');
+		};
 	}, [code]);
 
 	useEffect(() => {
 		if (!foundCompany) {
-			setCompany(undefined);
+			setCompany(null);
 			setCompanyColor(primaryColor);
 		}
 	}, [foundCompany]);
@@ -95,9 +107,25 @@ const AddCompanyCode = ({ setCompany: setCompany, swiper }: Props) => {
 							opacity: !foundCompany ? 0.5 : 1,
 						},
 					}}
-					title={'Next'}
-					onPress={() => swiper.current?.scrollBy(1)}
+					title={buttonText}
+					onPress={() => {
+						setCompany(foundCompany);
+						addButtonPress();
+					}}
 				/>
+				{canSkip && skipButtonPress && (
+					<AppButton
+						buttonProps={{
+							disabled: !foundCompany,
+							className: 'mt-4',
+							style: {
+								opacity: !foundCompany ? 0.5 : 1,
+							},
+						}}
+						title={'Skip'}
+						onPress={skipButtonPress}
+					/>
+				)}
 				{authErrors?.information && (
 					<Text
 						className={`text-sm font-inter-medium text-transparent text-center my-2 h-16`}>
