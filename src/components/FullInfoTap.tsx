@@ -4,10 +4,7 @@ import { TTap, TTopic } from '../types';
 import { mode, themeColors } from '../utils/constants';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Logo from '../../assets/images/Logo';
-import {
-	getTopicFromTap,
-	getViewsForTap,
-} from '../database/services/TapService';
+import { getTopicFromTap } from '../database/services/TapService';
 import { Skeleton } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -15,6 +12,7 @@ import { RootStackParamList, Routes } from '../navigation/Routes';
 import { useTaps } from '../providers/TapProvider';
 import { getCompanyByCode } from '../database/services/CompaniesService';
 import { useCompany } from '../providers/CompanyProvider';
+import { useTopics } from '../providers/TopicProvider';
 
 type Props = {
 	tap?: TTap;
@@ -27,7 +25,7 @@ const FullInfoTap = ({ tap, containerProps, isNew, loading }: Props) => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const { companyColor, company } = useCompany();
-	const { taps } = useTaps();
+	const { topics } = useTopics();
 
 	// const [views, setViews] = React.useState<string>('0');
 	const [topic, setTopic] = React.useState<TTopic | null>(null);
@@ -60,10 +58,9 @@ const FullInfoTap = ({ tap, containerProps, isNew, loading }: Props) => {
 		// 			: viewsString
 		// 	);
 		// });
-		getTopicFromTap(tap).then((topic) => {
-			if (!topic) return;
-			setTopic(topic);
-		});
+		const topic = getTopicFromTap(tap, topics);
+		if (!topic) return;
+		setTopic(topic);
 	}, [tap]);
 
 	return loading || !tap || !topic ? (

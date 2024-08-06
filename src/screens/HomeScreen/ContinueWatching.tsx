@@ -8,29 +8,28 @@ import SectionHeader from '../../components/SectionHeader';
 import TapRow from '../../components/TapRow';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { TContinueWatchingTap } from '../../types';
+import { TContinueWatchingTap, TProfile, TTap } from '../../types';
+import { getBusyWatchingTaps } from '../../database/services/TapService';
 
 const ContinueWatching = () => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-	const { getProfileTaps, userTaps, loadingInitial } = useTaps();
+	const { loadingInitial, taps } = useTaps();
 	const { user } = useAuth();
 	const isFocused = useIsFocused();
-	const [continueWatching, setContinueWatching] = React.useState<
-		TContinueWatchingTap[]
-	>([]);
+	const [continueWatching, setContinueWatching] = React.useState<TTap[]>([]);
 
 	useEffect(() => {
 		if (!user?.uid) return;
-		if (isFocused) getProfileTaps(user);
-		const sub = onUser(user.uid, getProfileTaps);
+		if (isFocused) getContinueWatching(user);
+		const sub = onUser(user.uid, getContinueWatching);
 		return () => (sub ? sub() : undefined);
 	}, [isFocused, user]);
 
-	useEffect(() => {
-		if (!userTaps) return;
-		setContinueWatching(userTaps);
-	}, [userTaps]);
+	const getContinueWatching = (user: TProfile) => {
+		const busyWatching = getBusyWatchingTaps(user, taps);
+		setContinueWatching(busyWatching);
+	};
 
 	if (!loadingInitial && continueWatching.length === 0) {
 		return false;

@@ -5,7 +5,6 @@ import { useAuth } from '../providers/AuthProvider';
 import { useEffect, useMemo, useState } from 'react';
 import { onUser } from '../database/services/UserService';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { getProgressForChapters } from '../database/services/TapService';
 import { SKELETON_WAIT_TIME } from '../utils/constants';
 import { makeStoriesFromChapters } from '../utils/storyUtils';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -15,7 +14,7 @@ type Props = {
 	chapters?: TChapter[];
 	containerProps?: View['props'];
 	loading?: boolean;
-	chapterProgress?: Map<string, number>;
+	chapterProgress?: Record<string, number>;
 };
 
 const SPACE_BETWEEN = 10;
@@ -29,8 +28,8 @@ const ChapterRow = ({
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const { user } = useAuth();
 	const isFocused = useIsFocused();
-	const [progress, setProgress] = useState<Map<string, number>>(
-		chapterProgress ?? new Map()
+	const [progress, setProgress] = useState<Record<string, number>>(
+		chapterProgress ?? {}
 	);
 	const [stories, setStories] = useState<TStory[]>([]);
 	const [imagesLoading, setImagesLoading] = useState<boolean>(true);
@@ -40,8 +39,9 @@ const ChapterRow = ({
 		if (!user?.uid) return;
 		const getProgress = (user: TProfile) => {
 			if (!chapters) return;
-			const progress = getProgressForChapters(user, chapters);
+			const progress = user.progress;
 			if (progress) setProgress(progress);
+			console.log('progsere', progress);
 		};
 		if (isFocused) getProgress(user);
 		const sub = onUser(user.uid, getProgress);
@@ -90,7 +90,7 @@ const ChapterRow = ({
 				renderItem={({ item, index }) => (
 					<PreviewComponent
 						key={item.chapterId}
-						progress={progress.get(item.chapterId)}
+						progress={progress[item.chapterId]}
 						text={item.name}
 						chapter={item}
 						containerProps={{
@@ -101,7 +101,6 @@ const ChapterRow = ({
 										: SPACE_BETWEEN,
 							},
 						}}
-						// TODO LINK TO CHAPTER VIEWER
 						onPress={() => {
 							navigate(Routes.STORY_VIEWER, {});
 						}}

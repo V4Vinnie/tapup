@@ -1,28 +1,15 @@
-import {
-	TChapter,
-	TContinueWatchingTap,
-	TProfile,
-	TTap,
-	TTopic,
-} from '../../types';
-import { getProfile } from './UserService';
-import {
-	collection,
-	doc,
-	documentId,
-	getDoc,
-	getDocs,
-	query,
-	where,
-} from 'firebase/firestore';
+import { TCompany, TProfile, TTap, TTopic } from '../../types';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { DB } from '../Firebase';
 import { COLLECTIONS } from '../../utils/constants';
 
-export const getAllTaps = async () => {
+export const getAllTaps = async (company: TCompany): Promise<TTap[]> => {
 	try {
 		const tapsRef = collection(DB, COLLECTIONS.TAPS);
-		const allTaps = await getDocs(tapsRef);
-		return allTaps.docs?.map((doc) => {
+		const _query = query(tapsRef, where('companyCode', '==', company.code));
+		const allTaps = await getDocs(_query);
+		if (allTaps.empty) return [];
+		return allTaps.docs.map((doc) => {
 			return {
 				id: doc.id,
 				...doc.data(),
@@ -30,101 +17,46 @@ export const getAllTaps = async () => {
 		});
 	} catch (error) {
 		console.log('getAllTaps in TapService ', error);
+		return [];
 	}
 };
 
-export const getProfileDiscoverTaps = async (user: TProfile) => {
-	// taps that user doesn't have in their continue watching list
-	try {
-		const tapsRef = collection(DB, COLLECTIONS.TAPS);
-		const watchedTapIds = user.watchedFrames.map((frame) => frame.tapId);
-		if (watchedTapIds.length === 0) {
-			const allTaps = await getDocs(tapsRef);
-			return allTaps.docs.map((doc) => {
-				return {
-					id: doc.id,
-					...doc.data(),
-				} as TTap;
-			});
-		} else {
-			const _query = query(
-				tapsRef,
-				where(documentId(), 'not-in', watchedTapIds)
+export const getProcessPercentageForTaps = (user: TProfile, taps: TTap[]) => {
+	return taps.reduce(
+		(acc, tap) => {
+			const chapters = tap.chapters;
+			const watchedChapters = user.watchedChapters;
+			const chaptersForTap = chapters.filter((chapter) =>
+				watchedChapters.includes(chapter.chapterId)
 			);
-			const discoverTapsSnapshot = await getDocs(_query);
-			return discoverTapsSnapshot.docs.map((doc) => {
-				return {
-					id: doc.id,
-					...doc.data(),
-				} as TTap;
-			});
-		}
-	} catch (error) {
-		console.log('getTaps in TapService ', error);
-	}
+			const amountOfChapters = chapters.length;
+			const amountOfChaptersWatched = chaptersForTap.length;
+			const percentage =
+				(amountOfChaptersWatched / amountOfChapters) * 100;
+			acc[tap.id] = percentage;
+			return acc;
+		},
+		{} as Record<string, number>
+	);
 };
 
-export const getTapsWithProgressForUser = async (user: TProfile) => {
-	try {
-		const userData =
-			user.watchedFrames?.length === 0
-				? await getProfile(user.uid)
-				: user;
-		if (!userData) throw new Error('User not found');
+// export const getViewsForTap = async (tapId: string) => {
+// 	try {
+// 		const tapRef = doc(DB, COLLECTIONS.TAPS, tapId);
+// 		const tapDoc = await getDoc(tapRef);
+// 		const tapData = { id: tapDoc.id, ...tapDoc.data() } as TTap;
+// 		const frames = tapData.chapters.map((chapter) => chapter.frames).flat();
+// 		return frames.reduce(
+// 			(total, frame) => total + (frame.watchedBy?.length ?? 0),
+// 			0
+// 		);
+// 	} catch (error) {
+// 		console.log('getViewsForTap in TapService ', error);
+// 	}
+// };
 
-		const watchedTaps = await getWatchedTapsForUser(userData);
-
-		// Get tap with progress
-		return watchedTaps.map((tap) => {
-			const framesWatched = userData.watchedFrames.filter(
-				(frame) => frame.tapId === tap.id
-			);
-			const amountOfTapFrames = tap.chapters.reduce(
-				(total: number, chapter: TChapter) =>
-					total + chapter.frames.length,
-				0
-			);
-			const progress = (framesWatched.length / amountOfTapFrames) * 100;
-
-			return {
-				...tap,
-				progress,
-			} as TContinueWatchingTap;
-		});
-	} catch (error) {
-		console.log('getTapsWithProgressForUser in TapService ', error);
-	}
-};
-
-export const getViewsForTap = async (tapId: string) => {
-	try {
-		const tapRef = doc(DB, COLLECTIONS.TAPS, tapId);
-		const tapDoc = await getDoc(tapRef);
-		const tapData = { id: tapDoc.id, ...tapDoc.data() } as TTap;
-		const frames = tapData.chapters.map((chapter) => chapter.frames).flat();
-		return frames.reduce(
-			(total, frame) => total + (frame.watchedBy?.length ?? 0),
-			0
-		);
-	} catch (error) {
-		console.log('getViewsForTap in TapService ', error);
-	}
-};
-
-export const getAllTapsForTopic = async (topicId: string) => {
-	try {
-		const tapsRef = collection(DB, COLLECTIONS.TAPS);
-		const _query = query(tapsRef, where('topicId', '==', topicId));
-		const tapsSnapshot = await getDocs(_query);
-		return tapsSnapshot.docs.map((doc) => {
-			return {
-				id: doc.id,
-				...doc.data(),
-			} as TTap;
-		});
-	} catch (error) {
-		console.log('getAllTapsForTopic in TapService ', error);
-	}
+export const getAllTapsForTopic = (topicId: string, taps: TTap[]) => {
+	return taps.filter((tap) => tap.topicId === topicId);
 };
 
 export const getAllTapsForTopics = async (topics: TTopic[]) => {
@@ -161,47 +93,33 @@ export const getTapsByCreator = async (profile: TProfile) => {
 	}
 };
 
-export const getProgressForChapters = (
-	user: TProfile,
-	chapters: TChapter[]
-) => {
-	if (!user) throw new Error('User not found');
-	const result = new Map<string, number>();
+export const getTopicFromTap = (tap: TTap, topics: TTopic[]) => {
+	return topics.find((topic) => topic.id === tap.topicId);
+};
 
-	chapters.forEach((chapter) => {
-		const amountOfFrames = chapter.frames.length;
-		const amountOfFramesWatched = chapter.frames.filter((frame) =>
-			(user.watchedFrames || []).find(
-				(watchedFrame) => watchedFrame.frameId === frame.id
-			)
-		).length;
-		const progress = (amountOfFramesWatched / amountOfFrames) * 100;
-		result.set(chapter.chapterId, progress);
+function getWatchedTapsForUser(user: TProfile, taps: TTap[]) {
+	const watchedChapters = user.watchedChapters;
+	const watchedTaps = taps.filter((tap) => {
+		const chapters = tap.chapters;
+		const chaptersForTap = chapters.filter((chapter) =>
+			watchedChapters.includes(chapter.chapterId)
+		);
+		return chaptersForTap.length === chapters.length;
 	});
-	return result;
-};
-
-export const getTopicFromTap = async (tap: TTap) => {
-	try {
-		const topicRef = doc(DB, COLLECTIONS.TOPICS, tap.topicId);
-		const topicDoc = await getDoc(topicRef);
-		return {
-			id: topicDoc.id,
-			...topicDoc.data(),
-		} as TTopic;
-	} catch (error) {
-		console.log('getTopicFromTap in TapService ', error);
-	}
-};
-
-async function getWatchedTapsForUser(userData: TProfile) {
-	const tapsRef = collection(DB, COLLECTIONS.TAPS);
-	const tapIds = [
-		...new Set(userData.watchedFrames?.map((frame) => frame.tapId)),
-	];
-	if (tapIds.length === 0) return [];
-	const _query = query(tapsRef, where(documentId(), 'in', tapIds));
-	const watchedTapsSnapshot = await getDocs(_query);
-	const watchedTapsData = watchedTapsSnapshot.docs.map((doc) => doc.data());
-	return watchedTapsData;
+	return watchedTaps;
 }
+
+export const getUnwatchedTaps = (user: TProfile, taps: TTap[]) => {
+	const watchedTaps = getWatchedTapsForUser(user, taps);
+	return taps.filter(
+		(tap) => !watchedTaps.find((watchedTap) => watchedTap.id === tap.id)
+	);
+};
+
+export const getBusyWatchingTaps = (user: TProfile, taps: TTap[]) => {
+	// taps that are not fully watched
+	const tapsProgress = getProcessPercentageForTaps(user, taps);
+	return taps.filter(
+		(tap) => tapsProgress[tap.id] > 0 && tapsProgress[tap.id] < 100
+	);
+};

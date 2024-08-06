@@ -34,7 +34,7 @@ const LoginScreen = ({}: Props) => {
 	const logIn = async () => {
 		setIsSending(true);
 		await handleLogin(email, password)
-			.catch((err) => console.log(err))
+			.catch(console.error)
 			.finally(() => {
 				setIsSending(false);
 			});

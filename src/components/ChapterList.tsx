@@ -4,7 +4,6 @@ import { useAuth } from '../providers/AuthProvider';
 import { useEffect, useMemo, useState } from 'react';
 import { onUser } from '../database/services/UserService';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { getProgressForChapters } from '../database/services/TapService';
 import ChapterComponent, { ChapterComponentSkeleton } from './ChapterComponent';
 import { makeStoriesFromChapters } from '../utils/storyUtils';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -14,7 +13,7 @@ type Props = {
 	chapters: TChapter[];
 	containerProps?: View['props'];
 	loading?: boolean;
-	chapterProgress?: Map<string, number>;
+	chapterProgress?: Record<string, number>;
 };
 
 const SPACE_BETWEEN = 10;
@@ -28,8 +27,8 @@ const ChapterList = ({
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const { user } = useAuth();
 	const isFocused = useIsFocused();
-	const [progress, setProgress] = useState<Map<string, number>>(
-		chapterProgress ?? new Map()
+	const [progress, setProgress] = useState<Record<string, number>>(
+		chapterProgress ?? {}
 	);
 	const [loaded, setLoaded] = useState(false);
 	const [imagesLoading, setImagesLoading] = useState<boolean>(true);
@@ -57,7 +56,7 @@ const ChapterList = ({
 	useEffect(() => {
 		if (!user?.uid) return;
 		const getProgress = (user: TProfile) => {
-			const progress = getProgressForChapters(user, chapters);
+			const progress = user.progress;
 			if (progress) setProgress(progress);
 			setLoaded(true);
 		};
@@ -88,7 +87,7 @@ const ChapterList = ({
 							navigate(Routes.STORY_VIEWER, {});
 						}}
 						episodeNumber={index + 1}
-						progress={progress.get(chapter.chapterId)}
+						progress={progress[chapter.chapterId] ?? 0}
 						text={chapter.name}
 						thumbnail={thumbnail}
 						video={video}

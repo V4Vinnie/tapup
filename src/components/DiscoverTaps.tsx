@@ -1,8 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import { useTaps } from '../providers/TapProvider';
-import { useAuth } from '../providers/AuthProvider';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { onUser } from '../database/services/UserService';
+import { useNavigation } from '@react-navigation/native';
 import SectionHeader from './SectionHeader';
 import { RootStackParamList, Routes } from '../navigation/Routes';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -19,28 +17,17 @@ type Props = {
 const DiscoverTaps = ({ title, onPress, rightButton = true }: Props) => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-	const { getDiscoverTaps, discoverTaps, loadingInitial } = useTaps();
-	const { user } = useAuth();
-	const isFocused = useIsFocused();
-	const [newTaps, setNewTaps] = React.useState<TTap[]>([]);
+	const { discoverTaps, loadingInitial } = useTaps();
 	const [imagesLoading, setImagesLoading] = React.useState<boolean>(true);
 
 	useEffect(() => {
-		if (!user?.uid) return;
-		if (isFocused) getDiscoverTaps(user);
-		const sub = onUser(user.uid, getDiscoverTaps);
-		return () => (sub ? sub() : undefined);
-	}, [isFocused, user]);
+		console.log(discoverTaps);
 
-	useEffect(() => {
-		if (!discoverTaps) return;
-		setNewTaps(discoverTaps);
-	}, [discoverTaps]);
-
-	useEffect(() => {
-		const imageUrls = newTaps.map((tap) => Image.prefetch(tap.thumbnail));
+		const imageUrls = discoverTaps.map((tap) =>
+			Image.prefetch(tap.thumbnail)
+		);
 		Promise.all(imageUrls).then(() => setImagesLoading(false));
-	}, [newTaps]);
+	}, [discoverTaps]);
 
 	const dataLoading = useMemo(() => {
 		return imagesLoading || loadingInitial;
@@ -51,7 +38,7 @@ const DiscoverTaps = ({ title, onPress, rightButton = true }: Props) => {
 			if (loadingInitial) return;
 			navigate(Routes.SEE_MORE_TAPS, {
 				title: 'New taps',
-				taps: newTaps,
+				taps: discoverTaps,
 			});
 		};
 		if (rightButton) {
@@ -67,14 +54,14 @@ const DiscoverTaps = ({ title, onPress, rightButton = true }: Props) => {
 			/>
 			{dataLoading ? (
 				<DiscoverTapsSkeleton />
-			) : newTaps.length === 0 ? (
+			) : discoverTaps.length === 0 ? (
 				<Text className='text-dark-textColor text-center h-10'>
 					No new taps
 				</Text> // TODO: Figure out what to show when there are no continue watching taps
 			) : (
 				<View className='px-4 mb-4'>
 					{/* Show only first 10 */}
-					{newTaps.slice(0, 10).map((tap, index) => (
+					{discoverTaps.slice(0, 10).map((tap, index) => (
 						<View className='mb-4' key={tap.name + index}>
 							<FullInfoTap tap={tap} isNew={true} />
 						</View>

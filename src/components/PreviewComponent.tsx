@@ -17,6 +17,7 @@ import { getTopicFromTap } from '../database/services/TapService';
 import PlaceholderImage from '../../assets/images/login_header_1.png';
 import { generatePreviewPhoto } from '../utils/getThumbnailFromVideo';
 import { useCompany } from '../providers/CompanyProvider';
+import { useTopics } from '../providers/TopicProvider';
 
 type Props = {
 	onPress?: () => void;
@@ -45,6 +46,7 @@ const PreviewComponent = ({
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const { companyColor } = useCompany();
+	const { topics } = useTopics();
 
 	const [topic, setTopic] = useState<TTopic | null>(null);
 	const [previewPhoto, setPreviewPhoto] = useState<string>(
@@ -84,7 +86,7 @@ const PreviewComponent = ({
 	useEffect(() => {
 		if (!fullTap) return;
 		const getTopic = async () => {
-			const topic = await getTopicFromTap(fullTap);
+			const topic = getTopicFromTap(fullTap, topics);
 			if (!topic) return;
 			setTopic(topic);
 		};
@@ -128,28 +130,13 @@ const PreviewComponent = ({
 			</Text>
 			{showProgress && (
 				<View className='absolute bottom-0 w-full h-1 bg-dark-secondaryBackground'>
-					{progress === undefined ? (
-						<Skeleton
-							animation='wave'
-							style={{
-								width: `100%`,
-								backgroundColor:
-									themeColors[mode].secondaryBackground,
-							}}
-							skeletonStyle={{
-								backgroundColor: themeColors[mode].subTextColor,
-								opacity: 0.1,
-							}}
-						/>
-					) : (
-						<View
-							className='h-full w-full'
-							style={{
-								width: `${progress}%`,
-								backgroundColor: companyColor,
-							}}
-						/>
-					)}
+					<View
+						className='h-full w-full'
+						style={{
+							width: `${progress ?? 0}%`,
+							backgroundColor: companyColor,
+						}}
+					/>
 				</View>
 			)}
 		</TouchableOpacity>

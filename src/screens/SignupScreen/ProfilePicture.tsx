@@ -35,9 +35,7 @@ const ProfilePicture = ({ image, containerProps, setImage }: Props) => {
 				setImage(image);
 				setModalOpen(false);
 			})
-			.catch((error) => {
-				console.log(error);
-			});
+			.catch(console.error);
 	};
 
 	const handleTakePhoto = async () => {
@@ -62,9 +60,7 @@ const ProfilePicture = ({ image, containerProps, setImage }: Props) => {
 				if (result.canceled) return;
 				setImage(result.assets[0].uri);
 			})
-			.catch((error) => {
-				console.log(error);
-			});
+			.catch(console.error);
 
 		setModalOpen(false);
 	};

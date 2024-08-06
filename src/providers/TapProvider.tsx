@@ -2,24 +2,25 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { TContinueWatchingTap, TTap, TProfile } from '../types';
 import {
 	getAllTaps,
-	getTapsWithProgressForUser,
-	getProfileDiscoverTaps,
+	getProcessPercentageForTaps,
+	getUnwatchedTaps,
 } from '../database/services/TapService';
+import { useAuth } from './AuthProvider';
+import { useCompany } from './CompanyProvider';
+import WelcomeScreen from '../screens/WelcomeScreen';
 
 const TapContext = React.createContext<{
 	loadingInitial: boolean;
 	taps: TTap[];
 	discoverTaps: TTap[];
-	userTaps: TContinueWatchingTap[];
-	getDiscoverTaps: (user: TProfile) => void;
-	getProfileTaps: (user: TProfile) => void;
+	tapProgressPercentages: Record<string, number>;
+	getProgressForTap: (tapId: string) => number;
 }>({
 	loadingInitial: true,
 	taps: [],
 	discoverTaps: [],
-	userTaps: [],
-	getDiscoverTaps: () => {},
-	getProfileTaps: () => {},
+	tapProgressPercentages: {},
+	getProgressForTap: () => 0,
 });
 
 type Props = {
@@ -27,68 +28,67 @@ type Props = {
 };
 
 export const TapProvider = ({ children }: Props) => {
+	const { user } = useAuth();
+	const { company } = useCompany();
 	const [taps, setTaps] = useState<TTap[]>([]);
-	const [userTaps, setUserTaps] = useState<TContinueWatchingTap[]>([]);
+	const [tapProgressPercentages, setTapProgressPercentages] = useState<
+		Record<string, number>
+	>({});
 	const [discoverTaps, setDiscoverTaps] = useState<TTap[]>([]);
-	const [userTapsDone, setUserTapsDone] = useState<boolean>(false);
-	const [discoverTapsDone, setDiscoverTapsDone] = useState<boolean>(false);
 	const [allTapsDone, setAllTapsDone] = useState<boolean>(false);
 
 	// User Taps
-	const getProfileTaps = (user: TProfile) => {
-		if (!user?.uid) return [];
-		getTapsWithProgressForUser(user).then((taps) => {
-			setUserTaps(taps ?? []);
-			setUserTapsDone(true);
-		});
-	};
-
-	// Discover Taps
-	const getDiscoverTaps = (user: TProfile) => {
-		if (!user?.uid) return [];
-		getProfileDiscoverTaps(user).then((taps) => {
-			setDiscoverTaps(taps ?? []);
-			setDiscoverTapsDone(true);
-		});
+	const getProgressForTap = (tapId: string) => {
+		if (!user?.uid) return 0;
+		if (!tapProgressPercentages[tapId]) return 0;
+		return tapProgressPercentages[tapId];
 	};
 
 	// All Taps
 	useEffect(() => {
 		const getAll = () => {
-			getAllTaps().then((taps) => {
-				setTaps(taps ?? []);
-				setAllTapsDone(true);
-			});
+			if (!user?.uid) return;
+			if (!company) return;
+			try {
+				getAllTaps(company).then((taps) => {
+					setTaps(taps ?? []);
+					setAllTapsDone(true);
+					const unwatchedTaps = getUnwatchedTaps(user, taps);
+					setDiscoverTaps(unwatchedTaps ?? []);
+					const percentages = getProcessPercentageForTaps(user, taps);
+					setTapProgressPercentages(percentages ?? {});
+				});
+			} catch (error) {
+				console.log('getAll in TapProvider ', error);
+			}
 		};
 		getAll();
 	}, []);
 
 	const loadingInitial = useMemo(() => {
-		return !(userTapsDone && discoverTapsDone && allTapsDone);
-	}, [userTapsDone, discoverTapsDone, allTapsDone]);
+		return !allTapsDone;
+	}, [allTapsDone]);
 
 	const tapProvProps = React.useMemo(
 		() => ({
 			loadingInitial,
 			taps,
 			discoverTaps,
-			userTaps,
-			getDiscoverTaps,
-			getProfileTaps,
+			tapProgressPercentages,
+			getProgressForTap,
 		}),
 		[
 			loadingInitial,
 			taps,
 			discoverTaps,
-			userTaps,
-			getDiscoverTaps,
-			getProfileTaps,
+			tapProgressPercentages,
+			getProgressForTap,
 		]
 	);
 
 	return (
 		<TapContext.Provider value={tapProvProps}>
-			{children}
+			{loadingInitial ? <WelcomeScreen /> : children}
 		</TapContext.Provider>
 	);
 };
