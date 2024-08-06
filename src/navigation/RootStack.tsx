@@ -26,6 +26,9 @@ import MyCompanyScreen from '../screens/MyComanyScreen';
 import '../utils/stringExtensions';
 import AddCompanyCodeScreen from '../screens/AddCompanyCodeScreen';
 import { useCompany } from '../providers/CompanyProvider';
+import StoryViewer from '../components/FrameViewer/components/StoryViewer';
+import VideoRecordingScreen from '../components/FrameViewer/components/VideoRecordingScreen';
+import PhotoCaptureScreen from '../components/FrameViewer/components/PhotoCaptureScreen';
 
 type Props = {};
 
@@ -117,6 +120,19 @@ const HomeStack = () => {
 					<Stack.Screen
 						name={Routes.TOPIC_SCREEN}
 						component={TopicScreen}
+					/>
+
+					<Stack.Screen
+						name={Routes.STORY_VIEWER}
+						component={StoryViewer}
+					/>
+					<Stack.Screen
+						name={Routes.STORY_VIDEO_RECORDING}
+						component={VideoRecordingScreen}
+					/>
+					<Stack.Screen
+						name={Routes.STORY_PHOTO_CAPTURE}
+						component={PhotoCaptureScreen}
 					/>
 				</>
 			) : (

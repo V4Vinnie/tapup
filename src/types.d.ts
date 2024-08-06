@@ -84,4 +84,47 @@ export type TCompany = {
 	primaryColor: string;
 };
 
-export type TStory = {};
+export type TStoryTypes = 'PHOTO' | 'VIDEO' | 'QUESTION' | 'PHOTO_QUESTION';
+
+export type TPhotoStory = {
+	id: string;
+	type: 'PHOTO';
+	image: string;
+	text?: string;
+	textPosition?: string;
+	caption?: string;
+};
+
+export type TVideoStory = {
+	id: string;
+	type: 'VIDEO';
+	video: string;
+	text?: string;
+	textPosition?: string;
+	caption?: string;
+};
+
+export type TQuestionStory = {
+	id: string;
+	type: 'QUESTION';
+	question: string;
+	description?: string;
+	answers?: string[];
+	correctAnswer?: number;
+};
+
+export type TPhotoQuestionStory = {
+	id: string;
+	type: 'PHOTO_QUESTION';
+	image: string;
+	question: string;
+	description?: string;
+	answers?: string[];
+	correctAnswer?: number;
+};
+
+export type TStory =
+	| TPhotoStory
+	| TVideoStory
+	| TQuestionStory
+	| TPhotoQuestionStory;

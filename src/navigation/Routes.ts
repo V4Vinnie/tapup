@@ -20,6 +20,9 @@ export const Routes = {
 	PRIVACY_POLICY: 'PrivacyPolicy',
 	MY_COMPANY: 'MyCompany',
 	ADD_COMPANY_CODE: 'AddCompanyCode',
+	STORY_VIEWER: 'StoryViewer',
+	STORY_VIDEO_RECORDING: 'StoryVideoRecording',
+	STORY_PHOTO_CAPTURE: 'StoryPhotoCapture',
 } as const;
 
 export type RootStackParamList = {
@@ -60,4 +63,14 @@ export type RootStackParamList = {
 	PrivacyPolicy: undefined;
 	MyCompany: undefined;
 	AddCompanyCode: undefined;
+	StoryViewer: {
+		newVideoUri?: string;
+		newPhotoUri?: string;
+	};
+	StoryVideoRecording: {
+		onCapture?: (uri: string) => void;
+	};
+	StoryPhotoCapture: {
+		onCapture?: (uri: string) => void;
+	};
 };

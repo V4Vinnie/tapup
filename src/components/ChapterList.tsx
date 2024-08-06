@@ -3,10 +3,12 @@ import { TChapter, TProfile, TStory } from '../types';
 import { useAuth } from '../providers/AuthProvider';
 import { useEffect, useMemo, useState } from 'react';
 import { onUser } from '../database/services/UserService';
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { getProgressForChapters } from '../database/services/TapService';
 import ChapterComponent, { ChapterComponentSkeleton } from './ChapterComponent';
 import { makeStoriesFromChapters } from '../utils/storyUtils';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList, Routes } from '../navigation/Routes';
 
 type Props = {
 	chapters: TChapter[];
@@ -22,6 +24,8 @@ const ChapterList = ({
 	loading,
 	chapterProgress,
 }: Props) => {
+	const { navigate } =
+		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const { user } = useAuth();
 	const isFocused = useIsFocused();
 	const [progress, setProgress] = useState<Map<string, number>>(
@@ -80,8 +84,9 @@ const ChapterList = ({
 				return (
 					<ChapterComponent
 						key={chapter.chapterId}
-						// TODO LINK TO CHAPTER VIEWER
-						onPress={() => {}}
+						onPress={() => {
+							navigate(Routes.STORY_VIEWER, {});
+						}}
 						episodeNumber={index + 1}
 						progress={progress.get(chapter.chapterId)}
 						text={chapter.name}
