@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { primaryColor } from '../utils/constants';
 import { TCompany } from '../types';
+import { setCompanyCodeInProfile } from '../database/services/UserService';
 
 const CompanyContext = React.createContext<{
 	companyColor: string;

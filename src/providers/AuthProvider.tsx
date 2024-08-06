@@ -8,6 +8,7 @@ import {
 	loginUser,
 	registerUser,
 	sendForgotPasswordEmail,
+	setCompanyCodeInProfile,
 	updateUser,
 } from '../database/services/UserService';
 import { RootStackParamList } from '../navigation/Routes';
@@ -45,6 +46,7 @@ const AuthContext = React.createContext<{
 		email: string,
 		setLoading: React.Dispatch<React.SetStateAction<boolean>>
 	) => void;
+	handleSetCompanyCode: (companyCode: string) => void;
 }>({
 	user: null,
 	handleUpdateUser: () => {},
@@ -65,6 +67,7 @@ const AuthContext = React.createContext<{
 		email: string,
 		setLoading: React.Dispatch<React.SetStateAction<boolean>>
 	) => {},
+	handleSetCompanyCode: (companyCode: string) => {},
 });
 
 type Props = {
@@ -180,6 +183,11 @@ export const AuthProvider = ({ children }: Props) => {
 			.finally(() => setLoading(false));
 	};
 
+	const handleSetCompanyCode = async (companyCode: string) => {
+		if (!user) return;
+		await setCompanyCodeInProfile(user, companyCode);
+	};
+
 	React.useEffect(
 		() =>
 			onAuthStateChanged(
@@ -223,6 +231,7 @@ export const AuthProvider = ({ children }: Props) => {
 			authErrors,
 			handleForgotPassword,
 			handleChangeProfilePic,
+			handleSetCompanyCode,
 		}),
 		[
 			user,
@@ -233,6 +242,7 @@ export const AuthProvider = ({ children }: Props) => {
 			authErrors,
 			handleForgotPassword,
 			handleChangeProfilePic,
+			handleSetCompanyCode,
 		]
 	);
 

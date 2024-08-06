@@ -24,7 +24,7 @@ const AddCompanyCode = ({
 	addButtonPress,
 	skipButtonPress,
 }: Props) => {
-	const { authErrors } = useAuth();
+	const { authErrors, handleSetCompanyCode } = useAuth();
 	const { companyColor, setCompany } = useCompany();
 	const [code, setCode] = useState<string | undefined>();
 	const [foundCompany, setFoundCompany] = useState<TCompany | null>(null);
@@ -47,6 +47,12 @@ const AddCompanyCode = ({
 			setCompany(null);
 		}
 	}, [foundCompany]);
+
+	const setCompanyCode = () => {
+		if (foundCompany) {
+			handleSetCompanyCode(foundCompany.code);
+		}
+	};
 
 	return (
 		<View
@@ -106,6 +112,7 @@ const AddCompanyCode = ({
 					title={buttonText}
 					onPress={() => {
 						setCompany(foundCompany);
+						setCompanyCode();
 						addButtonPress();
 					}}
 				/>
