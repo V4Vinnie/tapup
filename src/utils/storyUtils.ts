@@ -20,8 +20,8 @@ export async function makeStoriesFromChapters(
 				id: frame.id,
 				sourceUrl: frame.media,
 				mediaType: frame.mediaType.toLowerCase() as
-					| 'image'
-					| 'video'
+					| 'IMAGE'
+					| 'VIDEO'
 					| 'component',
 				source: { uri: frame.media },
 			});

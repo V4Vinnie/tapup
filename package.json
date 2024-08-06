@@ -44,7 +44,13 @@
     "react-native-video": "^6.4.3",
     "typescript": "~5.3.3",
     "uglify-js": "^3.19.1",
-    "uuid": "^10.0.0"
+    "uuid": "^10.0.0",
+    "@react-native-picker/picker": "2.7.5",
+    "expo-av": "^14.0.6",
+    "expo-camera": "~15.0.14",
+    "expo-file-system": "~17.0.1",
+    "ffmpeg-kit-react-native": "^6.0.2",
+    "lucide-react-native": "^0.407.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
