@@ -71,6 +71,8 @@ const TapScreen = ({ route }: ProfileScreenProps) => {
 				const _tapProfile = await getProfileForTap(
 					selectedTap ?? initialTap
 				);
+				console.log('tapProfile', selectedTap);
+
 				if (_tapProfile) {
 					setTapProfile(_tapProfile);
 				}

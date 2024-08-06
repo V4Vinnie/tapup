@@ -11,8 +11,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { TChapter } from '../types';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import { Skeleton } from '@rneui/themed';
-import CustomStory from './Custom/CustomStory';
-// import { useVideoPlayer, VideoView } from 'expo-video';
 import Video from './Video';
 import { useCompany } from '../providers/CompanyProvider';
 

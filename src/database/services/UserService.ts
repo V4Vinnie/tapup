@@ -78,6 +78,7 @@ export async function registerUser(
 				companyInfo: {
 					companyCode: company?.code ?? '',
 					jobType: jobType,
+					companyRole: 'EMPLOYEE',
 				},
 				fullName,
 			} as TProfile).then(() => {
@@ -170,5 +171,22 @@ export async function changeProfilePicture(image: string, uid: string) {
 		return url;
 	} catch (error) {
 		console.error('changeProfilePicture in UserService ', error);
+	}
+}
+
+export async function setCompanyCodeInProfile(
+	user: TProfile,
+	companyCode: string
+) {
+	try {
+		updateDoc(doc(DB, COLLECTIONS.USERS, user.uid), {
+			companyInfo: {
+				companyCode,
+				jobType: user.companyInfo.jobType ?? '',
+				companyRole: user.companyInfo.companyRole,
+			},
+		});
+	} catch (error) {
+		console.error('setCompanyCodeInProfile in UserService ', error);
 	}
 }

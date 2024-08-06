@@ -83,3 +83,5 @@ export type TCompany = {
 	name: string;
 	primaryColor: string;
 };
+
+export type TStory = {};
