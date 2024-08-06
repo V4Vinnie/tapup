@@ -54,17 +54,9 @@ export type TContinueWatchingTap = TTap & {
 export type TChapter = {
 	chapterId: string;
 	name: string;
-	frames: TFrame[];
+	frames: TStory[];
 	tapId: string;
 	creatorId: string;
-};
-
-export type TFrame = {
-	id: string;
-	media: string;
-	mediaType: 'IMAGE' | 'VIDEO' | 'COMPONENT';
-	createdAt: Timestamp;
-	watchedBy?: string[];
 };
 
 export type TWatchedFrame = {

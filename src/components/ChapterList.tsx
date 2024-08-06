@@ -72,19 +72,23 @@ const ChapterList = ({
 			{chapters.map((chapter, index) => {
 				if (!chapter) return null;
 				const video =
-					chapter.frames[0].mediaType === 'VIDEO'
-						? chapter.frames[0].media
+					chapter.frames[0].type === 'VIDEO'
+						? chapter.frames[0].video
 						: undefined;
 				const thumbnail =
-					chapter.frames[0].mediaType === 'IMAGE'
-						? chapter.frames[0].media
+					chapter.frames[0].type === 'PHOTO'
+						? chapter.frames[0].image
 						: undefined;
+
+				const databaseStories = chapter.frames;
 
 				return (
 					<ChapterComponent
 						key={chapter.chapterId}
 						onPress={() => {
-							navigate(Routes.STORY_VIEWER, {});
+							navigate(Routes.STORY_VIEWER, {
+								databaseStories,
+							});
 						}}
 						episodeNumber={index + 1}
 						progress={progress[chapter.chapterId] ?? 0}

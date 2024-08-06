@@ -69,14 +69,16 @@ const PreviewComponent = ({
 	): Promise<string | undefined> => {
 		if (!chapter) return undefined;
 
-		switch (chapter.frames[frameIndex].mediaType) {
-			case 'IMAGE':
-				return chapter.frames[frameIndex].media;
+		switch (chapter.frames[frameIndex].type) {
+			case 'PHOTO':
+				return chapter.frames[frameIndex].image;
 			case 'VIDEO':
 				const videoPreviewPhoto = await generatePreviewPhoto(
-					chapter.frames[frameIndex].media
+					chapter.frames[frameIndex].video
 				);
 				return videoPreviewPhoto;
+			case 'PHOTO_QUESTION':
+				return chapter.frames[frameIndex].image;
 			default:
 				if (!chapter.frames[frameIndex + 1]) return undefined;
 				return getPreviewPhoto(chapter, frameIndex + 1);

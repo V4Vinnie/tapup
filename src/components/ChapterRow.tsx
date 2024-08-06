@@ -9,6 +9,7 @@ import { SKELETON_WAIT_TIME } from '../utils/constants';
 import { makeStoriesFromChapters } from '../utils/storyUtils';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../navigation/Routes';
+import { generatePreviewPhoto } from '../utils/getThumbnailFromVideo';
 
 type Props = {
 	chapters?: TChapter[];
@@ -31,7 +32,6 @@ const ChapterRow = ({
 	const [progress, setProgress] = useState<Record<string, number>>(
 		chapterProgress ?? {}
 	);
-	const [stories, setStories] = useState<TStory[]>([]);
 	const [imagesLoading, setImagesLoading] = useState<boolean>(true);
 	const [loadingAll, setLoadingAll] = useState<boolean>(true);
 
@@ -50,9 +50,17 @@ const ChapterRow = ({
 
 	useEffect(() => {
 		if (!chapters) return;
-		const imageUrls = chapters.map((chapter) => {
-			if (chapter.frames[0].media) {
-				return Image.prefetch(chapter.frames[0].media);
+		const imageUrls = chapters.map(async (chapter) => {
+			if (chapter.frames[0].type === 'PHOTO') {
+				return Image.prefetch(chapter.frames[0].image);
+			}
+			if (chapter.frames[0].type === 'VIDEO') {
+				const video = await generatePreviewPhoto(
+					chapter.frames[0].video
+				);
+				if (video) {
+					return Image.prefetch(video);
+				}
 			}
 		});
 		Promise.all(imageUrls).then(() => setImagesLoading(false));
@@ -68,13 +76,6 @@ const ChapterRow = ({
 		}
 	}, [dataLoading, chapters]);
 
-	useEffect(() => {
-		if (!chapters) return;
-		makeStoriesFromChapters(chapters).then((stories) =>
-			setStories(stories)
-		);
-	}, [chapters]);
-
 	return loadingAll || !chapters ? (
 		<ChapterRowSkeleton />
 	) : (
@@ -87,25 +88,31 @@ const ChapterRow = ({
 				contentContainerStyle={{
 					paddingHorizontal: 16,
 				}}
-				renderItem={({ item, index }) => (
-					<PreviewComponent
-						key={item.chapterId}
-						progress={progress[item.chapterId]}
-						text={item.name}
-						chapter={item}
-						containerProps={{
-							style: {
-								marginRight:
-									index === chapters!.length - 1
-										? 0
-										: SPACE_BETWEEN,
-							},
-						}}
-						onPress={() => {
-							navigate(Routes.STORY_VIEWER, {});
-						}}
-					/>
-				)}
+				renderItem={({ item, index }) => {
+					const databaseStories = item.frames;
+
+					return (
+						<PreviewComponent
+							key={item.chapterId}
+							progress={progress[item.chapterId]}
+							text={item.name}
+							chapter={item}
+							containerProps={{
+								style: {
+									marginRight:
+										index === chapters!.length - 1
+											? 0
+											: SPACE_BETWEEN,
+								},
+							}}
+							onPress={() => {
+								navigate(Routes.STORY_VIEWER, {
+									databaseStories,
+								});
+							}}
+						/>
+					);
+				}}
 			/>
 		</View>
 	);
