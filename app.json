@@ -2,7 +2,7 @@
 	"expo": {
 		"name": "TapUp Microlearning",
 		"slug": "TapUp",
-		"version": "1.0.0",
+		"version": "0.0.2",
 		"orientation": "portrait",
 		"owner": "zoomers",
 		"icon": "./assets/images/icon.png",
@@ -16,7 +16,7 @@
 		"ios": {
 			"supportsTablet": true,
 			"bundleIdentifier": "app.tap-up",
-			"buildNumber": "1.0.0",
+			"buildNumber": "0.0.2",
 			"infoPlist": {
 				"NSCameraUsageDescription": "This app uses the camera to take photos and videos.",
 				"NSMicrophoneUsageDescription": "This app uses the microphone to record audio.",
