@@ -1,5 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { Dimensions, Text, TouchableOpacity, View } from 'react-native';
+import {
+	Dimensions,
+	SafeAreaView,
+	Text,
+	TouchableOpacity,
+	View,
+} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
@@ -62,7 +68,7 @@ const SignupScreen = (props: Props) => {
 	}, [authErrors]);
 
 	return (
-		<View
+		<SafeAreaView
 			// keyboardShouldPersistTaps={'handled'}
 			style={scrollViewContainer}>
 			{/* // contentContainerStyle={scrollViewContentContainer} */}
@@ -142,7 +148,7 @@ const SignupScreen = (props: Props) => {
 					)}
 				</View>
 			</View>
-		</View>
+		</SafeAreaView>
 	);
 };
 

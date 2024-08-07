@@ -28,6 +28,7 @@ import { useCompany } from '../providers/CompanyProvider';
 import StoryViewer from '../components/FrameViewer/components/StoryViewer';
 import VideoRecordingScreen from '../components/FrameViewer/components/VideoRecordingScreen';
 import PhotoCaptureScreen from '../components/FrameViewer/components/PhotoCaptureScreen';
+import 'react-native-gesture-handler';
 
 type Props = {};
 
