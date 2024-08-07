@@ -14,7 +14,7 @@
 		"assetBundlePatterns": ["**/*"],
 		"ios": {
 			"supportsTablet": true,
-			"bundleIdentifier": "app.TapUp",
+			"bundleIdentifier": "app.tap-up",
 			"buildNumber": "1.0.0",
 			"infoPlist": {
 				"NSCameraUsageDescription": "This app uses the camera to take photos and videos.",

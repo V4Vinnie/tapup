@@ -45,7 +45,7 @@ export const TopicProvider = ({ children }: Props) => {
 		getAllTopics();
 	}, []);
 
-	const loadingInitial = useMemo(() => !allTopicsDone, [allTopicsDone]);
+	const loadingInitial = !allTopicsDone;
 
 	const topicProvProps = React.useMemo(
 		() => ({
@@ -59,7 +59,7 @@ export const TopicProvider = ({ children }: Props) => {
 
 	return (
 		<TopicContext.Provider value={topicProvProps}>
-			{loadingInitial ? <WelcomeScreen /> : children}
+			{loadingInitial ? null : children}
 		</TopicContext.Provider>
 	);
 };

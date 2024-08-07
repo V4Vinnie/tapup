@@ -1,13 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import {
-	Alert,
-	Dimensions,
-	PermissionsAndroid,
-	Platform,
-	Text,
-	TouchableOpacity,
-	View,
-} from 'react-native';
+import { Dimensions, Text, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
@@ -18,15 +10,11 @@ import {
 	scrollViewContentContainer,
 } from '../LoginScreen';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import * as ImagePicker from 'expo-image-picker';
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import { themeColors } from '../../utils/constants';
 import Swiper from 'react-native-swiper';
 import RegisterUserDetails from './RegisterUserDetails';
 import CustomSwiperDot from '../../components/CustomSwiperDot';
 import useKeyboard from '../../hooks/useKeyboard';
 import AddCompanyCode from './AddCompanyCode';
-import { TCompany } from '../../types';
 import AddInformation from './AddInformation';
 import { useAuth } from '../../providers/AuthProvider';
 import { useCompany } from '../../providers/CompanyProvider';
@@ -49,7 +37,7 @@ const SignupScreen = (props: Props) => {
 
 	const swiper = useRef<Swiper>(null);
 
-	const navigation =
+	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
 	const signUp = async () => {
@@ -144,7 +132,7 @@ const SignupScreen = (props: Props) => {
 							</Text>
 							<TouchableOpacity
 								onPress={() => {
-									navigation.navigate(Routes.LOGIN);
+									navigate(Routes.LOGIN);
 								}}>
 								<Text className='text-base font-inter-bold text-dark-textColor'>
 									{' Login'}

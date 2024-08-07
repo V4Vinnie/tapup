@@ -22,7 +22,6 @@ import { TapProvider } from '../providers/TapProvider';
 import { ProfileProvider } from '../providers/ProfileProvider';
 import AccountSettingsScreen from '../screens/AccountSettingsScreen';
 import PrivacyPolicyScreen from '../screens/PrivacyPolicyScreen';
-import MyCompanyScreen from '../screens/MyComanyScreen';
 import '../utils/stringExtensions';
 import AddCompanyCodeScreen from '../screens/AddCompanyCodeScreen';
 import { useCompany } from '../providers/CompanyProvider';
@@ -159,10 +158,6 @@ const AccountStack = () => {
 			<Stack.Screen
 				name={Routes.PRIVACY_POLICY}
 				component={PrivacyPolicyScreen}
-			/>
-			<Stack.Screen
-				name={Routes.MY_COMPANY}
-				component={MyCompanyScreen}
 			/>
 		</Stack.Navigator>
 	);

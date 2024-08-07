@@ -1,4 +1,4 @@
-import { Platform, SafeAreaView, ScrollView, View } from 'react-native';
+import { Image, Platform, SafeAreaView, ScrollView, View } from 'react-native';
 import SearchBar from '../../components/SearchBar';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -6,7 +6,6 @@ import { RootStackParamList, Routes } from '../../navigation/Routes';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
 import ContinueWatching from './ContinueWatching';
 import DiscoverTaps from '../../components/DiscoverTaps';
-import AddCompanyCode from '../SignupScreen/AddCompanyCode';
 import { useCompany } from '../../providers/CompanyProvider';
 
 type Props = {};
@@ -24,11 +23,22 @@ const HomeScreen = (props: Props) => {
 				style={{
 					marginTop: Platform.OS === 'ios' ? 20 : 48,
 				}}>
+				{company && (
+					<Image
+						source={{ uri: company.logo }}
+						style={{
+							height: 50,
+							marginBottom: 16,
+							padding: 16,
+						}}
+						resizeMode='contain'
+					/>
+				)}
 				<SearchBar
 					containerProps={{
 						style: {
 							position: 'absolute',
-							top: 0,
+							top: 60,
 							left: 0,
 							right: 0,
 							zIndex: 100,

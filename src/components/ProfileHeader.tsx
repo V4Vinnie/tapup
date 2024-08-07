@@ -35,14 +35,14 @@ const ProfileHeader = ({ profile, showDetails = true }: Props) => {
 				className='text-dark-textColor text-2xl font-inter-semiBold mt-2'>
 				{profile.name}
 			</Text>
-			{showDetails && (
+			{/* {showDetails && (
 				<ProfileDetails
 					followerAmount={followerAmount}
 					followingAmount={followingAmount}
 					likesAmount={likesAmount}
 					loading={loading}
 				/>
-			)}
+			)} */}
 		</View>
 	);
 };

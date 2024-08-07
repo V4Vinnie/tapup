@@ -7,7 +7,6 @@ import {
 } from '../database/services/TapService';
 import { useAuth } from './AuthProvider';
 import { useCompany } from './CompanyProvider';
-import WelcomeScreen from '../screens/WelcomeScreen';
 
 const TapContext = React.createContext<{
 	loadingInitial: boolean;
@@ -52,22 +51,20 @@ export const TapProvider = ({ children }: Props) => {
 			try {
 				getAllTaps(company).then((taps) => {
 					setTaps(taps ?? []);
-					setAllTapsDone(true);
 					const unwatchedTaps = getUnwatchedTaps(user, taps);
 					setDiscoverTaps(unwatchedTaps ?? []);
 					const percentages = getProcessPercentageForTaps(user, taps);
 					setTapProgressPercentages(percentages ?? {});
+					setAllTapsDone(true);
 				});
 			} catch (error) {
 				console.log('getAll in TapProvider ', error);
 			}
 		};
 		getAll();
-	}, []);
+	}, [company]);
 
-	const loadingInitial = useMemo(() => {
-		return !allTapsDone;
-	}, [allTapsDone]);
+	const loadingInitial = false;
 
 	const tapProvProps = React.useMemo(
 		() => ({
@@ -88,7 +85,7 @@ export const TapProvider = ({ children }: Props) => {
 
 	return (
 		<TapContext.Provider value={tapProvProps}>
-			{loadingInitial ? <WelcomeScreen /> : children}
+			{loadingInitial ? null : children}
 		</TapContext.Provider>
 	);
 };

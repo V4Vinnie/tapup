@@ -74,6 +74,7 @@ export type TCompany = {
 	code: string;
 	name: string;
 	primaryColor: string;
+	logo: string;
 };
 
 export type TStoryTypes = 'PHOTO' | 'VIDEO' | 'QUESTION' | 'PHOTO_QUESTION';
