@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, Pressable, View } from 'react-native';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import { mode, themeColors } from '../utils/constants';
 import { Skeleton } from '@rneui/themed';
@@ -12,7 +12,7 @@ type Props = {
 
 const SectionHeader = ({ title, onPress, icon }: Props) => {
 	return onPress ? (
-		<TouchableOpacity onPress={onPress} className='w-full px-4'>
+		<Pressable onPress={onPress} className='w-full px-4'>
 			<View className='w-full flex-row items-center justify-between pt-5 pb-3 mt-4'>
 				<Text
 					numberOfLines={1}
@@ -28,7 +28,7 @@ const SectionHeader = ({ title, onPress, icon }: Props) => {
 					/>
 				)}
 			</View>
-		</TouchableOpacity>
+		</Pressable>
 	) : (
 		<View className='w-full px-4'>
 			<View className='w-full flex-row items-center justify-start pt-5 pb-3 mt-4'>

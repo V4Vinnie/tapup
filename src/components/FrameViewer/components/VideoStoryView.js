@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, Pressable, ActivityIndicator } from 'react-native';
 import { Video, Audio } from 'expo-av';
 import { Play, Pause, Volume2, VolumeX } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -89,7 +89,7 @@ const VideoStoryView = ({ story, setNextButtonDisabled }) => {
           <View className="flex-row justify-between items-center">
             <Text className="text-white text-sm flex-1 mr-4">{story.caption}</Text>
             <View className="flex-row">
-              <TouchableOpacity
+              <Pressable
                 onPress={toggleMute}
                 className="bg-gray-800 bg-opacity-75 rounded-full p-2 mr-2"
               >
@@ -98,8 +98,8 @@ const VideoStoryView = ({ story, setNextButtonDisabled }) => {
                 ) : (
                   <Volume2 size={20} color="white" />
                 )}
-              </TouchableOpacity>
-              <TouchableOpacity
+              </Pressable>
+              <Pressable
                 onPress={togglePlay}
                 className="bg-gray-800 bg-opacity-75 rounded-full p-2"
               >
@@ -108,7 +108,7 @@ const VideoStoryView = ({ story, setNextButtonDisabled }) => {
                 ) : (
                   <Play size={20} color="white" />
                 )}
-              </TouchableOpacity>
+              </Pressable>
             </View>
           </View>
         </View>

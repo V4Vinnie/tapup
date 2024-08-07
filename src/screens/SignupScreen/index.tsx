@@ -3,7 +3,7 @@ import {
 	Dimensions,
 	SafeAreaView,
 	Text,
-	TouchableOpacity,
+	Pressable,
 	View,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -136,14 +136,14 @@ const SignupScreen = (props: Props) => {
 							<Text className='text-base font-inter-regular text-dark-subTextColor'>
 								{'Already have an account?'}
 							</Text>
-							<TouchableOpacity
+							<Pressable
 								onPress={() => {
 									navigate(Routes.LOGIN);
 								}}>
 								<Text className='text-base font-inter-bold text-dark-textColor'>
 									{' Login'}
 								</Text>
-							</TouchableOpacity>
+							</Pressable>
 						</View>
 					)}
 				</View>

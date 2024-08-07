@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Text, TextInput, Pressable, View } from 'react-native';
 import { useCompany } from '../../providers/CompanyProvider';
 import FoundationIcon from 'react-native-vector-icons/Foundation';
 import Modal from 'react-native-modal';
@@ -34,7 +34,7 @@ const ChangeSetting = ({
 
 	return (
 		<>
-			<TouchableOpacity
+			<Pressable
 				onPress={() => {
 					setModalVisible(true);
 					setTimeout(() => inputRef.current?.focus(), 500);
@@ -63,7 +63,7 @@ const ChangeSetting = ({
 						</Text>
 					)}
 				</View>
-			</TouchableOpacity>
+			</Pressable>
 			<Modal
 				isVisible={modalVisible}
 				onBackdropPress={() => setModalVisible(false)}
@@ -94,14 +94,14 @@ const ChangeSetting = ({
 					</View>
 
 					<View className='flex flex-row justify-end items-center gap-x-12 mt-4'>
-						<TouchableOpacity
+						<Pressable
 							className=''
 							onPress={() => setModalVisible(false)}>
 							<Text className='text-sm font-inter-regular text-center text-dark-textColor leading-4 tracking-wider'>
 								Cancel
 							</Text>
-						</TouchableOpacity>
-						<TouchableOpacity
+						</Pressable>
+						<Pressable
 							className='flex items-center rounded-full'
 							onPress={() => {
 								setModalVisible(false);
@@ -114,7 +114,7 @@ const ChangeSetting = ({
 								}}>
 								Save
 							</Text>
-						</TouchableOpacity>
+						</Pressable>
 					</View>
 				</View>
 			</Modal>

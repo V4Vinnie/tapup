@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { View, TouchableOpacity, Text, TextInput } from 'react-native';
+import { View, Pressable, Text, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ChevronLeft, ChevronRight } from 'lucide-react-native';
 import StoryViewItem from './StoryViewItem';
@@ -179,28 +179,28 @@ const StoryViewer = ({ route }: StoryViewerProps) => {
 					<Text className='text-white text-xl font-bold mb-4'>
 						Add New Story
 					</Text>
-					<TouchableOpacity
+					<Pressable
 						className='bg-blue-500 p-4 rounded-xl mb-2'
 						onPress={() => setNewStoryType('PHOTO')}>
 						<Text className='text-white text-lg'>Photo</Text>
-					</TouchableOpacity>
-					<TouchableOpacity
+					</Pressable>
+					<Pressable
 						className='bg-blue-500 p-4 rounded-xl mb-2'
 						onPress={() => setNewStoryType('VIDEO')}>
 						<Text className='text-white text-lg'>Video</Text>
-					</TouchableOpacity>
-					<TouchableOpacity
+					</Pressable>
+					<Pressable
 						className='bg-blue-500 p-4 rounded-xl mb-2'
 						onPress={() => setNewStoryType('QUESTION')}>
 						<Text className='text-white text-lg'>Question</Text>
-					</TouchableOpacity>
-					<TouchableOpacity
+					</Pressable>
+					<Pressable
 						className='bg-blue-500 p-4 rounded-xl mb-2'
 						onPress={() => setNewStoryType('PHOTO_QUESTION')}>
 						<Text className='text-white text-lg'>
 							Photo Question
 						</Text>
-					</TouchableOpacity>
+					</Pressable>
 				</View>
 			);
 		}
@@ -224,7 +224,7 @@ const StoryViewer = ({ route }: StoryViewerProps) => {
 						value={newStoryText}
 						onChangeText={setNewStoryText}
 					/>
-					<TouchableOpacity
+					<Pressable
 						className='bg-blue-500 p-4 rounded-xl mb-2'
 						onPress={
 							newStoryType === 'PHOTO'
@@ -236,7 +236,7 @@ const StoryViewer = ({ route }: StoryViewerProps) => {
 								? 'Take Photo'
 								: 'Record Video'}
 						</Text>
-					</TouchableOpacity>
+					</Pressable>
 				</View>
 			);
 		}
@@ -272,7 +272,7 @@ const StoryViewer = ({ route }: StoryViewerProps) => {
 									setNewQuestionAnswers(newAnswers);
 								}}
 							/>
-							<TouchableOpacity
+							<Pressable
 								className='bg-red-500 p-2 rounded-xl'
 								onPress={() => {
 									const newAnswers =
@@ -285,10 +285,10 @@ const StoryViewer = ({ route }: StoryViewerProps) => {
 									}
 								}}>
 								<Text className='text-white'>Remove</Text>
-							</TouchableOpacity>
+							</Pressable>
 						</View>
 					))}
-					<TouchableOpacity
+					<Pressable
 						className='bg-green-500 p-2 rounded-xl mb-4'
 						onPress={() =>
 							setNewQuestionAnswers([...newQuestionAnswers, ''])
@@ -296,29 +296,29 @@ const StoryViewer = ({ route }: StoryViewerProps) => {
 						<Text className='text-white text-center'>
 							Add Answer
 						</Text>
-					</TouchableOpacity>
+					</Pressable>
 					<Text className='text-white mb-2'>
 						Select correct answer:
 					</Text>
 					<View className='flex-row flex-wrap'>
 						{newQuestionAnswers.map((_, index) => (
-							<TouchableOpacity
+							<Pressable
 								key={index}
 								className={`p-2 rounded-xl mr-2 mb-2 ${newQuestionCorrectAnswer === index ? 'bg-blue-500' : 'bg-gray-700'}`}
 								onPress={() =>
 									setNewQuestionCorrectAnswer(index)
 								}>
 								<Text className='text-white'>{index + 1}</Text>
-							</TouchableOpacity>
+							</Pressable>
 						))}
 					</View>
-					<TouchableOpacity
+					<Pressable
 						className='bg-blue-500 p-4 rounded-xl mt-4'
 						onPress={addNewQuestion}>
 						<Text className='text-white text-lg text-center'>
 							Add Question
 						</Text>
-					</TouchableOpacity>
+					</Pressable>
 				</View>
 			);
 		}
@@ -366,7 +366,7 @@ const StoryViewer = ({ route }: StoryViewerProps) => {
 					{!isEditing && (
 						<View className='h-16 justify-end mb-4'>
 							<View className='flex-row justify-between'>
-								<TouchableOpacity
+								<Pressable
 									onPress={() => navigateStory(-1)}
 									className='bg-gray-800 rounded-full p-3 w-[30%] h-12 justify-center items-center'
 									disabled={currentIndex === 0}>
@@ -378,8 +378,8 @@ const StoryViewer = ({ route }: StoryViewerProps) => {
 										}
 										size={24}
 									/>
-								</TouchableOpacity>
-								<TouchableOpacity
+								</Pressable>
+								<Pressable
 									onPress={() => {
 										isOnLastFrame
 											? goBack()
@@ -395,7 +395,7 @@ const StoryViewer = ({ route }: StoryViewerProps) => {
 										{isOnLastFrame ? 'Finish' : 'Next'}
 									</Text>
 									<ChevronRight color='white' size={20} />
-								</TouchableOpacity>
+								</Pressable>
 							</View>
 						</View>
 					)}

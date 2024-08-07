@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { Check } from 'lucide-react-native';
 
 const AnswerOption = ({
@@ -10,7 +10,7 @@ const AnswerOption = ({
   showResult,
   onPress
 }) => (
-  <TouchableOpacity
+  <Pressable
     onPress={() => onPress(index)}
     className={`w-full py-3 px-4 rounded-xl mb-3 ${isSelected
         ? index === correctAnswer
@@ -26,7 +26,7 @@ const AnswerOption = ({
         <Check color="white" size={20} />
       )}
     </View>
-  </TouchableOpacity>
+  </Pressable>
 );
 
 export default AnswerOption;

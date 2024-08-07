@@ -2,7 +2,7 @@ import {
 	SafeAreaView,
 	ScrollView,
 	Text,
-	TouchableOpacity,
+	Pressable,
 	View,
 } from 'react-native';
 import { useAuth } from '../../providers/AuthProvider';

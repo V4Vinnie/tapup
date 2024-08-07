@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, Pressable, View } from 'react-native';
 import AppInput from '../../components/AppInput';
 import AppButton from '../../components/AppButton';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
@@ -138,7 +138,7 @@ const RegisterUserDetails = ({
 					}}
 					rightIcon={{
 						component: (
-							<TouchableOpacity
+							<Pressable
 								onPress={() => setHidePassword(!hidePassword)}>
 								{hidePassword ? (
 									<EntypoIcon
@@ -153,7 +153,7 @@ const RegisterUserDetails = ({
 										color={'gray'}
 									/>
 								)}
-							</TouchableOpacity>
+							</Pressable>
 						),
 					}}
 					inputProps={{

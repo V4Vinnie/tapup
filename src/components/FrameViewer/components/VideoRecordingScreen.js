@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { Video, Audio } from 'expo-av';
@@ -85,12 +85,12 @@ const VideoRecordingScreen = ({ navigation }) => {
     return (
       <SafeAreaView className="flex-1 justify-center items-center bg-gray-900">
         <Text className="text-white mb-4">We need your permission to use the camera and microphone</Text>
-        <TouchableOpacity className="bg-blue-500 rounded-full px-6 py-3" onPress={() => {
+        <Pressable className="bg-blue-500 rounded-full px-6 py-3" onPress={() => {
           requestCameraPermission();
           requestAudioPermission();
         }}>
           <Text className="text-white text-base">Grant Permissions</Text>
-        </TouchableOpacity>
+        </Pressable>
       </SafeAreaView>
     );
   }
@@ -123,9 +123,9 @@ const VideoRecordingScreen = ({ navigation }) => {
             className="absolute top-0 left-0 right-0 h-20 z-10"
           />
           <View className="absolute top-0 left-0 right-0 p-4 flex-row justify-between items-center z-20">
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Pressable onPress={() => navigation.goBack()}>
               <X color="white" size={24} />
-            </TouchableOpacity>
+            </Pressable>
             <Text className="text-white text-lg font-bold">
               {videoUri ? 'Preview Video' : 'Record Video'}
             </Text>
@@ -135,7 +135,7 @@ const VideoRecordingScreen = ({ navigation }) => {
         
         <View className="mt-4 flex-row justify-center items-center">
           {!videoUri ? (
-            <TouchableOpacity
+            <Pressable
               className="bg-red-500 p-4 rounded-full"
               onPress={isRecording ? stopRecording : startRecording}
             >
@@ -144,29 +144,29 @@ const VideoRecordingScreen = ({ navigation }) => {
               ) : (
                 <VideoIcon color="white" size={32} />
               )}
-            </TouchableOpacity>
+            </Pressable>
           ) : (
             <View className="flex-row justify-center items-center space-x-8">
-              <TouchableOpacity className="bg-red-500 p-3 rounded-full" onPress={discardVideo}>
+              <Pressable className="bg-red-500 p-3 rounded-full" onPress={discardVideo}>
                 <X color="white" size={24} />
-              </TouchableOpacity>
-              <TouchableOpacity className="bg-blue-500 p-3 rounded-full" onPress={togglePlayPause}>
+              </Pressable>
+              <Pressable className="bg-blue-500 p-3 rounded-full" onPress={togglePlayPause}>
                 {isPlaying ? (
                   <Pause color="white" size={24} />
                 ) : (
                   <Play color="white" size={24} />
                 )}
-              </TouchableOpacity>
-              <TouchableOpacity className="bg-gray-500 p-3 rounded-full" onPress={toggleMute}>
+              </Pressable>
+              <Pressable className="bg-gray-500 p-3 rounded-full" onPress={toggleMute}>
                 {isMuted ? (
                   <VolumeX color="white" size={24} />
                 ) : (
                   <Volume2 color="white" size={24} />
                 )}
-              </TouchableOpacity>
-              <TouchableOpacity className="bg-green-500 p-3 rounded-full" onPress={saveVideo}>
+              </Pressable>
+              <Pressable className="bg-green-500 p-3 rounded-full" onPress={saveVideo}>
                 <Check color="white" size={24} />
-              </TouchableOpacity>
+              </Pressable>
             </View>
           )}
         </View>

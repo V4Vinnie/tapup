@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, Pressable } from 'react-native';
 import { Camera, Edit, Plus, Trash2 } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import ProgressBar from './ProgressBar';
@@ -27,15 +27,15 @@ const StoryHeader = ({
             <Text className="text-gray-200 text-lg ml-1">Safety</Text>
           </View>
           <View className="flex-row space-x-6">
-            <TouchableOpacity onPress={() => setIsEditing(!isEditing)}>
+            <Pressable onPress={() => setIsEditing(!isEditing)}>
               <Edit size={24} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={openModal}>
+            </Pressable>
+            <Pressable onPress={openModal}>
               <Plus size={24} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={deleteCurrentStory}>
+            </Pressable>
+            <Pressable onPress={deleteCurrentStory}>
               <Trash2 size={24} color="white" />
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </View>
       </View>

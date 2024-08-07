@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
 	View,
 	TextInput,
-	TouchableOpacity,
+	Pressable,
 	Text,
 	ScrollView,
 } from 'react-native';
@@ -133,7 +133,7 @@ const StoryEditor = ({ story, updateStory }: Props) => {
 				{(editedStory.type === 'PHOTO' ||
 					editedStory.type === 'PHOTO_QUESTION' ||
 					editedStory.type === 'VIDEO') && (
-					<TouchableOpacity
+					<Pressable
 						onPress={handleCapture}
 						className='flex-row items-center bg-blue-500 p-3 rounded-xl mt-4 mb-2'>
 						<Camera color='white' size={24} />
@@ -142,7 +142,7 @@ const StoryEditor = ({ story, updateStory }: Props) => {
 								? 'Capture New Video'
 								: 'Capture New Photo'}
 						</Text>
-					</TouchableOpacity>
+					</Pressable>
 				)}
 
 				{editedStory.type === 'PHOTO' && (
@@ -227,18 +227,18 @@ const StoryEditor = ({ story, updateStory }: Props) => {
 									placeholderTextColor='#9CA3AF'
 									className='bg-gray-700 text-white p-3 rounded-xl flex-grow mr-2'
 								/>
-								<TouchableOpacity
+								<Pressable
 									onPress={() => removeAnswer(index)}
 									className='bg-red-500 p-3 rounded-xl'>
 									<X color='white' size={20} />
-								</TouchableOpacity>
+								</Pressable>
 							</View>
 						))}
-						<TouchableOpacity
+						<Pressable
 							onPress={addAnswer}
 							className='bg-green-500 p-3 rounded-xl mb-4'>
 							<Plus color='white' size={20} />
-						</TouchableOpacity>
+						</Pressable>
 						<Text className='text-white mb-2'>Correct Answer</Text>
 						<Picker
 							selectedValue={editedStory.correctAnswer}
@@ -260,13 +260,13 @@ const StoryEditor = ({ story, updateStory }: Props) => {
 					</>
 				)}
 
-				<TouchableOpacity
+				<Pressable
 					onPress={handleSubmit}
 					className='bg-blue-500 p-4 rounded-xl mt-6'>
 					<Text className='text-white text-center text-lg font-bold'>
 						Save Changes
 					</Text>
-				</TouchableOpacity>
+				</Pressable>
 			</View>
 		</ScrollView>
 	);

@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, Pressable } from 'react-native';
 import React, { useEffect, useMemo } from 'react';
 import { TTap, TTopic } from '../types';
 import { mode, themeColors } from '../utils/constants';
@@ -66,7 +66,7 @@ const FullInfoTap = ({ tap, containerProps, isNew, loading }: Props) => {
 	return loading || !tap || !topic ? (
 		<FullInfoTapSkeleton />
 	) : (
-		<TouchableOpacity
+		<Pressable
 			className='w-full flex flex-row'
 			{...containerProps}
 			onPress={() =>
@@ -128,7 +128,7 @@ const FullInfoTap = ({ tap, containerProps, isNew, loading }: Props) => {
 					</Text>
 				</View>
 			</View>
-		</TouchableOpacity>
+		</Pressable>
 	);
 };
 

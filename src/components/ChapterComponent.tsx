@@ -2,7 +2,7 @@ import {
 	GestureResponderEvent,
 	Image,
 	Text,
-	TouchableOpacity,
+	Pressable,
 	View,
 } from 'react-native';
 import { mode, themeColors } from '../utils/constants';
@@ -80,7 +80,7 @@ const ChapterComponent = ({
 	}, [fullChapter]);
 
 	return (
-		<TouchableOpacity
+		<Pressable
 			className='w-full flex-row space-x-4'
 			{...containerProps}
 			onPress={onPress}>
@@ -137,7 +137,7 @@ const ChapterComponent = ({
 					<AntIcon name='arrowright' size={20} color={companyColor} />
 				</View>
 			</View>
-		</TouchableOpacity>
+		</Pressable>
 	);
 };
 

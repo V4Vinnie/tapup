@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, Pressable } from 'react-native';
 import React from 'react';
 import { TNotificationProfile, TProfile } from '../types';
 import { useNavigation } from '@react-navigation/native';
@@ -27,7 +27,7 @@ const ProfileComponent = ({
 
 	const notification = 'notification' in profile ? profile.notification : 0;
 	return (
-		<TouchableOpacity
+		<Pressable
 			onPress={() =>
 				navigate(Routes.PROFILE_SCREEN, {
 					profile,
@@ -69,7 +69,7 @@ const ProfileComponent = ({
 					{profile.name}
 				</Text>
 			)}
-		</TouchableOpacity>
+		</Pressable>
 	);
 };
 

@@ -2,7 +2,7 @@ import {
 	GestureResponderEvent,
 	Image,
 	Text,
-	TouchableOpacity,
+	Pressable,
 	View,
 } from 'react-native';
 import { mode, themeColors } from '../utils/constants';
@@ -113,7 +113,7 @@ const PreviewComponent = ({
 	return loading ? (
 		<PreviewComponentSkeleton />
 	) : (
-		<TouchableOpacity
+		<Pressable
 			onPress={handleOnPress}
 			className='w-32 h-44 rounded-lg overflow-hidden'
 			{...containerProps}>
@@ -141,7 +141,7 @@ const PreviewComponent = ({
 					/>
 				</View>
 			)}
-		</TouchableOpacity>
+		</Pressable>
 	);
 };
 

@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, Pressable, Platform } from 'react-native';
 import React from 'react';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
@@ -23,13 +23,13 @@ const SearchbarHeader = ({ onSearch, text = 'Search', autoFocus }: Props) => {
 			style={{
 				marginTop: Platform.OS === 'ios' ? 0 : 32,
 			}}>
-			<TouchableOpacity className='mr-4 mt-5' onPress={() => goBack()}>
+			<Pressable className='mr-4 mt-5' onPress={() => goBack()}>
 				<IonIcon
 					name='arrow-back'
 					size={24}
 					color={themeColors[mode].headerPrimaryColor}
 				/>
-			</TouchableOpacity>
+			</Pressable>
 			<InlineSearchBar
 				onSearch={onSearch}
 				text={text}

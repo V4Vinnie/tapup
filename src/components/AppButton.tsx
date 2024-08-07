@@ -1,12 +1,12 @@
 import React, { ReactNode } from 'react';
-import { Text, TouchableOpacity } from 'react-native';
+import { Text, Pressable } from 'react-native';
 import PrimaryGradient from './PrimaryGradient';
 import { useCompany } from '../providers/CompanyProvider';
 
 type Props = {
 	title: string;
 	onPress: () => void;
-	buttonProps?: TouchableOpacity['props'];
+	buttonProps?: Pressable['props'];
 	textProps?: Text['props'];
 	children?: ReactNode;
 };
@@ -21,7 +21,7 @@ const AppButton = ({
 	const { isCompanyColorSet, companyColor } = useCompany();
 
 	return (
-		<TouchableOpacity
+		<Pressable
 			{...buttonProps}
 			onPress={onPress}
 			className={`w-full justify-center items-center rounded-full`}>
@@ -40,7 +40,7 @@ const AppButton = ({
 					</Text>
 				)}
 			</PrimaryGradient>
-		</TouchableOpacity>
+		</Pressable>
 	);
 };
 

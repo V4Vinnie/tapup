@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, Pressable } from 'react-native';
 import { Check, X } from 'lucide-react-native';
 
 const QuestionHandler = ({ question, answers, correctAnswer }) => {
@@ -17,7 +17,7 @@ const QuestionHandler = ({ question, answers, correctAnswer }) => {
     <View className="flex-1 justify-center items-center p-4">
       <Text className="text-white text-xl font-bold mb-4">{question}</Text>
       {answers.map((answer, index) => (
-        <TouchableOpacity
+        <Pressable
           key={index}
           className={`w-full py-3 px-4 rounded-full mb-2 ${
             selectedAnswer === index
@@ -30,7 +30,7 @@ const QuestionHandler = ({ question, answers, correctAnswer }) => {
           disabled={showResult}
         >
           <Text className="text-white">{answer}</Text>
-        </TouchableOpacity>
+        </Pressable>
       ))}
       {showResult && (
         <View className="mt-4 items-center">

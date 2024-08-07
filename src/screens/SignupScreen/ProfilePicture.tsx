@@ -2,7 +2,7 @@ import {
 	View,
 	Text,
 	Image,
-	TouchableOpacity,
+	Pressable,
 	Alert,
 	Platform,
 } from 'react-native';
@@ -67,7 +67,7 @@ const ProfilePicture = ({ image, containerProps, setImage }: Props) => {
 
 	return (
 		<>
-			<TouchableOpacity
+			<Pressable
 				onPress={() => setModalOpen(true)}
 				className='items-center'
 				{...containerProps}>
@@ -96,7 +96,7 @@ const ProfilePicture = ({ image, containerProps, setImage }: Props) => {
 						/>
 					</View>
 				</View>
-			</TouchableOpacity>
+			</Pressable>
 			<Modal
 				isVisible={modalOpen}
 				onBackdropPress={() => setModalOpen(false)}
@@ -110,7 +110,7 @@ const ProfilePicture = ({ image, containerProps, setImage }: Props) => {
 						{'Choose a photo'}
 					</Text>
 					<View className=' flex flex-row justify-center items-center gap-x-4'>
-						<TouchableOpacity
+						<Pressable
 							className='flex items-center w-20 p-2 rounded-lg'
 							onPress={handleChoosePhoto}>
 							<MaterialIcon
@@ -121,9 +121,9 @@ const ProfilePicture = ({ image, containerProps, setImage }: Props) => {
 							<Text className='text-xs font-inter-regular text-center text-dark-textColor leading-4 mt-2'>
 								Gallery
 							</Text>
-						</TouchableOpacity>
+						</Pressable>
 						{Platform.OS === 'android' && (
-							<TouchableOpacity
+							<Pressable
 								className='flex items-center w-20 p-2 rounded-lg'
 								onPress={handleTakePhoto}>
 								<MaterialIcon
@@ -134,7 +134,7 @@ const ProfilePicture = ({ image, containerProps, setImage }: Props) => {
 								<Text className='text-xs font-inter-regular text-center text-dark-textColor leading-4 mt-2'>
 									Camera
 								</Text>
-							</TouchableOpacity>
+							</Pressable>
 						)}
 					</View>
 				</View>

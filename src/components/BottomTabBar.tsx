@@ -1,6 +1,6 @@
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import React from 'react';
-import { Platform, TouchableOpacity, View } from 'react-native';
+import { Platform, Pressable, View } from 'react-native';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import settings from '../../tailwind.config';
@@ -46,7 +46,7 @@ const BottomTabBar = ({
 				const icon = icons[route.name] || icons[Routes.HOME];
 
 				return isFocused ? (
-					<TouchableOpacity
+					<Pressable
 						key={route.key}
 						onPress={onPress}
 						className='flex-1 h-14 bg-dark-secondaryBackground justify-center items-center'>
@@ -58,9 +58,9 @@ const BottomTabBar = ({
 								{route.name}
 							</Text>
 						</View>
-					</TouchableOpacity>
+					</Pressable>
 				) : (
-					<TouchableOpacity
+					<Pressable
 						key={route.key}
 						style={{ opacity: 0.4 }}
 						activeOpacity={0.8}
@@ -74,7 +74,7 @@ const BottomTabBar = ({
 								{route.name}
 							</Text>
 						</View>
-					</TouchableOpacity>
+					</Pressable>
 				);
 			})}
 		</View>
