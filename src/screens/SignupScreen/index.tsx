@@ -62,11 +62,11 @@ const SignupScreen = (props: Props) => {
 	}, [authErrors]);
 
 	return (
-		<KeyboardAwareScrollView
-			keyboardShouldPersistTaps={'handled'}
-			style={scrollViewContainer}
-			contentContainerStyle={scrollViewContentContainer}
-			showsVerticalScrollIndicator={false}>
+		<View
+			// keyboardShouldPersistTaps={'handled'}
+			style={scrollViewContainer}>
+			{/* // contentContainerStyle={scrollViewContentContainer} */}
+			{/* // showsVerticalScrollIndicator={false}> */}
 			<View className='flex-1 items-center bg-dark-primaryBackground'>
 				{!isKeyboardOpen && (
 					<AppHeader
@@ -142,7 +142,7 @@ const SignupScreen = (props: Props) => {
 					)}
 				</View>
 			</View>
-		</KeyboardAwareScrollView>
+		</View>
 	);
 };
 

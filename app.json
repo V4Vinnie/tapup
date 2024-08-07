@@ -1,9 +1,10 @@
 {
 	"expo": {
-		"name": "TapUp",
+		"name": "TapUp Microlearning",
 		"slug": "TapUp",
 		"version": "1.0.0",
 		"orientation": "portrait",
+		"owner": "zoomers",
 		"icon": "./assets/images/icon.png",
 		"userInterfaceStyle": "automatic",
 		"splash": {
@@ -41,6 +42,14 @@
 		},
 		"plugins": [
 			[
+				"expo-build-properties",
+				{
+					"ios": {
+						"useFrameworks": "static"
+					}
+				}
+			],
+			[
 				"expo-image-picker",
 				{
 					"photosPermission": "TapUp needs access to your photos so you can upload them to your profile.",
@@ -59,7 +68,7 @@
 		],
 		"extra": {
 			"eas": {
-				"projectId": "e0b58693-6ae4-4963-bcc8-97be2a755d04"
+				"projectId": "959b1993-8ad6-4ef7-8944-a6e84eac1bbe"
 			}
 		}
 	}

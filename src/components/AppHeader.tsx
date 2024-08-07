@@ -124,7 +124,7 @@ const transparentContainerStyle: StyleProp<ViewStyle> = {
 	marginTop: 5,
 };
 const headerStyle: StyleProp<ViewStyle> = {
-	marginTop: Platform.OS === 'ios' ? -48 : 0,
+	marginTop: 0,
 };
 
 export default AppHeader;

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import {
+	SafeAreaView,
 	StyleProp,
 	Text,
 	TouchableOpacity,
@@ -50,7 +51,7 @@ const LoginScreen = ({}: Props) => {
 			style={scrollViewContainer}
 			contentContainerStyle={scrollViewContentContainer}
 			showsVerticalScrollIndicator={false}>
-			<View className='flex-1 items-center bg-dark-primaryBackground'>
+			<SafeAreaView className='flex-1 items-center bg-dark-primaryBackground'>
 				<AppHeader transparentHeader headerWithBack title={'Login'} />
 				<FocusAwareStatusBar
 					translucent
@@ -161,7 +162,7 @@ const LoginScreen = ({}: Props) => {
 						</TouchableOpacity>
 					</View>
 				</View>
-			</View>
+			</SafeAreaView>
 		</KeyboardAwareScrollView>
 	);
 };

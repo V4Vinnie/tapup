@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { SafeAreaView, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Routes, RootStackParamList } from '../../navigation/Routes';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
@@ -15,11 +15,11 @@ const WelcomeScreen = (props: Props) => {
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
 	return (
-		<View className='flex-1 flex justify-end py-8 items-center bg-dark-primaryBackground'>
+		<SafeAreaView className='flex-1 flex justify-end py-8 items-center bg-dark-primaryBackground'>
 			<FocusAwareStatusBar
 				translucent
 				backgroundColor={'transparent'}
-				barStyle={'dark-content'}
+				barStyle={'light-content'}
 			/>
 			<View className='w-4/5 h-4/5 flex justify-between items-center'>
 				<View className='flex items-center gap-y-20 pt-20'>
@@ -40,7 +40,7 @@ const WelcomeScreen = (props: Props) => {
 					onPress={() => navigate(Routes.LOGIN)}
 				/>
 			</View>
-		</View>
+		</SafeAreaView>
 	);
 };
 
