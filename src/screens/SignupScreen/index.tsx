@@ -1,16 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
-import { Alert, Dimensions, SafeAreaView, Text, Pressable, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Dimensions, SafeAreaView, Text, Pressable, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { RootStackParamList, Routes } from '../../navigation/Routes';
-import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
 import { useNavigation } from '@react-navigation/native';
-import AppHeader from '../../components/AppHeader';
-import {
-	scrollViewContainer,
-	scrollViewContentContainer,
-} from '../LoginScreen';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Swiper from 'react-native-swiper';
+
+import { RootStackParamList, Routes } from '../../navigation/Routes';
+import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
+import AppHeader from '../../components/AppHeader';
+import { scrollViewContainer, scrollViewContentContainer } from '../LoginScreen';
 import RegisterUserDetails from './RegisterUserDetails';
 import CustomSwiperDot from '../../components/CustomSwiperDot';
 import useKeyboard from '../../hooks/useKeyboard';
@@ -19,131 +17,117 @@ import AddInformation from './AddInformation';
 import { useAuth } from '../../providers/AuthProvider';
 import { useCompany } from '../../providers/CompanyProvider';
 
-type Props = {};
+const SignupScreen: React.FC = () => {
+  const { width, height } = Dimensions.get('window');
+  const { isKeyboardOpen } = useKeyboard();
+  const { handleSignup, authErrors } = useAuth();
+  const { company } = useCompany();
+  const { navigate } = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-const SignupScreen = (props: Props) => {
-	const { width, height } = Dimensions.get('window');
-	const { isKeyboardOpen } = useKeyboard();
-	const { handleSignup, authErrors } = useAuth();
-	const { company } = useCompany();
+  const [formData, setFormData] = useState({
+    email: '',
+    username: '',
+    password: '',
+    fullName: '',
+    jobType: '',
+  });
+  const [isSending, setIsSending] = useState(false);
 
-	const [email, setEmail] = useState('');
-	const [username, setProfilename] = useState('');
-	const [password, setPassword] = useState('');
-	//const [image, setImage] = useState('');
-	const [isSending, setIsSending] = useState(false);
-	const [fullName, setFullName] = useState('');
-	const [jobType, setJobType] = useState('');
+  const swiper = useRef<Swiper>(null);
 
-	const swiper = useRef<Swiper>(null);
+  const updateFormData = (field: keyof typeof formData) => 
+    (value: string | ((prevState: string) => string)) => {
+      setFormData(prev => ({ 
+        ...prev, 
+        [field]: typeof value === 'function' ? value(prev[field]) : value 
+      }));
+    };
 
-	const { navigate } =
-		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const signUp = async () => {
+    setIsSending(true);
+    try {
+      await handleSignup(
+        formData.username,
+        formData.email,
+        formData.password,
+        company,
+        formData.fullName,
+        formData.jobType
+      );
+    } finally {
+      setIsSending(false);
+    }
+  };
 
-	const signUp = async () => {
-		//if (!image) {
-		//	Alert.alert('Error', 'Please select a profile picture');
-		//	return;
-		//}
-		setIsSending(true);
-		handleSignup(
-			username,
-			email,
-			password,
-			//image,
-			company,
-			fullName!,
-			jobType!
-		).finally(() => {
-			setIsSending(false);
-		});
-	};
+  useEffect(() => {
+    if (authErrors) {
+      swiper.current?.scrollTo(0);
+    }
+  }, [authErrors]);
 
-	useEffect(() => {
-		if (authErrors) {
-			swiper.current?.scrollTo(0);
-		}
-	}, [authErrors]);
+  const swiperSlides = [
+    <RegisterUserDetails
+      key="userDetails"
+      username={formData.username}
+      setProfilename={updateFormData('username')}
+      email={formData.email}
+      setEmail={updateFormData('email')}
+      password={formData.password}
+      setPassword={updateFormData('password')}
+      swiper={swiper}
+    />,
+    <AddCompanyCode
+      key="companyCode"
+      addButtonPress={() => swiper?.current?.scrollBy(1)}
+      canSkip
+      skipButtonPress={() => swiper?.current?.scrollBy(1)}
+    />,
+    <AddInformation
+      key="information"
+      setFullName={updateFormData('fullName')}
+      fullName={formData.fullName}
+      setJobType={updateFormData('jobType')}
+      jobType={formData.jobType}
+      signUp={signUp}
+      isSending={isSending}
+    />,
+  ];
 
-	return (
-		<SafeAreaView className='flex-1 bg-dark-primaryBackground'>
-			<AppHeader headerWithBack title='Sign Up' />
-			<KeyboardAwareScrollView
-				keyboardShouldPersistTaps={'handled'}
-			contentContainerStyle={scrollViewContentContainer}
-			showsVerticalScrollIndicator={false}
-			style={scrollViewContainer}>
-			<View className='flex-1 items-center bg-dark-primaryBackground'>
-				<FocusAwareStatusBar
-					translucent
-					backgroundColor='transparent'
-					barStyle='light-content'
-				/>
-
-				<View className='h-full py-2 justify-between pb-8 pt-40'>
-					<Swiper
-						ref={swiper}
-						height={height / 1.5}
-						width={width}
-						containerStyle={{
-							marginBottom: isKeyboardOpen ? 30 : 80,
-							paddingBottom: isKeyboardOpen ? 20 : undefined,
-						}}
-						paginationStyle={{
-							bottom: authErrors ? -30 : 30,
-						}}
-						showsPagination
-						dot={<CustomSwiperDot />}
-						activeDot={<CustomSwiperDot active />}
-						scrollEnabled={false}
-						loop={false}
-						showsButtons={false}>
-						<RegisterUserDetails
-							//image={image}
-							//setImage={setImage}
-							username={username}
-							setProfilename={setProfilename}
-							email={email}
-							setEmail={setEmail}
-							password={password}
-							setPassword={setPassword}
-							swiper={swiper}
-						/>
-						<AddCompanyCode
-							addButtonPress={() => swiper?.current?.scrollBy(1)}
-							canSkip
-							skipButtonPress={() => swiper?.current?.scrollBy(1)}
-						/>
-						<AddInformation
-							setFullName={setFullName}
-							fullName={fullName}
-							setJobType={setJobType}
-							jobType={jobType}
-							signUp={signUp}
-							isSending={isSending}
-						/>
-					</Swiper>
-
-					{!isKeyboardOpen && (
-						<View className='flex-row items-center justify-center'>
-							<Text className='text-base font-inter-regular text-dark-subTextColor'>
-								{'Already have an account?'}
-							</Text>
-							<Pressable
-								onPress={() => {
-									navigate(Routes.LOGIN);
-								}}>
-								<Text className='text-base font-inter-bold text-dark-textColor'>
-									{' Login'}
-								</Text>
-							</Pressable>
-						</View>
-					)}
-				</View>
-			</View>
-			</KeyboardAwareScrollView>
-		</SafeAreaView>
-	);
+  return (
+    <SafeAreaView className='flex-1 bg-dark-primaryBackground'>
+      <AppHeader headerWithBack title='Sign Up' />
+      <KeyboardAwareScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps='handled'
+        showsVerticalScrollIndicator={false}
+      >
+        <View className='flex-1 justify-center items-center'>
+          <Swiper
+            ref={swiper}
+            height={height * 0.6}
+            width={width}
+            paginationStyle={{ top: 50 }}
+            showsPagination
+            dot={<CustomSwiperDot />}
+            activeDot={<CustomSwiperDot active />}
+            scrollEnabled={false}
+            loop={false}
+            showsButtons={false}
+          >
+            {swiperSlides}
+          </Swiper>
+        </View>
+        <View className='flex-row items-center justify-center py-4'>
+          <Text className='text-base font-inter-regular text-dark-subTextColor'>
+            Already have an account?
+          </Text>
+          <Pressable onPress={() => navigate(Routes.LOGIN)}>
+            <Text className='text-base font-inter-bold text-dark-textColor'> Login</Text>
+          </Pressable>
+        </View>
+      </KeyboardAwareScrollView>
+    </SafeAreaView>
+  );
 };
 
 export default SignupScreen;
