@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, SafeAreaView } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
 import AppHeader from '../../components/AppHeader';
@@ -28,12 +28,13 @@ const ForgotPasswordScreen = (props: Props) => {
 	};
 
 	return (
-		<KeyboardAwareScrollView
-			keyboardShouldPersistTaps={'never'}
+		<SafeAreaView className='flex-1 bg-dark-primaryBackground'>
+			<AppHeader headerWithBack title={'Password Recovery'} />
+			<KeyboardAwareScrollView
+				keyboardShouldPersistTaps={'never'}
 			contentContainerStyle={scrollViewContentContainer}
 			showsVerticalScrollIndicator={false}>
 			<View className='flex-1 items-center bg-dark-primaryBackground'>
-				<AppHeader headerWithBack title={'Password Recovery'} />
 				<FocusAwareStatusBar
 					translucent
 					backgroundColor='transparent'
@@ -100,8 +101,9 @@ const ForgotPasswordScreen = (props: Props) => {
 						</Text>
 					)}
 				</View>
-			</View>
-		</KeyboardAwareScrollView>
+				</View>
+			</KeyboardAwareScrollView>
+		</SafeAreaView>
 	);
 };
 
