@@ -6,7 +6,6 @@ import IonIcon from 'react-native-vector-icons/Ionicons';
 import settings from '../../tailwind.config';
 import { Routes } from '../navigation/Routes';
 import { CommonActions } from '@react-navigation/native';
-import { Text } from 'react-native';
 import { bottomNavIcons } from '../utils/constants';
 
 const { colors: themeColors } = settings.theme.extend;
@@ -20,10 +19,27 @@ const BottomTabBar = ({
 	return (
 		<View
 			style={{
-				paddingBottom: Platform.OS === 'ios' ? 20 : 0,
+				position: 'absolute',
+				bottom: 20,
+				alignSelf: 'center', // Center the bottom bar
+				backgroundColor: themeColors[mode].secondaryBackground,
+				borderRadius: 25,
+				height: 60,
+				shadowColor: "#000",
+				shadowOffset: {
+					width: 0,
+					height: 2,
+				},
+				shadowOpacity: 0.25,
+				shadowRadius: 3.84,
+				elevation: 5,
+				flexDirection: 'row',
+				justifyContent: 'center', // Center the icons
+				alignItems: 'center',
+				paddingHorizontal: 20,
+				paddingVertical: 10, // Add some vertical padding
 			}}
-			className='flex-row bg-dark-secondaryBackground shadow-xl shadow-light-subTextColor/60
-        '>
+		>
 			{state.routes.map((route, index) => {
 				const isFocused = state.index === index;
 
@@ -45,34 +61,15 @@ const BottomTabBar = ({
 				const icons = bottomNavIcons(isFocused);
 				const icon = icons[route.name] || icons[Routes.HOME];
 
-				return isFocused ? (
+				return (
 					<Pressable
 						key={route.key}
 						onPress={onPress}
-						className='flex-1 h-14 bg-dark-secondaryBackground justify-center items-center'>
-						<View className='w-20 h-full rounded-full justify-center items-center'>
-							<View className='justify-center items-center'>
-								{icon}
-							</View>
-							<Text className='text-dark-subTextColor text-xs'>
-								{route.name}
-							</Text>
-						</View>
-					</Pressable>
-				) : (
-					<Pressable
-						key={route.key}
-						style={{ opacity: 0.4 }}
-						activeOpacity={0.8}
-						onPress={onPress}
-						className='flex-1 h-14 bg-dark-secondaryBackground justify-center items-center'>
-						<View className='w-20 h-full rounded-full justify-center items-center'>
-							<View className='justify-center items-center'>
-								{icon}
-							</View>
-							<Text className='text-dark-subTextColor text-xs'>
-								{route.name}
-							</Text>
+						className='justify-center items-center'
+						style={{ marginHorizontal: 20 }} 
+					>
+						<View className='justify-center items-center'>
+							{icon}
 						</View>
 					</Pressable>
 				);
