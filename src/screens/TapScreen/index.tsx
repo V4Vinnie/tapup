@@ -100,9 +100,9 @@ const TapScreen = ({ route }: ProfileScreenProps) => {
 	};
 
 	return (
-		<SafeAreaView className='flex-1 items-center bg-dark-primaryBackground'>
-			<FocusAwareStatusBar translucent barStyle={'light-content'} />
+		<SafeAreaView className='flex-1 bg-dark-primaryBackground'>
 			<AppHeader headerWithBack title={selectedTopic.name} />
+			<FocusAwareStatusBar translucent barStyle={'light-content'} />
 			<ScrollView
 				className='w-full'
 				contentContainerStyle={{
