@@ -24,8 +24,8 @@ export const getAllTaps = async (company: TCompany): Promise<TTap[]> => {
 export const getProcessPercentageForTaps = (user: TProfile, taps: TTap[]) => {
 	return taps.reduce(
 		(acc, tap) => {
-			const chapters = tap.chapters;
-			const watchedChapters = user.watchedChapters;
+			const chapters = tap.chapters ?? [];
+			const watchedChapters = user.watchedChapters || [];
 			const chaptersForTap = chapters.filter((chapter) =>
 				watchedChapters.includes(chapter.chapterId)
 			);
@@ -98,7 +98,7 @@ export const getTopicFromTap = (tap: TTap, topics: TTopic[]) => {
 };
 
 function getWatchedTapsForUser(user: TProfile, taps: TTap[]) {
-	const watchedChapters = user.watchedChapters;
+	const watchedChapters = user.watchedChapters ?? [];
 	const watchedTaps = taps.filter((tap) => {
 		const chapters = tap.chapters;
 		const chaptersForTap = chapters.filter((chapter) =>

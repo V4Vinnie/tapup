@@ -62,7 +62,7 @@ export const TapProvider = ({ children }: Props) => {
 			}
 		};
 		getAll();
-	}, [company]);
+	}, [company, user]);
 
 	const loadingInitial = false;
 

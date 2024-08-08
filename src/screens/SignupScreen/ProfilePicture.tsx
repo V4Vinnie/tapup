@@ -23,19 +23,28 @@ const ProfilePicture = ({ image, containerProps, setImage }: Props) => {
 	const [modalOpen, setModalOpen] = useState(false);
 
 	const handleChoosePhoto = async () => {
-		ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.Images,
-			allowsEditing: true,
-			aspect: [1, 1],
-			quality: 1,
-		})
-			.then(async (result) => {
-				if (result.canceled) return;
+		try {
+			const result = await ImagePicker.launchImageLibraryAsync({
+				mediaTypes: ImagePicker.MediaTypeOptions.Images,
+				allowsEditing: true,
+				aspect: [1, 1],
+				quality: 1,
+			});
+
+			if (!result.canceled && result.assets && result.assets.length > 0) {
 				const image = result.assets[0].uri;
-				setImage(image);
-				setModalOpen(false);
-			})
-			.catch(console.error);
+				if (image) {
+					setImage(image);
+					setModalOpen(false);
+				} else {
+					console.error('Selected image URI is null or undefined');
+				}
+			} else {
+				console.log('Image selection was canceled or no asset was selected');
+			}
+		} catch (error) {
+			console.error('Error choosing photo:', error);
+		}
 	};
 
 	const handleTakePhoto = async () => {

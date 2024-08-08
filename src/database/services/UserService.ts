@@ -43,7 +43,7 @@ export async function registerUser(
 	company: TCompany | null,
 	fullName: string,
 	jobType: string
-): Promise<UserCredential> {
+): Promise<TProfile> {
 	return new Promise(async (resolve, reject) => {
 		if (
 			!name ||
@@ -54,7 +54,9 @@ export async function registerUser(
 			!fullName ||
 			!jobType
 		) {
-			reject('Please fill all the fields');
+			reject(
+				"Make sure to use a valid email and a password with at least 6 characters. Don't forget your profile picture!"
+			);
 			return;
 		}
 		try {
@@ -63,11 +65,17 @@ export async function registerUser(
 				email.toLowerCase(),
 				password
 			);
+			if (!userCredential.user) {
+				reject('Error creating user');
+				return;
+			}
 			const userAuthId = userCredential.user.uid;
-			const url = profileImage
-				? await saveImage(profileImage, userAuthId)
-				: '';
-			setDoc(doc(DB, COLLECTIONS.USERS, userAuthId), {
+			const url = await saveImage(profileImage, userAuthId);
+			if (!url) {
+				reject('Error saving image');
+				return;
+			}
+			const profile: TProfile = {
 				uid: userAuthId,
 				name: name,
 				profilePic: url,
@@ -81,8 +89,9 @@ export async function registerUser(
 					companyRole: 'EMPLOYEE',
 				},
 				fullName,
-			} as TProfile).then(() => {
-				resolve(userCredential);
+			};
+			setDoc(doc(DB, COLLECTIONS.USERS, userAuthId), profile).then(() => {
+				resolve({ ...userCredential.user, ...profile });
 			});
 		} catch (error) {
 			console.log(error);
@@ -92,27 +101,31 @@ export async function registerUser(
 }
 
 export async function saveImage(image: string, uid: string) {
-	try {
-		const { uri } = await FileSystem.getInfoAsync(image);
-		const blob: Blob = await new Promise((resolve, reject) => {
-			const xhr = new XMLHttpRequest();
-			xhr.onload = function () {
-				resolve(xhr.response);
-			};
-			xhr.onerror = function () {
-				reject(new TypeError('Network request failed'));
-			};
-			xhr.responseType = 'blob';
-			xhr.open('GET', uri, true);
-			xhr.send(null);
-		});
-		const extention = image.split('.')[image.split('.').length - 1];
-		const imageRef = ref(storage, STORE_PROFILE_IMAGE(uid, extention));
-		await uploadBytes(imageRef, blob);
-		return getDownloadURL(imageRef);
-	} catch (error) {
-		console.error('saveImage in UserService ', error);
-	}
+    try {
+        if (!image) {
+            throw new Error('Image URI is null or undefined');
+        }
+
+        const fileInfo = await FileSystem.getInfoAsync(image);
+        if (!fileInfo.exists) {
+            throw new Error('Image file does not exist');
+        }
+
+        const response = await fetch(image);
+        const blob = await response.blob();
+
+        if (!blob) {
+            throw new Error('Failed to create blob from image');
+        }
+
+        const extension = image.split('.').pop() || 'jpg';
+        const imageRef = ref(storage, STORE_PROFILE_IMAGE(uid, extension));
+        await uploadBytes(imageRef, blob);
+        return getDownloadURL(imageRef);
+    } catch (error) {
+        console.error('saveImage in UserService ', error);
+        throw error;
+    }
 }
 
 export async function sendForgotPasswordEmail(email: string) {

@@ -1,12 +1,12 @@
 import { View, Text, Image, Pressable } from 'react-native';
 import React from 'react';
 import { TNotificationProfile, TProfile } from '../types';
-import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../navigation/Routes';
 import { Skeleton } from '@rneui/themed';
 import { mode, themeColors } from '../utils/constants';
 import { useCompany } from '../providers/CompanyProvider';
+import { useNavigation } from '@react-navigation/native';
 
 type Props = {
 	profile: TNotificationProfile | TProfile;

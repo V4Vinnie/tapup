@@ -13,6 +13,7 @@ import {
 	NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../../../navigation/Routes';
+import { Timestamp } from 'firebase/firestore';
 
 type StoryViewerProps = NativeStackScreenProps<
 	RootStackParamList,
@@ -20,11 +21,11 @@ type StoryViewerProps = NativeStackScreenProps<
 >;
 
 const StoryViewer = ({ route }: StoryViewerProps) => {
-	const { newVideoUri, newPhotoUri, databaseStories } = route.params;
+	const { newVideoUri, newPhotoUri, chapter } = route.params;
 	const { navigate, goBack } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-	const [stories, setStories] = useState<TStory[]>(databaseStories);
+	const [stories, setStories] = useState<TStory[]>(chapter.frames);
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [isEditing, setIsEditing] = useState(false);
 	const [isModalVisible, setIsModalVisible] = useState(false);
@@ -63,6 +64,7 @@ const StoryViewer = ({ route }: StoryViewerProps) => {
 			type: 'VIDEO',
 			video: videoUri,
 			caption: newStoryText,
+			createdAt: new Timestamp(Date.now() / 1000, 0),
 		};
 		setStories((prev) => [...prev, newStory]);
 		setCurrentIndex(stories.length);
@@ -77,6 +79,7 @@ const StoryViewer = ({ route }: StoryViewerProps) => {
 			image: photoUri,
 			text: newStoryText,
 			textPosition: 'bottom',
+			createdAt: new Timestamp(Date.now() / 1000, 0),
 		};
 		setStories((prev) => [...prev, newStory]);
 		setCurrentIndex(stories.length);
@@ -100,6 +103,7 @@ const StoryViewer = ({ route }: StoryViewerProps) => {
 						),
 						correctAnswer: newQuestionCorrectAnswer,
 						image: 'https://via.placeholder.com/400x320',
+						createdAt: new Timestamp(Date.now() / 1000, 0),
 					}
 				: {
 						id: Date.now().toString(),
@@ -110,6 +114,7 @@ const StoryViewer = ({ route }: StoryViewerProps) => {
 							(answer) => answer !== ''
 						),
 						correctAnswer: newQuestionCorrectAnswer,
+						createdAt: new Timestamp(Date.now() / 1000, 0),
 					};
 		setStories((prev) => [...prev, newStory]);
 		setCurrentIndex(stories.length);
@@ -354,6 +359,7 @@ const StoryViewer = ({ route }: StoryViewerProps) => {
 									/>
 								))}
 							<StoryHeader
+								chapter={chapter}
 								currentIndex={currentIndex}
 								totalStories={stories.length}
 								isEditing={isEditing}

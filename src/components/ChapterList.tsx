@@ -36,8 +36,8 @@ const ChapterList = ({
 
 	useEffect(() => {
 		const imageUrls = chapters.map((chapter) => {
-			if (chapter.frames[0].media) {
-				return Image.prefetch(chapter.frames[0].media);
+			if (chapter.frames[0].type === 'PHOTO') {
+				return Image.prefetch(chapter.frames[0].image);
 			}
 		});
 		Promise.all(imageUrls).then(() => setImagesLoading(false));
@@ -80,14 +80,12 @@ const ChapterList = ({
 						? chapter.frames[0].image
 						: undefined;
 
-				const databaseStories = chapter.frames;
-
 				return (
 					<ChapterComponent
 						key={chapter.chapterId}
 						onPress={() => {
 							navigate(Routes.STORY_VIEWER, {
-								databaseStories,
+								chapter,
 							});
 						}}
 						episodeNumber={index + 1}

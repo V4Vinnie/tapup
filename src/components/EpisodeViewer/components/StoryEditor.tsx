@@ -1,11 +1,5 @@
 import React, { useState } from 'react';
-import {
-	View,
-	TextInput,
-	Pressable,
-	Text,
-	ScrollView,
-} from 'react-native';
+import { View, TextInput, Pressable, Text, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { Plus, X, Check, Camera } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -112,7 +106,7 @@ const StoryEditor = ({ story, updateStory }: Props) => {
 	return (
 		<ScrollView className='flex-1 bg-gray-900'>
 			<View className='p-4'>
-				<Text className='text-white text-xl font-bold mb-4 mt-16'>
+				<Text className='text-white text-xl font-bold mb-4 mt-20'>
 					Edit Story
 				</Text>
 

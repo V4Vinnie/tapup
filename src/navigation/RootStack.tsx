@@ -25,10 +25,12 @@ import PrivacyPolicyScreen from '../screens/PrivacyPolicyScreen';
 import '../utils/stringExtensions';
 import AddCompanyCodeScreen from '../screens/AddCompanyCodeScreen';
 import { useCompany } from '../providers/CompanyProvider';
-import StoryViewer from '../components/EpisodeViewer/StoryViewer';
-import VideoRecordingScreen from '../components/EpisodeViewer/VideoRecordingScreen';
-import PhotoCaptureScreen from '../components/EpisodeViewer/PhotoCaptureScreen';
+import StoryViewer from '../components/EpisodeViewer/components/StoryViewer';
+import VideoRecordingScreen from '../components/EpisodeViewer/components/VideoRecordingScreen';
+import PhotoCaptureScreen from '../components/EpisodeViewer/components/PhotoCaptureScreen';
 import 'react-native-gesture-handler';
+import { Text, View } from 'react-native';
+import * as SplashScreen from 'expo-splash-screen';
 
 type Props = {};
 
@@ -42,7 +44,14 @@ console.error = (...args: any) => {
 };
 
 const RootStack = (props: Props) => {
-	const { user } = useAuth();
+	const { user, loadingInitial } = useAuth();
+
+	if (loadingInitial)
+		return (
+			<View className='flex-1 w-full h-full z-50 bg-dark-primaryBackground' />
+		);
+
+	SplashScreen.hideAsync();
 
 	return user ? (
 		<TopicProvider>
@@ -159,6 +168,10 @@ const AccountStack = () => {
 			<Stack.Screen
 				name={Routes.PRIVACY_POLICY}
 				component={PrivacyPolicyScreen}
+			/>
+			<Stack.Screen
+				name={Routes.PROFILE_SCREEN}
+				component={ProfileScreen}
 			/>
 		</Stack.Navigator>
 	);
