@@ -98,7 +98,7 @@ export const getTopicFromTap = (tap: TTap, topics: TTopic[]) => {
 };
 
 function getWatchedTapsForUser(user: TProfile, taps: TTap[]) {
-	const watchedChapters = user.watchedChapters;
+	const watchedChapters = user.watchedChapters ?? [];
 	const watchedTaps = taps.filter((tap) => {
 		const chapters = tap.chapters;
 		const chaptersForTap = chapters.filter((chapter) =>
