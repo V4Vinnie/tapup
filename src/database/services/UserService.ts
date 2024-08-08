@@ -101,27 +101,31 @@ export async function registerUser(
 }
 
 export async function saveImage(image: string, uid: string) {
-	try {
-		const { uri } = await FileSystem.getInfoAsync(image);
-		const blob: Blob = await new Promise((resolve, reject) => {
-			const xhr = new XMLHttpRequest();
-			xhr.onload = function () {
-				resolve(xhr.response);
-			};
-			xhr.onerror = function () {
-				reject(new TypeError('Network request failed'));
-			};
-			xhr.responseType = 'blob';
-			xhr.open('GET', uri, true);
-			xhr.send(null);
-		});
-		const extention = image.split('.')[image.split('.').length - 1];
-		const imageRef = ref(storage, STORE_PROFILE_IMAGE(uid, extention));
-		await uploadBytes(imageRef, blob);
-		return getDownloadURL(imageRef);
-	} catch (error) {
-		console.error('saveImage in UserService ', error);
-	}
+    try {
+        if (!image) {
+            throw new Error('Image URI is null or undefined');
+        }
+
+        const fileInfo = await FileSystem.getInfoAsync(image);
+        if (!fileInfo.exists) {
+            throw new Error('Image file does not exist');
+        }
+
+        const response = await fetch(image);
+        const blob = await response.blob();
+
+        if (!blob) {
+            throw new Error('Failed to create blob from image');
+        }
+
+        const extension = image.split('.').pop() || 'jpg';
+        const imageRef = ref(storage, STORE_PROFILE_IMAGE(uid, extension));
+        await uploadBytes(imageRef, blob);
+        return getDownloadURL(imageRef);
+    } catch (error) {
+        console.error('saveImage in UserService ', error);
+        throw error;
+    }
 }
 
 export async function sendForgotPasswordEmail(email: string) {

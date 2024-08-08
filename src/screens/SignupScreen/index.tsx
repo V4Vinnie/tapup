@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Dimensions, SafeAreaView, Text, Pressable, View } from 'react-native';
+import { Alert, Dimensions, SafeAreaView, Text, Pressable, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
@@ -41,12 +41,16 @@ const SignupScreen = (props: Props) => {
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
 	const signUp = async () => {
+		if (!image) {
+			Alert.alert('Error', 'Please select a profile picture');
+			return;
+		}
 		setIsSending(true);
 		handleSignup(
 			username,
 			email,
 			password,
-			image!,
+			image,
 			company,
 			fullName!,
 			jobType!

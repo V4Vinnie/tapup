@@ -25,7 +25,7 @@ export const getProcessPercentageForTaps = (user: TProfile, taps: TTap[]) => {
 	return taps.reduce(
 		(acc, tap) => {
 			const chapters = tap.chapters;
-			const watchedChapters = user.watchedChapters;
+			const watchedChapters = user.watchedChapters || [];
 			const chaptersForTap = chapters.filter((chapter) =>
 				watchedChapters.includes(chapter.chapterId)
 			);
