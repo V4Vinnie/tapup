@@ -25,9 +25,9 @@ import PrivacyPolicyScreen from '../screens/PrivacyPolicyScreen';
 import '../utils/stringExtensions';
 import AddCompanyCodeScreen from '../screens/AddCompanyCodeScreen';
 import { useCompany } from '../providers/CompanyProvider';
-import StoryViewer from '../components/FrameViewer/components/StoryViewer';
-import VideoRecordingScreen from '../components/FrameViewer/components/VideoRecordingScreen';
-import PhotoCaptureScreen from '../components/FrameViewer/components/PhotoCaptureScreen';
+import StoryViewer from '../components/EpisodeViewer/StoryViewer';
+import VideoRecordingScreen from '../components/EpisodeViewer/VideoRecordingScreen';
+import PhotoCaptureScreen from '../components/EpisodeViewer/PhotoCaptureScreen';
 import 'react-native-gesture-handler';
 
 type Props = {};
