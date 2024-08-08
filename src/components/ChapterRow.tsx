@@ -41,7 +41,6 @@ const ChapterRow = ({
 			if (!chapters) return;
 			const progress = user.progress;
 			if (progress) setProgress(progress);
-			console.log('progsere', progress);
 		};
 		if (isFocused) getProgress(user);
 		const sub = onUser(user.uid, getProgress);
