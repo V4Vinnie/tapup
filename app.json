@@ -2,7 +2,7 @@
 	"expo": {
 		"name": "TapUp Microlearning",
 		"slug": "TapUp",
-		"version": "0.0.2",
+		"version": "0.0.5",
 		"orientation": "portrait",
 		"owner": "zoomers",
 		"icon": "./assets/images/icon.png",
@@ -17,12 +17,15 @@
 		"ios": {
 			"supportsTablet": true,
 			"bundleIdentifier": "app.tap-up",
-			"buildNumber": "0.0.2",
+			"buildNumber": "0.0.5",
 			"infoPlist": {
 				"NSCameraUsageDescription": "This app uses the camera to take photos and videos.",
 				"NSMicrophoneUsageDescription": "This app uses the microphone to record audio.",
 				"NSPhotoLibraryUsageDescription": "This app uses the photo library to select images and videos.",
 				"NSPhotoLibraryAddUsageDescription": "This app uses the photo library to save images and videos."
+			},
+			"config": {
+				"usesNonExemptEncryption": false
 			}
 		},
 		"android": {
