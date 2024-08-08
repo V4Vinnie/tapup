@@ -43,7 +43,7 @@ export async function registerUser(
 	company: TCompany | null,
 	fullName: string,
 	jobType: string
-): Promise<UserCredential> {
+): Promise<TProfile> {
 	return new Promise(async (resolve, reject) => {
 		if (
 			!name ||
@@ -54,7 +54,9 @@ export async function registerUser(
 			!fullName ||
 			!jobType
 		) {
-			reject('Please fill all the fields');
+			reject(
+				"Make sure to use a valid email and a password with at least 6 characters. Don't forget your profile picture!"
+			);
 			return;
 		}
 		try {
@@ -63,11 +65,17 @@ export async function registerUser(
 				email.toLowerCase(),
 				password
 			);
+			if (!userCredential.user) {
+				reject('Error creating user');
+				return;
+			}
 			const userAuthId = userCredential.user.uid;
-			const url = profileImage
-				? await saveImage(profileImage, userAuthId)
-				: '';
-			setDoc(doc(DB, COLLECTIONS.USERS, userAuthId), {
+			const url = await saveImage(profileImage, userAuthId);
+			if (!url) {
+				reject('Error saving image');
+				return;
+			}
+			const profile: TProfile = {
 				uid: userAuthId,
 				name: name,
 				profilePic: url,
@@ -81,8 +89,9 @@ export async function registerUser(
 					companyRole: 'EMPLOYEE',
 				},
 				fullName,
-			} as TProfile).then(() => {
-				resolve(userCredential);
+			};
+			setDoc(doc(DB, COLLECTIONS.USERS, userAuthId), profile).then(() => {
+				resolve({ ...userCredential.user, ...profile });
 			});
 		} catch (error) {
 			console.log(error);

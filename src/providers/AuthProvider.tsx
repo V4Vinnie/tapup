@@ -140,18 +140,17 @@ export const AuthProvider = ({ children }: Props) => {
 			company,
 			fullName,
 			jobType
-		).catch(() =>
-			setAuthErrors({
-				userDetails: {
-					message:
-						"Make sure to use a valid email and a password with at least 6 characters. Don't forget your profile picture!",
-				},
-				information: {
-					message:
-						'Invalid information. Make sure to fill all the fields.',
-				},
+		)
+			.then((user) => {
+				setUser(user);
 			})
-		);
+			.catch((errors) =>
+				setAuthErrors({
+					userDetails: {
+						message: errors,
+					},
+				})
+			);
 	};
 
 	const handleChangeProfilePic = async (image: string) => {
