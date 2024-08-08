@@ -73,7 +73,7 @@ export async function registerUser(
 				profilePic: url,
 				email: email,
 				role: 'USER',
-				watchedFrames: [],
+				watchedChapters: [],
 				progress: {},
 				companyInfo: {
 					companyCode: company?.code ?? '',
@@ -142,19 +142,20 @@ export function onUser(userId: string, callback: (user: TProfile) => void) {
 	}
 }
 
-export function updateUser<K extends keyof TProfile>(
+export async function updateUser<K extends keyof TProfile>(
 	userid: string,
 	key: K,
 	value: TProfile[K]
 ) {
 	if (key === 'email') {
-		return updateEmail(auth.currentUser!, value)
-			.then(() => {
-				return updateDoc(doc(DB, COLLECTIONS.USERS, userid), {
-					[key]: value,
-				});
-			})
-			.catch(console.error);
+		try {
+			await updateEmail(auth.currentUser!, value as string);
+			return await updateDoc(doc(DB, COLLECTIONS.USERS, userid), {
+				[key]: value,
+			});
+		} catch (message) {
+			return console.error(message);
+		}
 	} else {
 		return updateDoc(doc(DB, COLLECTIONS.USERS, userid), {
 			[key]: value,

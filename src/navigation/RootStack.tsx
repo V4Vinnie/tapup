@@ -22,13 +22,13 @@ import { TapProvider } from '../providers/TapProvider';
 import { ProfileProvider } from '../providers/ProfileProvider';
 import AccountSettingsScreen from '../screens/AccountSettingsScreen';
 import PrivacyPolicyScreen from '../screens/PrivacyPolicyScreen';
-import MyCompanyScreen from '../screens/MyComanyScreen';
 import '../utils/stringExtensions';
 import AddCompanyCodeScreen from '../screens/AddCompanyCodeScreen';
 import { useCompany } from '../providers/CompanyProvider';
 import StoryViewer from '../components/FrameViewer/components/StoryViewer';
 import VideoRecordingScreen from '../components/FrameViewer/components/VideoRecordingScreen';
 import PhotoCaptureScreen from '../components/FrameViewer/components/PhotoCaptureScreen';
+import 'react-native-gesture-handler';
 
 type Props = {};
 
@@ -159,10 +159,6 @@ const AccountStack = () => {
 			<Stack.Screen
 				name={Routes.PRIVACY_POLICY}
 				component={PrivacyPolicyScreen}
-			/>
-			<Stack.Screen
-				name={Routes.MY_COMPANY}
-				component={MyCompanyScreen}
 			/>
 		</Stack.Navigator>
 	);

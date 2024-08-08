@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Text, TextInput, Pressable, View } from 'react-native';
 import { useCompany } from '../../providers/CompanyProvider';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -55,7 +55,7 @@ const DeleteOrAddSetting = ({
 
 	return (
 		<>
-			<TouchableOpacity
+			<Pressable
 				onPress={() => {
 					if (value) {
 						setModalVisible(true);
@@ -83,7 +83,7 @@ const DeleteOrAddSetting = ({
 						</Text>
 					)}
 				</View>
-			</TouchableOpacity>
+			</Pressable>
 			{/* Are you sure you want to delete modal */}
 			<Modal
 				avoidKeyboard
@@ -95,15 +95,15 @@ const DeleteOrAddSetting = ({
 						{`Are you sure you want to delete this?`}
 					</Text>
 					<View className='flex flex-row justify-end gap-x-12 mt-4'>
-						<TouchableOpacity
+						<Pressable
 							onPress={() => {
 								setModalVisible(false);
 								onDelete();
 							}}
 							className='mr-4'>
 							<Text className='text-base text-white'>Yes</Text>
-						</TouchableOpacity>
-						<TouchableOpacity
+						</Pressable>
+						<Pressable
 							onPress={() => {
 								setModalVisible(false);
 							}}>
@@ -112,7 +112,7 @@ const DeleteOrAddSetting = ({
 								style={{ color: companyColor }}>
 								No
 							</Text>
-						</TouchableOpacity>
+						</Pressable>
 					</View>
 				</View>
 			</Modal>

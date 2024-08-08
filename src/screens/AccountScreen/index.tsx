@@ -11,7 +11,6 @@ import AppHeader from '../../components/AppHeader';
 import SettingsTab from './SettingsTab';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import Entypo from 'react-native-vector-icons/Entypo';
 import { mode, themeColors } from '../../utils/constants';
 
 type Props = {};
@@ -52,17 +51,6 @@ const AccountScreen = (props: Props) => {
 							icon={
 								<MaterialIcons
 									name='privacy-tip'
-									size={20}
-									color={themeColors[mode].textColor}
-								/>
-							}
-						/>
-						<SettingsTab
-							title='My Company'
-							onPress={() => navigate(Routes.MY_COMPANY)}
-							icon={
-								<Entypo
-									name='suitcase'
 									size={20}
 									color={themeColors[mode].textColor}
 								/>

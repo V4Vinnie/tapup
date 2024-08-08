@@ -13,9 +13,8 @@ export type TProfile = {
 		jobType: string;
 		companyRole?: 'EMPLOYER' | 'EMPLOYEE';
 	};
-
-	watchedFrames: TWatchedFrame[];
-	progress: ProgressStorageProps | null;
+	watchedChapters: string[];
+	progress: Record<string, number>;
 	topicSubscriptionIds?: string[];
 	userSubscriptionIds?: string[];
 	badges?: TBadge[];
@@ -43,6 +42,7 @@ export type TTap = {
 	thumbnail: string;
 	chapters: TChapter[];
 	topicId: string;
+	companyCode: string;
 	creatorId: string;
 	createdAt: Timestamp;
 };
@@ -54,17 +54,9 @@ export type TContinueWatchingTap = TTap & {
 export type TChapter = {
 	chapterId: string;
 	name: string;
-	frames: TFrame[];
+	frames: TStory[];
 	tapId: string;
 	creatorId: string;
-};
-
-export type TFrame = {
-	id: string;
-	media: string;
-	mediaType: 'IMAGE' | 'VIDEO' | 'COMPONENT';
-	createdAt: Timestamp;
-	watchedBy?: string[];
 };
 
 export type TWatchedFrame = {
@@ -82,6 +74,7 @@ export type TCompany = {
 	code: string;
 	name: string;
 	primaryColor: string;
+	logo: string;
 };
 
 export type TStoryTypes = 'PHOTO' | 'VIDEO' | 'QUESTION' | 'PHOTO_QUESTION';

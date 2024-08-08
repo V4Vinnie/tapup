@@ -19,13 +19,11 @@ import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { mode, themeColors } from '../../utils/constants';
 import ChapterList from '../../components/ChapterList';
 import { useAuth } from '../../providers/AuthProvider';
-import {
-	getAllTapsForTopic,
-	getProgressForChapters,
-} from '../../database/services/TapService';
+import { getAllTapsForTopic } from '../../database/services/TapService';
 import { onUser } from '../../database/services/UserService';
 import { TProfile, TTap } from '../../types';
 import { getProfileForTap } from '../../database/services/ProfileService';
+import { useTaps } from '../../providers/TapProvider';
 
 type ProfileScreenProps = NativeStackScreenProps<
 	RootStackParamList,
@@ -33,14 +31,17 @@ type ProfileScreenProps = NativeStackScreenProps<
 >;
 
 const TapScreen = ({ route }: ProfileScreenProps) => {
-	const { user } = useAuth();
-	const { initialTap, selectedTopic, taps, profile } = route.params;
+	const { initialTap, selectedTopic, profile } = route.params;
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+	const { user } = useAuth();
+	const { taps } = useTaps();
+
 	const isFocused = useIsFocused();
 	const [tapProfile, setTapProfile] = useState<TProfile | null>(null);
 	const [selectedTap, setSelectedTap] = useState<TTap | null>(null);
-	const [progress, setProgress] = useState<Map<string, number>>(new Map());
+	const [progress, setProgress] = useState<Record<string, number>>({});
 	const [allTaps, setAllTaps] = useState<TTap[] | null>(null);
 	const [listView, setListView] = useState(false);
 	const [loading, setLoading] = useState(true);
@@ -56,7 +57,7 @@ const TapScreen = ({ route }: ProfileScreenProps) => {
 	useEffect(() => {
 		if (!user?.uid || !sortedChapters) return;
 		const getProgress = (user: TProfile) => {
-			const progress = getProgressForChapters(user, sortedChapters);
+			const progress = user.progress;
 			if (progress) setProgress(progress);
 			setLoading(false);
 		};
@@ -71,7 +72,6 @@ const TapScreen = ({ route }: ProfileScreenProps) => {
 				const _tapProfile = await getProfileForTap(
 					selectedTap ?? initialTap
 				);
-				console.log('tapProfile', selectedTap);
 
 				if (_tapProfile) {
 					setTapProfile(_tapProfile);
@@ -88,7 +88,7 @@ const TapScreen = ({ route }: ProfileScreenProps) => {
 			if (taps) {
 				setAllTaps(taps);
 			} else {
-				const _allTaps = await getAllTapsForTopic(selectedTopic.id);
+				const _allTaps = getAllTapsForTopic(selectedTopic.id, taps);
 				if (_allTaps) setAllTaps(_allTaps);
 			}
 		};

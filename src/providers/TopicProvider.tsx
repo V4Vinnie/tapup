@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { TNotificationTopic, TTopic, TProfile } from '../types';
 import { getTopics, getTopicsForUser } from '../database/services/TopicService';
+import WelcomeScreen from '../screens/WelcomeScreen';
 
 const TopicContext = React.createContext<{
 	loadingInitial: boolean;
@@ -44,10 +45,7 @@ export const TopicProvider = ({ children }: Props) => {
 		getAllTopics();
 	}, []);
 
-	const loadingInitial = useMemo(
-		() => !(userTopicsDone && allTopicsDone),
-		[userTopicsDone, allTopicsDone]
-	);
+	const loadingInitial = !allTopicsDone;
 
 	const topicProvProps = React.useMemo(
 		() => ({
@@ -61,7 +59,7 @@ export const TopicProvider = ({ children }: Props) => {
 
 	return (
 		<TopicContext.Provider value={topicProvProps}>
-			{children}
+			{loadingInitial ? null : children}
 		</TopicContext.Provider>
 	);
 };

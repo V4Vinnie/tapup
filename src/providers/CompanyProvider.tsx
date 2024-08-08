@@ -8,11 +8,13 @@ const CompanyContext = React.createContext<{
 	isCompanyColorSet: boolean;
 	company: TCompany | null;
 	setCompany: React.Dispatch<React.SetStateAction<TCompany | null>>;
+	setCompanyColor: React.Dispatch<React.SetStateAction<string>>;
 }>({
 	companyColor: primaryColor,
 	isCompanyColorSet: false,
 	company: null,
 	setCompany: () => {},
+	setCompanyColor: () => {},
 });
 
 type Props = {
@@ -41,8 +43,9 @@ export const CompanyProvider = ({ children }: Props) => {
 			isCompanyColorSet,
 			company,
 			setCompany,
+			setCompanyColor,
 		}),
-		[companyColor, isCompanyColorSet, company, setCompany]
+		[companyColor, isCompanyColorSet, company, setCompany, setCompanyColor]
 	);
 
 	return (

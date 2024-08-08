@@ -1,11 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-	Alert,
 	Dimensions,
-	PermissionsAndroid,
-	Platform,
+	SafeAreaView,
 	Text,
-	TouchableOpacity,
+	Pressable,
 	View,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -18,15 +16,11 @@ import {
 	scrollViewContentContainer,
 } from '../LoginScreen';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import * as ImagePicker from 'expo-image-picker';
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import { themeColors } from '../../utils/constants';
 import Swiper from 'react-native-swiper';
 import RegisterUserDetails from './RegisterUserDetails';
 import CustomSwiperDot from '../../components/CustomSwiperDot';
 import useKeyboard from '../../hooks/useKeyboard';
 import AddCompanyCode from './AddCompanyCode';
-import { TCompany } from '../../types';
 import AddInformation from './AddInformation';
 import { useAuth } from '../../providers/AuthProvider';
 import { useCompany } from '../../providers/CompanyProvider';
@@ -49,7 +43,7 @@ const SignupScreen = (props: Props) => {
 
 	const swiper = useRef<Swiper>(null);
 
-	const navigation =
+	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
 	const signUp = async () => {
@@ -74,11 +68,11 @@ const SignupScreen = (props: Props) => {
 	}, [authErrors]);
 
 	return (
-		<KeyboardAwareScrollView
-			keyboardShouldPersistTaps={'handled'}
-			style={scrollViewContainer}
-			contentContainerStyle={scrollViewContentContainer}
-			showsVerticalScrollIndicator={false}>
+		<SafeAreaView
+			// keyboardShouldPersistTaps={'handled'}
+			style={scrollViewContainer}>
+			{/* // contentContainerStyle={scrollViewContentContainer} */}
+			{/* // showsVerticalScrollIndicator={false}> */}
 			<View className='flex-1 items-center bg-dark-primaryBackground'>
 				{!isKeyboardOpen && (
 					<AppHeader
@@ -142,19 +136,19 @@ const SignupScreen = (props: Props) => {
 							<Text className='text-base font-inter-regular text-dark-subTextColor'>
 								{'Already have an account?'}
 							</Text>
-							<TouchableOpacity
+							<Pressable
 								onPress={() => {
-									navigation.navigate(Routes.LOGIN);
+									navigate(Routes.LOGIN);
 								}}>
 								<Text className='text-base font-inter-bold text-dark-textColor'>
 									{' Login'}
 								</Text>
-							</TouchableOpacity>
+							</Pressable>
 						</View>
 					)}
 				</View>
 			</View>
-		</KeyboardAwareScrollView>
+		</SafeAreaView>
 	);
 };
 

@@ -5,17 +5,17 @@ import { useAuth } from '../providers/AuthProvider';
 import { useEffect, useMemo, useState } from 'react';
 import { onUser } from '../database/services/UserService';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { getProgressForChapters } from '../database/services/TapService';
 import { SKELETON_WAIT_TIME } from '../utils/constants';
 import { makeStoriesFromChapters } from '../utils/storyUtils';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../navigation/Routes';
+import { generatePreviewPhoto } from '../utils/getThumbnailFromVideo';
 
 type Props = {
 	chapters?: TChapter[];
 	containerProps?: View['props'];
 	loading?: boolean;
-	chapterProgress?: Map<string, number>;
+	chapterProgress?: Record<string, number>;
 };
 
 const SPACE_BETWEEN = 10;
@@ -29,10 +29,9 @@ const ChapterRow = ({
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const { user } = useAuth();
 	const isFocused = useIsFocused();
-	const [progress, setProgress] = useState<Map<string, number>>(
-		chapterProgress ?? new Map()
+	const [progress, setProgress] = useState<Record<string, number>>(
+		chapterProgress ?? {}
 	);
-	const [stories, setStories] = useState<TStory[]>([]);
 	const [imagesLoading, setImagesLoading] = useState<boolean>(true);
 	const [loadingAll, setLoadingAll] = useState<boolean>(true);
 
@@ -40,8 +39,9 @@ const ChapterRow = ({
 		if (!user?.uid) return;
 		const getProgress = (user: TProfile) => {
 			if (!chapters) return;
-			const progress = getProgressForChapters(user, chapters);
+			const progress = user.progress;
 			if (progress) setProgress(progress);
+			console.log('progsere', progress);
 		};
 		if (isFocused) getProgress(user);
 		const sub = onUser(user.uid, getProgress);
@@ -50,9 +50,17 @@ const ChapterRow = ({
 
 	useEffect(() => {
 		if (!chapters) return;
-		const imageUrls = chapters.map((chapter) => {
-			if (chapter.frames[0].media) {
-				return Image.prefetch(chapter.frames[0].media);
+		const imageUrls = chapters.map(async (chapter) => {
+			if (chapter.frames[0].type === 'PHOTO') {
+				return Image.prefetch(chapter.frames[0].image);
+			}
+			if (chapter.frames[0].type === 'VIDEO') {
+				const video = await generatePreviewPhoto(
+					chapter.frames[0].video
+				);
+				if (video) {
+					return Image.prefetch(video);
+				}
 			}
 		});
 		Promise.all(imageUrls).then(() => setImagesLoading(false));
@@ -68,13 +76,6 @@ const ChapterRow = ({
 		}
 	}, [dataLoading, chapters]);
 
-	useEffect(() => {
-		if (!chapters) return;
-		makeStoriesFromChapters(chapters).then((stories) =>
-			setStories(stories)
-		);
-	}, [chapters]);
-
 	return loadingAll || !chapters ? (
 		<ChapterRowSkeleton />
 	) : (
@@ -87,26 +88,31 @@ const ChapterRow = ({
 				contentContainerStyle={{
 					paddingHorizontal: 16,
 				}}
-				renderItem={({ item, index }) => (
-					<PreviewComponent
-						key={item.chapterId}
-						progress={progress.get(item.chapterId)}
-						text={item.name}
-						chapter={item}
-						containerProps={{
-							style: {
-								marginRight:
-									index === chapters!.length - 1
-										? 0
-										: SPACE_BETWEEN,
-							},
-						}}
-						// TODO LINK TO CHAPTER VIEWER
-						onPress={() => {
-							navigate(Routes.STORY_VIEWER, {});
-						}}
-					/>
-				)}
+				renderItem={({ item, index }) => {
+					const databaseStories = item.frames;
+
+					return (
+						<PreviewComponent
+							key={item.chapterId}
+							progress={progress[item.chapterId]}
+							text={item.name}
+							chapter={item}
+							containerProps={{
+								style: {
+									marginRight:
+										index === chapters!.length - 1
+											? 0
+											: SPACE_BETWEEN,
+								},
+							}}
+							onPress={() => {
+								navigate(Routes.STORY_VIEWER, {
+									databaseStories,
+								});
+							}}
+						/>
+					);
+				}}
 			/>
 		</View>
 	);

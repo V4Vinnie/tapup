@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import {
 	StyleProp,
 	Text,
-	TouchableOpacity,
+	Pressable,
 	View,
 	ViewStyle,
 } from 'react-native';
@@ -34,7 +34,7 @@ const LoginScreen = ({}: Props) => {
 	const logIn = async () => {
 		setIsSending(true);
 		await handleLogin(email, password)
-			.catch((err) => console.log(err))
+			.catch(console.error)
 			.finally(() => {
 				setIsSending(false);
 			});
@@ -55,7 +55,7 @@ const LoginScreen = ({}: Props) => {
 				<FocusAwareStatusBar
 					translucent
 					backgroundColor='transparent'
-					barStyle='dark-content'
+					barStyle='light-content'
 				/>
 
 				<View className='w-4/5 h-full pb-8 pt-52 justify-between'>
@@ -142,23 +142,23 @@ const LoginScreen = ({}: Props) => {
 							<Text className='text-base font-inter-regular text-dark-subTextColor'>
 								{"Don't have an account?"}
 							</Text>
-							<TouchableOpacity
+							<Pressable
 								onPress={() => {
 									navigation.navigate(Routes.SIGNUP);
 								}}>
 								<Text className='text-base font-inter-bold text-dark-textColor'>
 									{' Signup'}
 								</Text>
-							</TouchableOpacity>
+							</Pressable>
 						</View>
-						<TouchableOpacity
+						<Pressable
 							onPress={() => {
 								navigation.navigate(Routes.FORGOT_PASSWORD);
 							}}>
 							<Text className='text-base text-center font-inter-bold text-dark-textColor mt-2'>
 								{' Forgot Password'}
 							</Text>
-						</TouchableOpacity>
+						</Pressable>
 					</View>
 				</View>
 			</View>

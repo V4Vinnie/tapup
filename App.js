@@ -14,6 +14,7 @@ import {
   Inter_600SemiBold,
   Inter_700Bold,
 } from '@expo-google-fonts/inter';
+import 'react-native-gesture-handler';
 
 SplashScreen.preventAutoHideAsync();
 export default function App() {

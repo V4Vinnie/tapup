@@ -25,7 +25,7 @@ const AddCompanyCode = ({
 	skipButtonPress,
 }: Props) => {
 	const { authErrors, handleSetCompanyCode } = useAuth();
-	const { companyColor, setCompany } = useCompany();
+	const { companyColor, setCompany, setCompanyColor } = useCompany();
 	const [code, setCode] = useState<string | undefined>();
 	const [foundCompany, setFoundCompany] = useState<TCompany | null>(null);
 
@@ -34,6 +34,7 @@ const AddCompanyCode = ({
 			getCompanyByCode(code).then((company) => {
 				setFoundCompany(company);
 				if (!company) return;
+				setCompanyColor(company.primaryColor);
 			});
 		}
 		() => {

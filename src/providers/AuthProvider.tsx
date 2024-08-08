@@ -161,6 +161,7 @@ export const AuthProvider = ({ children }: Props) => {
 		auth.signOut();
 		setUser(null);
 		setAuthErrors(null);
+		setCompany(null);
 		clearFirebaseSubscriptions();
 	};
 
