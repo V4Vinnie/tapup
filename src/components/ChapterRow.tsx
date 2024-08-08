@@ -89,8 +89,6 @@ const ChapterRow = ({
 					paddingHorizontal: 16,
 				}}
 				renderItem={({ item, index }) => {
-					const databaseStories = item.frames;
-
 					return (
 						<PreviewComponent
 							key={item.chapterId}
@@ -107,7 +105,7 @@ const ChapterRow = ({
 							}}
 							onPress={() => {
 								navigate(Routes.STORY_VIEWER, {
-									databaseStories,
+									chapter: item,
 								});
 							}}
 						/>

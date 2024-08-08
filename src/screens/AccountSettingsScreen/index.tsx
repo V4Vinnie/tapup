@@ -42,7 +42,7 @@ const AccountSettingsScreen = (props: Props) => {
 		email: user?.email || '',
 		profilePic: user?.profilePic || '',
 		fullName: user?.fullName || '',
-		jobType: user?.companyInfo.jobType || '',
+		jobType: user?.companyInfo?.jobType || '',
 	});
 	const [tempEmail, setTempEmail] = React.useState('');
 	const [loginEmail, setLoginEmail] = React.useState(user?.email || '');

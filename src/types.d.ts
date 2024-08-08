@@ -81,6 +81,7 @@ export type TStoryTypes = 'PHOTO' | 'VIDEO' | 'QUESTION' | 'PHOTO_QUESTION';
 
 export type TPhotoStory = {
 	id: string;
+	createdAt: Timestamp;
 	type: 'PHOTO';
 	image: string;
 	text?: string;
@@ -90,6 +91,7 @@ export type TPhotoStory = {
 
 export type TVideoStory = {
 	id: string;
+	createdAt: Timestamp;
 	type: 'VIDEO';
 	video: string;
 	text?: string;
@@ -99,6 +101,7 @@ export type TVideoStory = {
 
 export type TQuestionStory = {
 	id: string;
+	createdAt: Timestamp;
 	type: 'QUESTION';
 	question: string;
 	description?: string;
@@ -108,6 +111,7 @@ export type TQuestionStory = {
 
 export type TPhotoQuestionStory = {
 	id: string;
+	createdAt: Timestamp;
 	type: 'PHOTO_QUESTION';
 	image: string;
 	question: string;

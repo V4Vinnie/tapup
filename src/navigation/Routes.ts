@@ -1,4 +1,4 @@
-import { TProfile, TStory, TTap, TTopic } from '../types';
+import { TChapter, TProfile, TStory, TTap, TTopic } from '../types';
 
 export const Routes = {
 	WELCOME: 'Welcome',
@@ -66,7 +66,7 @@ export type RootStackParamList = {
 	StoryViewer: {
 		newVideoUri?: string;
 		newPhotoUri?: string;
-		databaseStories: TStory[];
+		chapter: TChapter;
 	};
 	StoryVideoRecording: {
 		onCapture?: (uri: string) => void;

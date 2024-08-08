@@ -20,6 +20,7 @@ import { primaryColor } from '../utils/constants';
 import { clearFirebaseSubscriptions } from '../utils/firebaseSubscriptions';
 
 const AuthContext = React.createContext<{
+	loadingInitial: boolean;
 	user: TProfile | null;
 	handleUpdateUser: <K extends keyof TProfile>(
 		userid: string,
@@ -48,6 +49,7 @@ const AuthContext = React.createContext<{
 	) => void;
 	handleSetCompanyCode: (companyCode: string) => void;
 }>({
+	loadingInitial: true,
 	user: null,
 	handleUpdateUser: () => {},
 	handleChangeProfilePic: () => Promise.resolve(''),
@@ -198,6 +200,7 @@ export const AuthProvider = ({ children }: Props) => {
 						setTimeout(async () => {
 							const _user = await getProfile(user.uid);
 							setUser({ ..._user, ...user } as TProfile);
+							setLoadingInitial(false);
 							if (!_user?.companyInfo?.companyCode) return;
 							const company = await getCompanyByCode(
 								_user?.companyInfo?.companyCode
@@ -206,8 +209,8 @@ export const AuthProvider = ({ children }: Props) => {
 						}, 1000);
 					} else {
 						setUser(null);
+						setLoadingInitial(false);
 					}
-					setLoadingInitial(false);
 				},
 				console.log
 			),
@@ -224,6 +227,7 @@ export const AuthProvider = ({ children }: Props) => {
 
 	const authProperties = React.useMemo(
 		() => ({
+			loadingInitial,
 			user,
 			handleUpdateUser,
 			handleLogin,
@@ -235,6 +239,7 @@ export const AuthProvider = ({ children }: Props) => {
 			handleSetCompanyCode,
 		}),
 		[
+			loadingInitial,
 			user,
 			handleUpdateUser,
 			handleLogin,
@@ -249,7 +254,7 @@ export const AuthProvider = ({ children }: Props) => {
 
 	return (
 		<AuthContext.Provider value={authProperties}>
-			{!loadingInitial && children}
+			{children}
 		</AuthContext.Provider>
 	);
 };

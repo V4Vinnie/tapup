@@ -15,6 +15,8 @@ import {
   Inter_700Bold,
 } from '@expo-google-fonts/inter';
 import 'react-native-gesture-handler';
+import { View } from "react-native";
+import { mode, themeColors } from "./src/utils/constants";
 
 SplashScreen.preventAutoHideAsync();
 export default function App() {
@@ -27,17 +29,15 @@ export default function App() {
   });
 
   if (!loaded) {
-    return null; // TODO: Add a No internet connection screen
+    return <View style={{ flex: 1, backgroundColor: themeColors[mode].primaryBackground }} />;
   }
-
-  SplashScreen.hideAsync();
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <NavigationContainer>
         <CompanyProvider>
           <AuthProvider>
-            <StatusBar translucent />
+            <StatusBar translucent style="light" />
             <RootStack />
           </AuthProvider>
         </CompanyProvider>
