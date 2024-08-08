@@ -102,6 +102,7 @@ const AccountSettingsScreen = (props: Props) => {
 						className='w-full'
 						showsVerticalScrollIndicator={false}>
 						<View className='px-8 pt-8 h-3/5 flex flex-col justify-between'>
+							{/*
 							<ProfilePicture
 								image={
 									userDetails.profilePic
@@ -110,6 +111,7 @@ const AccountSettingsScreen = (props: Props) => {
 								}
 								setImage={changeProfileImage}
 							/>
+							*/}
 							<ChangeSetting
 								icon={
 									<FontAwesome5

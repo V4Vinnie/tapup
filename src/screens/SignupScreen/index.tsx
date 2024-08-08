@@ -30,7 +30,7 @@ const SignupScreen = (props: Props) => {
 	const [email, setEmail] = useState('');
 	const [username, setProfilename] = useState('');
 	const [password, setPassword] = useState('');
-	const [image, setImage] = useState('');
+	//const [image, setImage] = useState('');
 	const [isSending, setIsSending] = useState(false);
 	const [fullName, setFullName] = useState('');
 	const [jobType, setJobType] = useState('');
@@ -41,16 +41,16 @@ const SignupScreen = (props: Props) => {
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
 	const signUp = async () => {
-		if (!image) {
-			Alert.alert('Error', 'Please select a profile picture');
-			return;
-		}
+		//if (!image) {
+		//	Alert.alert('Error', 'Please select a profile picture');
+		//	return;
+		//}
 		setIsSending(true);
 		handleSignup(
 			username,
 			email,
 			password,
-			image,
+			//image,
 			company,
 			fullName!,
 			jobType!
@@ -104,8 +104,8 @@ const SignupScreen = (props: Props) => {
 						loop={false}
 						showsButtons={false}>
 						<RegisterUserDetails
-							image={image}
-							setImage={setImage}
+							//image={image}
+							//setImage={setImage}
 							username={username}
 							setProfilename={setProfilename}
 							email={email}

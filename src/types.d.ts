@@ -4,7 +4,7 @@ import { Timestamp } from 'firebase/firestore';
 export type TProfile = {
 	uid: string;
 	name: string;
-	profilePic: string;
+	//profilePic: string;
 	email: string;
 	role: 'USER' | 'ADMIN' | 'CREATOR';
 	fullName: string;
