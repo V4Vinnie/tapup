@@ -1,5 +1,5 @@
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Platform, Pressable, View } from 'react-native';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IonIcon from 'react-native-vector-icons/Ionicons';
@@ -18,6 +18,11 @@ const BottomTabBar = ({
 	descriptors,
 	navigation,
 }: BottomTabBarProps) => {
+	const dontShowList = useMemo(() => [
+		Routes.STORY_VIEWER,
+		Routes.PRIVACY_POLICY
+	], []);
+
 	const translateY = useSharedValue(0);
 
 	const getNestedRouteName = (state: any) => {
@@ -31,7 +36,7 @@ const BottomTabBar = ({
 	
 	useEffect(() => {
 		const nestedRouteName = getNestedRouteName(state);
-        if (nestedRouteName === Routes.STORY_VIEWER) {
+        if (dontShowList.includes(nestedRouteName)) {
             translateY.value = withTiming(100, { duration: 200 }); // Slide down
         } else {
             translateY.value = withTiming(0, { duration: 150 }); // Slide up
