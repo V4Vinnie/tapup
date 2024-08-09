@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Alert, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { Alert,  ScrollView, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
@@ -28,19 +28,22 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../database/Firebase';
 import { useCompany } from '../../providers/CompanyProvider';
 import DeleteOrAddSetting from './DeleteOrAddSetting';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Props = {};
 
 const AccountSettingsScreen = (props: Props) => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-	const { user, handleUpdateUser, handleChangeProfilePic } = useAuth();
+	// const { user, handleUpdateUser, handleChangeProfilePic } = useAuth();
+	const { user, handleUpdateUser} = useAuth();
 	const { company, setCompany } = useCompany();
 	const [showLoginModal, setShowLoginModal] = React.useState(false);
 	const [userDetails, setUserDetails] = React.useState({
 		name: user?.name || '',
 		email: user?.email || '',
-		profilePic: user?.profilePic || '',
+		//profilePic: user?.profilePic || '',
+		profilePic: '',
 		fullName: user?.fullName || '',
 		jobType: user?.companyInfo?.jobType || '',
 	});
@@ -75,22 +78,22 @@ const AccountSettingsScreen = (props: Props) => {
 			});
 	}
 
-	function changeProfileImage(image: string): void {
-		handleChangeProfilePic(image).then((url) => {
-			if (!url) {
-				Alert.alert('Something went wrong', 'Please try again');
-				return;
-			}
-			setUserDetails({
-				...userDetails,
-				profilePic: url,
-			});
-			Alert.alert(
-				'Profile Picture Updated',
-				'Your profile picture has been updated. It may take a few minutes to reflect.'
-			);
-		});
-	}
+	// function changeProfileImage(image: string): void {
+	// 	handleChangeProfilePic(image).then((url) => {
+	// 		if (!url) {
+	// 			Alert.alert('Something went wrong', 'Please try again');
+	// 			return;
+	// 		}
+	// 		setUserDetails({
+	// 			...userDetails,
+	// 			profilePic: url,
+	// 		});
+	// 		Alert.alert(
+	// 			'Profile Picture Updated',
+	// 			'Your profile picture has been updated. It may take a few minutes to reflect.'
+	// 		);
+	// 	});
+	// }
 
 	return (
 		<>
@@ -102,6 +105,7 @@ const AccountSettingsScreen = (props: Props) => {
 						className='w-full'
 						showsVerticalScrollIndicator={false}>
 						<View className='px-8 pt-8 h-3/5 flex flex-col justify-between'>
+							{/*
 							<ProfilePicture
 								image={
 									userDetails.profilePic
@@ -110,6 +114,7 @@ const AccountSettingsScreen = (props: Props) => {
 								}
 								setImage={changeProfileImage}
 							/>
+							*/}
 							<ChangeSetting
 								icon={
 									<FontAwesome5

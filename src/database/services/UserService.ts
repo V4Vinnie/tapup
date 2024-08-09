@@ -20,7 +20,7 @@ const STORE_PROFILE_IMAGE = (uid: string, extention: string) =>
 export async function loginUser(
 	email: string,
 	password: string
-): Promise<UserCredential> {
+): Promise<TProfile> {
 	return new Promise(async (resolve, reject) => {
 		try {
 			const userCredential = await signInWithEmailAndPassword(
@@ -28,7 +28,12 @@ export async function loginUser(
 				email.toLowerCase(),
 				password
 			);
-			resolve(userCredential);
+			const user = await getProfile(userCredential.user.uid);
+			if (!user) {
+				reject('Error getting user profile');
+				return;
+			}
+			resolve(user);
 		} catch (error) {
 			reject(error);
 		}
@@ -39,7 +44,7 @@ export async function registerUser(
 	name: string,
 	email: string,
 	password: string,
-	profileImage: string,
+	//profileImage: string,
 	company: TCompany | null,
 	fullName: string,
 	jobType: string
@@ -50,7 +55,7 @@ export async function registerUser(
 			name.length < 2 ||
 			!email ||
 			!password ||
-			!profileImage ||
+			//!profileImage ||
 			!fullName ||
 			!jobType
 		) {
@@ -70,15 +75,15 @@ export async function registerUser(
 				return;
 			}
 			const userAuthId = userCredential.user.uid;
-			const url = await saveImage(profileImage, userAuthId);
-			if (!url) {
-				reject('Error saving image');
-				return;
-			}
+			//const url = await saveImage(profileImage, userAuthId);
+			//if (!url) {
+			//	reject('Error saving image');
+			//	return;
+			//}
 			const profile: TProfile = {
 				uid: userAuthId,
 				name: name,
-				profilePic: url,
+				//profilePic: url,
 				email: email,
 				role: 'USER',
 				watchedChapters: [],
@@ -101,31 +106,31 @@ export async function registerUser(
 }
 
 export async function saveImage(image: string, uid: string) {
-    try {
-        if (!image) {
-            throw new Error('Image URI is null or undefined');
-        }
+	try {
+		if (!image) {
+			throw new Error('Image URI is null or undefined');
+		}
 
-        const fileInfo = await FileSystem.getInfoAsync(image);
-        if (!fileInfo.exists) {
-            throw new Error('Image file does not exist');
-        }
+		const fileInfo = await FileSystem.getInfoAsync(image);
+		if (!fileInfo.exists) {
+			throw new Error('Image file does not exist');
+		}
 
-        const response = await fetch(image);
-        const blob = await response.blob();
+		const response = await fetch(image);
+		const blob = await response.blob();
 
-        if (!blob) {
-            throw new Error('Failed to create blob from image');
-        }
+		if (!blob) {
+			throw new Error('Failed to create blob from image');
+		}
 
-        const extension = image.split('.').pop() || 'jpg';
-        const imageRef = ref(storage, STORE_PROFILE_IMAGE(uid, extension));
-        await uploadBytes(imageRef, blob);
-        return getDownloadURL(imageRef);
-    } catch (error) {
-        console.error('saveImage in UserService ', error);
-        throw error;
-    }
+		const extension = image.split('.').pop() || 'jpg';
+		const imageRef = ref(storage, STORE_PROFILE_IMAGE(uid, extension));
+		await uploadBytes(imageRef, blob);
+		return getDownloadURL(imageRef);
+	} catch (error) {
+		console.error('saveImage in UserService ', error);
+		throw error;
+	}
 }
 
 export async function sendForgotPasswordEmail(email: string) {

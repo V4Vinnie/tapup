@@ -16,7 +16,7 @@ const SeeMoreTapsScreen = ({ route }: SeeMoreTapsScreenProps) => {
 	return (
 		<View className='flex-1 items-center bg-dark-primaryBackground'>
 			<FocusAwareStatusBar translucent barStyle={'light-content'} />
-			<AppHeader transparentHeader headerWithBack title={title} />
+			<AppHeader headerWithBack title={title} />
 			<ScrollView
 				className='w-full px-4 mt-32'
 				contentContainerStyle={{

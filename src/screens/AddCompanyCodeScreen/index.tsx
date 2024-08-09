@@ -1,4 +1,4 @@
-import { SafeAreaView, ScrollView, View } from 'react-native';
+import {  ScrollView, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
@@ -6,6 +6,7 @@ import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
 import { useAuth } from '../../providers/AuthProvider';
 import AppHeader from '../../components/AppHeader';
 import AddCompanyCode from '../SignupScreen/AddCompanyCode';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Props = {};
 

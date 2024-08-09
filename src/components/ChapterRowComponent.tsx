@@ -32,7 +32,7 @@ type Props = {
 	loading?: boolean;
 };
 
-const PreviewComponent = ({
+const ChapterRowComponent = ({
 	onPress,
 	thumbnail,
 	chapter,
@@ -96,8 +96,6 @@ const PreviewComponent = ({
 	}, [fullTap]);
 
 	useEffect(() => {
-		console.log(chapter);
-
 		if (thumbnail) {
 			setPreviewPhoto(thumbnail);
 			return;
@@ -111,7 +109,7 @@ const PreviewComponent = ({
 	}, [chapter]);
 
 	return loading ? (
-		<PreviewComponentSkeleton />
+		<ChapterRowComponentSkeleton />
 	) : (
 		<Pressable
 			onPress={handleOnPress}
@@ -145,7 +143,7 @@ const PreviewComponent = ({
 	);
 };
 
-const PreviewComponentSkeleton = () => {
+const ChapterRowComponentSkeleton = () => {
 	return (
 		<Skeleton
 			width={128}
@@ -163,4 +161,4 @@ const PreviewComponentSkeleton = () => {
 	);
 };
 
-export default PreviewComponent;
+export default ChapterRowComponent;

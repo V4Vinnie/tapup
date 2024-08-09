@@ -4,7 +4,7 @@ import AppButton from '../../components/AppButton';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import { assets } from '../../../assets/Assets';
-import ProfilePicture from './ProfilePicture';
+//import ProfilePicture from './ProfilePicture';
 import Swiper from 'react-native-swiper';
 import useKeyboard from '../../hooks/useKeyboard';
 import { useEffect, useMemo, useState } from 'react';
@@ -12,8 +12,8 @@ import { useAuth } from '../../providers/AuthProvider';
 import { maxChars } from '../../utils/constants';
 
 type Props = {
-	image: string;
-	setImage: (image: string) => void;
+	//image: string;
+	//setImage: (image: string) => void;
 	username: string;
 	setProfilename: React.Dispatch<React.SetStateAction<string>>;
 	email: string;
@@ -24,8 +24,8 @@ type Props = {
 };
 
 const RegisterUserDetails = ({
-	image,
-	setImage,
+	//image,
+	//setImage,
 	username,
 	setProfilename,
 	email,
@@ -43,18 +43,19 @@ const RegisterUserDetails = ({
 			username.isBlank ||
 			password.length < 6 ||
 			email.isBlank ||
-			image.isBlank ||
+			//image.isBlank ||
 			!email.isValidEmail ||
 			username.startsWithOrEndsWithSpaces ||
 			password.startsWithOrEndsWithSpaces ||
 			email.startsWithOrEndsWithSpaces
 		);
-	}, [username, password, email, image]);
+	}, [username, password, email]);
 
 	return (
 		<View
 			className={`w-4/5 mx-auto h-[85%] flex ${authErrors && 'h-full'}`}>
 			<View>
+				{/*
 				{!isKeyboardOpen && (
 					<View className='relative w-28 mx-auto'>
 						<ProfilePicture
@@ -67,6 +68,7 @@ const RegisterUserDetails = ({
 						/>
 					</View>
 				)}
+				*/}
 				<Text className='text-3xl font-inter-bold text-center text-dark-textColor'>
 					{'Create account'}
 				</Text>
@@ -177,7 +179,10 @@ const RegisterUserDetails = ({
 						},
 					}}
 					title={'Next'}
-					onPress={() => swiper.current?.scrollBy(1)}
+					onPress={() => {
+						console.log('Swiper ref:', swiper.current);
+						swiper.current?.scrollBy(1);
+					}}
 				/>
 				{!authErrors?.userDetails && isKeyboardOpen && (
 					<Text

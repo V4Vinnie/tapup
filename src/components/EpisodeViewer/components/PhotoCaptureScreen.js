@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, Pressable, Image } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { Camera, X, Check } from 'lucide-react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const PhotoCaptureScreen = ({ navigation }) => {
   const [cameraPermission, requestCameraPermission] = useCameraPermissions();

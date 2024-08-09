@@ -1,15 +1,13 @@
 import { FlatList, Image, View } from 'react-native';
 import { TChapter, TProfile, TStory } from '../types';
-import PreviewComponent from './PreviewComponent';
 import { useAuth } from '../providers/AuthProvider';
 import { useEffect, useMemo, useState } from 'react';
 import { onUser } from '../database/services/UserService';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { SKELETON_WAIT_TIME } from '../utils/constants';
-import { makeStoriesFromChapters } from '../utils/storyUtils';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../navigation/Routes';
 import { generatePreviewPhoto } from '../utils/getThumbnailFromVideo';
+import ChapterRowComponent from './ChapterRowComponent';
 
 type Props = {
 	chapters?: TChapter[];
@@ -71,7 +69,7 @@ const ChapterRow = ({
 
 	useEffect(() => {
 		if (!(dataLoading || !chapters)) {
-			setTimeout(() => setLoadingAll(false), SKELETON_WAIT_TIME);
+			setLoadingAll(false);
 		}
 	}, [dataLoading, chapters]);
 
@@ -88,10 +86,14 @@ const ChapterRow = ({
 					paddingHorizontal: 16,
 				}}
 				renderItem={({ item, index }) => {
+					const progressForChapter = progress[item.chapterId] ?? 0;
+					const chapterProcessInPercent =
+						(progressForChapter / item.frames.length) * 100;
+
 					return (
-						<PreviewComponent
+						<ChapterRowComponent
 							key={item.chapterId}
-							progress={progress[item.chapterId]}
+							progress={chapterProcessInPercent}
 							text={item.name}
 							chapter={item}
 							containerProps={{
@@ -105,6 +107,7 @@ const ChapterRow = ({
 							onPress={() => {
 								navigate(Routes.STORY_VIEWER, {
 									chapter: item,
+									startIndex: progressForChapter,
 								});
 							}}
 						/>
@@ -128,7 +131,7 @@ const ChapterRowSkeleton = () => {
 					columnGap: SPACE_BETWEEN,
 				}}
 				renderItem={({ item, index }) => (
-					<PreviewComponent key={item} loading />
+					<ChapterRowComponent key={item} loading />
 				)}
 			/>
 		</View>

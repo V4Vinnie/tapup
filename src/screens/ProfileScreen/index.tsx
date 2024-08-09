@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text,  ScrollView } from 'react-native';
 import React from 'react';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
 import SearchbarHeader from '../../components/SearchbarHeader';
@@ -6,6 +6,7 @@ import ProfileHeader from '../../components/ProfileHeader';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/Routes';
 import TopicsAndSubTopics from './TopicsAndSubTopics';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type ProfileScreenProps = NativeStackScreenProps<
 	RootStackParamList,

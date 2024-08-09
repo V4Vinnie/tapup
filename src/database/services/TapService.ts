@@ -1,5 +1,12 @@
 import { TCompany, TProfile, TTap, TTopic } from '../../types';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import {
+	collection,
+	doc,
+	getDocs,
+	query,
+	setDoc,
+	where,
+} from 'firebase/firestore';
 import { DB } from '../Firebase';
 import { COLLECTIONS } from '../../utils/constants';
 
@@ -19,25 +26,6 @@ export const getAllTaps = async (company: TCompany): Promise<TTap[]> => {
 		console.log('getAllTaps in TapService ', error);
 		return [];
 	}
-};
-
-export const getProcessPercentageForTaps = (user: TProfile, taps: TTap[]) => {
-	return taps.reduce(
-		(acc, tap) => {
-			const chapters = tap.chapters ?? [];
-			const watchedChapters = user.watchedChapters || [];
-			const chaptersForTap = chapters.filter((chapter) =>
-				watchedChapters.includes(chapter.chapterId)
-			);
-			const amountOfChapters = chapters.length;
-			const amountOfChaptersWatched = chaptersForTap.length;
-			const percentage =
-				(amountOfChaptersWatched / amountOfChapters) * 100;
-			acc[tap.id] = percentage;
-			return acc;
-		},
-		{} as Record<string, number>
-	);
 };
 
 // export const getViewsForTap = async (tapId: string) => {
@@ -122,4 +110,54 @@ export const getBusyWatchingTaps = (user: TProfile, taps: TTap[]) => {
 	return taps.filter(
 		(tap) => tapsProgress[tap.id] > 0 && tapsProgress[tap.id] < 100
 	);
+};
+
+export const setProgressForChapter = (
+	user: TProfile,
+	chapterId: string,
+	index: number
+) => {
+	const progress = { ...user.progress };
+	progress[chapterId] = index;
+	setDoc(doc(DB, COLLECTIONS.USERS, user.uid), { progress }, { merge: true });
+};
+
+export const watchChapter = (user: TProfile, chapterId: string) => {
+	const watchedChapters = user.watchedChapters ?? [];
+	if (!watchedChapters.includes(chapterId)) {
+		watchedChapters.push(chapterId);
+		setDoc(
+			doc(DB, COLLECTIONS.USERS, user.uid),
+			{ watchedChapters },
+			{ merge: true }
+		);
+	}
+};
+
+export const getWatchedTap = (user: TProfile, taps: TTap[], tap: TTap) => {
+	return getWatchedTapsForUser(user, taps).some(
+		(unwatchedTap) => unwatchedTap.id === tap.id
+	);
+};
+
+export const getProcessPercentageForTaps = (user: TProfile, taps: TTap[]) => {
+	return taps.reduce(
+		(acc, tap) => ({
+			...acc,
+			[tap.id]: getProcessPercentageForTap(user, tap),
+		}),
+		{} as Record<string, number>
+	);
+};
+
+export const getProcessPercentageForTap = (user: TProfile, tap: TTap) => {
+	const maxFramesToWatch = tap.chapters.reduce(
+		(acc, chapter) => acc + chapter.frames.length,
+		0
+	);
+	const totalWatchedFrames = tap.chapters.reduce((acc, chapter) => {
+		const watchedFrames = user.progress[chapter.chapterId] ?? 0;
+		return acc + watchedFrames;
+	}, 0);
+	return (totalWatchedFrames / maxFramesToWatch) * 100;
 };

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Image, SafeAreaView } from 'react-native';
+import { View, Image, } from 'react-native';
 import QuestionContent from './QuestionContent.js';
 import { TPhotoQuestionStory, TStory } from '../../../types.js';
 
@@ -30,7 +30,7 @@ const PhotoQuestionView = ({
 	}, [selectedAnswer]);
 
 	return (
-		<SafeAreaView className='flex-1'>
+		<View className='flex-1'>
 			<View className='flex-1'>
 				<View className='h-1/2'>
 					<Image
@@ -51,7 +51,7 @@ const PhotoQuestionView = ({
 					/>
 				</View>
 			</View>
-		</SafeAreaView>
+		</View>
 	);
 };
 

@@ -67,6 +67,7 @@ export type RootStackParamList = {
 		newVideoUri?: string;
 		newPhotoUri?: string;
 		chapter: TChapter;
+		startIndex?: number;
 	};
 	StoryVideoRecording: {
 		onCapture?: (uri: string) => void;

@@ -1,12 +1,15 @@
 import { useNavigation } from '@react-navigation/native';
+import React from 'react';
 import {
-	Platform,
-	StyleProp,
-	TouchableWithoutFeedback,
-	View,
-	ViewStyle,
+  StyleProp,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+  Text,
+  StatusBar,
+  TextStyle,
+  Platform,
 } from 'react-native';
-import { Header } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/AntDesign';
 import settings from '../../tailwind.config';
 import { FONTS } from '../utils/constants';
@@ -19,7 +22,6 @@ type Props = {
 	rightIcon?: JSX.Element;
 	onRightIconPress?: () => void;
 	iconColor?: string;
-	transparentHeader?: boolean;
 	headerWithBackground?: boolean;
 	bottomMargin?: StyleProp<ViewStyle>;
 	overrideTheme?: 'dark' | 'light' | false;
@@ -33,7 +35,6 @@ const AppHeader = ({
 	rightIcon,
 	onRightIconPress = () => {},
 	iconColor,
-	transparentHeader = false,
 	headerWithBackground = false,
 	bottomMargin = {
 		marginBottom: '2%',
@@ -46,85 +47,103 @@ const AppHeader = ({
 	const navigation =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
+	const { colors: themeColors } = settings.theme.extend;
+	const mode = themeColors.darkMode ? 'dark' : 'light';
+
 	return (
-		<Header
-			leftComponent={
-				<TouchableWithoutFeedback
-					onPress={() => {
-						headerWithBack ? navigation.goBack() : null;
-					}}>
-					{headerWithBack ? (
-						<View className='pr-4 pl-2 py-2'>
-							<Icon
-								name='arrowleft'
-								size={24}
-								color={themeColors[mode].textColor}
-							/>
-						</View>
-					) : (
-						<View></View>
+		<View style={[
+			styles.container,
+			headerWithBackground && styles.containerWithBackground,
+			bottomMargin,
+			styles.alwaysHeaderStyle,
+		]}>
+			<StatusBar
+				translucent
+				backgroundColor="transparent"
+				barStyle={darkIcons ? 'dark-content' : 'light-content'}
+			/>
+			<View style={styles.headerContent}>
+				<View style={styles.leftComponent}>
+					{headerWithBack && (
+						<TouchableOpacity onPress={() => navigation.goBack()}>
+							<View style={styles.backButton}>
+								<Icon
+									name="arrowleft"
+									size={24}
+									color={themeColors[mode].textColor}
+								/>
+							</View>
+						</TouchableOpacity>
 					)}
-				</TouchableWithoutFeedback>
-			}
-			centerComponent={
-				!centerComponent
-					? {
-							text: title,
-							style: {
-								color: themeColors[mode].textColor,
-								fontSize: FONTS.SIZE.XL,
-								fontFamily: FONTS.FAMILY.MEDIUM,
-							},
-						}
-					: centerComponent
-			}
-			centerContainerStyle={centerContainerStyle}
-			rightComponent={
-				rightIcon && (
-					<TouchableWithoutFeedback
-						onPress={() => {
-							onRightIconPress();
-						}}>
-						<View className='mr-4'>{rightIcon}</View>
-					</TouchableWithoutFeedback>
-				)
-			}
-			statusBarProps={{ translucent: true }}
-			containerStyle={[
-				headerWithBackground && containerStyle,
-				transparentHeader && transparentContainerStyle,
-				bottomMargin,
-				headerStyle,
-			]}
-			backgroundColor='transparent'
-		/>
+				</View>
+				<View style={styles.centerComponent}>
+					{!centerComponent ? (
+						<Text style={[styles.titleText, { color: themeColors[mode].textColor }]}>
+							{title}
+						</Text>
+					) : (
+						centerComponent
+					)}
+				</View>
+				<View style={styles.rightComponent}>
+					{rightIcon && (
+						<TouchableOpacity onPress={onRightIconPress}>
+							<View style={styles.rightIcon}>{rightIcon}</View>
+						</TouchableOpacity>
+					)}
+				</View>
+			</View>
+		</View>
 	);
 };
 
-const { colors: themeColors } = settings.theme.extend;
-const mode = themeColors.darkMode ? 'dark' : 'light';
-
-const centerContainerStyle: StyleProp<ViewStyle> = {
-	justifyContent: 'center',
-	zIndex: 1,
-	alignItems: 'center',
-};
-const containerStyle: StyleProp<ViewStyle> = {
-	backgroundColor: themeColors[mode].secondaryBackground,
-	zIndex: 2,
-	paddingTop: Platform.OS == 'ios' ? 0 : 20,
-	paddingBottom: 30,
-};
-const transparentContainerStyle: StyleProp<ViewStyle> = {
-	position: 'absolute',
-	width: '85%',
-	backgroundColor: 'transparent',
-	borderBottomWidth: 0,
-	zIndex: 2,
-	marginTop: 5,
-};
-const headerStyle: StyleProp<ViewStyle> = {
-	marginTop: Platform.OS === 'ios' ? -48 : 0,
-};
+const styles: Record<string, ViewStyle | TextStyle> = {
+	container: {
+		backgroundColor: 'transparent',
+		borderBottomWidth: 0,
+		zIndex: 2,
+	},
+	containerWithBackground: {
+		backgroundColor: settings.theme.extend.colors[settings.theme.extend.colors.darkMode ? 'dark' : 'light'].secondaryBackground,
+		paddingBottom: 30,
+		marginTop: 0,
+		paddingTop: 0,
+	},
+	alwaysHeaderStyle: {
+		borderBottomWidth: 0,
+		// paddingTop: Platform.OS === 'ios' ? 0 : 40,
+	},
+	headerContent: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		paddingHorizontal: 16,
+		height: 56,
+	},
+	leftComponent: {
+		flex: 1,
+	},
+	centerComponent: {
+		flex: 3,
+		alignItems: 'center',
+	},
+	rightComponent: {
+		flex: 1,
+		alignItems: 'flex-end',
+	},
+	backButton: {
+		paddingRight: 16,
+		paddingLeft: 8,
+		paddingVertical: 8,
+	},
+	titleText: {
+		fontSize: FONTS.SIZE.XL,
+		fontFamily: FONTS.FAMILY.MEDIUM,
+		textAlign: 'center',
+	},
+	rightIcon: {
+		marginRight: 16,
+	},
+} as const;
 
 export default AppHeader;

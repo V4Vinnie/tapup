@@ -16,7 +16,7 @@ const SeeMoreTopicsScreen = ({ route }: SeeMoreTopicsScreenProps) => {
 	return (
 		<View className='flex-1 items-center bg-dark-primaryBackground'>
 			<FocusAwareStatusBar translucent barStyle={'light-content'} />
-			<AppHeader transparentHeader headerWithBack title={title} />
+			<AppHeader headerWithBack title={title} />
 			<View className='w-full flex px-4 mt-32'>
 				<ScrollView
 					className='w-full'

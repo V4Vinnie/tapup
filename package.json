@@ -50,7 +50,8 @@
     "react-native-video": "^6.4.3",
     "typescript": "~5.3.3",
     "uglify-js": "^3.19.1",
-    "uuid": "^10.0.0"
+    "uuid": "^10.0.0",
+    "react-native-webview": "13.8.6"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
