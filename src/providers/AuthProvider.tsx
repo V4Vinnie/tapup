@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { UserCredential, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../database/Firebase';
 import {
-	changeProfilePicture,
+	//changeProfilePicture,
 	getProfile,
 	loginUser,
 	registerUser,
@@ -27,7 +27,7 @@ const AuthContext = React.createContext<{
 		key: K,
 		value: TProfile[K]
 	) => void;
-	handleChangeProfilePic: (image: string) => Promise<string | undefined>;
+	//handleChangeProfilePic: (image: string) => Promise<string | undefined>;
 	handleLogin: (
 		email: string,
 		password: string
@@ -36,7 +36,7 @@ const AuthContext = React.createContext<{
 		name: string,
 		email: string,
 		password: string,
-		profileImage: string,
+		//profileImage: string,
 		company: TCompany | null,
 		fullName: string,
 		jobType: string
@@ -52,24 +52,13 @@ const AuthContext = React.createContext<{
 	loadingInitial: true,
 	user: null,
 	handleUpdateUser: () => {},
-	handleChangeProfilePic: () => Promise.resolve(''),
-	handleLogin: (email: string, password: string) => Promise.resolve(),
-	handleSignup: (
-		name: string,
-		email: string,
-		password: string,
-		profileImage: string,
-		company: TCompany | null,
-		fullName: string,
-		jobType: string
-	) => Promise.resolve(),
+	//handleChangeProfilePic: () => Promise.resolve(''),
+	handleLogin: () => Promise.resolve(),
+	handleSignup: () => Promise.resolve(),
 	handleLogout: () => {},
 	authErrors: null,
-	handleForgotPassword: (
-		email: string,
-		setLoading: React.Dispatch<React.SetStateAction<boolean>>
-	) => {},
-	handleSetCompanyCode: (companyCode: string) => {},
+	handleForgotPassword: () => {},
+	handleSetCompanyCode: () => {},
 });
 
 type Props = {
@@ -136,7 +125,7 @@ export const AuthProvider = ({ children }: Props) => {
 		name: string,
 		email: string,
 		password: string,
-		profileImage: string,
+		//profileImage: string,
 		company: TCompany | null,
 		fullName: string,
 		jobType: string
@@ -146,7 +135,7 @@ export const AuthProvider = ({ children }: Props) => {
 			name,
 			email,
 			password,
-			profileImage,
+			//profileImage,
 			company,
 			fullName,
 			jobType
@@ -163,10 +152,10 @@ export const AuthProvider = ({ children }: Props) => {
 			);
 	};
 
-	const handleChangeProfilePic = async (image: string) => {
-		if (!user) return;
-		return await changeProfilePicture(image, user.uid);
-	};
+//	const handleChangeProfilePic = async (image: string) => {
+//		if (!user) return;
+//		return await changProfilePicture(image, user.uid);
+//	}
 
 	const handleLogout = () => {
 		auth.signOut();
@@ -242,7 +231,7 @@ export const AuthProvider = ({ children }: Props) => {
 			handleLogout,
 			authErrors,
 			handleForgotPassword,
-			handleChangeProfilePic,
+			//handleChangeProfilePic,
 			handleSetCompanyCode,
 		}),
 		[
@@ -254,7 +243,7 @@ export const AuthProvider = ({ children }: Props) => {
 			handleLogout,
 			authErrors,
 			handleForgotPassword,
-			handleChangeProfilePic,
+			//handleChangeProfilePic,
 			handleSetCompanyCode,
 		]
 	);

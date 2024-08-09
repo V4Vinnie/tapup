@@ -44,7 +44,7 @@ export async function registerUser(
 	name: string,
 	email: string,
 	password: string,
-	profileImage: string,
+	//profileImage: string,
 	company: TCompany | null,
 	fullName: string,
 	jobType: string
@@ -55,7 +55,7 @@ export async function registerUser(
 			name.length < 2 ||
 			!email ||
 			!password ||
-			!profileImage ||
+			//!profileImage ||
 			!fullName ||
 			!jobType
 		) {
@@ -75,15 +75,15 @@ export async function registerUser(
 				return;
 			}
 			const userAuthId = userCredential.user.uid;
-			const url = await saveImage(profileImage, userAuthId);
-			if (!url) {
-				reject('Error saving image');
-				return;
-			}
+			//const url = await saveImage(profileImage, userAuthId);
+			//if (!url) {
+			//	reject('Error saving image');
+			//	return;
+			//}
 			const profile: TProfile = {
 				uid: userAuthId,
 				name: name,
-				profilePic: url,
+				//profilePic: url,
 				email: email,
 				role: 'USER',
 				watchedChapters: [],

@@ -17,6 +17,7 @@ import { Routes, RootStackParamList } from '../../navigation/Routes';
 import AppButton from '../../components/AppButton';
 import { mode, themeColors } from '../../utils/constants';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Props = {};
 
@@ -45,124 +46,125 @@ const LoginScreen = ({}: Props) => {
 		return isSending || email === '' || password.length < 6 ? 0.5 : 1;
 	}, [email, password, isSending]);
 	return (
-		<KeyboardAwareScrollView
-			keyboardShouldPersistTaps={'handled'}
-			style={scrollViewContainer}
-			contentContainerStyle={scrollViewContentContainer}
-			showsVerticalScrollIndicator={false}>
-			<View className='flex-1 items-center bg-dark-primaryBackground'>
-				<AppHeader transparentHeader headerWithBack title={'Login'} />
-				<FocusAwareStatusBar
-					translucent
-					backgroundColor='transparent'
-					barStyle='light-content'
-				/>
+		<SafeAreaView edges={['top']} style={scrollViewContainer}>
+			<AppHeader transparentHeader headerWithBack title={'Login'} />
+			<KeyboardAwareScrollView
+				keyboardShouldPersistTaps={'handled'}
+				contentContainerStyle={scrollViewContentContainer}
+				showsVerticalScrollIndicator={false}>
+				<View className='flex-1 items-center bg-dark-primaryBackground'>
+					<FocusAwareStatusBar
+						translucent
+						backgroundColor='transparent'
+						barStyle='light-content'
+					/>
 
-				<View className='w-4/5 h-full pb-8 pt-52 justify-between'>
-					<View>
-						<Text className='text-3xl font-inter-bold text-center text-dark-textColor'>
-							{'Welcome back!'}
-						</Text>
-
-						<Text className='text-base font-inter-medium text-center text-dark-subTextColor'>
-							{'Sign in to your account.'}
-						</Text>
-
-						<AppInput
-							containerProps={{
-								className: 'mt-6',
-							}}
-							leftIcon={{
-								component: (
-									<Icon
-										name='mail'
-										size={16}
-										color={'white'}
-									/>
-								),
-							}}
-							inputProps={{
-								placeholder: 'Email',
-								value: email,
-								keyboardType: 'email-address',
-								onChangeText: (email) => {
-									setEmail(email);
-								},
-								autoCapitalize: 'none',
-							}}
-						/>
-
-						<AppInput
-							containerProps={{
-								className: 'mt-2',
-							}}
-							leftIcon={{
-								component: (
-									<Icon
-										name='lock'
-										size={16}
-										color={'white'}
-									/>
-								),
-							}}
-							inputProps={{
-								placeholder: 'Password',
-								value: password,
-								secureTextEntry: true,
-								onChangeText: (password) => {
-									setPassword(password);
-								},
-							}}
-						/>
-
-						<AppButton
-							buttonProps={{
-								className: 'mt-4',
-								disabled: isSending,
-								style: {
-									opacity: disabledState,
-								},
-							}}
-							title={'Login'}
-							onPress={() => logIn()}
-						/>
-						{authErrors && (
-							<View
-								className={`w-full mt-2 p-2 rounded-full bg-red-400`}>
-								<Text
-									className={`text-base text-center font-inter-medium text-white`}>
-									{authErrors.message}
-								</Text>
-							</View>
-						)}
-					</View>
-
-					<View>
-						<View className='flex-row items-center justify-center mt-4'>
-							<Text className='text-base font-inter-regular text-dark-subTextColor'>
-								{"Don't have an account?"}
+					<View className='w-4/5 h-full pb-8 pt-52 justify-between'>
+						<View>
+							<Text className='text-3xl font-inter-bold text-center text-dark-textColor'>
+								{'Welcome back!'}
 							</Text>
+
+							<Text className='text-base font-inter-medium text-center text-dark-subTextColor'>
+								{'Sign in to your account.'}
+							</Text>
+
+							<AppInput
+								containerProps={{
+									className: 'mt-6',
+								}}
+								leftIcon={{
+									component: (
+										<Icon
+											name='mail'
+											size={16}
+											color={'white'}
+										/>
+									),
+								}}
+								inputProps={{
+									placeholder: 'Email',
+									value: email,
+									keyboardType: 'email-address',
+									onChangeText: (email) => {
+										setEmail(email);
+									},
+									autoCapitalize: 'none',
+								}}
+							/>
+
+							<AppInput
+								containerProps={{
+									className: 'mt-2',
+								}}
+								leftIcon={{
+									component: (
+										<Icon
+											name='lock'
+											size={16}
+											color={'white'}
+										/>
+									),
+								}}
+								inputProps={{
+									placeholder: 'Password',
+									value: password,
+									secureTextEntry: true,
+									onChangeText: (password) => {
+										setPassword(password);
+									},
+								}}
+							/>
+
+							<AppButton
+								buttonProps={{
+									className: 'mt-4',
+									disabled: isSending,
+									style: {
+										opacity: disabledState,
+									},
+								}}
+								title={'Login'}
+								onPress={() => logIn()}
+							/>
+							{authErrors && (
+								<View
+									className={`w-full mt-2 p-2 rounded-full bg-red-400`}>
+									<Text
+										className={`text-base text-center font-inter-medium text-white`}>
+										{authErrors.message}
+									</Text>
+								</View>
+							)}
+						</View>
+
+						<View>
+							<View className='flex-row items-center justify-center mt-4'>
+								<Text className='text-base font-inter-regular text-dark-subTextColor'>
+									{"Don't have an account?"}
+								</Text>
+								<Pressable
+									onPress={() => {
+										navigation.navigate(Routes.SIGNUP);
+									}}>
+									<Text className='text-base font-inter-bold text-dark-textColor'>
+										{' Signup'}
+									</Text>
+								</Pressable>
+							</View>
 							<Pressable
 								onPress={() => {
-									navigation.navigate(Routes.SIGNUP);
+									navigation.navigate(Routes.FORGOT_PASSWORD);
 								}}>
-								<Text className='text-base font-inter-bold text-dark-textColor'>
-									{' Signup'}
+								<Text className='text-base text-center font-inter-bold text-dark-textColor mt-2'>
+									{' Forgot Password'}
 								</Text>
 							</Pressable>
 						</View>
-						<Pressable
-							onPress={() => {
-								navigation.navigate(Routes.FORGOT_PASSWORD);
-							}}>
-							<Text className='text-base text-center font-inter-bold text-dark-textColor mt-2'>
-								{' Forgot Password'}
-							</Text>
-						</Pressable>
 					</View>
 				</View>
-			</View>
-		</KeyboardAwareScrollView>
+			</KeyboardAwareScrollView>
+		</SafeAreaView>
 	);
 };
 
