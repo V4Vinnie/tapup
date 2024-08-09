@@ -47,7 +47,7 @@ const LoginScreen = ({}: Props) => {
 	}, [email, password, isSending]);
 	return (
 		<SafeAreaView edges={['top']} style={scrollViewContainer}>
-			<AppHeader transparentHeader headerWithBack title={'Login'} />
+			<AppHeader headerWithBack title={'Login'} />
 			<KeyboardAwareScrollView
 				keyboardShouldPersistTaps={'handled'}
 				contentContainerStyle={scrollViewContentContainer}

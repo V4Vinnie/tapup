@@ -1,20 +1,29 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, Pressable } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import { Video, Audio } from 'expo-av';
+import { Video, Audio, ResizeMode } from 'expo-av';
 import { Video as VideoIcon, StopCircle, Check, X, Play, Pause, Volume2, VolumeX } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from 'react-native-screens/lib/typescript/native-stack/types';
+import { RootStackParamList, Routes } from '../../../navigation/Routes';
+import { TChapter } from '../../../types';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-const VideoRecordingScreen = ({ navigation }) => {
+type Props = {
+  chapter: TChapter;
+};
+
+const VideoRecordingScreen = ({chapter}: Props) => {
+  const {navigate, goBack} = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [cameraPermission, requestCameraPermission] = useCameraPermissions();
   const [audioPermission, requestAudioPermission] = Audio.usePermissions();
   const [isRecording, setIsRecording] = useState(false);
-  const [videoUri, setVideoUri] = useState(null);
+  const [videoUri, setVideoUri] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  const cameraRef = useRef(null);
-  const videoRef = useRef(null);
+  const cameraRef = useRef<CameraView>(null);
+  const videoRef = useRef<Video>(null);
 
   useEffect(() => {
     requestCameraPermission();
@@ -33,7 +42,7 @@ const VideoRecordingScreen = ({ navigation }) => {
         maxDuration: 60, // Limit to 60 seconds
         mute: false, // Ensure audio is recorded
       });
-      setVideoUri(video.uri);
+      if (video) setVideoUri(video.uri);
       setIsPlaying(true);
     }
   };
@@ -64,7 +73,10 @@ const VideoRecordingScreen = ({ navigation }) => {
   };
 
   const saveVideo = () => {
-    navigation.navigate('StoryView', { newVideoUri: videoUri });
+    if (!videoUri) {
+      throw new Error('No video to save');
+    }
+    navigate(Routes.STORY_VIEWER, { newVideoUri: videoUri, chapter });
   };
 
   const discardVideo = () => {
@@ -104,7 +116,7 @@ const VideoRecordingScreen = ({ navigation }) => {
               ref={videoRef}
               source={{ uri: videoUri }}
               className="flex-1 w-full"
-              resizeMode="cover"
+              resizeMode={ResizeMode.COVER}
               isLooping
               isMuted={isMuted}
               onPlaybackStatusUpdate={(status) => setIsPlaying(status.isPlaying)}
@@ -123,7 +135,7 @@ const VideoRecordingScreen = ({ navigation }) => {
             className="absolute top-0 left-0 right-0 h-20 z-10"
           />
           <View className="absolute top-0 left-0 right-0 p-4 flex-row justify-between items-center z-20">
-            <Pressable onPress={() => navigation.goBack()}>
+            <Pressable onPress={() => goBack()}>
               <X color="white" size={24} />
             </Pressable>
             <Text className="text-white text-lg font-bold">

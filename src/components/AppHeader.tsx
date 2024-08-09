@@ -7,6 +7,8 @@ import {
   ViewStyle,
   Text,
   StatusBar,
+  TextStyle,
+  Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import settings from '../../tailwind.config';
@@ -20,7 +22,6 @@ type Props = {
 	rightIcon?: JSX.Element;
 	onRightIconPress?: () => void;
 	iconColor?: string;
-	transparentHeader?: boolean;
 	headerWithBackground?: boolean;
 	bottomMargin?: StyleProp<ViewStyle>;
 	overrideTheme?: 'dark' | 'light' | false;
@@ -34,7 +35,6 @@ const AppHeader = ({
 	rightIcon,
 	onRightIconPress = () => {},
 	iconColor,
-	transparentHeader = false,
 	headerWithBackground = false,
 	bottomMargin = {
 		marginBottom: '2%',
@@ -54,7 +54,6 @@ const AppHeader = ({
 		<View style={[
 			styles.container,
 			headerWithBackground && styles.containerWithBackground,
-			transparentHeader && styles.transparentContainer,
 			bottomMargin,
 			styles.alwaysHeaderStyle,
 		]}>
@@ -98,7 +97,7 @@ const AppHeader = ({
 	);
 };
 
-const styles = {
+const styles: Record<string, ViewStyle | TextStyle> = {
 	container: {
 		backgroundColor: 'transparent',
 		borderBottomWidth: 0,
@@ -110,13 +109,9 @@ const styles = {
 		marginTop: 0,
 		paddingTop: 0,
 	},
-	transparentContainer: {
-		position: 'absolute',
-		backgroundColor: 'transparent',
-		borderBottomWidth: 0,
-	},
 	alwaysHeaderStyle: {
 		borderBottomWidth: 0,
+		// paddingTop: Platform.OS === 'ios' ? 0 : 40,
 	},
 	headerContent: {
 		flexDirection: 'row',

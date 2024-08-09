@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Text, View, SafeAreaView } from 'react-native';
+import { Text, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
 import AppHeader from '../../components/AppHeader';
@@ -11,6 +11,7 @@ import AppButton from '../../components/AppButton';
 import { scrollViewContentContainer } from '../LoginScreen';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/Routes';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Props = {};
 

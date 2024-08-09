@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import {
 	Dimensions,
-	SafeAreaView,
+	
 	Text,
 	Pressable,
 	View,
@@ -22,6 +22,7 @@ import AddCompanyCode from './AddCompanyCode';
 import AddInformation from './AddInformation';
 import { useAuth } from '../../providers/AuthProvider';
 import { useCompany } from '../../providers/CompanyProvider';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const SignupScreen: React.FC = () => {
   const { width, height } = Dimensions.get('window');

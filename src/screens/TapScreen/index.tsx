@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import { useEffect, useMemo, useState } from 'react';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
 import ProfileHeader, {
@@ -24,6 +24,7 @@ import { onUser } from '../../database/services/UserService';
 import { TProfile, TTap } from '../../types';
 import { getProfileForTap } from '../../database/services/ProfileService';
 import { useTaps } from '../../providers/TapProvider';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type ProfileScreenProps = NativeStackScreenProps<
 	RootStackParamList,

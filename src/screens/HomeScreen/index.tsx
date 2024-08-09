@@ -1,4 +1,4 @@
-import { Image, Platform, SafeAreaView, ScrollView, View } from 'react-native';
+import { Image, Platform,  ScrollView, View } from 'react-native';
 import SearchBar from '../../components/SearchBar';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -7,6 +7,7 @@ import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
 import ContinueWatching from './ContinueWatching';
 import DiscoverTaps from '../../components/DiscoverTaps';
 import { useCompany } from '../../providers/CompanyProvider';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Props = {};
 
@@ -19,10 +20,7 @@ const HomeScreen = (props: Props) => {
 		<SafeAreaView className='flex-1 items-center bg-dark-primaryBackground'>
 			<FocusAwareStatusBar translucent barStyle={'light-content'} />
 			<View
-				className='flex w-full'
-				style={{
-					marginTop: Platform.OS === 'ios' ? 20 : 48,
-				}}>
+				className='flex w-full'>
 				{company && (
 					<Image
 						source={{ uri: company.logo }}

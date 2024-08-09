@@ -1,5 +1,5 @@
 import {
-	SafeAreaView,
+	
 	ScrollView,
 	Text,
 	Pressable,
@@ -19,6 +19,7 @@ import { TTap } from '../../types';
 import { FlatList } from 'react-native';
 import FullInfoTap from '../../components/FullInfoTap';
 import SearchbarHeader from '../../components/SearchbarHeader';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Props = {};
 
