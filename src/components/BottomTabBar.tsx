@@ -49,11 +49,11 @@ const BottomTabBar = ({
             style={[
                 {
                     position: 'absolute',
-                    bottom: 20,
+                    bottom: 10,
                     alignSelf: 'center', // Center the bottom bar
                     backgroundColor: themeColors[mode].secondaryBackground,
-                    borderRadius: 25,
-                    height: 60,
+                    borderRadius: 60,
+                    height: 50,
                     shadowColor: "#000",
                     shadowOffset: {
                         width: 0,
@@ -65,8 +65,7 @@ const BottomTabBar = ({
                     flexDirection: 'row',
                     justifyContent: 'center', // Center the icons
                     alignItems: 'center',
-                    paddingHorizontal: 20,
-                    paddingVertical: 10, // Add some vertical padding
+                    paddingHorizontal: 10,
                 },
                 animatedStyle,
             ]}
@@ -94,10 +93,10 @@ const BottomTabBar = ({
 
 				return (
 					<Pressable
+					style={{ paddingHorizontal: 20 }}
 						key={route.key}
 						onPress={onPress}
 						className='justify-center items-center'
-						style={{ marginHorizontal: 20 }} 
 					>
 						<View className='justify-center items-center'>
 							{icon}

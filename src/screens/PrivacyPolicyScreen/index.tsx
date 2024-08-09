@@ -30,54 +30,8 @@ const PrivacyPolicyScreen = (props: Props) => {
 		<SafeAreaView className='flex-1 bg-dark-primaryBackground'>
 			<FocusAwareStatusBar translucent barStyle={'light-content'} />
 			<View className='flex-1 w-full'>
-				<AppHeader title='Account' />
-				<ScrollView
-					className='w-full'
-					showsVerticalScrollIndicator={false}>
-					{user && <ProfileHeader profile={user} />}
-					<View className='w-full px-8 pt-8 h-3/5 flex flex-col justify-between'>
-						<SettingsTab
-							title='Account'
-							onPress={() => navigate(Routes.ACCOUNT_SETTINGS)}
-							icon={
-								<MaterialCommunityIcons
-									name='account'
-									size={20}
-									color={themeColors[mode].textColor}
-								/>
-							}
-						/>
-						<SettingsTab
-							title='Privacy Policy'
-							onPress={() => navigate(Routes.PRIVACY_POLICY)}
-							icon={
-								<MaterialIcons
-									name='privacy-tip'
-									size={20}
-									color={themeColors[mode].textColor}
-								/>
-							}
-						/>
-						<SettingsTab
-							title='My Company'
-							onPress={() => navigate(Routes.MY_COMPANY)}
-							icon={
-								<Entypo
-									name='suitcase'
-									size={20}
-									color={themeColors[mode].textColor}
-								/>
-							}
-						/>
-						<AppButton
-							title='Logout'
-							onPress={logout}
-							buttonProps={{
-								className: 'mt-8',
-							}}
-						/>
-					</View>
-				</ScrollView>
+				<AppHeader title='Privacy Policy' />
+				
 			</View>
 		</SafeAreaView>
 	);

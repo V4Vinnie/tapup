@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { View, Image, } from 'react-native';
 import QuestionContent from './QuestionContent.js';
 import { TPhotoQuestionStory, TStory } from '../../../types.js';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Props = {
 	story: TStory;

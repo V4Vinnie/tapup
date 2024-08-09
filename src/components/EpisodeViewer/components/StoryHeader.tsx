@@ -44,13 +44,13 @@ const StoryHeader = ({
 				/>
 				<View className='flex-row justify-between items-center mt-4'>
 					<View className='flex-row items-center'>
-						<View className='rounded-full border-[1px] border-white bg-white p-1'>
+						<View className='rounded-full border-[1px] border-white bg-dark-primaryBackground p-[6px]'>
 							<Image
 								source={{ uri: company?.logo }}
 								resizeMode='center'
 								style={{
-									width: 30,
-									height: 30,
+									width: 25,
+									height: 25,
 								}}
 							/>
 						</View>

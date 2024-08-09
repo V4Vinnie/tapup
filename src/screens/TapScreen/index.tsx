@@ -86,7 +86,7 @@ const TapScreen = ({ route }: ProfileScreenProps) => {
 
 	useEffect(() => {
 		const getAllTaps = async () => {
-			if (taps) {
+			if (!selectedTopic) {
 				setAllTaps(taps);
 			} else {
 				const _allTaps = getAllTapsForTopic(selectedTopic.id, taps);

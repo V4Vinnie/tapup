@@ -19,6 +19,8 @@ import {
 	watchChapter,
 } from '../../../database/services/TapService';
 import { useAuth } from '../../../providers/AuthProvider';
+import { useCompany } from '../../../providers/CompanyProvider';
+import { mode, themeColors } from '../../../utils/constants';
 
 type StoryViewerProps = NativeStackScreenProps<
 	RootStackParamList,
@@ -30,6 +32,7 @@ const StoryViewer = ({ route }: StoryViewerProps) => {
 	const { navigate, goBack } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const { user } = useAuth();
+	const {companyColor} = useCompany()
 
 	const [stories, setStories] = useState<TStory[]>(chapter.frames);
 	const [currentIndex, setCurrentIndex] = useState(Math.min(startIndex ?? 0, chapter.frames.length - 1));
@@ -401,7 +404,7 @@ const StoryViewer = ({ route }: StoryViewerProps) => {
 									<ChevronLeft
 										color={
 											currentIndex === 0
-												? '#4B5563'
+												? themeColors[mode].textColor
 												: 'white'
 										}
 										size={24}
@@ -413,11 +416,14 @@ const StoryViewer = ({ route }: StoryViewerProps) => {
 											? storyDone()
 											: navigateStory(1);
 									}}
-									className={`bg-blue-500 rounded-full px-6 py-3 w-[68%] h-12 flex-row items-center justify-center ml-[2%] ${
+									className={`rounded-full px-6 py-3 w-[68%] h-12 flex-row items-center justify-center ml-[2%] ${
 										nextButtonDisabled
 											? 'opacity-50'
 											: 'opacity-100'
 									}`}
+									style={{ 
+										backgroundColor: companyColor
+									 }}
 									disabled={nextButtonDisabled}>
 									<Text className='text-white text-base font-semibold mr-2'>
 										{isOnLastFrame ? 'Finish' : 'Next'}
