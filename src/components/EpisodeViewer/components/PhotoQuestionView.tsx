@@ -31,7 +31,7 @@ const PhotoQuestionView = ({
 	}, [selectedAnswer]);
 
 	return (
-		<SafeAreaView className='flex-1'>
+		<View className='flex-1'>
 			<View className='flex-1'>
 				<View className='h-1/2'>
 					<Image
@@ -52,7 +52,7 @@ const PhotoQuestionView = ({
 					/>
 				</View>
 			</View>
-		</SafeAreaView>
+		</View>
 	);
 };
 

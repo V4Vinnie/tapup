@@ -32,7 +32,7 @@ const StoryViewer = ({ route }: StoryViewerProps) => {
 	const { user } = useAuth();
 
 	const [stories, setStories] = useState<TStory[]>(chapter.frames);
-	const [currentIndex, setCurrentIndex] = useState(startIndex ?? 0);
+	const [currentIndex, setCurrentIndex] = useState(Math.min(startIndex ?? 0, chapter.frames.length - 1));
 	const [isEditing, setIsEditing] = useState(false);
 	const [isModalVisible, setIsModalVisible] = useState(false);
 	const [newStoryType, setNewStoryType] = useState<TStoryTypes | null>(null);
