@@ -41,8 +41,6 @@ const ChapterComponent = ({
 	const { user } = useAuth();
 	const { companyColor } = useCompany();
 
-	const [views, setViews] = useState<string>('0');
-
 	const timeAgo = useMemo(() => {
 		if (!fullChapter) return '';
 		const dateInSeconds = Math.floor(
@@ -64,19 +62,6 @@ const ChapterComponent = ({
 		return `${(daysAgo / 365) | 0} years ago`;
 
 		// TODO: Replace with react-time-ago
-	}, [fullChapter]);
-
-	useEffect(() => {
-		if (!fullChapter) return;
-		const views = fullChapter.frames.reduce((acc, frame) => {
-			return acc + (frame.watchedBy ?? []).length;
-		}, 0);
-		const viewsString = views.toString();
-		setViews(
-			viewsString.length > 3
-				? `${viewsString.slice(0, -3)}K`
-				: viewsString
-		);
 	}, [fullChapter]);
 
 	return (
@@ -129,9 +114,6 @@ const ChapterComponent = ({
 							{timeAgo}
 						</Text>
 					</View>
-					<Text className='text-dark-subTextColor text-[10px] font-inter-regular'>
-						{views} views
-					</Text>
 				</View>
 				<View className='flex self-end mb-3'>
 					<AntIcon name='arrowright' size={20} color={companyColor} />

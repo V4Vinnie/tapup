@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { onUser } from '../database/services/UserService';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import ChapterComponent, { ChapterComponentSkeleton } from './ChapterComponent';
-import { makeStoriesFromChapters } from '../utils/storyUtils';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../navigation/Routes';
 
@@ -32,7 +31,6 @@ const ChapterList = ({
 	);
 	const [loaded, setLoaded] = useState(false);
 	const [imagesLoading, setImagesLoading] = useState<boolean>(true);
-	const [stories, setStories] = useState<TStory[]>([]);
 
 	useEffect(() => {
 		const imageUrls = chapters.map((chapter) => {
@@ -41,12 +39,6 @@ const ChapterList = ({
 			}
 		});
 		Promise.all(imageUrls).then(() => setImagesLoading(false));
-	}, [chapters]);
-
-	useEffect(() => {
-		makeStoriesFromChapters(chapters).then((stories) =>
-			setStories(stories)
-		);
 	}, [chapters]);
 
 	const dataLoading = useMemo(() => {
@@ -79,6 +71,9 @@ const ChapterList = ({
 					chapter.frames[0].type === 'PHOTO'
 						? chapter.frames[0].image
 						: undefined;
+				const progressForChapter = progress[chapter.chapterId] ?? 0;
+				const chapterProcessInPercent =
+					(progressForChapter / chapter.frames.length) * 100;
 
 				return (
 					<ChapterComponent
@@ -89,7 +84,7 @@ const ChapterList = ({
 							});
 						}}
 						episodeNumber={index + 1}
-						progress={progress[chapter.chapterId] ?? 0}
+						progress={chapterProcessInPercent}
 						text={chapter.name}
 						thumbnail={thumbnail}
 						video={video}

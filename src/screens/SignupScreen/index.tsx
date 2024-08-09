@@ -1,5 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
-import { Alert, Dimensions, SafeAreaView, Text, Pressable, View } from 'react-native';
+import {
+	Alert,
+	Dimensions,
+	SafeAreaView,
+	Text,
+	Pressable,
+	View,
+} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
@@ -95,7 +102,7 @@ const SignupScreen = (props: Props) => {
 							paddingBottom: isKeyboardOpen ? 20 : undefined,
 						}}
 						paginationStyle={{
-							bottom: authErrors ? -30 : 30,
+							bottom: authErrors ? -30 : 0,
 						}}
 						showsPagination
 						dot={<CustomSwiperDot />}

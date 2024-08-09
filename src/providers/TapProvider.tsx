@@ -85,7 +85,7 @@ export const TapProvider = ({ children }: Props) => {
 
 	return (
 		<TapContext.Provider value={tapProvProps}>
-			{loadingInitial ? null : children}
+			{children}
 		</TapContext.Provider>
 	);
 };

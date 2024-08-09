@@ -115,11 +115,21 @@ export const AuthProvider = ({ children }: Props) => {
 			});
 			return;
 		}
-		return await loginUser(email, password).catch(() =>
-			setAuthErrors({
-				message: 'Invalid email or password',
+		loginUser(email, password)
+			.then(async (_user) => {
+				setUser(_user);
+				if (!_user?.companyInfo?.companyCode) return;
+				const company = await getCompanyByCode(
+					_user?.companyInfo?.companyCode
+				);
+				if (company) setCompany(company);
+				setLoadingInitial(false);
 			})
-		);
+			.catch(() =>
+				setAuthErrors({
+					message: 'Invalid email or password',
+				})
+			);
 	};
 
 	const handleSignup = async (
@@ -196,16 +206,14 @@ export const AuthProvider = ({ children }: Props) => {
 				auth,
 				async (user) => {
 					if (user) {
-						setTimeout(async () => {
-							const _user = await getProfile(user.uid);
-							setUser({ ..._user, ...user } as TProfile);
-							setLoadingInitial(false);
-							if (!_user?.companyInfo?.companyCode) return;
-							const company = await getCompanyByCode(
-								_user?.companyInfo?.companyCode
-							);
-							if (company) setCompany(company);
-						}, 1000);
+						const _user = await getProfile(user.uid);
+						setUser({ ..._user, ...user } as TProfile);
+						setLoadingInitial(false);
+						if (!_user?.companyInfo?.companyCode) return;
+						const company = await getCompanyByCode(
+							_user?.companyInfo?.companyCode
+						);
+						if (company) setCompany(company);
 					} else {
 						setUser(null);
 						setLoadingInitial(false);

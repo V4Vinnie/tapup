@@ -31,6 +31,7 @@ import PhotoCaptureScreen from '../components/EpisodeViewer/components/PhotoCapt
 import 'react-native-gesture-handler';
 import { Text, View } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
+import AppHeader from '../components/AppHeader';
 
 type Props = {};
 
@@ -99,6 +100,7 @@ const HomeStack = () => {
 			{company ? (
 				<>
 					<Stack.Screen
+						options={{ header: () => <AppHeader title='Hey' /> }}
 						name={Routes.HOME_LANDING}
 						component={HomeScreen}
 					/>

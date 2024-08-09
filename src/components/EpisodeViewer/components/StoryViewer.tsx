@@ -14,6 +14,11 @@ import {
 } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../../../navigation/Routes';
 import { Timestamp } from 'firebase/firestore';
+import {
+	setProgressForChapter,
+	watchChapter,
+} from '../../../database/services/TapService';
+import { useAuth } from '../../../providers/AuthProvider';
 
 type StoryViewerProps = NativeStackScreenProps<
 	RootStackParamList,
@@ -21,12 +26,13 @@ type StoryViewerProps = NativeStackScreenProps<
 >;
 
 const StoryViewer = ({ route }: StoryViewerProps) => {
-	const { newVideoUri, newPhotoUri, chapter } = route.params;
+	const { newVideoUri, newPhotoUri, chapter, startIndex } = route.params;
 	const { navigate, goBack } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+	const { user } = useAuth();
 
 	const [stories, setStories] = useState<TStory[]>(chapter.frames);
-	const [currentIndex, setCurrentIndex] = useState(0);
+	const [currentIndex, setCurrentIndex] = useState(startIndex ?? 0);
 	const [isEditing, setIsEditing] = useState(false);
 	const [isModalVisible, setIsModalVisible] = useState(false);
 	const [newStoryType, setNewStoryType] = useState<TStoryTypes | null>(null);
@@ -135,10 +141,25 @@ const StoryViewer = ({ route }: StoryViewerProps) => {
 
 	const navigateStory = (direction: number) => {
 		if (!isEditing) {
+			setProgressForChapter(
+				user!,
+				chapter.chapterId,
+				currentIndex + direction
+			);
 			setCurrentIndex((prev) =>
 				Math.max(0, Math.min(prev + direction, stories.length - 1))
 			);
 		}
+	};
+
+	const storyDone = () => {
+		setProgressForChapter(user!, chapter.chapterId, chapter.frames.length);
+		watchChapter(user!, chapter.chapterId);
+		goBack();
+	};
+
+	const closeStory = () => {
+		goBack();
 	};
 
 	const updateCurrentStory = (updatedStory: TStory) => {
@@ -366,6 +387,7 @@ const StoryViewer = ({ route }: StoryViewerProps) => {
 								setIsEditing={setIsEditing}
 								openModal={openModal}
 								deleteCurrentStory={deleteCurrentStory}
+								closeStory={closeStory}
 							/>
 						</View>
 					</View>
@@ -388,7 +410,7 @@ const StoryViewer = ({ route }: StoryViewerProps) => {
 								<Pressable
 									onPress={() => {
 										isOnLastFrame
-											? goBack()
+											? storyDone()
 											: navigateStory(1);
 									}}
 									className={`bg-blue-500 rounded-full px-6 py-3 w-[68%] h-12 flex-row items-center justify-center ml-[2%] ${
