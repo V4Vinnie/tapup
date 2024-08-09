@@ -5,7 +5,6 @@ import {
 	NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
-import { SafeAreaView } from 'react-native';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
 import SearchbarHeader from '../../components/SearchbarHeader';
 import TagRow from '../../components/TagRow';
@@ -18,6 +17,8 @@ import {
 import SectionHeader from '../../components/SectionHeader';
 import ChapterRow from '../../components/ChapterRow';
 import { useNavigation } from '@react-navigation/native';
+import { useTaps } from '../../providers/TapProvider';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type TopicScreenProps = NativeStackScreenProps<
 	RootStackParamList,
@@ -29,19 +30,19 @@ const TopicScreen = ({ route }: TopicScreenProps) => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	const { topics } = useTopics();
+	const {taps} = useTaps();
 	const [selectedTopic, setSelectedTopic] = useState<TTopic | null>(null);
 	const [tapsPerTopic, setTapsPerTopic] = useState<{
 		[key: string]: TTap[];
 	}>({});
 
 	useEffect(() => {
-		getAllTapsForTopic(topic.id).then((taps) => {
-			if (!taps) return;
-			setTapsPerTopic((prev) => ({
-				...prev,
-				[topic.id]: taps,
-			}));
-		});
+		const tapsPerTopic = getAllTapsForTopic(topic.id, taps)
+		if (!tapsPerTopic) return;
+		setTapsPerTopic((prev) => ({
+			...prev,
+			[topic.id]: tapsPerTopic,
+		}));
 	}, [topic]);
 
 	useEffect(() => {

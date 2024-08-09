@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Text, Pressable, Image } from 'react-native';
-import { Camera, Edit, Plus, Trash2 } from 'lucide-react-native';
+import { Camera, Cross, Edit, Plus, Trash2 } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import ProgressBar from './ProgressBar';
 import { useAuth } from '../../../providers/AuthProvider';
 import { useCompany } from '../../../providers/CompanyProvider';
 import { TChapter } from '../../../types';
+import AntIcon from 'react-native-vector-icons/AntDesign';
 
 type Props = {
 	chapter: TChapter;
@@ -15,6 +16,7 @@ type Props = {
 	setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
 	openModal: () => void;
 	deleteCurrentStory: () => void;
+	closeStory: () => void;
 };
 
 const StoryHeader = ({
@@ -25,6 +27,7 @@ const StoryHeader = ({
 	setIsEditing,
 	openModal,
 	deleteCurrentStory,
+	closeStory,
 }: Props) => {
 	const { user } = useAuth();
 	const { company } = useCompany();
@@ -41,22 +44,21 @@ const StoryHeader = ({
 				/>
 				<View className='flex-row justify-between items-center mt-4'>
 					<View className='flex-row items-center'>
-						<Image
-							source={{ uri: company?.logo }}
-							style={{
-								width: 30,
-								height: 30,
-								padding: 10,
-								borderRadius: 20,
-								borderWidth: 2,
-								borderColor: 'white',
-							}}
-						/>
+						<View className='rounded-full border-[1px] border-white bg-dark-primaryBackground p-[6px]'>
+							<Image
+								source={{ uri: company?.logo }}
+								resizeMode='center'
+								style={{
+									width: 25,
+									height: 25,
+								}}
+							/>
+						</View>
 						<Text className='text-white text-md font-bold ml-2'>
 							{chapter.name}
 						</Text>
 					</View>
-					{chapter.creatorId === user?.uid && (
+					{chapter.creatorId === user?.uid ? (
 						<View className='flex-row space-x-6'>
 							<Pressable onPress={() => setIsEditing(!isEditing)}>
 								<Edit size={24} color='white' />
@@ -68,6 +70,10 @@ const StoryHeader = ({
 								<Trash2 size={24} color='white' />
 							</Pressable>
 						</View>
+					) : (
+						<Pressable onPress={closeStory}>
+							<AntIcon name='close' size={24} color='white' />
+						</Pressable>
 					)}
 				</View>
 			</View>

@@ -10,6 +10,7 @@ import { mode, primaryColor, themeColors } from '../../utils/constants';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { getCompanyByCode } from '../../database/services/CompaniesService';
 import { useAuth } from '../../providers/AuthProvider';
+import { setCompanyCodeInProfile } from '../../database/services/UserService';
 
 type Props = {
 	canSkip?: boolean;
@@ -28,6 +29,7 @@ const AddCompanyCode = ({
 	const { companyColor, setCompany, setCompanyColor } = useCompany();
 	const [code, setCode] = useState<string | undefined>();
 	const [foundCompany, setFoundCompany] = useState<TCompany | null>(null);
+	const { user } = useAuth();
 
 	useEffect(() => {
 		if (code?.length === 6) {
@@ -35,6 +37,14 @@ const AddCompanyCode = ({
 				setFoundCompany(company);
 				if (!company) return;
 				setCompanyColor(company.primaryColor);
+				if (!canSkip) {
+					if (!user) {
+						throw new Error(
+							'Trying to add company code to user, but user is not made yet.'
+						);
+					}
+					setCompanyCodeInProfile(user, company.code);
+				}
 			});
 		}
 		() => {

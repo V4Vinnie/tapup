@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, Text, View } from 'react-native';
+import {  Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Routes, RootStackParamList } from '../../navigation/Routes';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
@@ -7,6 +7,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import AppButton from '../../components/AppButton';
 import { styled } from 'nativewind';
 import Logo from '../../../assets/images/Logo';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Props = {};
 

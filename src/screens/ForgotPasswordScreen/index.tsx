@@ -11,6 +11,7 @@ import AppButton from '../../components/AppButton';
 import { scrollViewContentContainer } from '../LoginScreen';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/Routes';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Props = {};
 
@@ -28,12 +29,13 @@ const ForgotPasswordScreen = (props: Props) => {
 	};
 
 	return (
-		<KeyboardAwareScrollView
-			keyboardShouldPersistTaps={'never'}
+		<SafeAreaView className='flex-1 bg-dark-primaryBackground'>
+			<AppHeader headerWithBack title={'Password Recovery'} />
+			<KeyboardAwareScrollView
+				keyboardShouldPersistTaps={'never'}
 			contentContainerStyle={scrollViewContentContainer}
 			showsVerticalScrollIndicator={false}>
 			<View className='flex-1 items-center bg-dark-primaryBackground'>
-				<AppHeader headerWithBack title={'Password Recovery'} />
 				<FocusAwareStatusBar
 					translucent
 					backgroundColor='transparent'
@@ -100,8 +102,9 @@ const ForgotPasswordScreen = (props: Props) => {
 						</Text>
 					)}
 				</View>
-			</View>
-		</KeyboardAwareScrollView>
+				</View>
+			</KeyboardAwareScrollView>
+		</SafeAreaView>
 	);
 };
 

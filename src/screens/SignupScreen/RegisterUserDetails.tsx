@@ -179,7 +179,10 @@ const RegisterUserDetails = ({
 						},
 					}}
 					title={'Next'}
-					onPress={() => swiper.current?.scrollBy(1)}
+					onPress={() => {
+						console.log('Swiper ref:', swiper.current);
+						swiper.current?.scrollBy(1);
+					}}
 				/>
 				{!authErrors?.userDetails && isKeyboardOpen && (
 					<Text

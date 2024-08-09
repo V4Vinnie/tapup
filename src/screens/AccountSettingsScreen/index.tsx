@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Alert, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { Alert,  ScrollView, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
@@ -28,6 +28,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../database/Firebase';
 import { useCompany } from '../../providers/CompanyProvider';
 import DeleteOrAddSetting from './DeleteOrAddSetting';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Props = {};
 

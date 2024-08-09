@@ -162,11 +162,11 @@ export const ProfileHeaderSkeleton = () => {
 					opacity: 0.05,
 				}}
 			/>
-			<View className='flex flex-row space-x-6'>
+			{/* <View className='flex flex-row space-x-6'>
 				<ProfileDetail bottomText='' topText='' loading />
 				<ProfileDetail bottomText='' topText='' loading />
 				<ProfileDetail bottomText='' topText='' loading last />
-			</View>
+			</View> */}
 		</View>
 	);
 };

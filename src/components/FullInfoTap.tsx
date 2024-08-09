@@ -1,34 +1,39 @@
 import { View, Text, Image, Pressable } from 'react-native';
 import React, { useEffect, useMemo } from 'react';
-import { TTap, TTopic } from '../types';
+import { TProfile, TTap, TTopic } from '../types';
 import { mode, themeColors } from '../utils/constants';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Logo from '../../assets/images/Logo';
-import { getTopicFromTap } from '../database/services/TapService';
+import { getProcessPercentageForTap, getTopicFromTap } from '../database/services/TapService';
 import { Skeleton } from '@rneui/themed';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../navigation/Routes';
 import { useTaps } from '../providers/TapProvider';
 import { getCompanyByCode } from '../database/services/CompaniesService';
 import { useCompany } from '../providers/CompanyProvider';
 import { useTopics } from '../providers/TopicProvider';
+import { onUser } from '../database/services/UserService';
+import { useAuth } from '../providers/AuthProvider';
 
 type Props = {
 	tap?: TTap;
-	isNew?: boolean;
 	containerProps?: View['props'];
 	loading?: boolean;
 };
 
-const FullInfoTap = ({ tap, containerProps, isNew, loading }: Props) => {
+const FullInfoTap = ({ tap, containerProps, loading = false }: Props) => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+	const { user } = useAuth();
 	const { companyColor, company } = useCompany();
 	const { topics } = useTopics();
+	const isFocused = useIsFocused();
 
 	// const [views, setViews] = React.useState<string>('0');
 	const [topic, setTopic] = React.useState<TTopic | null>(null);
+	const [isNew, setIsNew] = React.useState<boolean>(false);
+	const [watched, setWatched] = React.useState<boolean>(false);
 
 	const timeAgo = useMemo(() => {
 		if (!tap) return '';
@@ -63,7 +68,20 @@ const FullInfoTap = ({ tap, containerProps, isNew, loading }: Props) => {
 		setTopic(topic);
 	}, [tap]);
 
-	return loading || !tap || !topic ? (
+	useEffect(() => {
+		if (!user || !tap) return;
+		const getPercentWatched = (user: TProfile) => {
+			const percentageWatched = getProcessPercentageForTap(user, tap);
+			if (percentageWatched === 100) setWatched(true);
+			if (percentageWatched === 0) setIsNew(true);
+		};
+		if (isFocused) getPercentWatched(user);
+		const sub = onUser(user.uid, getPercentWatched);
+		return () => (sub ? sub() : undefined);
+	}, [isFocused, user]);
+
+
+	return (loading || !tap || !topic) ? (
 		<FullInfoTapSkeleton />
 	) : (
 		<Pressable
@@ -75,11 +93,11 @@ const FullInfoTap = ({ tap, containerProps, isNew, loading }: Props) => {
 					selectedTopic: topic,
 				})
 			}>
-			{isNew && (
+			{(isNew || watched) && (
 				<Text
-					style={{ backgroundColor: companyColor }}
-					className='absolute right-0 top-0 px-2 py-[2px] rounded-sm text-white text-xs font-inter-medium'>
-					New
+					style={{ backgroundColor: isNew ? '#FFC107' : '#4CAF50' }}
+					className='absolute right-0 top-0 px-2 py-[2px] rounded-sm text-dark-secondaryBackground text-xs font-inter-medium'>
+					{isNew ? 'New' : 'Watched'}
 				</Text>
 			)}
 			<Image
@@ -111,7 +129,7 @@ const FullInfoTap = ({ tap, containerProps, isNew, loading }: Props) => {
 						{tap.description}
 					</Text>
 				</View>
-				<View className='flex flex-row items-center gap-3'>
+				<View className='flex flex-row items-center gap-3 w-full'>
 					{/* <Text className='text-dark-subTextColor text-[10px] font-inter-light'>
 						{views} view{views === '1' ? '' : 's'}
 					</Text>

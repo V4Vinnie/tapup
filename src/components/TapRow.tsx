@@ -1,7 +1,9 @@
 import { FlatList, Image, View } from 'react-native';
 import React, { useEffect, useMemo } from 'react';
 import { TContinueWatchingTap, TTap } from '../types';
-import PreviewComponent from './PreviewComponent';
+import { getProcessPercentageForTap } from '../database/services/TapService';
+import { useAuth } from '../providers/AuthProvider';
+import ChapterRowComponent from './ChapterRowComponent';
 
 type Props = {
 	tapData: TTap[] | TContinueWatchingTap[];
@@ -11,6 +13,7 @@ type Props = {
 
 const SPACE_BETWEEN = 10;
 const TapRow = ({ tapData, containerProps, loading }: Props) => {
+	const {user} = useAuth();
 	const [imagesLoading, setImagesLoading] = React.useState<boolean>(true);
 
 	useEffect(() => {
@@ -35,19 +38,17 @@ const TapRow = ({ tapData, containerProps, loading }: Props) => {
 					paddingHorizontal: 16,
 					columnGap: SPACE_BETWEEN,
 				}}
-				renderItem={({ item, index }) => (
-					<PreviewComponent
+				renderItem={({ item, index }) => {
+					const progress = getProcessPercentageForTap(user!, item);
+					return(
+					<ChapterRowComponent
 						key={item.id}
 						fullTap={item}
 						thumbnail={item.thumbnail}
 						text={item.name}
-						progress={
-							'progress' in item
-								? (item as TContinueWatchingTap).progress
-								: undefined
-						}
+						progress={progress}
 					/>
-				)}
+				)}}
 			/>
 		</View>
 	);
@@ -66,7 +67,7 @@ const TapRowSkeleton = () => {
 					columnGap: SPACE_BETWEEN,
 				}}
 				renderItem={({ item, index }) => (
-					<PreviewComponent key={item} loading />
+					<ChapterRowComponent key={item} loading />
 				)}
 			/>
 		</View>

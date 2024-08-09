@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import { useEffect, useMemo, useState } from 'react';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
 import ProfileHeader, {
@@ -24,6 +24,7 @@ import { onUser } from '../../database/services/UserService';
 import { TProfile, TTap } from '../../types';
 import { getProfileForTap } from '../../database/services/ProfileService';
 import { useTaps } from '../../providers/TapProvider';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type ProfileScreenProps = NativeStackScreenProps<
 	RootStackParamList,
@@ -85,7 +86,7 @@ const TapScreen = ({ route }: ProfileScreenProps) => {
 
 	useEffect(() => {
 		const getAllTaps = async () => {
-			if (taps) {
+			if (!selectedTopic) {
 				setAllTaps(taps);
 			} else {
 				const _allTaps = getAllTapsForTopic(selectedTopic.id, taps);
@@ -100,9 +101,9 @@ const TapScreen = ({ route }: ProfileScreenProps) => {
 	};
 
 	return (
-		<SafeAreaView className='flex-1 items-center bg-dark-primaryBackground'>
-			<FocusAwareStatusBar translucent barStyle={'light-content'} />
+		<SafeAreaView className='flex-1 bg-dark-primaryBackground'>
 			<AppHeader headerWithBack title={selectedTopic.name} />
+			<FocusAwareStatusBar translucent barStyle={'light-content'} />
 			<ScrollView
 				className='w-full'
 				contentContainerStyle={{
