@@ -1,7 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { primaryColor } from '../utils/constants';
 import { TCompany } from '../types';
-import { setCompanyCodeInProfile } from '../database/services/UserService';
+
+const companyInitial = {
+	companyColor: primaryColor,
+	isCompanyColorSet: false,
+	company: null,
+	setCompany: () => {},
+	setCompanyColor: () => {},
+	resetState: () => {},
+};
 
 const CompanyContext = React.createContext<{
 	companyColor: string;
@@ -9,25 +17,29 @@ const CompanyContext = React.createContext<{
 	company: TCompany | null;
 	setCompany: React.Dispatch<React.SetStateAction<TCompany | null>>;
 	setCompanyColor: React.Dispatch<React.SetStateAction<string>>;
-}>({
-	companyColor: primaryColor,
-	isCompanyColorSet: false,
-	company: null,
-	setCompany: () => {},
-	setCompanyColor: () => {},
-});
+	resetState: () => void;
+}>(companyInitial);
 
 type Props = {
 	children: React.ReactNode;
 };
 
 export const CompanyProvider = ({ children }: Props) => {
-	const [companyColor, setCompanyColor] = useState<string>(primaryColor);
-	const [company, setCompany] = useState<TCompany | null>(null);
+	const [companyColor, setCompanyColor] = useState<string>(
+		companyInitial.companyColor
+	);
+	const [company, setCompany] = useState<TCompany | null>(
+		companyInitial.company
+	);
 	const isCompanyColorSet = useMemo(
 		() => companyColor !== primaryColor,
 		[companyColor]
 	);
+
+	const resetState = () => {
+		setCompany(companyInitial.company);
+		setCompanyColor(companyInitial.companyColor);
+	};
 
 	useEffect(() => {
 		if (company) {
@@ -44,8 +56,16 @@ export const CompanyProvider = ({ children }: Props) => {
 			company,
 			setCompany,
 			setCompanyColor,
+			resetState,
 		}),
-		[companyColor, isCompanyColorSet, company, setCompany, setCompanyColor]
+		[
+			companyColor,
+			isCompanyColorSet,
+			company,
+			setCompany,
+			setCompanyColor,
+			resetState,
+		]
 	);
 
 	return (

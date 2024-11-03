@@ -1,17 +1,21 @@
 import { User } from 'firebase/auth';
 import { Timestamp } from 'firebase/firestore';
+import { COMPANY_ROLES, USER_ROLES } from './utils/constants';
+
+export type TCOMPANY_ROLE = (typeof COMPANY_ROLES)[keyof typeof COMPANY_ROLES];
+export type TUSER_ROLE = (typeof USER_ROLES)[keyof typeof USER_ROLES];
 
 export type TProfile = {
 	uid: string;
 	name: string;
 	//profilePic: string;
 	email: string;
-	role: 'USER' | 'ADMIN' | 'CREATOR';
+	role: TUSER_ROLE;
 	fullName: string;
 	companyInfo: {
 		companyCode: string;
 		jobType: string;
-		companyRole?: 'EMPLOYER' | 'EMPLOYEE';
+		companyRole?: TCOMPANY_ROLE;
 	};
 	watchedChapters: string[];
 	progress: Record<string, number>;

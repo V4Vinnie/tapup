@@ -1,37 +1,49 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { TNotificationTopic, TTopic, TProfile } from '../types';
 import { getTopics, getTopicsForUser } from '../database/services/TopicService';
-import WelcomeScreen from '../screens/WelcomeScreen';
+
+const topicInitial = {
+	loadingInitial: true,
+	topics: [],
+	getProfileTopics: () => {},
+	userTopics: [],
+	allTopicsDone: false,
+	resetState: () => {},
+};
 
 const TopicContext = React.createContext<{
 	loadingInitial: boolean;
 	topics: TTopic[];
 	getProfileTopics: (user: TProfile) => void;
 	userTopics: TNotificationTopic[];
-}>({
-	loadingInitial: true,
-	topics: [],
-	getProfileTopics: () => {},
-	userTopics: [],
-});
+	resetState: () => void;
+}>(topicInitial);
 
 type Props = {
 	children: React.ReactNode;
 };
 
 export const TopicProvider = ({ children }: Props) => {
-	const [topics, setTopics] = useState<TTopic[]>([]);
-	const [userTopics, seTProfileTopics] = useState<TNotificationTopic[]>([]);
-	const [userTopicsDone, seTProfileTopicsDone] = useState<boolean>(false);
-	const [allTopicsDone, setAllTopicsDone] = useState<boolean>(false);
+	const [topics, setTopics] = useState<TTopic[]>(topicInitial.topics);
+	const [userTopics, setUserTopics] = useState<TNotificationTopic[]>(
+		topicInitial.userTopics
+	);
+	const [allTopicsDone, setAllTopicsDone] = useState<boolean>(
+		topicInitial.allTopicsDone
+	);
 
 	// User topics
 	const getProfileTopics = (user: TProfile) => {
 		if (!user) return [];
 		getTopicsForUser(user).then((topics) => {
-			seTProfileTopics(topics ?? []);
-			seTProfileTopicsDone(true);
+			setUserTopics(topics ?? []);
 		});
+	};
+
+	const resetState = () => {
+		setTopics(topicInitial.topics);
+		setUserTopics(topicInitial.userTopics);
+		setAllTopicsDone(topicInitial.allTopicsDone);
 	};
 
 	// All topics
@@ -53,8 +65,9 @@ export const TopicProvider = ({ children }: Props) => {
 			topics,
 			getProfileTopics,
 			userTopics,
+			resetState,
 		}),
-		[loadingInitial, topics, getProfileTopics, userTopics]
+		[loadingInitial, topics, getProfileTopics, userTopics, resetState]
 	);
 
 	return (

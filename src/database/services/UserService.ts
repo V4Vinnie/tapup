@@ -1,13 +1,21 @@
 import {
 	UserCredential,
 	createUserWithEmailAndPassword,
+	deleteUser,
 	sendPasswordResetEmail,
 	signInWithEmailAndPassword,
 	updateEmail,
 } from 'firebase/auth';
-import { doc, getDoc, setDoc, onSnapshot, updateDoc } from 'firebase/firestore';
+import {
+	doc,
+	getDoc,
+	setDoc,
+	onSnapshot,
+	updateDoc,
+	deleteDoc,
+} from 'firebase/firestore';
 import { DB, auth } from '../Firebase';
-import { COLLECTIONS } from '../../utils/constants';
+import { COLLECTIONS, COMPANY_ROLES } from '../../utils/constants';
 import { TCompany, TProfile } from '../../types';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { storage } from '../Firebase';
@@ -91,7 +99,7 @@ export async function registerUser(
 				companyInfo: {
 					companyCode: company?.code ?? '',
 					jobType: jobType,
-					companyRole: 'EMPLOYEE',
+					companyRole: COMPANY_ROLES.EMPLOYEE,
 				},
 				fullName,
 			};
@@ -209,3 +217,11 @@ export async function setCompanyCodeInProfile(
 		console.error('setCompanyCodeInProfile in UserService ', error);
 	}
 }
+
+export const deleteMyAccount = async () => {
+	const userId = auth.currentUser?.uid;
+	if (!userId) return;
+	const userRef = doc(DB, COLLECTIONS.USERS, userId);
+	await deleteDoc(userRef);
+	return await deleteUser(auth.currentUser!);
+};

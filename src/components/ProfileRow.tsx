@@ -18,15 +18,16 @@ const ProfileRow = ({ profiles, containerProps, loading }: Props) => {
 		return profiles.some((profile) => profile.notification);
 	}, [profiles]);
 
-	useEffect(() => {
-		if (!profiles) return;
-		const imageUrls = profiles
-			.filter(
-				(profile) => profile.profilePic !== '' && profile.profilePic
-			)
-			.map((profiles) => Image.prefetch(profiles.profilePic));
-		Promise.all(imageUrls).then(() => setImagesLoading(false));
-	}, [profiles]);
+	// TODO: This was for profile images, but it's not needed anymore
+	// useEffect(() => {
+	// 	if (!profiles) return;
+	// 	const imageUrls = profiles
+	// 		.filter(
+	// 			(profile) => profile.profilePic !== '' && profile.profilePic
+	// 		)
+	// 		.map((profiles) => Image.prefetch(profiles.profilePic));
+	// 	Promise.all(imageUrls).then(() => setImagesLoading(false));
+	// }, [profiles]);
 
 	const dataLoading = useMemo(() => {
 		return imagesLoading || loading;

@@ -1,8 +1,13 @@
 import { TCompany, TProfile } from '../types';
 import { useNavigation } from '@react-navigation/native';
-import { UserCredential, onAuthStateChanged } from 'firebase/auth';
+import {
+	UserCredential,
+	onAuthStateChanged,
+	signInWithEmailAndPassword,
+} from 'firebase/auth';
 import { auth } from '../database/Firebase';
 import {
+	deleteMyAccount,
 	//changeProfilePicture,
 	getProfile,
 	loginUser,
@@ -16,8 +21,23 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useEffect } from 'react';
 import { useCompany } from './CompanyProvider';
 import { getCompanyByCode } from '../database/services/CompaniesService';
-import { primaryColor } from '../utils/constants';
 import { clearFirebaseSubscriptions } from '../utils/firebaseSubscriptions';
+import { useTaps } from './TapProvider';
+import { useTopics } from './TopicProvider';
+
+const initialState = {
+	loadingInitial: true,
+	user: null,
+	handleUpdateUser: () => {},
+	//handleChangeProfilePic: () => Promise.resolve(''),
+	handleLogin: () => Promise.resolve(),
+	handleSignup: () => Promise.resolve(),
+	handleLogout: () => {},
+	authErrors: null,
+	handleForgotPassword: () => {},
+	handleSetCompanyCode: () => {},
+	handleRemoveAccount: () => {},
+};
 
 const AuthContext = React.createContext<{
 	loadingInitial: boolean;
@@ -48,18 +68,8 @@ const AuthContext = React.createContext<{
 		setLoading: React.Dispatch<React.SetStateAction<boolean>>
 	) => void;
 	handleSetCompanyCode: (companyCode: string) => void;
-}>({
-	loadingInitial: true,
-	user: null,
-	handleUpdateUser: () => {},
-	//handleChangeProfilePic: () => Promise.resolve(''),
-	handleLogin: () => Promise.resolve(),
-	handleSignup: () => Promise.resolve(),
-	handleLogout: () => {},
-	authErrors: null,
-	handleForgotPassword: () => {},
-	handleSetCompanyCode: () => {},
-});
+	handleRemoveAccount: (mail: string, password: string) => void;
+}>(initialState);
 
 type Props = {
 	children: React.ReactNode;
@@ -68,14 +78,16 @@ type Props = {
 export const AuthProvider = ({ children }: Props) => {
 	const navigator =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-	const { setCompany } = useCompany();
+	const { setCompany, resetState: resetCompanyState } = useCompany();
 
-	const [user, setUser] = React.useState<TProfile | null>(null);
-	const [loadingInitial, setLoadingInitial] = React.useState<boolean>(true);
+	const [user, setUser] = React.useState<TProfile | null>(initialState.user);
+	const [loadingInitial, setLoadingInitial] = React.useState<boolean>(
+		initialState.loadingInitial
+	);
 	const [authErrors, setAuthErrors] = React.useState<Record<
 		string,
 		any
-	> | null>(null);
+	> | null>(initialState.authErrors);
 
 	const handleUpdateUser = async <K extends keyof TProfile>(
 		userid: string,
@@ -152,10 +164,10 @@ export const AuthProvider = ({ children }: Props) => {
 			);
 	};
 
-//	const handleChangeProfilePic = async (image: string) => {
-//		if (!user) return;
-//		return await changProfilePicture(image, user.uid);
-//	}
+	//	const handleChangeProfilePic = async (image: string) => {
+	//		if (!user) return;
+	//		return await changProfilePicture(image, user.uid);
+	//	}
 
 	const handleLogout = () => {
 		auth.signOut();
@@ -187,6 +199,18 @@ export const AuthProvider = ({ children }: Props) => {
 	const handleSetCompanyCode = async (companyCode: string) => {
 		if (!user) return;
 		await setCompanyCodeInProfile(user, companyCode);
+	};
+
+	const resetState = () => {
+		setUser(initialState.user);
+		setAuthErrors(initialState.authErrors);
+		setLoadingInitial(initialState.loadingInitial);
+	};
+
+	const handleRemoveAccount = (mail: string, password: string) => {
+		signInWithEmailAndPassword(auth, mail, password).then(() => {
+			deleteMyAccount().then(() => handleLogout());
+		});
 	};
 
 	React.useEffect(
@@ -233,6 +257,7 @@ export const AuthProvider = ({ children }: Props) => {
 			handleForgotPassword,
 			//handleChangeProfilePic,
 			handleSetCompanyCode,
+			handleRemoveAccount,
 		}),
 		[
 			loadingInitial,
@@ -245,6 +270,7 @@ export const AuthProvider = ({ children }: Props) => {
 			handleForgotPassword,
 			//handleChangeProfilePic,
 			handleSetCompanyCode,
+			handleRemoveAccount,
 		]
 	);
 
