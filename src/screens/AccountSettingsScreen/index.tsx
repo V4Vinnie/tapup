@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Alert,  ScrollView, Text, View } from 'react-native';
+import { Alert, ScrollView, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Routes } from '../../navigation/Routes';
@@ -29,6 +29,8 @@ import { auth } from '../../database/Firebase';
 import { useCompany } from '../../providers/CompanyProvider';
 import DeleteOrAddSetting from './DeleteOrAddSetting';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import DeleteAccountButton from './DeleteAccountButton';
+import LoginBeforeActionModal from './LoginBeforeActionModal';
 
 type Props = {};
 
@@ -36,7 +38,7 @@ const AccountSettingsScreen = (props: Props) => {
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 	// const { user, handleUpdateUser, handleChangeProfilePic } = useAuth();
-	const { user, handleUpdateUser} = useAuth();
+	const { user, handleUpdateUser } = useAuth();
 	const { company, setCompany } = useCompany();
 	const [showLoginModal, setShowLoginModal] = React.useState(false);
 	const [userDetails, setUserDetails] = React.useState({
@@ -48,8 +50,6 @@ const AccountSettingsScreen = (props: Props) => {
 		jobType: user?.companyInfo?.jobType || '',
 	});
 	const [tempEmail, setTempEmail] = React.useState('');
-	const [loginEmail, setLoginEmail] = React.useState(user?.email || '');
-	const [loginPassword, setLoginPassword] = React.useState('');
 
 	const changeEmail = (text: string) => {
 		if (!text.isValidEmail) {
@@ -62,15 +62,14 @@ const AccountSettingsScreen = (props: Props) => {
 		}, 1000);
 	};
 
-	function loginAndChangeEmail(): void {
-		signInWithEmailAndPassword(auth, loginEmail, loginPassword)
+	function loginAndChangeEmail(mail: string, password: string): void {
+		signInWithEmailAndPassword(auth, mail, password)
 			.then(() => {
 				handleUpdateUser(user?.uid!, 'email', tempEmail);
 				setUserDetails({
 					...userDetails,
 					email: tempEmail,
 				});
-				setLoginEmail(tempEmail);
 				setShowLoginModal(false);
 			})
 			.catch((error) => {
@@ -216,62 +215,17 @@ const AccountSettingsScreen = (props: Props) => {
 									navigate(Routes.HOME);
 								}}
 							/>
+							<DeleteAccountButton />
 						</View>
 					</ScrollView>
 				</View>
 			</SafeAreaView>
-			<Modal
-				avoidKeyboard
-				isVisible={showLoginModal}
-				onBackdropPress={() => setShowLoginModal(false)}
-				onBackButtonPress={() => setShowLoginModal(false)}>
-				<View className='bg-dark-primaryBackground p-8 rounded-lg'>
-					<Text className='text-lg text-white'>
-						Please login to change your email
-					</Text>
-					<AppInput
-						containerProps={{ className: 'mt-4' }}
-						inputProps={{
-							placeholder: 'Email',
-							placeholderTextColor: themeColors[mode].textColor,
-							style: { color: themeColors[mode].textColor },
-							value: loginEmail,
-							onChangeText: setLoginEmail,
-						}}
-						leftIcon={{
-							component: (
-								<MaterialCommunityIcons
-									name='email'
-									size={20}
-									color={themeColors[mode].textColor}
-								/>
-							),
-						}}
-					/>
-					<AppInput
-						containerProps={{ className: 'my-4' }}
-						inputProps={{
-							placeholder: 'Password',
-							placeholderTextColor: themeColors[mode].textColor,
-							style: { color: themeColors[mode].textColor },
-							secureTextEntry: true,
-							value: loginPassword,
-							onChangeText: setLoginPassword,
-						}}
-						leftIcon={{
-							component: (
-								<MaterialCommunityIcons
-									name='lock'
-									size={20}
-									color={themeColors[mode].textColor}
-								/>
-							),
-						}}
-					/>
-
-					<AppButton title='Login' onPress={loginAndChangeEmail} />
-				</View>
-			</Modal>
+			<LoginBeforeActionModal
+				title='Enter your password to change email'
+				action={loginAndChangeEmail}
+				setShowLoginModal={setShowLoginModal}
+				showLoginModal={showLoginModal}
+			/>
 		</>
 	);
 };

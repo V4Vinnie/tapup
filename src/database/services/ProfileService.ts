@@ -1,5 +1,6 @@
 import {
 	collection,
+	deleteDoc,
 	doc,
 	documentId,
 	getDoc,
@@ -11,6 +12,7 @@ import { DB } from '../Firebase';
 import { COLLECTIONS } from '../../utils/constants';
 import { TNotificationProfile, TProfile, TTap } from '../../types';
 import { getProfile } from './UserService';
+import { deleteUser } from 'firebase/auth';
 
 export const getProfiles = async () => {
 	const usersRef = collection(DB, COLLECTIONS.USERS);

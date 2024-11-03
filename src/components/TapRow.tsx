@@ -13,11 +13,14 @@ type Props = {
 
 const SPACE_BETWEEN = 10;
 const TapRow = ({ tapData, containerProps, loading }: Props) => {
-	const {user} = useAuth();
+	const { user } = useAuth();
 	const [imagesLoading, setImagesLoading] = React.useState<boolean>(true);
 
 	useEffect(() => {
-		const imageUrls = tapData.map((tap) => Image.prefetch(tap.thumbnail));
+		const imageUrls = tapData.map((tap) => {
+			if (!tap.thumbnail) return null;
+			Image.prefetch(tap.thumbnail);
+		});
 		Promise.all(imageUrls).then(() => setImagesLoading(false));
 	}, [tapData]);
 
@@ -40,15 +43,16 @@ const TapRow = ({ tapData, containerProps, loading }: Props) => {
 				}}
 				renderItem={({ item, index }) => {
 					const progress = getProcessPercentageForTap(user!, item);
-					return(
-					<ChapterRowComponent
-						key={item.id}
-						fullTap={item}
-						thumbnail={item.thumbnail}
-						text={item.name}
-						progress={progress}
-					/>
-				)}}
+					return (
+						<ChapterRowComponent
+							key={item.id}
+							fullTap={item}
+							thumbnail={item.thumbnail}
+							text={item.name}
+							progress={progress}
+						/>
+					);
+				}}
 			/>
 		</View>
 	);

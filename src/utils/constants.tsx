@@ -2,6 +2,7 @@ import settings from '../../tailwind.config';
 import { Routes } from '../navigation/Routes';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IonIcon from 'react-native-vector-icons/Ionicons';
+import { TCOMPANY_ROLE, TProfile } from '../types';
 
 export const FONTS = {
 	FAMILY: {
@@ -28,6 +29,17 @@ export const COLLECTIONS = {
 	TOPICS: 'topics',
 	COMPANIES: 'companies',
 };
+
+export const USER_ROLES = {
+	USER: 'USER',
+	ADMIN: 'ADMIN',
+	CREATOR: 'CREATOR',
+} as const;
+
+export const COMPANY_ROLES = {
+	EMPLOYER: 'EMPLOYER',
+	EMPLOYEE: 'EMPLOYEE',
+} as const;
 
 export const SKELETON_WAIT_TIME = 0;
 

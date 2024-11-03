@@ -21,7 +21,10 @@ const DiscoverTaps = ({ title, onPress, rightButton = true }: Props) => {
 	const isFocused = useIsFocused();
 
 	useEffect(() => {
-		const imageUrls = taps.map((tap) => Image.prefetch(tap.thumbnail));
+		const imageUrls = taps.map((tap) => {
+			if (!tap.thumbnail) return null;
+			Image.prefetch(tap.thumbnail);
+		});
 		Promise.all(imageUrls).then(() => setImagesLoading(false));
 	}, [taps]);
 

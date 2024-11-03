@@ -180,7 +180,6 @@ const RegisterUserDetails = ({
 					}}
 					title={'Next'}
 					onPress={() => {
-						console.log('Swiper ref:', swiper.current);
 						swiper.current?.scrollBy(1);
 					}}
 				/>

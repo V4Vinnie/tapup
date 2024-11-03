@@ -35,6 +35,7 @@ const ChapterList = ({
 	useEffect(() => {
 		const imageUrls = chapters.map((chapter) => {
 			if (chapter.frames[0].type === 'PHOTO') {
+				if (!chapter.frames[0].image) return null;
 				return Image.prefetch(chapter.frames[0].image);
 			}
 		});

@@ -8,19 +8,23 @@ import {
 import { useAuth } from './AuthProvider';
 import { useCompany } from './CompanyProvider';
 
+const tapInitial = {
+	loadingInitial: true,
+	taps: [],
+	discoverTaps: [],
+	tapProgressPercentages: {},
+	getProgressForTap: () => 0,
+	resetState: () => {},
+};
+
 const TapContext = React.createContext<{
 	loadingInitial: boolean;
 	taps: TTap[];
 	discoverTaps: TTap[];
 	tapProgressPercentages: Record<string, number>;
 	getProgressForTap: (tapId: string) => number;
-}>({
-	loadingInitial: true,
-	taps: [],
-	discoverTaps: [],
-	tapProgressPercentages: {},
-	getProgressForTap: () => 0,
-});
+	resetState: () => void;
+}>(tapInitial);
 
 type Props = {
 	children: React.ReactNode;
@@ -29,18 +33,25 @@ type Props = {
 export const TapProvider = ({ children }: Props) => {
 	const { user } = useAuth();
 	const { company } = useCompany();
-	const [taps, setTaps] = useState<TTap[]>([]);
+	const [taps, setTaps] = useState<TTap[]>(tapInitial.taps);
 	const [tapProgressPercentages, setTapProgressPercentages] = useState<
 		Record<string, number>
-	>({});
-	const [discoverTaps, setDiscoverTaps] = useState<TTap[]>([]);
-	const [allTapsDone, setAllTapsDone] = useState<boolean>(false);
+	>(tapInitial.tapProgressPercentages);
+	const [discoverTaps, setDiscoverTaps] = useState<TTap[]>(
+		tapInitial.discoverTaps
+	);
 
 	// User Taps
 	const getProgressForTap = (tapId: string) => {
 		if (!user?.uid) return 0;
 		if (!tapProgressPercentages[tapId]) return 0;
 		return tapProgressPercentages[tapId];
+	};
+
+	const resetState = () => {
+		setTaps(tapInitial.taps);
+		setTapProgressPercentages(tapInitial.tapProgressPercentages);
+		setDiscoverTaps(tapInitial.discoverTaps);
 	};
 
 	// All Taps
@@ -55,7 +66,6 @@ export const TapProvider = ({ children }: Props) => {
 					setDiscoverTaps(unwatchedTaps ?? []);
 					const percentages = getProcessPercentageForTaps(user, taps);
 					setTapProgressPercentages(percentages ?? {});
-					setAllTapsDone(true);
 				});
 			} catch (error) {
 				console.log('getAll in TapProvider ', error);
@@ -73,6 +83,7 @@ export const TapProvider = ({ children }: Props) => {
 			discoverTaps,
 			tapProgressPercentages,
 			getProgressForTap,
+			resetState,
 		}),
 		[
 			loadingInitial,
@@ -80,6 +91,7 @@ export const TapProvider = ({ children }: Props) => {
 			discoverTaps,
 			tapProgressPercentages,
 			getProgressForTap,
+			resetState,
 		]
 	);
 

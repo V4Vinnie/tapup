@@ -49,6 +49,7 @@ const ChapterRow = ({
 		if (!chapters) return;
 		const imageUrls = chapters.map(async (chapter) => {
 			if (chapter.frames[0].type === 'PHOTO') {
+				if (!chapter.frames[0].image) return null;
 				return Image.prefetch(chapter.frames[0].image);
 			}
 			if (chapter.frames[0].type === 'VIDEO') {
@@ -56,6 +57,7 @@ const ChapterRow = ({
 					chapter.frames[0].video
 				);
 				if (video) {
+					if (!video) return null;
 					return Image.prefetch(video);
 				}
 			}
