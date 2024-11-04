@@ -15,11 +15,16 @@ import {
   Inter_700Bold,
 } from '@expo-google-fonts/inter';
 import 'react-native-gesture-handler';
-import { View } from "react-native";
+import { Text, View } from "react-native";
 import { mode, themeColors } from "./src/utils/constants";
+import { useEffect, useState } from "react";
+import { useTrackingPermissions } from 'expo-tracking-transparency';
+import AppButton from "./src/components/AppButton";
 
 SplashScreen.preventAutoHideAsync();
 export default function App() {
+  const [trackingPermission, requestPermission] = useTrackingPermissions();
+
   const [loaded] = useFonts({
     'Inter-Light': Inter_300Light,
     'Inter-Regular': Inter_400Regular,
@@ -27,6 +32,16 @@ export default function App() {
     'Inter-SemiBold': Inter_600SemiBold,
     'Inter-Bold': Inter_700Bold,
   });
+
+  useEffect(() => { requestPermission() }, []);
+
+  if (!trackingPermission?.granted) {
+    return <View style={{ flex: 1, backgroundColor: themeColors[mode].primaryBackground, justifyContent: 'center', alignItems: 'center', padding: 24 }}>
+      <Text style={{ color: 'white', textAlign: 'center', marginBottom: 12, fontSize: 24 }}>Not enough permissions!</Text>
+      <Text style={{ color: 'white', textAlign: 'center', marginBottom: 24 }}>The permission to track data is not granted, make sure to grant the permission to use the app.</Text>
+      <AppButton title="Request Permission" onPress={requestPermission} />
+    </View>
+  }
 
   if (!loaded) {
     return <View style={{ flex: 1, backgroundColor: themeColors[mode].primaryBackground }} />;

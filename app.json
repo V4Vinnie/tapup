@@ -68,6 +68,12 @@
 					"microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
 					"recordAudioAndroid": true
 				}
+			],
+			[
+				"expo-tracking-transparency",
+				{
+					"userTrackingPermission": "This identifier will be used to deliver personalized ads to you."
+				}
 			]
 		],
 		"extra": {
