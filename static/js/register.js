@@ -28,7 +28,7 @@ registerForm.addEventListener('submit', async (e) => {
     
     try {
         // Create user with Firebase Auth
-        const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+        const userCredential = await window.auth.createUserWithEmailAndPassword(email, password);
         const user = userCredential.user;
         
         // Update profile with display name

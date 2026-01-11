@@ -16,13 +16,15 @@ const viewDashboardBtn = document.getElementById('viewDashboardBtn');
 let currentUser = null;
 
 // Check authentication
-firebase.auth().onAuthStateChanged((user) => {
+if (window.auth) {
+    window.auth.onAuthStateChanged((user) => {
     if (user) {
         currentUser = user;
     } else {
         window.location.href = '/login';
     }
-});
+    });
+}
 
 // Tab switching
 tabButtons.forEach((btn) => {
@@ -159,10 +161,11 @@ async function createFromText() {
 
 async function saveMicrolearningToFirestore(microlearning) {
     try {
-        const mlRef = db.collection('microlearnings').doc();
+        if (!window.db) return;
+        const mlRef = window.db.collection('microlearnings').doc();
         await mlRef.set({
             ...microlearning,
-            created_at: firebase.firestore.FieldValue.serverTimestamp()
+            created_at: window.firebase.firestore.FieldValue.serverTimestamp()
         });
         microlearning.id = mlRef.id;
     } catch (error) {

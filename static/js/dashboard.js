@@ -7,14 +7,16 @@ const microlearningsGrid = document.getElementById('microlearningsGrid');
 const emptyState = document.getElementById('emptyState');
 
 // Check authentication
-firebase.auth().onAuthStateChanged((user) => {
+if (window.auth) {
+    window.auth.onAuthStateChanged((user) => {
     if (user) {
         loadUserMicrolearnings(user.uid);
     } else {
         // Redirect to login if not authenticated
         window.location.href = '/login';
     }
-});
+    });
+}
 
 async function loadUserMicrolearnings(userId) {
     try {
@@ -23,7 +25,7 @@ async function loadUserMicrolearnings(userId) {
         emptyState.style.display = 'none';
         
         // Fetch microlearnings from Firestore
-        const querySnapshot = await db.collection('microlearnings')
+        const querySnapshot = await window.db.collection('microlearnings')
             .where('user_id', '==', userId)
             .orderBy('created_at', 'desc')
             .get();

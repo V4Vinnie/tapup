@@ -14,7 +14,7 @@ loginForm.addEventListener('submit', async (e) => {
     
     try {
         // Sign in with Firebase Auth
-        await firebase.auth().signInWithEmailAndPassword(email, password);
+        await window.auth.signInWithEmailAndPassword(email, password);
         
         // Redirect to dashboard (auth state change will handle this)
         window.location.href = '/dashboard';

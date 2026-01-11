@@ -3,7 +3,8 @@
  */
 
 // Check authentication state and update UI
-firebase.auth().onAuthStateChanged((user) => {
+if (window.auth) {
+    window.auth.onAuthStateChanged((user) => {
     if (user) {
         // User is signed in
         updateAuthUI(true, user);
@@ -14,7 +15,8 @@ firebase.auth().onAuthStateChanged((user) => {
         // User is signed out
         updateAuthUI(false, null);
     }
-});
+    });
+}
 
 function updateAuthUI(isSignedIn, user) {
     const loginLink = document.getElementById('loginLink');
@@ -43,7 +45,9 @@ const logoutBtn = document.getElementById('logoutBtn');
 if (logoutBtn) {
     logoutBtn.addEventListener('click', async () => {
         try {
-            await firebase.auth().signOut();
+            if (window.auth) {
+                await window.auth.signOut();
+            }
             window.location.href = '/';
         } catch (error) {
             console.error('Error signing out:', error);
@@ -55,7 +59,8 @@ if (logoutBtn) {
 // Save user to Firestore
 async function saveUserToFirestore(user) {
     try {
-        const userRef = db.collection('users').doc(user.uid);
+        if (!window.db) return;
+        const userRef = window.db.collection('users').doc(user.uid);
         const doc = await userRef.get();
         
         if (!doc.exists) {
@@ -63,13 +68,13 @@ async function saveUserToFirestore(user) {
             await userRef.set({
                 email: user.email,
                 display_name: user.displayName || '',
-                created_at: firebase.firestore.FieldValue.serverTimestamp(),
-                updated_at: firebase.firestore.FieldValue.serverTimestamp()
+                created_at: window.firebase.firestore.FieldValue.serverTimestamp(),
+                updated_at: window.firebase.firestore.FieldValue.serverTimestamp()
             });
         } else {
             // Update last login
             await userRef.update({
-                updated_at: firebase.firestore.FieldValue.serverTimestamp()
+                updated_at: window.firebase.firestore.FieldValue.serverTimestamp()
             });
         }
     } catch (error) {
@@ -79,7 +84,7 @@ async function saveUserToFirestore(user) {
 
 // Get current user
 function getCurrentUser() {
-    return firebase.auth().currentUser;
+    return window.auth ? window.auth.currentUser : null;
 }
 
 // Show error message

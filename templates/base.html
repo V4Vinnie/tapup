@@ -51,10 +51,13 @@
         
         if (firebaseConfig.apiKey) {
             firebase.initializeApp(firebaseConfig);
-            const auth = firebase.auth();
-            const db = firebase.firestore();
+            window.auth = firebase.auth();
+            window.db = firebase.firestore();
         } else {
             console.warn('Firebase config not provided');
+            // Create stub objects to prevent errors
+            window.auth = { onAuthStateChanged: () => {}, signOut: () => Promise.resolve() };
+            window.db = { collection: () => ({ doc: () => ({ set: () => Promise.resolve() }), where: () => ({ orderBy: () => ({ get: () => Promise.resolve({ forEach: () => {} }) }) }) }) };
         }
     </script>
     
