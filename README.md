@@ -33,8 +33,8 @@ from agent import ContentScreeningAgent
 agent = ContentScreeningAgent(
     target_skill="Python Programming",
     sources=[
-        "https://realpython.com/feed/",
-        "https://dev.to/feed"
+        "https://realpython.com/atom.xml",  # RSS feed
+        "https://dev.to/feed/tag/python"
     ]
 )
 

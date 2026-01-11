@@ -60,6 +60,20 @@ class ContentDiscovery:
             feed = feedparser.parse(feed_url)
             items = []
             
+            # Check for feedparser errors (like 404, connection issues)
+            if feed.bozo and feed.bozo_exception:
+                error_msg = str(feed.bozo_exception)
+                logger.error(f"Error parsing RSS feed {feed_url}: {error_msg}")
+                # Check if it's a 404 or other HTTP error
+                if "404" in error_msg or "Not Found" in error_msg:
+                    logger.error(f"Feed not found (404): {feed_url}. Try checking the URL or use atom.xml instead of /feed/")
+                return []
+            
+            # Check if feed has entries
+            if not hasattr(feed, 'entries') or len(feed.entries) == 0:
+                logger.warning(f"RSS feed {feed_url} returned no entries")
+                return []
+            
             for entry in feed.entries[:max_items]:
                 try:
                     title = entry.get("title", "")

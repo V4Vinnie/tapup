@@ -12,7 +12,7 @@ def main():
     agent = ContentScreeningAgent(
         target_skill="Python Programming",
         sources=[
-            "https://realpython.com/feed/",
+            "https://realpython.com/atom.xml",  # Real Python RSS feed
             "https://dev.to/feed/tag/python",
             # Add more sources as needed
         ]
