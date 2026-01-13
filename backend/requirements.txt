@@ -1,0 +1,23 @@
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+feedparser>=6.0.10
+google-generativeai>=0.3.0
+python-dotenv>=1.0.0
+pydantic>=2.5.0
+schedule>=1.2.0
+sqlalchemy>=2.0.0
+# Optional: Keep OpenAI if you want to support both
+# openai>=1.3.0
+# langchain>=0.1.0
+# langchain-openai>=0.0.2
+# tiktoken>=0.5.0
+flask>=3.0.0
+flask-cors>=4.0.0
+firebase-admin>=6.4.0
+pyrebase4>=4.7.1
+yt-dlp>=2023.12.30
+openai-whisper>=20231117
+ffmpeg-python>=0.2.0
+moviepy>=1.0.3,<2.0.0
+pytube>=15.0.0
+gunicorn>=21.2.0

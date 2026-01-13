@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - TapUp{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>My Microlearnings</h1>
+        <a href="{{ url_for('create') }}" class="btn-primary">+ Create New</a>
+    </div>
+    
+    <div id="loadingIndicator" class="loading">
+        <p>Loading your microlearnings...</p>
+    </div>
+    
+    <div id="microlearningsGrid" class="microlearnings-grid" style="display: none;">
+        <!-- Microlearnings will be inserted here -->
+    </div>
+    
+    <div id="emptyState" class="empty-state" style="display: none;">
+        <div class="empty-icon">📚</div>
+        <h2>No microlearnings yet</h2>
+        <p>Create your first microlearning to get started</p>
+        <a href="{{ url_for('create') }}" class="btn-primary">Create Your First Microlearning</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}
+

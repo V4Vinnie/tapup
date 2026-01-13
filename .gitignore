@@ -40,3 +40,26 @@ yarn-error.*
 *.tsbuildinfo
 
 %ProgramData%/
+
+# Python backend
+backend/__pycache__/
+backend/*.pyc
+backend/*.pyo
+backend/*.pyd
+backend/.Python
+backend/env/
+backend/venv/
+backend/ENV/
+backend/env.bak/
+backend/venv.bak/
+backend/*.egg-info/
+backend/dist/
+backend/build/
+backend/.pytest_cache/
+backend/.coverage
+backend/htmlcov/
+backend/downloads/
+backend/output/
+backend/storage/
+backend/.env
+backend/.env.local

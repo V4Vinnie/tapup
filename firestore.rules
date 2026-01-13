@@ -1,0 +1,92 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'ADMIN';
+    }
+    
+    function isCreator() {
+      return isAuthenticated() && 
+             (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'CREATOR' ||
+              get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'ADMIN');
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      // Users can read their own profile
+      allow read: if isOwner(userId);
+      // Users can read other users (for following, profiles, etc.)
+      allow read: if isAuthenticated();
+      
+      // Users can create their own profile
+      allow create: if isOwner(userId) && 
+                       request.resource.data.uid == userId &&
+                       request.resource.data.uid == request.auth.uid;
+      
+      // Users can update their own profile
+      allow update: if isOwner(userId);
+      
+      // Users can delete their own profile
+      allow delete: if isOwner(userId);
+    }
+    
+    // Companies collection
+    match /companies/{companyId} {
+      // Authenticated users can read companies
+      allow read: if isAuthenticated();
+      
+      // Only admins can create companies
+      allow create: if isAdmin();
+      
+      // Only admins can update companies
+      allow update: if isAdmin();
+      
+      // Only admins can delete companies
+      allow delete: if isAdmin();
+    }
+    
+    // Topics collection
+    match /topics/{topicId} {
+      // Authenticated users can read topics
+      allow read: if isAuthenticated();
+      
+      // Creators and admins can create topics
+      allow create: if isCreator();
+      
+      // Creators and admins can update topics
+      allow update: if isCreator();
+      
+      // Only admins can delete topics
+      allow delete: if isAdmin();
+    }
+    
+    // Taps collection
+    match /taps/{tapId} {
+      // Authenticated users can read taps
+      allow read: if isAuthenticated();
+      
+      // Creators and admins can create taps
+      allow create: if isCreator() &&
+                       request.resource.data.creatorId == request.auth.uid;
+      
+      // Only the creator or admin can update taps
+      allow update: if isCreator() && 
+                       (resource.data.creatorId == request.auth.uid || isAdmin());
+      
+      // Only the creator or admin can delete taps
+      allow delete: if (resource.data.creatorId == request.auth.uid) || isAdmin();
+    }
+  }
+}
+

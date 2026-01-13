@@ -1,0 +1,35 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Helper function
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // User profile pictures
+    match /users/{userId}/profilePicture.{extension} {
+      // Users can read their own profile picture
+      allow read: if isAuthenticated();
+      
+      // Users can upload/update their own profile picture
+      allow write: if isOwner(userId);
+      
+      // File size limit: 5MB
+      allow write: if request.resource.size < 5 * 1024 * 1024;
+      
+      // Only allow image extensions
+      allow write: if extension.matches('(jpg|jpeg|png|webp)');
+    }
+    
+    // Deny all other paths by default
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
+

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Create Microlearning - TapUp{% endblock %}
+
+{% block content %}
+<div class="create-container">
+    <div class="create-header">
+        <h1>Create Video Microlearning</h1>
+        <p>Generate 30-second TikTok-style microlearnings from YouTube videos</p>
+    </div>
+    
+    <div class="create-content">
+        <form id="youtubeForm" class="create-form">
+            <div class="form-group">
+                <label for="youtubeUrl">YouTube Video URL</label>
+                <input type="url" id="youtubeUrl" name="youtube_url" placeholder="https://www.youtube.com/watch?v=..." required>
+                <small>Paste a YouTube video URL to convert into microlearning clips</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="targetSkill">Target Skill</label>
+                <input type="text" id="targetSkill" name="target_skill" placeholder="Python Programming" value="General">
+                <small>The skill or topic this microlearning covers</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="numClips">Number of Clips</label>
+                <input type="number" id="numClips" name="num_clips" min="1" max="10" value="3">
+                <small>Number of 30-second clips to generate (default: 3)</small>
+            </div>
+            
+            <div id="youtubeError" class="error-message" style="display: none;"></div>
+            
+            <button type="submit" class="btn-primary btn-full">Generate Video Microlearning</button>
+        </form>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Generating your microlearning...</p>
+            <small>This may take a minute</small>
+        </div>
+    </div>
+    
+    <!-- Result Modal -->
+    <div id="resultModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Microlearning Created!</h2>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Microlearning content will be inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="closeModalBtn">Close</button>
+                <button class="btn-primary" id="viewDashboardBtn">View in Dashboard</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/create.js') }}"></script>
+{% endblock %}
+

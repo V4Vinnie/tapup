@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}TapUp - The Swipe Academy | Micro-learning Platform{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <div class="hero-container">
+        <div class="hero-content">
+            <h1 class="hero-title">Tap into a new world of information</h1>
+            <p class="hero-subtitle">Create bite-sized microlearnings from any content. Fast, focused, and effective.</p>
+            <div class="hero-buttons">
+                <a href="{{ url_for('register') }}" class="btn-primary btn-large">Get Started Free</a>
+                <a href="{{ url_for('login') }}" class="btn-secondary btn-large">Sign In</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="hero-card">
+                <div class="card-header">
+                    <span class="card-icon">📚</span>
+                    <span class="card-time">5 min read</span>
+                </div>
+                <h3>Python Decorators</h3>
+                <p>Learn how to use decorators to enhance your Python functions...</p>
+                <div class="card-tags">
+                    <span class="tag">Python</span>
+                    <span class="tag">Intermediate</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="features">
+    <div class="container">
+        <h2 class="section-title">Why TapUp?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Fast Learning</h3>
+                <p>5-10 minute microlearnings designed for quick consumption</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>Focused Content</h3>
+                <p>AI-powered content curation and summarization</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3>Swipe Academy</h3>
+                <p>Mobile-friendly interface for learning on the go</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3>AI-Powered</h3>
+                <p>Automatically generate microlearnings from any URL or text</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta">
+    <div class="container">
+        <h2>Ready to start learning?</h2>
+        <p>Join TapUp today and transform any content into microlearnings</p>
+        <a href="{{ url_for('register') }}" class="btn-primary btn-large">Create Free Account</a>
+    </div>
+</section>
+{% endblock %}
+

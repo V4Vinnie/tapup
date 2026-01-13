@@ -13,7 +13,11 @@ import { COLLECTIONS } from '../../utils/constants';
 export const getAllTaps = async (company: TCompany): Promise<TTap[]> => {
 	try {
 		const tapsRef = collection(DB, COLLECTIONS.TAPS);
-		const _query = query(tapsRef, where('companyCode', '==', company.code));
+		// Fetch taps for the company AND taps with empty companyCode (available to all)
+		const _query = query(
+			tapsRef,
+			where('companyCode', 'in', [company.code, ''])
+		);
 		const allTaps = await getDocs(_query);
 		if (allTaps.empty) return [];
 		return allTaps.docs.map((doc) => {
